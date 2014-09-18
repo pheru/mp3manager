@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.text.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.control.cell.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+
+<GridPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="de.eru.mp3manager.gui.applicationwindow.application.ApplicationPresenter">
+    <columnConstraints>
+        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+    </columnConstraints>
+    <rowConstraints>
+        <RowConstraints vgrow="NEVER" />
+        <RowConstraints vgrow="NEVER" />
+        <RowConstraints vgrow="ALWAYS" />
+        <RowConstraints vgrow="NEVER" />
+    </rowConstraints>
+    <children>
+        <MenuBar>
+            <menus>
+                <Menu mnemonicParsing="false" text="Datei">
+                    <items>
+                        <MenuItem mnemonicParsing="false" text="Verzeichnis wechseln..." />
+                        <SeparatorMenuItem />
+                        <MenuItem mnemonicParsing="false" text="Beenden" />
+                    </items>
+                </Menu>
+                <Menu mnemonicParsing="false" text="Bearbeiten">
+                    <items>
+                        <MenuItem mnemonicParsing="false" text="Änderungen speichern" />
+                        <MenuItem mnemonicParsing="false" text="Änderungen verwerfen" />
+                        <MenuItem mnemonicParsing="false" text="Löschen..." />
+                    </items>
+                </Menu>
+                <Menu mnemonicParsing="false" text="Wiedergabe">
+                    <items>
+                        <MenuItem mnemonicParsing="false" text="Wiedergabe / Anhalten" />
+                        <MenuItem mnemonicParsing="false" text="Stopp" />
+                        <MenuItem mnemonicParsing="false" text="Weiter" />
+                        <MenuItem mnemonicParsing="false" text="Zurück" />
+                        <SeparatorMenuItem />
+                        <CheckMenuItem mnemonicParsing="false" text="Zufällige Wiedergabe" />
+                        <CheckMenuItem mnemonicParsing="false" text="Wiederholung" />
+                    </items>
+                </Menu>
+                <Menu mnemonicParsing="false" text="Hilfe">
+                    <items>
+                        <MenuItem mnemonicParsing="false" text="Info" />
+                    </items>
+                </Menu>
+            </menus>
+        </MenuBar>
+        <SplitPane fx:id="splitPane" GridPane.hgrow="ALWAYS" GridPane.rowIndex="2" GridPane.vgrow="ALWAYS">
+            <items>
+                <TabPane tabClosingPolicy="UNAVAILABLE" SplitPane.resizableWithParent="false">
+                    <tabs>
+                        <Tab fx:id="playlistTab" text="Aktuelle Wiedergabe" />
+                        <Tab fx:id="editFileTab" text="MP3-Editor" />
+                    </tabs>
+                </TabPane>
+            </items>
+        </SplitPane>
+        <VBox fx:id="musicPlayerBox" GridPane.rowIndex="3" />
+    </children>
+</GridPane>

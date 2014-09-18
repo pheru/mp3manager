@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.image.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox fx:id="root" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="de.eru.mp3manager.gui.applicationwindow.editfile.EditFilePresenter">
+    <children>
+        <HBox>
+            <children>
+                <Label text="Dateiname" />
+                <Pane HBox.hgrow="ALWAYS" />
+                <CheckBox fx:id="synchronizeTitleBox" mnemonicParsing="false" text="Titel übernehmen" />
+            </children>
+        </HBox>
+        <HBox alignment="CENTER_LEFT">
+            <children>
+                <TextField fx:id="fileNameField" HBox.hgrow="ALWAYS">
+                    <VBox.margin>
+                        <Insets bottom="5.0" />
+                    </VBox.margin>
+                </TextField>
+                <Label text=".mp3" />
+            </children>
+            <VBox.margin>
+                <Insets bottom="5.0" />
+            </VBox.margin>
+        </HBox>
+        <Label text="Titel" />
+        <ComboBox fx:id="titleField" editable="true" maxWidth="1.7976931348623157E308">
+            <VBox.margin>
+                <Insets bottom="5.0" />
+            </VBox.margin>
+        </ComboBox>
+        <Label text="Album" />
+        <ComboBox fx:id="albumField" editable="true" maxWidth="1.7976931348623157E308">
+            <VBox.margin>
+                <Insets bottom="5.0" />
+            </VBox.margin>
+        </ComboBox>
+        <Label text="Interpret" />
+        <ComboBox fx:id="artistField" editable="true" maxWidth="1.7976931348623157E308">
+            <VBox.margin>
+                <Insets bottom="5.0" />
+            </VBox.margin>
+        </ComboBox>
+        <GridPane hgap="5.0">
+            <columnConstraints>
+                <ColumnConstraints hgrow="SOMETIMES" percentWidth="25.0" />
+                <ColumnConstraints hgrow="SOMETIMES" percentWidth="25.0" />
+                <ColumnConstraints hgrow="ALWAYS" percentWidth="50.0" />
+            </columnConstraints>
+            <rowConstraints>
+                <RowConstraints vgrow="SOMETIMES" />
+                <RowConstraints vgrow="SOMETIMES" />
+            </rowConstraints>
+            <children>
+                <Label text="Titelnummer" />
+                <Label text="Jahr" GridPane.columnIndex="1" />
+                <Label text="Genre" GridPane.columnIndex="2" />
+                <ComboBox fx:id="trackField" editable="true" maxWidth="1.7976931348623157E308" GridPane.rowIndex="1" />
+                <ComboBox fx:id="yearField" editable="true" maxWidth="1.7976931348623157E308" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                <ComboBox fx:id="genreField" editable="true" maxWidth="1.7976931348623157E308" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+            </children>
+            <VBox.margin>
+                <Insets bottom="5.0" />
+            </VBox.margin>
+        </GridPane>
+        <Label text="Albumcover" />
+        <Pane fx:id="coverPane" VBox.vgrow="ALWAYS">
+            <children>
+                <ImageView fx:id="coverView" pickOnBounds="true" VBox.vgrow="NEVER">
+                    <VBox.margin>
+                        <Insets />
+                    </VBox.margin>
+                </ImageView>
+            </children>
+        </Pane>
+    </children>
+</VBox>

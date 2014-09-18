@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+
+<HBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="de.eru.mp3manager.gui.applicationwindow.musicplayer.MusicPlayerPresenter">
+    <children>
+        <ImageView fitHeight="100.0" fitWidth="100.0" pickOnBounds="true" preserveRatio="true">
+            <image>
+                <Image url="@testAlbumCover.jpg" />
+            </image>
+        </ImageView>
+        <GridPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" HBox.hgrow="ALWAYS">
+            <columnConstraints>
+                <ColumnConstraints hgrow="NEVER" />
+                <ColumnConstraints hgrow="ALWAYS" />
+            </columnConstraints>
+            <rowConstraints>
+                <RowConstraints vgrow="NEVER" />
+                <RowConstraints vgrow="SOMETIMES" />
+            </rowConstraints>
+            <children>
+                <HBox GridPane.columnSpan="2147483647" GridPane.hgrow="ALWAYS">
+                    <children>
+                        <StackPane GridPane.columnSpan="2147483647" HBox.hgrow="ALWAYS">
+                            <children>
+                                <ProgressBar fx:id="durationProgressBar" maxWidth="1.7976931348623157E308" progress="1.0" scaleY="0.4">
+                                    <padding>
+                                        <Insets left="7.0" right="7.0" />
+                                    </padding>
+                                </ProgressBar>
+                                <Slider fx:id="durationSlider" blockIncrement="0.0" max="1.0" maxWidth="1.7976931348623157E308" value="1.0" />
+                            </children>
+                        </StackPane>
+                        <Label fx:id="currentTimeLabel" text="00:00">
+                            <padding>
+                                <Insets left="5.0" />
+                            </padding>
+                        </Label>
+                        <Label text=" / " />
+                        <Label fx:id="totalTimeLabel" text="13:37">
+                            <padding>
+                                <Insets right="5.0" />
+                            </padding>
+                        </Label>
+                    </children>
+                </HBox>
+                <HBox alignment="CENTER" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                    <children>
+                        <Button mnemonicParsing="false" text="Previous" />
+                        <Button mnemonicParsing="false" text="Stop" />
+                        <Button graphicTextGap="0.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="30.0">
+                            <graphic>
+                                <ImageView fitWidth="10.0" preserveRatio="true">
+                                    <image>
+                                        <Image url="@play.png" />
+                                    </image>
+                                </ImageView>
+                            </graphic>
+                        </Button>
+                        <Button mnemonicParsing="false" text="Next" />
+                        <ToggleButton mnemonicParsing="false" text="Random">
+                            <HBox.margin>
+                                <Insets left="20.0" />
+                            </HBox.margin>
+                        </ToggleButton>
+                        <ToggleButton mnemonicParsing="false" text="Repeat" />
+                        <HBox alignment="CENTER">
+                            <children>
+                                <StackPane GridPane.columnIndex="1" GridPane.rowIndex="1">
+                                    <children>
+                                        <ProgressBar fx:id="volumeProgressBar" maxWidth="1.7976931348623157E308" progress="1.0" scaleY="0.4">
+                                            <padding>
+                                                <Insets left="7.0" right="7.0" />
+                                            </padding>
+                                        </ProgressBar>
+                                        <Slider fx:id="volumeSlider" blockIncrement="0.0" majorTickUnit="1.0" max="1.0" maxWidth="1.7976931348623157E308" minorTickCount="1" value="1.0" />
+                                    </children>
+                                </StackPane>
+                                <Label fx:id="volumeLabel" alignment="CENTER_RIGHT" minWidth="35.0" text="100%">
+                                    <HBox.margin>
+                                        <Insets />
+                                    </HBox.margin>
+                                </Label>
+                            </children>
+                            <HBox.margin>
+                                <Insets left="20.0" />
+                            </HBox.margin>
+                        </HBox>
+                    </children>
+                </HBox>
+                <VBox alignment="CENTER_LEFT" maxWidth="200.0" minWidth="200.0" GridPane.rowIndex="1">
+                    <children>
+                        <Label text="Wolves Die Young" />
+                        <Label text="Pariah's Child" />
+                        <Label text="Sonata Arctica" />
+                    </children>
+                    <padding>
+                        <Insets left="15.0" />
+                    </padding>
+                </VBox>
+            </children>
+        </GridPane>
+    </children>
+</HBox>
