@@ -1,4 +1,4 @@
-package de.eru.mp3manager.service;
+package de.eru.mp3manager.utils;
 
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;

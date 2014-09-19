@@ -1,4 +1,4 @@
-package de.eru.mp3manager.utils;
+package de.eru.mp3manager.utils.factories;
 
 import de.eru.mp3manager.data.Mapper;
 import de.eru.mp3manager.data.Mp3FileData;

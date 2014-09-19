@@ -2,8 +2,8 @@ package de.eru.mp3manager.gui.applicationwindow.editfile;
 
 import de.eru.mp3manager.data.Mp3FileData;
 import de.eru.mp3manager.data.Mp3FileDataList;
-import de.eru.mp3manager.utils.ByteFormatter;
-import de.eru.mp3manager.utils.ComparatorFactory;
+import de.eru.mp3manager.utils.formatter.ByteFormatter;
+import de.eru.mp3manager.utils.factories.ComparatorFactory;
 import java.net.URL;
 import java.util.Comparator;
 import java.util.ResourceBundle;

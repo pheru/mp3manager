@@ -4,7 +4,7 @@ import de.eru.mp3manager.data.Mapper;
 import de.eru.mp3manager.data.Mp3FileData;
 import de.eru.mp3manager.data.Playlist;
 import de.eru.mp3manager.service.FileService;
-import de.eru.mp3manager.utils.TimeFormatter;
+import de.eru.mp3manager.utils.formatter.TimeFormatter;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;

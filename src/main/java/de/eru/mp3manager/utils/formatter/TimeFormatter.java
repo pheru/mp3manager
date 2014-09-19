@@ -1,4 +1,4 @@
-package de.eru.mp3manager.utils;
+package de.eru.mp3manager.utils.formatter;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;

@@ -1,6 +1,6 @@
 package de.eru.mp3manager;
 
-import de.eru.mp3manager.utils.TimeFormatter;
+import de.eru.mp3manager.utils.formatter.TimeFormatter;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;

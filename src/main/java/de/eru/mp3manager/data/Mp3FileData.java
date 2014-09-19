@@ -1,7 +1,7 @@
 package de.eru.mp3manager.data;
 
-import de.eru.mp3manager.utils.ByteFormatter;
-import de.eru.mp3manager.utils.TimeFormatter;
+import de.eru.mp3manager.utils.formatter.ByteFormatter;
+import de.eru.mp3manager.utils.formatter.TimeFormatter;
 import java.io.File;
 import javafx.beans.binding.StringBinding;
 import javafx.beans.property.BooleanProperty;

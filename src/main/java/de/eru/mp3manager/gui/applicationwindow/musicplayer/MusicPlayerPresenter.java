@@ -1,7 +1,7 @@
 package de.eru.mp3manager.gui.applicationwindow.musicplayer;
 
 import de.eru.mp3manager.player.MusicPlayer;
-import de.eru.mp3manager.utils.TimeFormatter;
+import de.eru.mp3manager.utils.formatter.TimeFormatter;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.application.Platform;

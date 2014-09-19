@@ -1,4 +1,4 @@
-package de.eru.mp3manager.utils;
+package de.eru.mp3manager.utils.formatter;
 
 import java.io.ByteArrayInputStream;
 import java.text.DecimalFormat;

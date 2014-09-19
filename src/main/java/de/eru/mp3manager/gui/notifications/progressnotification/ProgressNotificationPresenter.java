@@ -1,6 +1,6 @@
 package de.eru.mp3manager.gui.notifications.progressnotification;
 
-import de.eru.mp3manager.service.TaskPool;
+import de.eru.mp3manager.utils.TaskPool;
 import java.net.URL;
 import java.text.DecimalFormat;
 import java.util.ResourceBundle;
