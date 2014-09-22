@@ -1,9 +1,14 @@
 package de.eru.mp3manager.gui.applicationwindow.editfile;
 
+import com.mpatric.mp3agic.InvalidDataException;
+import com.mpatric.mp3agic.NotSupportedException;
+import com.mpatric.mp3agic.UnsupportedTagException;
 import de.eru.mp3manager.data.Mp3FileData;
-import de.eru.mp3manager.data.Mp3FileDataList;
+import de.eru.mp3manager.data.utils.InjectableList;
+import de.eru.mp3manager.service.FileService;
 import de.eru.mp3manager.utils.formatter.ByteFormatter;
 import de.eru.mp3manager.utils.factories.ComparatorFactory;
+import java.io.IOException;
 import java.net.URL;
 import java.util.Comparator;
 import java.util.ResourceBundle;
@@ -20,7 +25,6 @@ import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
-import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 
 public class EditFilePresenter implements Initializable{
@@ -56,7 +60,9 @@ public class EditFilePresenter implements Initializable{
     Comparator<String> numberComparator = ComparatorFactory.createNumberComparator();
 
     @Inject
-    private Mp3FileDataList selectedData;
+    private InjectableList<Mp3FileData> selectedData;
+    
+    private final Mp3FileData changeData = new Mp3FileData();
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -96,13 +102,37 @@ public class EditFilePresenter implements Initializable{
                 return coverPane.widthProperty().get();
             }
         });
+        changeData.fileNameProperty().bind(fileNameField.textProperty());
+        changeData.titleProperty().bind(titleField.valueProperty());
+        changeData.albumProperty().bind(albumField.valueProperty());
+        changeData.artistProperty().bind(artistField.valueProperty());
+        changeData.genreProperty().bind(genreField.valueProperty());
+        changeData.yearProperty().bind(yearField.valueProperty());
+        changeData.trackProperty().bind(trackField.valueProperty());
+        //TODO cover binding
+//        changeData.coverProperty().bind(new ObjectBinding<byte[]>() {
+//            {
+//                bind(coverView.imageProperty());
+//            }
+//            @Override
+//            protected byte[] computeValue() {
+//                BufferedImage bufferedImage = SwingFXUtils.fromFXImage(coverView.getImage(), null);
+//                ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+//                try { 
+//                    ImageIO.write(bufferedImage, "png", outputStream);
+//                } catch (IOException ex) {
+//                    ex.printStackTrace();
+//                }
+//                return outputStream.toByteArray();
+//            }
+//        });
     }
 
     /**
      * Erzeugt die verschiedenen Listener.
      */
     private void setUpListeners() {
-        selectedData.setListChangeListener((ListChangeListener<Mp3FileData>) (ListChangeListener.Change<? extends Mp3FileData> change) -> {
+        selectedData.addListener((ListChangeListener<Mp3FileData>) (ListChangeListener.Change<? extends Mp3FileData> change) -> {
             updateFields();
         });
         synchronizeTitleBox.selectedProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
@@ -115,11 +145,11 @@ public class EditFilePresenter implements Initializable{
      */
     private void updateFields() {
         clearFieldItems();
-        if (selectedData.getData().size() == 1) {
+        if (selectedData.size() == 1) {
             setUpTitleSynchronization();
             synchronizeTitleBox.setDisable(false);
             fillFieldsWithSingleData();
-        } else if (selectedData.getData().size() > 1) {
+        } else if (selectedData.size() > 1) {
             fileNameField.textProperty().unbind();
             fileNameField.setDisable(true);
             synchronizeTitleBox.setDisable(true);
@@ -140,7 +170,7 @@ public class EditFilePresenter implements Initializable{
      * Befüllt die Felder mit den Werten eines einzelnen Mp3FileData-Objektes.
      */
     private void fillFieldsWithSingleData() {
-        Mp3FileData singleData = selectedData.getData().get(0);
+        Mp3FileData singleData = selectedData.get(0);
         if (!fileNameField.textProperty().isBound()) {
             fileNameField.setText(singleData.getFileName().replace(".mp3", ""));
         }
@@ -184,7 +214,7 @@ public class EditFilePresenter implements Initializable{
      * Befüllt die Listen der ComboBoxen.
      */
     private void fillFieldItems() {
-        for (Mp3FileData data : selectedData.getData()) {
+        for (Mp3FileData data : selectedData) {
             addToFieldItemsOnce(titleField, data.getTitle());
             addToFieldItemsOnce(artistField, data.getArtist());
             addToFieldItemsOnce(albumField, data.getAlbum());
@@ -250,6 +280,16 @@ public class EditFilePresenter implements Initializable{
         } else {
             fileNameField.textProperty().unbind();
             fileNameField.setDisable(false);
+        }
+    }
+    
+    public void save(){
+        for (Mp3FileData mp3FileData : selectedData) {
+            try {
+                FileService.saveFile(mp3FileData, changeData);
+            } catch (IOException | UnsupportedTagException | InvalidDataException | NotSupportedException ex) {
+                ex.printStackTrace(); //TODO printstacktrace
+            }
         }
     }
 }

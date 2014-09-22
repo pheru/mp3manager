@@ -1,6 +1,6 @@
 package de.eru.mp3manager.gui.applicationwindow.playlist;
 
-import de.eru.mp3manager.data.Mapper;
+import de.eru.mp3manager.data.utils.Mapper;
 import de.eru.mp3manager.data.Mp3FileData;
 import de.eru.mp3manager.data.Playlist;
 import de.eru.mp3manager.service.FileService;

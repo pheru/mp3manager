@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package de.eru.mp3manager.gui.notifications;
 
 import de.eru.mp3manager.gui.notifications.progressnotification.ProgressNotificationView;
@@ -14,18 +9,18 @@ import javafx.scene.Scene;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
-import javax.annotation.PostConstruct;
 
 /**
  *
  * @author Philipp Bruckner
  */
-public final class Notifications {
+public class NotificationControl {
 
+    public static final NotificationControl INSTANCE = new NotificationControl();
+    
     private final ObservableList<Stage> notifications = FXCollections.observableArrayList();
     
-    @PostConstruct
-    private void init() {
+    private NotificationControl() {
         notifications.addListener((ListChangeListener.Change<? extends Stage> c) -> {
             System.out.println("change");
         });

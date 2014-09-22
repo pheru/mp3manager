@@ -11,10 +11,8 @@ import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
 
 /**
- * Klasse zum abarbeiten von Tasks.
- * <p>
- * Ein TaskPool enthält eine Liste von Tasks, welche nacheinander abgearbeitet werden.
- * <p>
+ * Klasse zum abarbeiten von Tasks.<br/>
+ * Ein TaskPool enthält eine Liste von Tasks, welche nacheinander abgearbeitet werden.<br/>
  * Wird ein neuer Task hinzugefügt, reiht sich dieser in die Liste von Tasks ein. Ist die Liste leer, so wird der Task direkt gestartet.
  *
  * @author Philipp Bruckner
@@ -66,11 +64,11 @@ public class TaskPool {
     /**
      * Leert den TaskPool.
      *
-     * @param cancelActualTask Ob der aktuelle Task sofort gestoppt werden oder noch zu Ende laufen soll.
+     * @param cancelCurrentTask Ob der aktuelle Task sofort gestoppt werden oder noch zu Ende laufen soll.
      */
-    public void clear(boolean cancelActualTask) {
+    public void clear(boolean cancelCurrentTask) {
         tasks.clear();
-        if (cancelActualTask) {
+        if (cancelCurrentTask) {
             currentTask.cancel();
         }
     }

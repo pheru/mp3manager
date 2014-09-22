@@ -1,6 +1,6 @@
 package de.eru.mp3manager.utils.factories;
 
-import de.eru.mp3manager.data.Mapper;
+import de.eru.mp3manager.data.utils.Mapper;
 import de.eru.mp3manager.data.Mp3FileData;
 import de.eru.mp3manager.service.FileService;
 import java.io.File;

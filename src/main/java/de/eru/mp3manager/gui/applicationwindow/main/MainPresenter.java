@@ -1,8 +1,8 @@
 package de.eru.mp3manager.gui.applicationwindow.main;
 
 import de.eru.mp3manager.data.Mp3FileData;
-import de.eru.mp3manager.data.Mp3FileDataList;
 import de.eru.mp3manager.data.Playlist;
+import de.eru.mp3manager.data.utils.InjectableList;
 import de.eru.mp3manager.gui.notifications.progressnotification.ProgressNotificationView;
 import de.eru.mp3manager.utils.TaskPool;
 import de.eru.mp3manager.utils.factories.ComparatorFactory;
@@ -28,7 +28,7 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javax.inject.Inject;
 
-public class MainPresenter implements Initializable{
+public class MainPresenter implements Initializable {
 
     private static final Label PLACEHOLDER_NO_DIRECTORY_CHOSEN = new Label("Es wurde kein Verzeichnis ausgewählt");
     private static final Label PLACEHOLDER_EMPTY_DIRECTORY = new Label("Das gewählte Verzeichnis enthält keine MP3-Dateien");
@@ -54,8 +54,9 @@ public class MainPresenter implements Initializable{
     private TaskPool taskPool;
     @Inject
     private Playlist playlist;
+    
     @Inject
-    private Mp3FileDataList selectedData;
+    private InjectableList<Mp3FileData> selectedData;
 
     private final ObservableList<Mp3FileData> tableData = FXCollections.observableArrayList();
 
@@ -72,7 +73,7 @@ public class MainPresenter implements Initializable{
         table.setPlaceholder(PLACEHOLDER_NO_DIRECTORY_CHOSEN);
         table.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
         table.setItems(setUpTableFilter());
-        selectedData.setData(table.getSelectionModel().getSelectedItems());
+        selectedData.set(table.getSelectionModel().getSelectedItems());
         getColumnByName("Titelnummer").setComparator(ComparatorFactory.createNumberComparator());
         getColumnByName("Jahr").setComparator(ComparatorFactory.createNumberComparator());
         getColumnByName("Zuletzt geändert").setComparator(ComparatorFactory.createDateComparator());
@@ -139,13 +140,22 @@ public class MainPresenter implements Initializable{
         ProgressNotificationView.show();
     }
 
+    /**
+     * Kontextmenü-Methode.<br/>
+     * Spielt die ausgewählten Titel ab.
+     *
+     */
     @FXML
     protected void play() {
     }
 
+    /**
+     * Kontexmenü-Methode.<br/>
+     * Fügt die ausgewählten Titel der Wiedergabeliste hinzu.
+     */
     @FXML
     protected void addToPlaylist() {
-        playlist.getTitles().addAll(selectedData.getData());
+        playlist.getTitles().addAll(selectedData);
     }
 
     @FXML

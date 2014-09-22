@@ -1,5 +1,10 @@
 package de.eru.mp3manager.service;
 
+import com.mpatric.mp3agic.ID3v2;
+import com.mpatric.mp3agic.InvalidDataException;
+import com.mpatric.mp3agic.Mp3File;
+import com.mpatric.mp3agic.NotSupportedException;
+import com.mpatric.mp3agic.UnsupportedTagException;
 import de.eru.mp3manager.data.Mp3FileData;
 import de.eru.mp3manager.data.Playlist;
 import java.io.File;
@@ -23,12 +28,24 @@ public final class FileService {
     /**
      * Speichert die geänderten MP3-Informationen ab.
      *
-     * @param changedData Die zu speichernden MP3-Informationen.
-     * @return true, wenn das Speichern erfolgreich war.
+     * @param dataToSave Die zu überschreibende Datei.
+     * @param changeData Die zu speichernden MP3-Informationen.
      */
-    public static boolean saveFile(Mp3FileData changedData) {
-        //TODO implementieren
-        return true;
+    public static void saveFile(Mp3FileData dataToSave, Mp3FileData changeData) throws IOException, UnsupportedTagException, InvalidDataException, NotSupportedException {
+        Mp3File mp3File = new Mp3File(dataToSave.getAbsolutePath());
+        if (mp3File.hasId3v2Tag()) {
+            ID3v2 tag = mp3File.getId3v2Tag();
+            tag.setArtist(changeData.getArtist());
+            tag.setAlbum(changeData.getAlbum());
+            tag.setGenreDescription(changeData.getGenre());
+            tag.setYear(changeData.getYear());
+            tag.setTrack(changeData.getTrack());
+//            tag.setAlbumImage(changeData.getCover(), null); //TODO Cover
+        }
+        if (dataToSave.getAbsolutePath().equals(changeData.getAbsolutePath())) {
+            //TODO Bei gleichem Namen muss eine "Zwischendatei" erzeugt werden
+        }
+        mp3File.save(changeData.getAbsolutePath());
     }
 
     /**
