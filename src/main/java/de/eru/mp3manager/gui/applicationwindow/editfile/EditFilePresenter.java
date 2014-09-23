@@ -1,17 +1,16 @@
 package de.eru.mp3manager.gui.applicationwindow.editfile;
 
-import com.mpatric.mp3agic.InvalidDataException;
-import com.mpatric.mp3agic.NotSupportedException;
-import com.mpatric.mp3agic.UnsupportedTagException;
 import de.eru.mp3manager.data.Mp3FileData;
 import de.eru.mp3manager.data.utils.InjectableList;
-import de.eru.mp3manager.service.FileService;
 import de.eru.mp3manager.utils.formatter.ByteFormatter;
 import de.eru.mp3manager.utils.factories.ComparatorFactory;
+import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Comparator;
 import java.util.ResourceBundle;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.beans.binding.DoubleBinding;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -27,6 +26,15 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javax.inject.Inject;
+import org.jaudiotagger.audio.AudioFileIO;
+import org.jaudiotagger.audio.exceptions.CannotReadException;
+import org.jaudiotagger.audio.exceptions.CannotWriteException;
+import org.jaudiotagger.audio.exceptions.InvalidAudioFrameException;
+import org.jaudiotagger.audio.exceptions.ReadOnlyFileException;
+import org.jaudiotagger.audio.mp3.MP3File;
+import org.jaudiotagger.tag.FieldKey;
+import org.jaudiotagger.tag.TagException;
+import org.jaudiotagger.tag.id3.AbstractID3v2Tag;
 
 public class EditFilePresenter implements Initializable {
 
@@ -296,12 +304,20 @@ public class EditFilePresenter implements Initializable {
     }
 
     @FXML
-    public void save() {
+    public void save() throws CannotWriteException {
         for (Mp3FileData mp3FileData : selectedData) {
             try {
-                FileService.saveFile(mp3FileData, changeData);
-            } catch (IOException | UnsupportedTagException | InvalidDataException | NotSupportedException ex) {
-                ex.printStackTrace(); //TODO printstacktrace
+                //            try {
+//                FileService.saveFile(mp3FileData, changeData);
+//            } catch (IOException | UnsupportedTagException | InvalidDataException | NotSupportedException ex) {
+//                ex.printStackTrace(); //TODO printstacktrace
+//            }
+                MP3File file = (MP3File) AudioFileIO.read(new File(mp3FileData.getAbsolutePath()));
+                AbstractID3v2Tag tag = file.getID3v2Tag();
+                tag.setField(FieldKey.GENRE, "DasIstEinTest");
+                file.commit();
+            } catch (CannotReadException | IOException | TagException | ReadOnlyFileException | InvalidAudioFrameException ex) {
+                Logger.getLogger(EditFilePresenter.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
     }

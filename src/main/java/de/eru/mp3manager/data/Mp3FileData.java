@@ -66,6 +66,7 @@ public class Mp3FileData {
         fileName.set(file.getName());
         filePath.set(file.getParent());
         size.set(ByteFormatter.bytesToMB(file.length()));
+        lastModified.set(TimeFormatter.millisecondsToDateFormat(file.lastModified()));
     }
 
     /**

@@ -6,6 +6,8 @@ import javafx.stage.Stage;
 import de.eru.mp3manager.gui.applicationwindow.application.ApplicationView;
 import java.awt.SystemTray;
 import java.awt.event.ActionEvent;
+import java.util.logging.Level;
+import java.util.logging.LogManager;
 import javafx.application.Platform;
 import javafx.scene.Group;
 import javafx.scene.paint.Color;
@@ -21,6 +23,8 @@ public class Mp3Manager extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
+        LogManager.getLogManager().getLogger("").setLevel(Level.OFF); //TODO Workaround
+        
         ApplicationView applicationView = new ApplicationView();
         Scene scene = new Scene(applicationView.getView());
         primaryStage.setTitle("MP3-Manager");
