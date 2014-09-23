@@ -20,7 +20,7 @@ import javafx.beans.property.StringProperty;
  */
 public class Mp3FileData {
 
-    private static final String NOT_LOADED = "<Nicht geladen>";
+    public static final String NOT_LOADED = "<Nicht geladen>";
 
     private final StringProperty fileName = new SimpleStringProperty(NOT_LOADED);
     private final StringProperty filePath = new SimpleStringProperty(NOT_LOADED);

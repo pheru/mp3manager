@@ -1,5 +1,6 @@
 package de.eru.mp3manager.utils.factories;
 
+import de.eru.mp3manager.data.Mp3FileData;
 import de.eru.mp3manager.utils.formatter.TimeFormatter;
 import java.text.ParseException;
 import java.util.Comparator;
@@ -23,9 +24,10 @@ public final class ComparatorFactory {
      */
     public static Comparator<String> createNumberComparator() {
         return (String o1, String o2) -> {
-            if (o1 == null || o1.isEmpty()) {
+            if (!isComparable(o1)) {
                 return -1;
-            } else if (o2 == null || o2.isEmpty()) {
+            }
+            if (!isComparable(o2)) {
                 return 1;
             }
             return Integer.compare(Integer.valueOf(o1), Integer.valueOf(o2));
@@ -39,9 +41,10 @@ public final class ComparatorFactory {
      */
     public static Comparator<String> createDateComparator() {
         return (String o1, String o2) -> {
-            if (o1 == null || o1.isEmpty()) {
+            if (!isComparable(o1)) {
                 return -1;
-            } else if (o2 == null || o2.isEmpty()) {
+            }
+            if (!isComparable(o2)) {
                 return 1;
             }
             try {
@@ -62,9 +65,10 @@ public final class ComparatorFactory {
      */
     public static Comparator<String> createSizeComparator() {
         return (String o1, String o2) -> {
-            if (o1 == null || o1.isEmpty()) {
+            if (!isComparable(o1)) {
                 return -1;
-            } else if (o2 == null || o2.isEmpty()) {
+            }
+            if (!isComparable(o2)) {
                 return 1;
             }
             Double d1 = Double.valueOf(o1.replace(',', '.').replace(" MB", ""));
@@ -80,9 +84,10 @@ public final class ComparatorFactory {
      */
     public static Comparator<String> createTimeComparator() {
         return (String o1, String o2) -> {
-            if (o1 == null || o1.isEmpty()) {
+            if (!isComparable(o1)) {
                 return -1;
-            } else if (o2 == null || o2.isEmpty()) {
+            }
+            if (!isComparable(o2)) {
                 return 1;
             }
             Date d1;
@@ -120,4 +125,7 @@ public final class ComparatorFactory {
         return d;
     }
 
+    private static boolean isComparable(String s) {
+        return (s != null && !s.isEmpty() && !s.equals(Mp3FileData.NOT_LOADED));
+    }
 }
