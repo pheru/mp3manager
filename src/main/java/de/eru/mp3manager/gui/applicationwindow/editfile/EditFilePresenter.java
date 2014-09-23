@@ -28,7 +28,7 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javax.inject.Inject;
 
-public class EditFilePresenter implements Initializable{
+public class EditFilePresenter implements Initializable {
 
     public static final String DIFF_VALUES = "<Verschiedene Werte>";
     public static final String NOT_CHANGABLE = "<Bei Mehrfachauswahl nicht editierbar>";
@@ -70,7 +70,7 @@ public class EditFilePresenter implements Initializable{
 
     @Inject
     private InjectableList<Mp3FileData> selectedData;
-    
+
     private final Mp3FileData changeData = new Mp3FileData();
 
     @Override
@@ -105,10 +105,13 @@ public class EditFilePresenter implements Initializable{
 
             @Override
             protected double computeValue() {
+                double value;
                 if (coverPane.widthProperty().get() > coverPane.maxHeightProperty().get()) {
-                    return coverPane.maxHeightProperty().get();
+                    value = coverPane.maxHeightProperty().get();
+                } else {
+                    value = coverPane.widthProperty().get();
                 }
-                return coverPane.widthProperty().get();
+                return value - saveButton.getHeight() - 3; // -3 wegen Separator
             }
         });
         changeData.fileNameProperty().bind(fileNameField.textProperty());
@@ -291,8 +294,9 @@ public class EditFilePresenter implements Initializable{
             fileNameField.setDisable(false);
         }
     }
-    
-    public void save(){
+
+    @FXML
+    public void save() {
         for (Mp3FileData mp3FileData : selectedData) {
             try {
                 FileService.saveFile(mp3FileData, changeData);

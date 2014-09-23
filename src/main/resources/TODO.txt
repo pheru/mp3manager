@@ -28,6 +28,7 @@ BUGS:
                 -Tabellenspalten bzw. -Header wie bspw. "Dauer" der PlaylistView
                 -ProgressIndicator
     -Logik:
+        -[1] Eigene Genres werden nicht unterstützt (evtl. auf andere Bibliothek umsteigen)
         -[1] Nullpointer bei der Auswahl von Mp3FileData, wenn manche MP3-Eigenschaften nicht vorhanden sind
         -[1] Zugriffsrechte auf Dateien beim Speichern/Öffnen/Löschen
         -[1] NumberFormatException beim Sortieren der EditFile-Felder wenn noch nicht geladene Datei ausgewählt ist

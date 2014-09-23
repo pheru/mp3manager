@@ -36,7 +36,7 @@ public class ApplicationPresenter implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         initViewsAndPresenters();
-        mainPresenter.readFiles("D:\\Musik"); //TODO Richtige Stelle für diesen Aufruf?
+        mainPresenter.readFiles("D:\\projekte\\TestMusik"); //TODO Richtige Stelle für diesen Aufruf?
     }
 
     /**

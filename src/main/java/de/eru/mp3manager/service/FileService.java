@@ -35,17 +35,18 @@ public final class FileService {
         Mp3File mp3File = new Mp3File(dataToSave.getAbsolutePath());
         if (mp3File.hasId3v2Tag()) {
             ID3v2 tag = mp3File.getId3v2Tag();
+            tag.setTitle(changeData.getTitle());
             tag.setArtist(changeData.getArtist());
             tag.setAlbum(changeData.getAlbum());
-            tag.setGenreDescription(changeData.getGenre());
+//            tag.setGenreDescription(changeData.getGenre()); //TODO "eigenes" Genre nicht möglich
             tag.setYear(changeData.getYear());
             tag.setTrack(changeData.getTrack());
 //            tag.setAlbumImage(changeData.getCover(), null); //TODO Cover
         }
-        if (dataToSave.getAbsolutePath().equals(changeData.getAbsolutePath())) {
+        if (dataToSave.getFileName().equals(changeData.getFileName())) {
             //TODO Bei gleichem Namen muss eine "Zwischendatei" erzeugt werden
         }
-        mp3File.save(changeData.getAbsolutePath());
+        mp3File.save(dataToSave.getFilePath() + "\\" + changeData.getFileName() + ".mp3");
     }
 
     /**

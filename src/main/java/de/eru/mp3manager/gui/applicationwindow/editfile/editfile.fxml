@@ -76,7 +76,8 @@
       <CheckBox fx:id="sortTitleBox" mnemonicParsing="false" text="Alphabetisch sortieren" GridPane.columnIndex="1" GridPane.rowIndex="2" />
       <CheckBox fx:id="sortAlbumBox" mnemonicParsing="false" text="Alphabetisch sortieren" GridPane.columnIndex="1" GridPane.rowIndex="4" />
       <CheckBox fx:id="sortArtistBox" mnemonicParsing="false" text="Alphabetisch sortieren" GridPane.columnIndex="1" GridPane.rowIndex="6" />
-      <Button fx:id="saveButton" mnemonicParsing="false" text="Speichern" GridPane.columnSpan="2147483647" GridPane.halignment="CENTER" GridPane.rowIndex="11" />
+      <Button fx:id="saveButton" mnemonicParsing="false" text="Speichern" GridPane.columnSpan="2147483647" GridPane.halignment="CENTER" GridPane.rowIndex="12" onAction="#save" />
+      <Separator GridPane.columnSpan="2147483647" GridPane.hgrow="ALWAYS" GridPane.rowIndex="11" />
    </children>
    <columnConstraints>
       <ColumnConstraints hgrow="SOMETIMES" />
@@ -94,6 +95,7 @@
       <RowConstraints vgrow="NEVER" />
       <RowConstraints vgrow="NEVER" />
       <RowConstraints minHeight="0.0" vgrow="ALWAYS" />
+      <RowConstraints vgrow="NEVER" />
       <RowConstraints vgrow="NEVER" />
    </rowConstraints>
 </GridPane>
