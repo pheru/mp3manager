@@ -37,7 +37,7 @@ public class Mp3Manager extends Application {
         Group group = new Group(rect);
         Stage stage = new Stage(StageStyle.TRANSPARENT);
         stage.setScene(new Scene(group, Color.TRANSPARENT));
-        stage.show();
+//        stage.show();
     }
 
     private void setUpTrayIcon(Stage primaryStage) {

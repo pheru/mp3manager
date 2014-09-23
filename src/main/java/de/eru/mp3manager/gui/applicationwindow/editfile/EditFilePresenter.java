@@ -19,12 +19,13 @@ import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
-import javafx.scene.layout.VBox;
 import javax.inject.Inject;
 
 public class EditFilePresenter implements Initializable{
@@ -33,7 +34,7 @@ public class EditFilePresenter implements Initializable{
     public static final String NOT_CHANGABLE = "<Bei Mehrfachauswahl nicht editierbar>";
 
     @FXML
-    private VBox root;
+    private GridPane root;
     @FXML
     private CheckBox synchronizeTitleBox;
     @FXML
@@ -41,9 +42,15 @@ public class EditFilePresenter implements Initializable{
     @FXML
     private ComboBox<String> titleField;
     @FXML
+    private CheckBox sortTitleBox;
+    @FXML
     private ComboBox<String> albumField;
     @FXML
+    private CheckBox sortAlbumBox;
+    @FXML
     private ComboBox<String> artistField;
+    @FXML
+    private CheckBox sortArtistBox;
     @FXML
     private ComboBox<String> yearField;
     @FXML
@@ -54,6 +61,8 @@ public class EditFilePresenter implements Initializable{
     private Pane coverPane;
     @FXML
     private ImageView coverView;
+    @FXML
+    private Button saveButton;
 
     private final ObservableList<ComboBox<String>> fields = FXCollections.observableArrayList();
 
@@ -192,7 +201,7 @@ public class EditFilePresenter implements Initializable{
      * @param value Der Wert.
      */
     private void fillField(ComboBox<String> field, String value) {
-        if (!value.isEmpty()) {
+        if (value != null && !value.isEmpty()) {
             field.getItems().add(value);
         }
         field.setValue(value);
@@ -256,13 +265,13 @@ public class EditFilePresenter implements Initializable{
      * Sortiert die Listen der ComboBoxen.
      */
     private void sortFieldItems() {
-        if (true) { //TODO CheckBoxen für alphabetisches Sortieren hinzufügen (dabei auch das fxml evtl gleich umstellen)
+        if (sortTitleBox.isSelected()) {
             titleField.getItems().sort(null);
         }
-        if (true) {
+        if (sortAlbumBox.isSelected()) {
             albumField.getItems().sort(null);
         }
-        if (true) {
+        if (sortArtistBox.isSelected()) {
             artistField.getItems().sort(null);
         }
         trackField.getItems().sort(numberComparator);
