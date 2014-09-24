@@ -30,7 +30,6 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javax.imageio.ImageIO;
 import javax.inject.Inject;
-import org.jaudiotagger.audio.exceptions.CannotWriteException;
 
 public class EditFilePresenter implements Initializable {
 
@@ -111,13 +110,12 @@ public class EditFilePresenter implements Initializable {
 
             @Override
             protected double computeValue() {
-                double value;
-                if (coverPane.widthProperty().get() > coverPane.maxHeightProperty().get()) {
-                    value = coverPane.maxHeightProperty().get();
+                double maxHeight = coverPane.maxHeightProperty().get() - saveButton.getHeight() - 4; //-4 wegen Separator
+                if (coverPane.widthProperty().get() > maxHeight) {
+                    return maxHeight;
                 } else {
-                    value = coverPane.widthProperty().get();
+                    return coverPane.widthProperty().get();
                 }
-                return value - saveButton.getHeight() - 3; // -3 wegen Separator
             }
         });
         changeData.fileNameProperty().bind(fileNameField.textProperty().concat(".mp3"));
@@ -305,7 +303,7 @@ public class EditFilePresenter implements Initializable {
     }
 
     @FXML
-    public void save(){
+    public void save() {
         taskPool.addTask(TaskFactory.createSaveFilesTask(selectedData, changeData));
     }
 }

@@ -47,6 +47,8 @@ public final class TaskFactory {
                             tableData.add(new Mp3FileData(files.get(j)));
                         }
                     });
+                    updateTitle("Lesen von " + directory + " abgeschlossen.");
+                    updateMessage(files.size() + " Dateien wurden erfolgreich gelesen.");
                     tableDisableProperty.set(false);
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -67,7 +69,7 @@ public final class TaskFactory {
             @Override
             protected Void call() throws Exception {
                 try {
-
+                    updateProgress(-1, 1);
                     for (int i = 0; i < tableData.size(); i++) {
                         updateTitle("Lade Datei " + (i + 1) + " von " + tableData.size() + "...");
                         updateMessage(tableData.get(i).getAbsolutePath());
@@ -77,6 +79,8 @@ public final class TaskFactory {
                         }
                         updateProgress(i + 1, tableData.size());
                     }
+                    updateTitle("Laden der Dateien abgeschlossen.");
+                    updateMessage(tableData.size() + " Dateien wurden erfolgreich geladen.");
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -84,6 +88,7 @@ public final class TaskFactory {
             }
         };
     }
+
     /**
      * TODO
      */

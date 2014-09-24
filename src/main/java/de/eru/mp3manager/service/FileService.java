@@ -10,7 +10,6 @@ import java.nio.file.Files;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import org.jaudiotagger.audio.AudioFileIO;
-import org.jaudiotagger.audio.AudioHeader;
 import org.jaudiotagger.audio.exceptions.CannotReadException;
 import org.jaudiotagger.audio.exceptions.CannotWriteException;
 import org.jaudiotagger.audio.exceptions.InvalidAudioFrameException;

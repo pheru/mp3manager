@@ -2,10 +2,8 @@ package de.eru.mp3manager.gui.notifications.progressnotification;
 
 import de.eru.mp3manager.utils.TaskPool;
 import java.net.URL;
-import java.text.DecimalFormat;
 import java.util.ResourceBundle;
 import javafx.beans.binding.StringBinding;
-import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -52,8 +50,8 @@ public class ProgressNotificationPresenter implements Initializable {
             }
         });
         progress.progressProperty().addListener((ObservableValue<? extends Number> observable, Number oldValue, Number newValue) -> {
-            if(newValue.doubleValue() == 1.0){
-               ProgressNotificationView.hide();
+            if (newValue.doubleValue() == 1.0) {
+                ProgressNotificationView.hide();
             }
         });
     }

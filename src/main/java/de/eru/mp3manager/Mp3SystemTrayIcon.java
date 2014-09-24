@@ -32,10 +32,10 @@ public class Mp3SystemTrayIcon {
     private Mp3SystemTrayIcon() {
         if (SystemTray.isSupported()) {
             SystemTray systemTray = SystemTray.getSystemTray();
-            Image image = Toolkit.getDefaultToolkit().getImage("C:\\Users\\Phili_000\\Desktop\\image.jpg");
+            Image image = Toolkit.getDefaultToolkit().getImage(this.getClass().getClassLoader().getResource("img/trayIcon.jpg").getPath());
             trayIcon = new TrayIcon(image, "Mp3Manager", new PopupMenu());
             trayIcon.setImageAutoSize(true);
-            trayIcon.getPopupMenu().setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 18));
+            trayIcon.getPopupMenu().setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
             try {
                 systemTray.add(trayIcon);
             } catch (AWTException ex) {
