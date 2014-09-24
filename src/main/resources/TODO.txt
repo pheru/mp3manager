@@ -24,14 +24,14 @@ BUGS:
                 Es sollte geprüft werden, ob das hinzufügen ohne disablen der Tabelle überhaupt funktioniert oder ob es Alternativen gibt
                 (Mit höherem Tabellenintervall(10) gelöst?)
 
-        -[S] Größenverhältnisse sind nicht Geräteunabhängig:
+        -[S] Größenverhältnisse sind nicht Geräteunabhängig (Wird evtl. mit den allgemeinen Layout-Anpassungen behoben):
                 -Tabellenspalten bzw. -Header wie bspw. "Dauer" der PlaylistView
                 -ProgressIndicator
     -Logik:
-        -[1] Eigene Genres werden nicht unterstützt (evtl. auf andere Bibliothek umsteigen)
+        -[1] [?] Beim Speichern der Dateien kann es (vermutlich) zu einer ConcurrentModificationException kommen, wenn während des Vorgangs die Auswahl geändert wird
         -[1] Nullpointer bei der Auswahl von Mp3FileData, wenn manche MP3-Eigenschaften nicht vorhanden sind
         -[1] Zugriffsrechte auf Dateien beim Speichern/Öffnen/Löschen
-        -[1] NumberFormatException beim Sortieren der EditFile-Felder wenn noch nicht geladene Datei ausgewählt ist
+        -[1] [FIXED?] NumberFormatException beim Sortieren der EditFile-Felder wenn noch nicht geladene Datei ausgewählt ist
 
 #######################################################################################################################################################
 

@@ -97,12 +97,15 @@ public final class TaskFactory {
             @Override
             protected Void call() throws Exception {
                 try {
+                    updateProgress(-1, 1);
                     for (int i = 0; i < dataToSave.size(); i++) {
                         updateTitle("Speichere Datei " + (i + 1) + " von " + dataToSave.size() + "...");
                         updateMessage(dataToSave.get(i).getAbsolutePath());
                         FileService.saveFile(dataToSave.get(i), changeData);
                         updateProgress(i + 1, dataToSave.size());
                     }
+                    updateTitle("Speichere der Dateien abgeschlossen.");
+                    updateMessage(dataToSave.size() + " Dateien wurden erfolgreich gespeichert.");
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
