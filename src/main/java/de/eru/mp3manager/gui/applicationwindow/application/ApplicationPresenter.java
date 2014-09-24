@@ -37,6 +37,7 @@ public class ApplicationPresenter implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         initViewsAndPresenters();
         mainPresenter.readFiles("D:\\projekte\\TestMusik"); //TODO Richtige Stelle für diesen Aufruf?
+//        mainPresenter.readFiles("D:\\Musik"); //TODO Richtige Stelle für diesen Aufruf?
     }
 
     /**

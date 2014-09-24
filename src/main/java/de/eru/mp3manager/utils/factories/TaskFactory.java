@@ -84,4 +84,25 @@ public final class TaskFactory {
             }
         };
     }
+    /**
+     * TODO
+     */
+    public static Task<Void> createSaveFilesTask(ObservableList<Mp3FileData> dataToSave, Mp3FileData changeData) {
+        return new Task<Void>() {
+            @Override
+            protected Void call() throws Exception {
+                try {
+                    for (int i = 0; i < dataToSave.size(); i++) {
+                        updateTitle("Speichere Datei " + (i + 1) + " von " + dataToSave.size() + "...");
+                        updateMessage(dataToSave.get(i).getAbsolutePath());
+                        FileService.saveFile(dataToSave.get(i), changeData);
+                        updateProgress(i + 1, dataToSave.size());
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                return null;
+            }
+        };
+    }
 }

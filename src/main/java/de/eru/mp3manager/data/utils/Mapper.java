@@ -33,7 +33,7 @@ public final class Mapper {
      * @return Ein Mp3FileData.
      * @throws IOException TODO JavaDoc für Exception
      */
-    public static Mp3FileData fileToMp3FileData(File file) throws IOException{
+    public static Mp3FileData fileToMp3FileData(File file) throws IOException {
         Mp3FileData mp3FileData = new Mp3FileData();
         mp3FileData.setFileName(file.getName());
         mp3FileData.setFilePath(file.getParent());
@@ -61,9 +61,9 @@ public final class Mapper {
     public static void fileToMp3FileData(File file, Mp3FileData mp3FileData) throws CannotReadException, IOException, TagException, ReadOnlyFileException, InvalidAudioFrameException {
         MP3File mp3File = (MP3File) AudioFileIO.read(file);
         AudioHeader audioHeader = mp3File.getAudioHeader();
-        
+
         mp3FileData.setDuration(audioHeader.getTrackLength());
-        if(mp3File.hasID3v2Tag()){
+        if (mp3File.hasID3v2Tag()) {
             AbstractID3v2Tag tag = mp3File.getID3v2Tag();
             mp3FileData.setTitle(tag.getFirst(FieldKey.TITLE));
             mp3FileData.setArtist(tag.getFirst(FieldKey.ARTIST));
@@ -71,7 +71,9 @@ public final class Mapper {
             mp3FileData.setGenre(tag.getFirst(FieldKey.GENRE));
             mp3FileData.setYear(tag.getFirst(FieldKey.YEAR));
             mp3FileData.setTrack(tag.getFirst(FieldKey.TRACK));
-//            mp3FileData.setCover(tag.getFirst(FieldKey.COVER_ART));
+            if (tag.getFirstArtwork() != null) {
+                mp3FileData.setCover(tag.getFirstArtwork().getBinaryData());
+            }
         }
     }
 }

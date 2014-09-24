@@ -2,20 +2,23 @@ package de.eru.mp3manager.gui.applicationwindow.editfile;
 
 import de.eru.mp3manager.data.Mp3FileData;
 import de.eru.mp3manager.data.utils.InjectableList;
+import de.eru.mp3manager.utils.TaskPool;
 import de.eru.mp3manager.utils.formatter.ByteFormatter;
 import de.eru.mp3manager.utils.factories.ComparatorFactory;
-import java.io.File;
+import de.eru.mp3manager.utils.factories.TaskFactory;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Comparator;
 import java.util.ResourceBundle;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javafx.beans.binding.DoubleBinding;
+import javafx.beans.binding.ObjectBinding;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
+import javafx.embed.swing.SwingFXUtils;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
@@ -25,16 +28,9 @@ import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
+import javax.imageio.ImageIO;
 import javax.inject.Inject;
-import org.jaudiotagger.audio.AudioFileIO;
-import org.jaudiotagger.audio.exceptions.CannotReadException;
 import org.jaudiotagger.audio.exceptions.CannotWriteException;
-import org.jaudiotagger.audio.exceptions.InvalidAudioFrameException;
-import org.jaudiotagger.audio.exceptions.ReadOnlyFileException;
-import org.jaudiotagger.audio.mp3.MP3File;
-import org.jaudiotagger.tag.FieldKey;
-import org.jaudiotagger.tag.TagException;
-import org.jaudiotagger.tag.id3.AbstractID3v2Tag;
 
 public class EditFilePresenter implements Initializable {
 
@@ -78,6 +74,8 @@ public class EditFilePresenter implements Initializable {
 
     @Inject
     private InjectableList<Mp3FileData> selectedData;
+    @Inject
+    private TaskPool taskPool;
 
     private final Mp3FileData changeData = new Mp3FileData();
 
@@ -122,30 +120,33 @@ public class EditFilePresenter implements Initializable {
                 return value - saveButton.getHeight() - 3; // -3 wegen Separator
             }
         });
-        changeData.fileNameProperty().bind(fileNameField.textProperty());
+        changeData.fileNameProperty().bind(fileNameField.textProperty().concat(".mp3"));
         changeData.titleProperty().bind(titleField.valueProperty());
         changeData.albumProperty().bind(albumField.valueProperty());
         changeData.artistProperty().bind(artistField.valueProperty());
         changeData.genreProperty().bind(genreField.valueProperty());
         changeData.yearProperty().bind(yearField.valueProperty());
         changeData.trackProperty().bind(trackField.valueProperty());
-        //TODO cover binding
-//        changeData.coverProperty().bind(new ObjectBinding<byte[]>() {
-//            {
-//                bind(coverView.imageProperty());
-//            }
-//            @Override
-//            protected byte[] computeValue() {
-//                BufferedImage bufferedImage = SwingFXUtils.fromFXImage(coverView.getImage(), null);
-//                ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-//                try { 
-//                    ImageIO.write(bufferedImage, "png", outputStream);
-//                } catch (IOException ex) {
-//                    ex.printStackTrace();
-//                }
-//                return outputStream.toByteArray();
-//            }
-//        });
+        changeData.coverProperty().bind(new ObjectBinding<byte[]>() {
+            {
+                bind(coverView.imageProperty());
+            }
+
+            @Override
+            protected byte[] computeValue() {
+                if (coverView.getImage() == null) {
+                    return new byte[0];
+                }
+                BufferedImage bufferedImage = SwingFXUtils.fromFXImage(coverView.getImage(), null);
+                ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+                try {
+                    ImageIO.write(bufferedImage, "png", outputStream);
+                } catch (IOException ex) {
+                    ex.printStackTrace();
+                }
+                return outputStream.toByteArray();
+            }
+        });
     }
 
     /**
@@ -304,21 +305,7 @@ public class EditFilePresenter implements Initializable {
     }
 
     @FXML
-    public void save() throws CannotWriteException {
-        for (Mp3FileData mp3FileData : selectedData) {
-            try {
-                //            try {
-//                FileService.saveFile(mp3FileData, changeData);
-//            } catch (IOException | UnsupportedTagException | InvalidDataException | NotSupportedException ex) {
-//                ex.printStackTrace(); //TODO printstacktrace
-//            }
-                MP3File file = (MP3File) AudioFileIO.read(new File(mp3FileData.getAbsolutePath()));
-                AbstractID3v2Tag tag = file.getID3v2Tag();
-                tag.setField(FieldKey.GENRE, "DasIstEinTest");
-                file.commit();
-            } catch (CannotReadException | IOException | TagException | ReadOnlyFileException | InvalidAudioFrameException ex) {
-                Logger.getLogger(EditFilePresenter.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        }
+    public void save(){
+        taskPool.addTask(TaskFactory.createSaveFilesTask(selectedData, changeData));
     }
 }

@@ -2,12 +2,25 @@ package de.eru.mp3manager.service;
 
 import de.eru.mp3manager.data.Mp3FileData;
 import de.eru.mp3manager.data.Playlist;
+import de.eru.mp3manager.gui.applicationwindow.editfile.EditFilePresenter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import org.jaudiotagger.audio.AudioFileIO;
+import org.jaudiotagger.audio.AudioHeader;
+import org.jaudiotagger.audio.exceptions.CannotReadException;
+import org.jaudiotagger.audio.exceptions.CannotWriteException;
+import org.jaudiotagger.audio.exceptions.InvalidAudioFrameException;
+import org.jaudiotagger.audio.exceptions.ReadOnlyFileException;
+import org.jaudiotagger.audio.mp3.MP3File;
+import org.jaudiotagger.tag.FieldDataInvalidException;
+import org.jaudiotagger.tag.FieldKey;
+import org.jaudiotagger.tag.KeyNotFoundException;
+import org.jaudiotagger.tag.TagException;
+import org.jaudiotagger.tag.id3.AbstractID3v2Tag;
 
 /**
  * Service für den Zugriff auf Dateien und Verzeichnisse.
@@ -26,8 +39,28 @@ public final class FileService {
      * @param dataToSave Die zu überschreibende Datei.
      * @param changeData Die zu speichernden MP3-Informationen.
      */
-    public static void saveFile(Mp3FileData dataToSave, Mp3FileData changeData) {
-        //TODO
+    public static void saveFile(Mp3FileData dataToSave, Mp3FileData changeData) throws KeyNotFoundException, FieldDataInvalidException, CannotReadException, IOException, TagException, ReadOnlyFileException, InvalidAudioFrameException, CannotWriteException {
+        MP3File file = (MP3File) AudioFileIO.read(new File(dataToSave.getAbsolutePath()));
+        AbstractID3v2Tag tag = file.getID3v2Tag();
+        setTagField(tag, FieldKey.TITLE, changeData.getTitle());
+        setTagField(tag, FieldKey.ARTIST, changeData.getArtist());
+        setTagField(tag, FieldKey.ALBUM, changeData.getAlbum());
+        setTagField(tag, FieldKey.GENRE, changeData.getGenre());
+        setTagField(tag, FieldKey.YEAR, changeData.getYear());
+        setTagField(tag, FieldKey.TRACK, changeData.getTrack());
+        tag.getFirstArtwork().setBinaryData(changeData.getCover());
+
+        file.commit();
+
+        if (!dataToSave.getFileName().equals(changeData.getFileName())) {
+            file.getFile().renameTo(new File(dataToSave.getFilePath() + "\\" + changeData.getFileName()));
+        }
+    }
+
+    private static void setTagField(AbstractID3v2Tag tag, FieldKey key, String value) throws KeyNotFoundException, FieldDataInvalidException {
+        if (!value.equals(EditFilePresenter.DIFF_VALUES)) {
+            tag.setField(key, value);
+        }
     }
 
     /**
