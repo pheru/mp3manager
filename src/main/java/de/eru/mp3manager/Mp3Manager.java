@@ -8,6 +8,7 @@ import java.awt.SystemTray;
 import java.awt.event.ActionEvent;
 import java.util.logging.Level;
 import java.util.logging.LogManager;
+import java.util.logging.Logger;
 import javafx.application.Platform;
 import javafx.scene.Group;
 import javafx.scene.paint.Color;
@@ -23,8 +24,13 @@ public class Mp3Manager extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-        LogManager.getLogManager().getLogger("").setLevel(Level.OFF); //TODO Workaround
+//        LogManager.getLogManager().getLogger("").setLevel(Level.OFF); //TODO Workaround
+
+//        Logger.getLogger("org.jaudiotagger").setLevel(Level.WARNING); // Funktioniert nicht
         
+//        Logger logger = Logger.getLogger("org.jaudiotagger"); // Funktioniert mit Eclipse, aber nicht mit Netbeans
+//        logger.setLevel(Level.WARNING);
+
         ApplicationView applicationView = new ApplicationView();
         Scene scene = new Scene(applicationView.getView());
         primaryStage.setTitle("MP3-Manager");
@@ -33,7 +39,7 @@ public class Mp3Manager extends Application {
         primaryStage.setScene(scene);
 //        primaryStage.show();
         setUpTrayIcon(primaryStage);
-        
+
         Rectangle rect = new Rectangle(400, 100);
         rect.setFill(Color.RED);
         rect.setArcHeight(15.0);

@@ -17,16 +17,16 @@ import javafx.stage.StageStyle;
 public class NotificationControl {
 
     public static final NotificationControl INSTANCE = new NotificationControl();
-    
+
     private final ObservableList<Stage> notifications = FXCollections.observableArrayList();
-    
+
     private NotificationControl() {
         notifications.addListener((ListChangeListener.Change<? extends Stage> c) -> {
             System.out.println("change");
         });
     }
-    
-    public void showProgressNotification(){
+
+    public void showProgressNotification() {
         Stage stage = new Stage();
         Scene scene = new Scene(new ProgressNotificationView().getView());
         stage.setScene(scene);
@@ -39,8 +39,8 @@ public class NotificationControl {
         notifications.add(stage);
         stage.show();
     }
-    
-    public void showInfoNotification(){
-        
+
+    public void showInfoNotification() {
+
     }
 }
