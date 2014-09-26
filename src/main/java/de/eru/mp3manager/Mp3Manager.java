@@ -7,7 +7,6 @@ import de.eru.mp3manager.gui.applicationwindow.application.ApplicationView;
 import java.awt.SystemTray;
 import java.awt.event.ActionEvent;
 import java.util.logging.Level;
-import java.util.logging.LogManager;
 import java.util.logging.Logger;
 import javafx.application.Platform;
 import javafx.scene.Group;
@@ -22,14 +21,11 @@ import javafx.stage.StageStyle;
  */
 public class Mp3Manager extends Application {
 
+    private static final Logger jAudioTaggerLogger = Logger.getLogger("org.jaudiotagger");
+    
     @Override
     public void start(Stage primaryStage) throws Exception {
-//        LogManager.getLogManager().getLogger("").setLevel(Level.OFF); //TODO Workaround
-
-//        Logger.getLogger("org.jaudiotagger").setLevel(Level.WARNING); // Funktioniert nicht
-        
-//        Logger logger = Logger.getLogger("org.jaudiotagger"); // Funktioniert mit Eclipse, aber nicht mit Netbeans
-//        logger.setLevel(Level.WARNING);
+        jAudioTaggerLogger.setLevel(Level.WARNING);
 
         ApplicationView applicationView = new ApplicationView();
         Scene scene = new Scene(applicationView.getView());
