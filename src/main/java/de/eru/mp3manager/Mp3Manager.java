@@ -21,17 +21,19 @@ import javafx.stage.StageStyle;
  */
 public class Mp3Manager extends Application {
 
-    private static final Logger jAudioTaggerLogger = Logger.getLogger("org.jaudiotagger");
-    
+    private static final Logger JAUDIOTAGGER_LOGGER = Logger.getLogger("org.jaudiotagger");
+
     @Override
     public void start(Stage primaryStage) throws Exception {
-        jAudioTaggerLogger.setLevel(Level.WARNING);
+        JAUDIOTAGGER_LOGGER.setLevel(Level.WARNING);
 
         ApplicationView applicationView = new ApplicationView();
         Scene scene = new Scene(applicationView.getView());
         primaryStage.setTitle("MP3-Manager");
         primaryStage.setWidth(1300);
         primaryStage.setHeight(800);
+        primaryStage.setFullScreen(Settings.INSTANCE.isApplicationWindowFullScreen());
+        Settings.INSTANCE.applicationWindowFullScreenProperty().bind(primaryStage.fullScreenProperty());
         primaryStage.setScene(scene);
 //        primaryStage.show();
         setUpTrayIcon(primaryStage);
@@ -71,6 +73,8 @@ public class Mp3Manager extends Application {
     }
 
     public static void main(String[] args) {
+        Settings.INSTANCE.setMusicDirectory("D:\\projekte\\TestMusik");
+        Settings.INSTANCE.save();
         launch(args);
     }
 }

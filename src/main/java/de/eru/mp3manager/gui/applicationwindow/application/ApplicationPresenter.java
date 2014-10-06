@@ -1,5 +1,6 @@
 package de.eru.mp3manager.gui.applicationwindow.application;
 
+import de.eru.mp3manager.Settings;
 import java.net.URL;
 import java.util.ResourceBundle;
 
@@ -37,7 +38,8 @@ public class ApplicationPresenter implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         initViewsAndPresenters();
 //        mainPresenter.readFiles("D:\\projekte\\TestMusik"); //TODO Richtige Stelle für diesen Aufruf ?
-        mainPresenter.readFiles("E:\\Musik"); //TODO Richtige Stelle für diesen Aufruf?
+//        mainPresenter.readFiles("E:\\Musik"); //TODO Richtige Stelle für diesen Aufruf?
+        mainPresenter.readFiles(Settings.INSTANCE.getMusicDirectory()); //TODO Richtige Stelle für diesen Aufruf ?
     }
 
     /**

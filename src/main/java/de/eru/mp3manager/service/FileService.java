@@ -116,11 +116,15 @@ public final class FileService {
     private static void collect(String directory, ObservableList<File> fileList) {
         File dir = new File(directory);
         File[] files = dir.listFiles();
-        for (File file : files) {
-            if (file.isDirectory()) {
-                collect(file.getAbsolutePath(), fileList);
-            } else if (file.getName().endsWith(".mp3")) {
-                fileList.add(file);
+        if (files == null) {
+            //TODO Verzeichnis existiert nicht
+        } else {
+            for (File file : files) {
+                if (file.isDirectory()) {
+                    collect(file.getAbsolutePath(), fileList);
+                } else if (file.getName().endsWith(".mp3")) {
+                    fileList.add(file);
+                }
             }
         }
     }
