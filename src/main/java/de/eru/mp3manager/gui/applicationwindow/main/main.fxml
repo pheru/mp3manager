@@ -68,7 +68,7 @@
                         <PropertyValueFactory property="year" />
                     </cellValueFactory>
                 </TableColumn>
-                <TableColumn prefWidth="75.0" text="Zuletzt geändert">
+                <TableColumn prefWidth="75.0" text="Zuletzt bearbeitet">
                     <cellValueFactory>
                         <PropertyValueFactory property="lastModified" />
                     </cellValueFactory>

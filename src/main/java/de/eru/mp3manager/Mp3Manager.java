@@ -25,6 +25,13 @@ public class Mp3Manager extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
+        Runtime.getRuntime().addShutdownHook(new Thread(){
+            @Override
+            public void run() {
+                Settings.INSTANCE.save();
+            }
+            
+        });
         JAUDIOTAGGER_LOGGER.setLevel(Level.WARNING);
 
         ApplicationView applicationView = new ApplicationView();
@@ -38,6 +45,7 @@ public class Mp3Manager extends Application {
 //        primaryStage.show();
         setUpTrayIcon(primaryStage);
 
+        //TODO Test-Stage
         Rectangle rect = new Rectangle(400, 100);
         rect.setFill(Color.RED);
         rect.setArcHeight(15.0);
@@ -50,7 +58,7 @@ public class Mp3Manager extends Application {
 
     private void setUpTrayIcon(Stage primaryStage) {
         if (SystemTray.isSupported()) {
-            Platform.setImplicitExit(false);
+            Platform.setImplicitExit(false); //TODO
             Mp3SystemTrayIcon.INSTANCE.addOnClick(() -> {
                 Platform.runLater(() -> {
                     primaryStage.show();
@@ -73,8 +81,6 @@ public class Mp3Manager extends Application {
     }
 
     public static void main(String[] args) {
-        Settings.INSTANCE.setMusicDirectory("D:\\projekte\\TestMusik");
-        Settings.INSTANCE.save();
         launch(args);
     }
 }

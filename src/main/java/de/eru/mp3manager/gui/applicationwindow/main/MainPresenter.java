@@ -1,5 +1,6 @@
 package de.eru.mp3manager.gui.applicationwindow.main;
 
+import de.eru.mp3manager.Settings;
 import de.eru.mp3manager.data.Mp3FileData;
 import de.eru.mp3manager.data.Playlist;
 import de.eru.mp3manager.data.utils.InjectableList;
@@ -8,12 +9,15 @@ import de.eru.mp3manager.utils.TaskPool;
 import de.eru.mp3manager.utils.factories.ComparatorFactory;
 import de.eru.mp3manager.utils.factories.TaskFactory;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.ResourceBundle;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
+import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import javafx.collections.transformation.SortedList;
@@ -54,11 +58,15 @@ public class MainPresenter implements Initializable {
     private TaskPool taskPool;
     @Inject
     private Playlist playlist;
-    
+
     @Inject
     private InjectableList<Mp3FileData> selectedData;
 
+    private final ObservableList<String> columnsOrder = FXCollections.observableArrayList();
     private final ObservableList<Mp3FileData> tableData = FXCollections.observableArrayList();
+
+    private boolean updatingColumnsOrderList = false;
+    private boolean updatingColumnsOrderTable = false;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -74,15 +82,28 @@ public class MainPresenter implements Initializable {
         table.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
         table.setItems(setUpTableFilter());
         selectedData.set(table.getSelectionModel().getSelectedItems());
-        getColumnByName("Titelnummer").setComparator(ComparatorFactory.createNumberComparator());
-        getColumnByName("Jahr").setComparator(ComparatorFactory.createNumberComparator());
-        getColumnByName("Zuletzt geändert").setComparator(ComparatorFactory.createDateComparator());
-        getColumnByName("Dauer").setComparator(ComparatorFactory.createTimeComparator());
-        getColumnByName("Dateigröße").setComparator(ComparatorFactory.createSizeComparator());
+        createColumns();
+        getColumnByName(MainColumn.TRACK.columnName()).setComparator(ComparatorFactory.createNumberComparator());
+        getColumnByName(MainColumn.YEAR.columnName()).setComparator(ComparatorFactory.createNumberComparator());
+        getColumnByName(MainColumn.LAST_MODIFIED.columnName()).setComparator(ComparatorFactory.createDateComparator());
+        getColumnByName(MainColumn.DURATION.columnName()).setComparator(ComparatorFactory.createTimeComparator());
+        getColumnByName(MainColumn.SIZE.columnName()).setComparator(ComparatorFactory.createSizeComparator());
+        columnsOrder.addListener((ListChangeListener.Change<? extends String> change) -> {
+            if (!updatingColumnsOrderList) {
+                updateColumnsOrderTable();
+            }
+        });
+        table.getColumns().addListener((ListChangeListener.Change<? extends TableColumn<Mp3FileData, ?>> change) -> {
+            if (!updatingColumnsOrderTable) {
+                updateColumnsOrderList();
+            }
+        });
+        Bindings.bindContentBidirectional(columnsOrder, Settings.INSTANCE.getMainColumnsOrder());
     }
 
     /**
-     * Setzt Alles für den Tabellen-Filter auf und gibt eine Liste zurück, welche von der Tabelle dargestellt werden kann.
+     * Setzt Alles für den Tabellen-Filter auf und gibt eine Liste zurück,
+     * welche von der Tabelle dargestellt werden kann.
      *
      * @return Die sortierte und gefilterte Liste.
      */
@@ -112,6 +133,40 @@ public class MainPresenter implements Initializable {
         sortedData.comparatorProperty().bind(table.comparatorProperty());
         return sortedData;
     }
+    
+    private void createColumns(){
+        for (MainColumn va : MainColumn.values()){ //TODO
+            
+        }
+    }
+
+    private void updateColumnsOrderTable() {
+        updatingColumnsOrderTable = true;
+        List<TableColumn> columns = new ArrayList<>(table.getColumns());
+        table.getColumns().clear();
+        for (String columnName : columnsOrder) {
+            table.getColumns().add(getColumnByName(columns, columnName));
+        }
+        updatingColumnsOrderTable = false;
+    }
+
+    private TableColumn getColumnByName(List<TableColumn> list, String name) {
+        for (TableColumn c : list) {
+            if (c.getText().equals(name)) {
+                return c;
+            }
+        }
+        return null;
+    }
+
+    private void updateColumnsOrderList() {
+        updatingColumnsOrderList = true;
+        columnsOrder.clear();
+        for (TableColumn<Mp3FileData, ?> column : table.getColumns()) {
+            columnsOrder.add(column.getText());
+        }
+        updatingColumnsOrderList = false;
+    }
 
     /**
      * Bindet die UI-Elemente untereinander.
@@ -130,7 +185,8 @@ public class MainPresenter implements Initializable {
     }
 
     /**
-     * Liest alle MP3-Dateien aus dem übergebenen Verzeichnis, überträgt diese in Mp3FileData-Objekte und fügt sie der Liste von Daten hinzu.
+     * Liest alle MP3-Dateien aus dem übergebenen Verzeichnis, überträgt diese
+     * in Mp3FileData-Objekte und fügt sie der Liste von Daten hinzu.
      *
      * @param directory Das auszulesende Verzeichnis
      */
