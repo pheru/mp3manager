@@ -58,6 +58,8 @@ public class MainPresenter implements Initializable {
     private TaskPool taskPool;
     @Inject
     private Playlist playlist;
+    @Inject
+    private Settings settings;
 
     @Inject
     private InjectableList<Mp3FileData> selectedData;
@@ -98,7 +100,7 @@ public class MainPresenter implements Initializable {
                 updateColumnsOrderList();
             }
         });
-        Bindings.bindContentBidirectional(columnsOrder, Settings.INSTANCE.getMainColumnsOrder());
+        Bindings.bindContentBidirectional(columnsOrder, settings.getMainColumnsOrder());
     }
 
     /**

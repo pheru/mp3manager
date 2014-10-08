@@ -16,23 +16,22 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javax.annotation.PostConstruct;
 
 /**
  * Klasse zum Speichern und Auslesen von Einstellungen.
  *
  * @author Philipp Bruckner
  */
-public final class Settings {
-
-    public static final Settings INSTANCE = new Settings();
+public class Settings {
 
     private final String absolutePath = getClass().getProtectionDomain().getCodeSource().getLocation().getPath() + "settings.properties";
 
     private final StringProperty musicDirectory = new SimpleStringProperty("");
 
     private final BooleanProperty applicationWindowFullScreen = new SimpleBooleanProperty(false);
-    private final DoubleProperty applicationWindowWith = new SimpleDoubleProperty(800.0);
-    private final DoubleProperty applicationWindowHeight = new SimpleDoubleProperty(500.0);
+    private final DoubleProperty applicationWindowWith = new SimpleDoubleProperty(1300.0);
+    private final DoubleProperty applicationWindowHeight = new SimpleDoubleProperty(800.0);
 
     private final Map<String, BooleanProperty> mainColumnVisibilities = new HashMap<>();
     private final Map<String, DoubleProperty> mainColumnWidths = new HashMap<>();
@@ -45,7 +44,8 @@ public final class Settings {
     private final BooleanProperty musicPlayerRepeat = new SimpleBooleanProperty(false);
     private final BooleanProperty musicPlayerRandom = new SimpleBooleanProperty(false);
 
-    private Settings() {
+    @PostConstruct
+    private void init() {
         for (MainColumn column : MainColumn.values()) {
             mainColumnVisibilities.put(column.columnName(), new SimpleBooleanProperty(true));
             mainColumnWidths.put(column.columnName(), new SimpleDoubleProperty(60.0));
