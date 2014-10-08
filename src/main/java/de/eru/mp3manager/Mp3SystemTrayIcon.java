@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package de.eru.mp3manager;
 
 import de.eru.mp3manager.utils.Command;
@@ -32,7 +27,7 @@ public class Mp3SystemTrayIcon {
     private Mp3SystemTrayIcon() {
         if (SystemTray.isSupported()) {
             SystemTray systemTray = SystemTray.getSystemTray();
-            Image image = Toolkit.getDefaultToolkit().getImage(this.getClass().getClassLoader().getResource("img/trayIcon.jpg").getPath());
+            Image image = Toolkit.getDefaultToolkit().getImage(this.getClass().getClassLoader().getResource("img/trayIcon.png").getPath());
             trayIcon = new TrayIcon(image, "Mp3Manager", new PopupMenu());
             trayIcon.setImageAutoSize(true);
             trayIcon.getPopupMenu().setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
