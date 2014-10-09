@@ -101,7 +101,7 @@ public class MainPresenter implements Initializable {
                 updateColumnsOrderList();
             }
         });
-        Bindings.bindContentBidirectional(columnsOrder, Settings.INSTANCE.getMainColumnsOrder());
+        Bindings.bindContentBidirectional(columnsOrder, settings.getMainColumnsOrder());
     }
 
     /**

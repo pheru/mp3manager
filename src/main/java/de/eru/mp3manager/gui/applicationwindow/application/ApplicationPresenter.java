@@ -1,5 +1,6 @@
 package de.eru.mp3manager.gui.applicationwindow.application;
 
+import de.eru.mp3manager.Mp3SystemTrayIcon;
 import de.eru.mp3manager.Settings;
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -16,10 +17,19 @@ import de.eru.mp3manager.gui.applicationwindow.musicplayer.MusicPlayerPresenter;
 import de.eru.mp3manager.gui.applicationwindow.musicplayer.MusicPlayerView;
 import de.eru.mp3manager.gui.applicationwindow.playlist.PlaylistPresenter;
 import de.eru.mp3manager.gui.applicationwindow.playlist.PlaylistView;
+import java.awt.SystemTray;
+import java.awt.event.ActionEvent;
+import javafx.application.Platform;
+import javafx.scene.Scene;
 import javafx.scene.control.SplitPane;
+import javafx.scene.layout.GridPane;
+import javafx.stage.Stage;
+import javax.inject.Inject;
 
 public class ApplicationPresenter implements Initializable {
 
+    @FXML
+    private GridPane root;
     @FXML
     private SplitPane splitPane;
     @FXML
@@ -29,17 +39,29 @@ public class ApplicationPresenter implements Initializable {
     @FXML
     private VBox musicPlayerBox;
 
+    @Inject
+    private Settings settings;
+    @Inject
+    private Mp3SystemTrayIcon systemTrayIcon;
+
     private PlaylistPresenter playlistPresenter;
     private EditFilePresenter editFilePresenter;
     private MainPresenter mainPresenter;
     private MusicPlayerPresenter musicPlayerPresenter;
 
+    private Stage primaryStage;
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        Runtime.getRuntime().addShutdownHook(new Thread() {
+            @Override
+            public void run() {
+                settings.save();
+            }
+
+        });
         initViewsAndPresenters();
-//        mainPresenter.readFiles("D:\\projekte\\TestMusik"); //TODO Richtige Stelle für diesen Aufruf ?
-//        mainPresenter.readFiles("E:\\Musik"); //TODO Richtige Stelle für diesen Aufruf?
-        mainPresenter.readFiles(Settings.INSTANCE.getMusicDirectory()); //TODO Richtige Stelle für diesen Aufruf ?
+        mainPresenter.readFiles(settings.getMusicDirectory());
     }
 
     /**
@@ -68,4 +90,49 @@ public class ApplicationPresenter implements Initializable {
         splitPane.getItems().add(mainView.getView());
     }
 
+    public Stage getPrimaryStage() {
+        return primaryStage;
+    }
+
+    public void setPrimaryStage(Stage primaryStage) {
+        this.primaryStage = primaryStage;
+        initPrimaryStage();
+        initSystemTrayIcon();
+    }
+
+    private void initPrimaryStage() {
+        Scene scene = new Scene(root);
+        primaryStage.setTitle("MP3-Manager");
+        primaryStage.setWidth(settings.getApplicationWindowWith());
+        settings.applicationWindowWithProperty().bind(primaryStage.widthProperty());
+        primaryStage.setHeight(settings.getApplicationWindowHeight());
+        settings.applicationWindowHeightProperty().bind(primaryStage.heightProperty());
+        primaryStage.setFullScreen(settings.isApplicationWindowFullScreen());
+        settings.applicationWindowFullScreenProperty().bind(primaryStage.fullScreenProperty());
+        primaryStage.setScene(scene);
+    }
+
+    private void initSystemTrayIcon() {
+        if (SystemTray.isSupported()) {
+            Platform.setImplicitExit(false);
+            systemTrayIcon.addOnClick(() -> {
+                Platform.runLater(() -> {
+                    primaryStage.show();
+                });
+            });
+            systemTrayIcon.addPopUpMenuItem("Öffnen", (ActionEvent e) -> {
+                Platform.runLater(() -> {
+                    primaryStage.show();
+                });
+            });
+            systemTrayIcon.addPopUpMenuItem("Verstecken", (ActionEvent e) -> {
+                Platform.runLater(() -> {
+                    primaryStage.hide();
+                });
+            });
+            systemTrayIcon.addPopUpMenuItem("Beenden", (ActionEvent e) -> {
+                System.exit(0);
+            });
+        }
+    }
 }

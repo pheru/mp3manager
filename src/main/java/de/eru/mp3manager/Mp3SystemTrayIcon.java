@@ -13,6 +13,7 @@ import java.awt.TrayIcon.MessageType;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import javax.annotation.PostConstruct;
 
 /**
  *
@@ -20,11 +21,10 @@ import java.awt.event.MouseListener;
  */
 public class Mp3SystemTrayIcon {
 
-    public static final Mp3SystemTrayIcon INSTANCE = new Mp3SystemTrayIcon();
-
     private TrayIcon trayIcon;
 
-    private Mp3SystemTrayIcon() {
+    @PostConstruct
+    private void init() {
         if (SystemTray.isSupported()) {
             SystemTray systemTray = SystemTray.getSystemTray();
             Image image = Toolkit.getDefaultToolkit().getImage(this.getClass().getClassLoader().getResource("img/trayIcon.png").getPath());
