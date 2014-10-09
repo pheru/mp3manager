@@ -44,9 +44,10 @@ public class Settings {
     private final BooleanProperty musicPlayerRepeat = new SimpleBooleanProperty(false);
     private final BooleanProperty musicPlayerRandom = new SimpleBooleanProperty(false);
 
-    public Settings() {
+    @PostConstruct
+    private void init() {
         for (MainColumn column : MainColumn.values()) {
-            mainColumnVisibilities.put(column.getColumnName(), new SimpleBooleanProperty(true));
+            mainColumnVisibilities.put(column.getColumnName(), new SimpleBooleanProperty(column.isDefaultVisible()));
             mainColumnWidths.put(column.getColumnName(), new SimpleDoubleProperty(column.getDefaultWidth()));
         }
         load();
@@ -99,11 +100,11 @@ public class Settings {
         properties.setProperty("mainColumnsOrder", sb.toString());
     }
 
-    public Map<String, BooleanProperty> getMainColumnVisibilities() {
+    public Map<String, BooleanProperty> mainColumnVisibleProperties() {
         return mainColumnVisibilities;
     }
 
-    public Map<String, DoubleProperty> getMainColumnWidths() {
+    public Map<String, DoubleProperty> mainColumnWidthProperties() {
         return mainColumnWidths;
     }
     

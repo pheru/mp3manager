@@ -27,58 +27,6 @@
             </children>
         </HBox>
         <TableView fx:id="table" tableMenuButtonVisible="true" VBox.vgrow="ALWAYS">
-<!--            <columns>
-                <TableColumn prefWidth="75.0" text="Dateiname">
-                    <cellValueFactory>
-                        <PropertyValueFactory property="fileName" />
-                    </cellValueFactory>
-                </TableColumn>
-                <TableColumn prefWidth="75.0" text="Titel">
-                    <cellValueFactory>
-                        <PropertyValueFactory property="title" />
-                    </cellValueFactory>
-                </TableColumn>
-                <TableColumn prefWidth="75.0" text="Album">
-                    <cellValueFactory>
-                        <PropertyValueFactory property="album" />
-                    </cellValueFactory>
-                </TableColumn>
-                <TableColumn prefWidth="75.0" text="Interpret">
-                    <cellValueFactory>
-                        <PropertyValueFactory property="artist" />
-                    </cellValueFactory>
-                </TableColumn>
-                <TableColumn prefWidth="75.0" text="Titelnummer">
-                    <cellValueFactory>
-                        <PropertyValueFactory property="track" />
-                    </cellValueFactory>
-                </TableColumn>
-                <TableColumn prefWidth="75.0" text="Genre">
-                    <cellValueFactory>
-                        <PropertyValueFactory property="genre" />
-                    </cellValueFactory>
-                </TableColumn>
-                <TableColumn prefWidth="75.0" text="Dauer">
-                    <cellValueFactory>
-                        <PropertyValueFactory property="formattedDuration" />
-                    </cellValueFactory>
-                </TableColumn>
-                <TableColumn prefWidth="75.0" text="Jahr">
-                    <cellValueFactory>
-                        <PropertyValueFactory property="year" />
-                    </cellValueFactory>
-                </TableColumn>
-                <TableColumn prefWidth="75.0" text="Zuletzt bearbeitet">
-                    <cellValueFactory>
-                        <PropertyValueFactory property="lastModified" />
-                    </cellValueFactory>
-                </TableColumn>
-                <TableColumn prefWidth="75.0" text="Dateigröße">
-                    <cellValueFactory>
-                        <PropertyValueFactory property="size" />
-                    </cellValueFactory>
-                </TableColumn>
-            </columns>-->
             <contextMenu>
                 <ContextMenu>
                     <items>

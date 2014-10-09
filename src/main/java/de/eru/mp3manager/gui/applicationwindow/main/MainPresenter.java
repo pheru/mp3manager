@@ -85,12 +85,7 @@ public class MainPresenter implements Initializable {
         table.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
         table.setItems(setUpTableFilter());
         selectedData.set(table.getSelectionModel().getSelectedItems());
-        createColumns();
-        getColumnByName(MainColumn.TRACK.getColumnName()).setComparator(ComparatorFactory.createNumberComparator());
-        getColumnByName(MainColumn.YEAR.getColumnName()).setComparator(ComparatorFactory.createNumberComparator());
-        getColumnByName(MainColumn.LAST_MODIFIED.getColumnName()).setComparator(ComparatorFactory.createDateComparator());
-        getColumnByName(MainColumn.DURATION.getColumnName()).setComparator(ComparatorFactory.createTimeComparator());
-        getColumnByName(MainColumn.SIZE.getColumnName()).setComparator(ComparatorFactory.createSizeComparator());
+        initColumns();
         columnsOrder.addListener((ListChangeListener.Change<? extends String> change) -> {
             if (!updatingColumnsOrderList) {
                 updateColumnsOrderTable();
@@ -136,15 +131,18 @@ public class MainPresenter implements Initializable {
         sortedData.comparatorProperty().bind(table.comparatorProperty());
         return sortedData;
     }
-    
-    private void createColumns(){//TODO
-        for (MainColumn column : MainColumn.values()){
+
+    private void initColumns() {
+        for (MainColumn column : MainColumn.values()) {
             TableColumn<Mp3FileData, String> tableColumn = new TableColumn<>(column.getColumnName());
-            tableColumn.prefWidthProperty().bind(settings.getMainColumnWidths().get(column.getColumnName()));
-            settings.getMainColumnWidths().get(column.getColumnName()).bind(tableColumn.widthProperty());
-            tableColumn.visibleProperty().bindBidirectional(settings.getMainColumnVisibilities().get(column.getColumnName()));
+            tableColumn.prefWidthProperty().bind(settings.mainColumnWidthProperties().get(column.getColumnName()));
+            settings.mainColumnWidthProperties().get(column.getColumnName()).bind(tableColumn.widthProperty());
+            tableColumn.visibleProperty().bindBidirectional(settings.mainColumnVisibleProperties().get(column.getColumnName()));
             tableColumn.setCellValueFactory(new PropertyValueFactory(column.getPropertyName()));
-            table.getColumns().add(tableColumn); 
+            if (column.getComparator() != null) {
+                tableColumn.setComparator(column.getComparator());
+            }
+            table.getColumns().add(tableColumn);
         }
     }
 
@@ -227,13 +225,4 @@ public class MainPresenter implements Initializable {
         filterTextField.setText("");
     }
 
-    private TableColumn<Mp3FileData, String> getColumnByName(String name) {
-        ObservableList<TableColumn<Mp3FileData, ?>> columns = table.getColumns();
-        for (TableColumn<Mp3FileData, ?> column : columns) {
-            if (column.getText().equals(name)) {
-                return (TableColumn<Mp3FileData, String>) column;
-            }
-        }
-        return null;
-    }
 }
