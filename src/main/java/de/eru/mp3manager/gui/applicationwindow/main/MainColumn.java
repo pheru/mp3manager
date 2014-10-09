@@ -6,36 +6,41 @@ package de.eru.mp3manager.gui.applicationwindow.main;
  */
 public enum MainColumn {
 
-    FILENAME("Dateiname", "fileName", 75.0),
-    TITLE("Titel", "title", 75.0),
-    ALBUM("Album", "album", 75.0),
-    ARTIST("Interpret", "artist", 75.0),
-    GENRE("Genre", "genre", 75.0),
-    YEAR("Jahr", "year", 75.0),
-    LAST_MODIFIED("Zuletzt bearbeitet", "lastModified", 75.0),
-    SIZE("Dateigröße", "size", 75.0),
-    TRACK("Titelnummer", "track", 75.0),
-    DURATION("Dauer", "duration", 75.0);
+    FILENAME("Dateiname", "fileName", 75.0, true),
+    TITLE("Titel", "title", 75.0, true),
+    ALBUM("Album", "album", 75.0, true),
+    ARTIST("Interpret", "artist", 75.0, true),
+    GENRE("Genre", "genre", 75.0, true),
+    YEAR("Jahr", "year", 75.0, true),
+    LAST_MODIFIED("Zuletzt bearbeitet", "lastModified", 75.0, true),
+    SIZE("Dateigröße", "size", 75.0, true),
+    TRACK("Titelnummer", "track", 75.0, true),
+    DURATION("Dauer", "duration", 75.0, true);
 
-    private final String name;
+    private final String columnName;
     private final double defaultWidth;
+    private final boolean defaultVisible;
     private final String propertyName;
 
-    private MainColumn(final String name, final String propertyName, final double defaultWidth) {
-        this.name = name;
+    private MainColumn(final String columnName, final String propertyName, final double defaultWidth, final boolean defaultVisible) {
+        this.columnName = columnName;
         this.propertyName = propertyName;
         this.defaultWidth = defaultWidth;
+        this.defaultVisible = defaultVisible;
     }
 
-    public String columnName() {
-        return name;
+    public String getColumnName() {
+        return columnName;
     }
 
-    public double defaultWidth() {
+    public double getDefaultWidth() {
         return defaultWidth;
     }
+    public boolean isDefaultVisible() {
+        return defaultVisible;
+    }
 
-    public String propertyName() {
+    public String getPropertyName() {
         return propertyName;
     }
 }

@@ -27,7 +27,7 @@
             </children>
         </HBox>
         <TableView fx:id="table" tableMenuButtonVisible="true" VBox.vgrow="ALWAYS">
-            <columns>
+<!--            <columns>
                 <TableColumn prefWidth="75.0" text="Dateiname">
                     <cellValueFactory>
                         <PropertyValueFactory property="fileName" />
@@ -78,7 +78,7 @@
                         <PropertyValueFactory property="size" />
                     </cellValueFactory>
                 </TableColumn>
-            </columns>
+            </columns>-->
             <contextMenu>
                 <ContextMenu>
                     <items>

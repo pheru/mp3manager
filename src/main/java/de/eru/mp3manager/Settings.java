@@ -36,19 +36,19 @@ public final class Settings {
 
     private final Map<String, BooleanProperty> mainColumnVisibilities = new HashMap<>();
     private final Map<String, DoubleProperty> mainColumnWidths = new HashMap<>();
-    private final ObservableList<String> mainColumnsOrder = FXCollections.observableArrayList(MainColumn.FILENAME.columnName(),
-            MainColumn.TITLE.columnName(), MainColumn.ALBUM.columnName(), MainColumn.ARTIST.columnName(), 
-            MainColumn.TRACK.columnName(), MainColumn.GENRE.columnName(), MainColumn.DURATION.columnName(), 
-            MainColumn.YEAR.columnName(), MainColumn.LAST_MODIFIED.columnName(), MainColumn.SIZE.columnName());
+    private final ObservableList<String> mainColumnsOrder = FXCollections.observableArrayList(MainColumn.FILENAME.getColumnName(),
+            MainColumn.TITLE.getColumnName(), MainColumn.ALBUM.getColumnName(), MainColumn.ARTIST.getColumnName(), 
+            MainColumn.TRACK.getColumnName(), MainColumn.GENRE.getColumnName(), MainColumn.DURATION.getColumnName(), 
+            MainColumn.YEAR.getColumnName(), MainColumn.LAST_MODIFIED.getColumnName(), MainColumn.SIZE.getColumnName());
 
     private final DoubleProperty musicPlayerVolume = new SimpleDoubleProperty(100.0);
     private final BooleanProperty musicPlayerRepeat = new SimpleBooleanProperty(false);
     private final BooleanProperty musicPlayerRandom = new SimpleBooleanProperty(false);
 
-    private Settings() {
+    public Settings() {
         for (MainColumn column : MainColumn.values()) {
-            mainColumnVisibilities.put(column.columnName(), new SimpleBooleanProperty(true));
-            mainColumnWidths.put(column.columnName(), new SimpleDoubleProperty(60.0));
+            mainColumnVisibilities.put(column.getColumnName(), new SimpleBooleanProperty(true));
+            mainColumnWidths.put(column.getColumnName(), new SimpleDoubleProperty(column.getDefaultWidth()));
         }
         load();
     }
@@ -100,6 +100,14 @@ public final class Settings {
         properties.setProperty("mainColumnsOrder", sb.toString());
     }
 
+    public Map<String, BooleanProperty> getMainColumnVisibilities() {
+        return mainColumnVisibilities;
+    }
+
+    public Map<String, DoubleProperty> getMainColumnWidths() {
+        return mainColumnWidths;
+    }
+    
     public ObservableList<String> getMainColumnsOrder() {
         return mainColumnsOrder;
     }

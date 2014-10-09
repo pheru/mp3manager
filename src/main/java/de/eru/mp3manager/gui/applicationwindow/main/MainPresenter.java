@@ -30,6 +30,7 @@ import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javax.inject.Inject;
 
 public class MainPresenter implements Initializable {
@@ -58,6 +59,8 @@ public class MainPresenter implements Initializable {
     private TaskPool taskPool;
     @Inject
     private Playlist playlist;
+    @Inject
+    private Settings settings;
 
     @Inject
     private InjectableList<Mp3FileData> selectedData;
@@ -83,11 +86,11 @@ public class MainPresenter implements Initializable {
         table.setItems(setUpTableFilter());
         selectedData.set(table.getSelectionModel().getSelectedItems());
         createColumns();
-        getColumnByName(MainColumn.TRACK.columnName()).setComparator(ComparatorFactory.createNumberComparator());
-        getColumnByName(MainColumn.YEAR.columnName()).setComparator(ComparatorFactory.createNumberComparator());
-        getColumnByName(MainColumn.LAST_MODIFIED.columnName()).setComparator(ComparatorFactory.createDateComparator());
-        getColumnByName(MainColumn.DURATION.columnName()).setComparator(ComparatorFactory.createTimeComparator());
-        getColumnByName(MainColumn.SIZE.columnName()).setComparator(ComparatorFactory.createSizeComparator());
+        getColumnByName(MainColumn.TRACK.getColumnName()).setComparator(ComparatorFactory.createNumberComparator());
+        getColumnByName(MainColumn.YEAR.getColumnName()).setComparator(ComparatorFactory.createNumberComparator());
+        getColumnByName(MainColumn.LAST_MODIFIED.getColumnName()).setComparator(ComparatorFactory.createDateComparator());
+        getColumnByName(MainColumn.DURATION.getColumnName()).setComparator(ComparatorFactory.createTimeComparator());
+        getColumnByName(MainColumn.SIZE.getColumnName()).setComparator(ComparatorFactory.createSizeComparator());
         columnsOrder.addListener((ListChangeListener.Change<? extends String> change) -> {
             if (!updatingColumnsOrderList) {
                 updateColumnsOrderTable();
@@ -134,9 +137,14 @@ public class MainPresenter implements Initializable {
         return sortedData;
     }
     
-    private void createColumns(){
-        for (MainColumn va : MainColumn.values()){ //TODO
-            
+    private void createColumns(){//TODO
+        for (MainColumn column : MainColumn.values()){
+            TableColumn<Mp3FileData, String> tableColumn = new TableColumn<>(column.getColumnName());
+            tableColumn.prefWidthProperty().bind(settings.getMainColumnWidths().get(column.getColumnName()));
+            settings.getMainColumnWidths().get(column.getColumnName()).bind(tableColumn.widthProperty());
+            tableColumn.visibleProperty().bindBidirectional(settings.getMainColumnVisibilities().get(column.getColumnName()));
+            tableColumn.setCellValueFactory(new PropertyValueFactory(column.getPropertyName()));
+            table.getColumns().add(tableColumn); 
         }
     }
 
