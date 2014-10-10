@@ -27,17 +27,17 @@ public class Settings {
 
     private final String absolutePath = getClass().getProtectionDomain().getCodeSource().getLocation().getPath() + "settings.properties";
 
-    private final StringProperty musicDirectory = new SimpleStringProperty("");
+    private final StringProperty musicDirectory = new SimpleStringProperty("D:\\projekte\\TestMusik"); //TODO Vorbelegung entfernen
 
-    private final BooleanProperty applicationWindowFullScreen = new SimpleBooleanProperty(false);
-    private final DoubleProperty applicationWindowWith = new SimpleDoubleProperty(1300.0);
+    private final BooleanProperty applicationWindowMaximized = new SimpleBooleanProperty(false);
+    private final DoubleProperty applicationWindowWidth = new SimpleDoubleProperty(1300.0);
     private final DoubleProperty applicationWindowHeight = new SimpleDoubleProperty(800.0);
 
     private final Map<String, BooleanProperty> mainColumnVisibilities = new HashMap<>();
     private final Map<String, DoubleProperty> mainColumnWidths = new HashMap<>();
     private final ObservableList<String> mainColumnsOrder = FXCollections.observableArrayList(MainColumn.FILENAME.getColumnName(),
-            MainColumn.TITLE.getColumnName(), MainColumn.ALBUM.getColumnName(), MainColumn.ARTIST.getColumnName(), 
-            MainColumn.TRACK.getColumnName(), MainColumn.GENRE.getColumnName(), MainColumn.DURATION.getColumnName(), 
+            MainColumn.TITLE.getColumnName(), MainColumn.ALBUM.getColumnName(), MainColumn.ARTIST.getColumnName(),
+            MainColumn.TRACK.getColumnName(), MainColumn.GENRE.getColumnName(), MainColumn.DURATION.getColumnName(),
             MainColumn.YEAR.getColumnName(), MainColumn.LAST_MODIFIED.getColumnName(), MainColumn.SIZE.getColumnName());
 
     private final DoubleProperty musicPlayerVolume = new SimpleDoubleProperty(100.0);
@@ -67,12 +67,23 @@ public class Settings {
 
     private void loadProperties(Properties properties) {
         musicDirectory.set(properties.getProperty("musicDirectory"));
-        applicationWindowFullScreen.set(Boolean.valueOf(properties.getProperty("applicationWindowFullScreen")));
-        
+        applicationWindowMaximized.set(Boolean.valueOf(properties.getProperty("applicationWindowFullScreen")));
+        applicationWindowWidth.set(Double.valueOf(properties.getProperty("applicationWindowWidth")));
+        applicationWindowHeight.set(Double.valueOf(properties.getProperty("applicationWindowHeight")));
+        musicPlayerVolume.set(Double.valueOf(properties.getProperty("musicPlayerVolume")));
+        musicPlayerRandom.set(Boolean.valueOf(properties.getProperty("musicPlayerRandom")));
+        musicPlayerRepeat.set(Boolean.valueOf(properties.getProperty("musicPlayerRepeat")));
+
         mainColumnsOrder.clear();
         String[] mainColumnsOrderSplit = properties.getProperty("mainColumnsOrder").split(",");
         for (String column : mainColumnsOrderSplit) {
             mainColumnsOrder.add(column);
+        }
+        for (Map.Entry<String, BooleanProperty> entrySet : mainColumnVisibilities.entrySet()) {
+            entrySet.getValue().set(Boolean.valueOf(properties.getProperty(entrySet.getKey() + "Visible")));
+        }
+        for (Map.Entry<String, DoubleProperty> entrySet : mainColumnWidths.entrySet()) {
+            entrySet.getValue().set(Double.valueOf(properties.getProperty(entrySet.getKey() + "Width")));
         }
     }
 
@@ -88,8 +99,13 @@ public class Settings {
 
     private void saveProperties(Properties properties) {
         properties.setProperty("musicDirectory", musicDirectory.get());
-        properties.setProperty("applicationWindowFullScreen", String.valueOf(applicationWindowFullScreen.get()));
-        
+        properties.setProperty("applicationWindowFullScreen", String.valueOf(applicationWindowMaximized.get()));
+        properties.setProperty("applicationWindowWidth", String.valueOf(applicationWindowWidth.get()));
+        properties.setProperty("applicationWindowHeight", String.valueOf(applicationWindowHeight.get()));
+        properties.setProperty("musicPlayerVolume", String.valueOf(musicPlayerVolume.get()));
+        properties.setProperty("musicPlayerRepeat", String.valueOf(musicPlayerRepeat.get()));
+        properties.setProperty("musicPlayerRandom", String.valueOf(musicPlayerRandom.get()));
+
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < mainColumnsOrder.size(); i++) {
             sb.append(mainColumnsOrder.get(i));
@@ -98,6 +114,12 @@ public class Settings {
             }
         }
         properties.setProperty("mainColumnsOrder", sb.toString());
+        for (Map.Entry<String, BooleanProperty> entrySet : mainColumnVisibilities.entrySet()) {
+            properties.setProperty(entrySet.getKey() + "Visible", String.valueOf(entrySet.getValue().get()));
+        }
+        for (Map.Entry<String, DoubleProperty> entrySet : mainColumnWidths.entrySet()) {
+            properties.setProperty(entrySet.getKey() + "Width", String.valueOf(entrySet.getValue().get()));
+        }
     }
 
     public Map<String, BooleanProperty> mainColumnVisibleProperties() {
@@ -107,7 +129,7 @@ public class Settings {
     public Map<String, DoubleProperty> mainColumnWidthProperties() {
         return mainColumnWidths;
     }
-    
+
     public ObservableList<String> getMainColumnsOrder() {
         return mainColumnsOrder;
     }
@@ -124,28 +146,16 @@ public class Settings {
         return musicDirectory;
     }
 
-    public Boolean isApplicationWindowFullScreen() {
-        return applicationWindowFullScreen.get();
+    public Double getApplicationWindowWidth() {
+        return applicationWindowWidth.get();
     }
 
-    public void setApplicationWindowFullScreen(final Boolean applicationWindowFullScreen) {
-        this.applicationWindowFullScreen.set(applicationWindowFullScreen);
+    public void setApplicationWindowWidth(final Double applicationWindowWidth) {
+        this.applicationWindowWidth.set(applicationWindowWidth);
     }
 
-    public BooleanProperty applicationWindowFullScreenProperty() {
-        return applicationWindowFullScreen;
-    }
-
-    public Double getApplicationWindowWith() {
-        return applicationWindowWith.get();
-    }
-
-    public void setApplicationWindowWith(final Double applicationWindowWith) {
-        this.applicationWindowWith.set(applicationWindowWith);
-    }
-
-    public DoubleProperty applicationWindowWithProperty() {
-        return applicationWindowWith;
+    public DoubleProperty applicationWindowWidthProperty() {
+        return applicationWindowWidth;
     }
 
     public Double getApplicationWindowHeight() {
@@ -194,6 +204,18 @@ public class Settings {
 
     public BooleanProperty musicPlayerRandomProperty() {
         return musicPlayerRandom;
+    }
+
+    public Boolean isApplicationWindowMaximized() {
+        return applicationWindowMaximized.get();
+    }
+
+    public void setApplicationWindowMaximized(final Boolean applicationWindowMaximized) {
+        this.applicationWindowMaximized.set(applicationWindowMaximized);
+    }
+
+    public BooleanProperty applicationWindowMaximizedProperty() {
+        return applicationWindowMaximized;
     }
 
 }

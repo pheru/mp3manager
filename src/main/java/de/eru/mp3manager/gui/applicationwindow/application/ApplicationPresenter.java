@@ -103,12 +103,12 @@ public class ApplicationPresenter implements Initializable {
     private void initPrimaryStage() {
         Scene scene = new Scene(root);
         primaryStage.setTitle("MP3-Manager");
-        primaryStage.setWidth(settings.getApplicationWindowWith());
-        settings.applicationWindowWithProperty().bind(primaryStage.widthProperty());
+        primaryStage.setWidth(settings.getApplicationWindowWidth());
+        settings.applicationWindowWidthProperty().bind(primaryStage.widthProperty());
         primaryStage.setHeight(settings.getApplicationWindowHeight());
         settings.applicationWindowHeightProperty().bind(primaryStage.heightProperty());
-        primaryStage.setFullScreen(settings.isApplicationWindowFullScreen());
-        settings.applicationWindowFullScreenProperty().bind(primaryStage.fullScreenProperty());
+        primaryStage.setMaximized(settings.isApplicationWindowMaximized());
+        settings.applicationWindowMaximizedProperty().bind(primaryStage.maximizedProperty());
         primaryStage.setScene(scene);
     }
 
