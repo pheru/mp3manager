@@ -42,8 +42,8 @@
                         <MenuItem mnemonicParsing="false" text="Weiter" />
                         <MenuItem mnemonicParsing="false" text="Zurück" />
                         <SeparatorMenuItem />
-                        <CheckMenuItem mnemonicParsing="false" text="Zufällige Wiedergabe" />
-                        <CheckMenuItem mnemonicParsing="false" text="Wiederholung" />
+                        <CheckMenuItem fx:id="randomMenuItem" mnemonicParsing="false" text="Zufällige Wiedergabe" />
+                        <CheckMenuItem fx:id="repeatMenuItem" mnemonicParsing="false" text="Wiederholung" />
                     </items>
                 </Menu>
                 <Menu mnemonicParsing="false" text="Hilfe">

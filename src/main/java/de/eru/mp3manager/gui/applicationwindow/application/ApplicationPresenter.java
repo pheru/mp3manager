@@ -21,6 +21,7 @@ import java.awt.SystemTray;
 import java.awt.event.ActionEvent;
 import javafx.application.Platform;
 import javafx.scene.Scene;
+import javafx.scene.control.CheckMenuItem;
 import javafx.scene.control.SplitPane;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
@@ -30,6 +31,10 @@ public class ApplicationPresenter implements Initializable {
 
     @FXML
     private GridPane root;
+    @FXML
+    private CheckMenuItem repeatMenuItem;
+    @FXML
+    private CheckMenuItem randomMenuItem;
     @FXML
     private SplitPane splitPane;
     @FXML
@@ -61,6 +66,7 @@ public class ApplicationPresenter implements Initializable {
 
         });
         initViewsAndPresenters();
+        bindUI();
         mainPresenter.readFiles(settings.getMusicDirectory());
     }
 
@@ -88,6 +94,11 @@ public class ApplicationPresenter implements Initializable {
         MainView mainView = new MainView();
         mainPresenter = (MainPresenter) mainView.getPresenter();
         splitPane.getItems().add(mainView.getView());
+    }
+    
+    private void bindUI(){
+        randomMenuItem.selectedProperty().bindBidirectional(settings.musicPlayerRandomProperty());
+        repeatMenuItem.selectedProperty().bindBidirectional(settings.musicPlayerRepeatProperty());
     }
 
     public Stage getPrimaryStage() {
