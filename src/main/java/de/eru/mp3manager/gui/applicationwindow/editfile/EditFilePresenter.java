@@ -304,7 +304,7 @@ public class EditFilePresenter implements Initializable {
 
     @FXML
     public void save() {
-        taskPool.addTask(TaskFactory.createSaveFilesTask(selectedData, changeData));
+        taskPool.addTask(TaskFactory.createSaveFilesTask(FXCollections.observableArrayList(selectedData), new Mp3FileData(changeData)));
     }
     
     //@FXML

@@ -102,6 +102,7 @@ public final class TaskFactory {
                         updateTitle("Speichere Datei " + (i + 1) + " von " + dataToSave.size() + "...");
                         updateMessage(dataToSave.get(i).getAbsolutePath());
                         FileService.saveFile(dataToSave.get(i), changeData);
+                        dataToSave.get(i).reload();
                         updateProgress(i + 1, dataToSave.size());
                     }
                     updateTitle("Speichere der Dateien abgeschlossen.");

@@ -1,8 +1,12 @@
 package de.eru.mp3manager.data;
 
+import de.eru.mp3manager.data.utils.Mapper;
 import de.eru.mp3manager.utils.formatter.ByteFormatter;
 import de.eru.mp3manager.utils.formatter.TimeFormatter;
 import java.io.File;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.beans.binding.StringBinding;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.DoubleProperty;
@@ -12,6 +16,10 @@ import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
+import org.jaudiotagger.audio.exceptions.CannotReadException;
+import org.jaudiotagger.audio.exceptions.InvalidAudioFrameException;
+import org.jaudiotagger.audio.exceptions.ReadOnlyFileException;
+import org.jaudiotagger.tag.TagException;
 
 /**
  * Datenmodell für die Mp3-Dateien.
@@ -69,23 +77,28 @@ public class Mp3FileData {
         lastModified.set(TimeFormatter.millisecondsToDateFormat(file.lastModified()));
     }
 
-    /**
-     * Aktualisiert das Mp3FileData-Objekt.
-     *
-     * @param mp3FileData Das Mp3FileData-Objekt mit den neuen Informationen.
-     */
-    public void update(Mp3FileData mp3FileData) { //TODO Nicht benutzt
-        setAlbum(mp3FileData.getAlbum());
-        setArtist(mp3FileData.getArtist());
-        setCover(mp3FileData.getCover());
-        setDuration(mp3FileData.getDuration());
-        setFileName(mp3FileData.getFileName());
-        setGenre(mp3FileData.getGenre());
-        setLastModified(mp3FileData.getLastModified());
-        setSize(mp3FileData.getSize());
-        setTitle(mp3FileData.getTitle());
-        setTrack(mp3FileData.getTrack());
-        setYear(mp3FileData.getYear());
+    public Mp3FileData(Mp3FileData copyData) {
+        this();
+        fileName.set(copyData.getFileName());
+        filePath.set(copyData.getFilePath());
+        title.set(copyData.getTitle());
+        album.set(copyData.getAlbum());
+        artist.set(copyData.getArtist());
+        genre.set(copyData.getGenre());
+        track.set(copyData.getTrack());
+        year.set(copyData.getYear());
+        size.set(copyData.getSize());
+        lastModified.set(copyData.getLastModified());
+        cover.set(copyData.getCover());
+        duration.set(copyData.getDuration());
+    }
+    
+    public void reload(){
+        try {
+            Mapper.fileToMp3FileData(new File(getAbsolutePath()), this);
+        } catch (CannotReadException | IOException | TagException | ReadOnlyFileException | InvalidAudioFrameException ex) {
+            Logger.getLogger(Mp3FileData.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     public String getFileName() {
