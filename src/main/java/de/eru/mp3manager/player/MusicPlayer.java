@@ -38,6 +38,22 @@ public class MusicPlayer {
         random.bindBidirectional(settings.musicPlayerRandomProperty());
         volume.bindBidirectional(settings.musicPlayerVolumeProperty());
     }
+    
+    public void playPause(){
+        
+    }
+    
+    public void stop(){
+        
+    }
+    
+    public void next(){
+        
+    }
+    
+    public void previous(){
+        
+    }
 
     public IntegerProperty currentTimeProperty() {
         return currentTime;

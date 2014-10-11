@@ -13,12 +13,12 @@ public enum MainColumn {
     TITLE("Titel", "title", null, 75.0, true),
     ALBUM("Album", "album", null, 75.0, true),
     ARTIST("Interpret", "artist", null, 75.0, true),
+    TRACK("Titelnummer", "track", ComparatorFactory.createNumberComparator(), 75.0, true),
+    DURATION("Dauer", "formattedDuration", ComparatorFactory.createTimeComparator(), 75.0, true),
     GENRE("Genre", "genre", null, 75.0, true),
     YEAR("Jahr", "year", ComparatorFactory.createNumberComparator(), 75.0, true),
-    LAST_MODIFIED("Zuletzt bearbeitet", "lastModified", ComparatorFactory.createDateComparator(), 75.0, true),
     SIZE("Dateigröße", "size", ComparatorFactory.createSizeComparator(), 75.0, true),
-    TRACK("Titelnummer", "track", ComparatorFactory.createNumberComparator(), 75.0, true),
-    DURATION("Dauer", "formattedDuration", ComparatorFactory.createTimeComparator(), 75.0, true);
+    LAST_MODIFIED("Zuletzt bearbeitet", "lastModified", ComparatorFactory.createDateComparator(), 75.0, true);
 
     private final String columnName;
     private final String propertyName;

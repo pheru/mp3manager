@@ -81,5 +81,4 @@ public class MusicPlayerPresenter implements Initializable{
             }
         };
     }
-
 }

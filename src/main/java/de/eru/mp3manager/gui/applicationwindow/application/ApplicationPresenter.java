@@ -17,6 +17,7 @@ import de.eru.mp3manager.gui.applicationwindow.musicplayer.MusicPlayerPresenter;
 import de.eru.mp3manager.gui.applicationwindow.musicplayer.MusicPlayerView;
 import de.eru.mp3manager.gui.applicationwindow.playlist.PlaylistPresenter;
 import de.eru.mp3manager.gui.applicationwindow.playlist.PlaylistView;
+import de.eru.mp3manager.player.MusicPlayer;
 import java.awt.SystemTray;
 import java.awt.event.ActionEvent;
 import javafx.application.Platform;
@@ -48,6 +49,8 @@ public class ApplicationPresenter implements Initializable {
     private Settings settings;
     @Inject
     private Mp3SystemTrayIcon systemTrayIcon;
+    @Inject
+    private MusicPlayer musicPlayer;
 
     private PlaylistPresenter playlistPresenter;
     private EditFilePresenter editFilePresenter;
@@ -145,5 +148,54 @@ public class ApplicationPresenter implements Initializable {
                 System.exit(0);
             });
         }
+    }
+    
+    @FXML
+    protected void changeDirectory(){
+        mainPresenter.changeDirectory();
+    }
+    
+    @FXML
+    protected void exit(){
+        System.exit(0);
+    }
+    
+    @FXML
+    protected void saveChanges(){
+        editFilePresenter.save();
+    }
+    
+    @FXML
+    protected void discardChanges(){
+        editFilePresenter.discard();
+    }
+    
+    @FXML
+    protected void delete(){
+        editFilePresenter.delete();
+    }
+    
+    @FXML
+    protected void playPause(){
+        musicPlayer.playPause();
+    }
+    
+    @FXML
+    protected void stop(){
+        musicPlayer.stop();
+    }
+    
+    @FXML
+    protected void next(){
+        musicPlayer.next();
+    }
+    
+    @FXML
+    protected void previous(){
+        musicPlayer.previous();
+    }
+    
+    @FXML
+    protected void about(){
     }
 }

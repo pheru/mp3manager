@@ -35,10 +35,7 @@ public class Settings {
 
     private final Map<String, BooleanProperty> mainColumnVisibilities = new HashMap<>();
     private final Map<String, DoubleProperty> mainColumnWidths = new HashMap<>();
-    private final ObservableList<String> mainColumnsOrder = FXCollections.observableArrayList(MainColumn.FILENAME.getColumnName(),
-            MainColumn.TITLE.getColumnName(), MainColumn.ALBUM.getColumnName(), MainColumn.ARTIST.getColumnName(),
-            MainColumn.TRACK.getColumnName(), MainColumn.GENRE.getColumnName(), MainColumn.DURATION.getColumnName(),
-            MainColumn.YEAR.getColumnName(), MainColumn.LAST_MODIFIED.getColumnName(), MainColumn.SIZE.getColumnName());
+    private final ObservableList<String> mainColumnsOrder = FXCollections.observableArrayList();
 
     private final DoubleProperty musicPlayerVolume = new SimpleDoubleProperty(100.0);
     private final BooleanProperty musicPlayerRepeat = new SimpleBooleanProperty(false);
@@ -49,6 +46,7 @@ public class Settings {
         for (MainColumn column : MainColumn.values()) {
             mainColumnVisibilities.put(column.getColumnName(), new SimpleBooleanProperty(column.isDefaultVisible()));
             mainColumnWidths.put(column.getColumnName(), new SimpleDoubleProperty(column.getDefaultWidth()));
+            mainColumnsOrder.add(column.getColumnName());
         }
         load();
     }
@@ -57,11 +55,13 @@ public class Settings {
         SortedProperties properties = new SortedProperties();
         try {
             properties.load(new FileReader(absolutePath));
-            loadProperties(properties);
+            try {
+                loadProperties(properties);
+            } catch (NumberFormatException e) {
+                System.out.println("Fehlerhafte Settings-Datei!");
+            }
         } catch (IOException ex) {
-            save();
-            load();
-//            ex.printStackTrace();
+            ex.printStackTrace();
         }
     }
 

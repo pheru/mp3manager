@@ -23,24 +23,24 @@
             <menus>
                 <Menu mnemonicParsing="false" text="Datei">
                     <items>
-                        <MenuItem mnemonicParsing="false" text="Verzeichnis wechseln..." />
+                        <MenuItem mnemonicParsing="false" text="Verzeichnis wechseln..." onAction="#changeDirectory" />
                         <SeparatorMenuItem />
-                        <MenuItem mnemonicParsing="false" text="Beenden" />
+                        <MenuItem mnemonicParsing="false" text="Beenden" onAction="#exit"/>
                     </items>
                 </Menu>
                 <Menu mnemonicParsing="false" text="Bearbeiten">
                     <items>
-                        <MenuItem mnemonicParsing="false" text="Änderungen speichern" />
-                        <MenuItem mnemonicParsing="false" text="Änderungen verwerfen" />
-                        <MenuItem mnemonicParsing="false" text="Löschen..." />
+                        <MenuItem mnemonicParsing="false" text="Änderungen speichern" onAction="#saveChanges"/>
+                        <MenuItem mnemonicParsing="false" text="Änderungen verwerfen" onAction="#discardChanges"/>
+                        <MenuItem mnemonicParsing="false" text="Löschen..." onAction="#delete"/>
                     </items>
                 </Menu>
                 <Menu mnemonicParsing="false" text="Wiedergabe">
                     <items>
-                        <MenuItem mnemonicParsing="false" text="Wiedergabe / Anhalten" />
-                        <MenuItem mnemonicParsing="false" text="Stopp" />
-                        <MenuItem mnemonicParsing="false" text="Weiter" />
-                        <MenuItem mnemonicParsing="false" text="Zurück" />
+                        <MenuItem mnemonicParsing="false" text="Wiedergabe / Anhalten" onAction="#playPause"/>
+                        <MenuItem mnemonicParsing="false" text="Stopp" onAction="#stop"/>
+                        <MenuItem mnemonicParsing="false" text="Weiter" onAction="#next"/>
+                        <MenuItem mnemonicParsing="false" text="Zurück" onAction="#previous"/>
                         <SeparatorMenuItem />
                         <CheckMenuItem fx:id="randomMenuItem" mnemonicParsing="false" text="Zufällige Wiedergabe" />
                         <CheckMenuItem fx:id="repeatMenuItem" mnemonicParsing="false" text="Wiederholung" />
@@ -48,7 +48,7 @@
                 </Menu>
                 <Menu mnemonicParsing="false" text="Hilfe">
                     <items>
-                        <MenuItem mnemonicParsing="false" text="Info" />
+                        <MenuItem mnemonicParsing="false" text="Info" onAction="#about"/>
                     </items>
                 </Menu>
             </menus>

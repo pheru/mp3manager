@@ -189,6 +189,10 @@ public class MainPresenter implements Initializable {
         statusL2.textProperty().bind(taskPool.messageProperty());
         taskProgress.progressProperty().bind(taskPool.progressProperty());
     }
+    
+    public void changeDirectory(){
+        
+    }
 
     /**
      * Liest alle MP3-Dateien aus dem übergebenen Verzeichnis, überträgt diese

@@ -306,4 +306,14 @@ public class EditFilePresenter implements Initializable {
     public void save() {
         taskPool.addTask(TaskFactory.createSaveFilesTask(selectedData, changeData));
     }
+    
+    //@FXML
+    public void discard(){
+        //TODO
+    }
+    
+//    @FXML
+    public void delete(){
+        //TODO
+    }
 }
