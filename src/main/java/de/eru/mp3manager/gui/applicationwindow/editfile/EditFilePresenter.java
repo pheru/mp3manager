@@ -69,7 +69,7 @@ public class EditFilePresenter implements Initializable {
 
     private final ObservableList<ComboBox<String>> fields = FXCollections.observableArrayList();
 
-    Comparator<String> numberComparator = ComparatorFactory.createNumberComparator();
+    private final Comparator<String> numberComparator = ComparatorFactory.createNumberComparator();
 
     @Inject
     private InjectableList<Mp3FileData> selectedData;

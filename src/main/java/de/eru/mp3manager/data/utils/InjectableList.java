@@ -41,7 +41,4 @@ public class InjectableList<T> extends SimpleListProperty<T>{
             super.addListener(listChangeListener);
         }
     }
-    
-    
-    
 }

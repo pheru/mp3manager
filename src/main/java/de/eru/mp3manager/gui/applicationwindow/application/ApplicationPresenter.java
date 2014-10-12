@@ -33,10 +33,6 @@ public class ApplicationPresenter implements Initializable {
     @FXML
     private GridPane root;
     @FXML
-    private CheckMenuItem repeatMenuItem;
-    @FXML
-    private CheckMenuItem randomMenuItem;
-    @FXML
     private SplitPane splitPane;
     @FXML
     private Tab editFileTab;
@@ -44,6 +40,10 @@ public class ApplicationPresenter implements Initializable {
     private Tab playlistTab;
     @FXML
     private VBox musicPlayerBox;
+    @FXML
+    private CheckMenuItem repeatMenuItem;
+    @FXML
+    private CheckMenuItem randomMenuItem;
 
     @Inject
     private Settings settings;
@@ -66,7 +66,6 @@ public class ApplicationPresenter implements Initializable {
             public void run() {
                 settings.save();
             }
-
         });
         initViewsAndPresenters();
         bindUI();

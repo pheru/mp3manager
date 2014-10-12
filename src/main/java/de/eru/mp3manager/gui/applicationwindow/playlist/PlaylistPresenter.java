@@ -1,6 +1,5 @@
 package de.eru.mp3manager.gui.applicationwindow.playlist;
 
-import de.eru.mp3manager.data.utils.Mapper;
 import de.eru.mp3manager.data.Mp3FileData;
 import de.eru.mp3manager.data.Playlist;
 import de.eru.mp3manager.service.FileService;
@@ -18,7 +17,6 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableView;
 import javafx.stage.FileChooser;
-import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 
 public class PlaylistPresenter implements Initializable{
@@ -46,7 +44,7 @@ public class PlaylistPresenter implements Initializable{
      */
     private void initTable() {
         table.setItems(playlist.getTitles());
-        Bindings.bindContent(selectedTitles, table.getSelectionModel().getSelectedItems());
+        Bindings.bindContent(selectedTitles, table.getSelectionModel().getSelectedItems()); //TODO Wieso über Binding?
     }
 
     /**

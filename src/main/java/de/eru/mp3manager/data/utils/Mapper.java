@@ -34,11 +34,7 @@ public final class Mapper {
      * @throws IOException TODO JavaDoc für Exception
      */
     public static Mp3FileData fileToMp3FileData(File file) throws IOException {
-        Mp3FileData mp3FileData = new Mp3FileData();
-        mp3FileData.setFileName(file.getName());
-        mp3FileData.setFilePath(file.getParent());
-        mp3FileData.setSize(ByteFormatter.bytesToMB(file.length()));
-        mp3FileData.setLastModified(TimeFormatter.millisecondsToDateFormat(file.lastModified()));
+        Mp3FileData mp3FileData = new Mp3FileData(file);
         try {
             fileToMp3FileData(file, mp3FileData);
         } catch (CannotReadException | TagException | ReadOnlyFileException | InvalidAudioFrameException ex) {

@@ -5,8 +5,6 @@ import de.eru.mp3manager.utils.formatter.ByteFormatter;
 import de.eru.mp3manager.utils.formatter.TimeFormatter;
 import java.io.File;
 import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javafx.beans.binding.StringBinding;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.DoubleProperty;
@@ -92,12 +90,12 @@ public class Mp3FileData {
         cover.set(copyData.getCover());
         duration.set(copyData.getDuration());
     }
-    
-    public void reload(){
+
+    public void reload() {
         try {
             Mapper.fileToMp3FileData(new File(getAbsolutePath()), this);
         } catch (CannotReadException | IOException | TagException | ReadOnlyFileException | InvalidAudioFrameException ex) {
-            Logger.getLogger(Mp3FileData.class.getName()).log(Level.SEVERE, null, ex);
+            ex.printStackTrace();
         }
     }
 

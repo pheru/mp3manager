@@ -6,7 +6,6 @@ import de.eru.mp3manager.data.Playlist;
 import de.eru.mp3manager.data.utils.InjectableList;
 import de.eru.mp3manager.gui.notifications.progressnotification.ProgressNotificationView;
 import de.eru.mp3manager.utils.TaskPool;
-import de.eru.mp3manager.utils.factories.ComparatorFactory;
 import de.eru.mp3manager.utils.factories.TaskFactory;
 import java.net.URL;
 import java.util.ArrayList;
@@ -66,7 +65,7 @@ public class MainPresenter implements Initializable {
     private InjectableList<Mp3FileData> selectedData;
 
     private final ObservableList<String> columnsOrder = FXCollections.observableArrayList();
-    private final ObservableList<Mp3FileData> tableData = FXCollections.observableArrayList();
+    private final ObservableList<Mp3FileData> masterData = FXCollections.observableArrayList();
 
     private boolean updatingColumnsOrderList = false;
     private boolean updatingColumnsOrderTable = false;
@@ -106,7 +105,7 @@ public class MainPresenter implements Initializable {
      * @return Die sortierte und gefilterte Liste.
      */
     private SortedList<Mp3FileData> setUpTableFilter() {
-        FilteredList<Mp3FileData> filteredData = tableData.filtered((Mp3FileData t) -> true);
+        FilteredList<Mp3FileData> filteredData = masterData.filtered((Mp3FileData t) -> true);
         filterTextField.textProperty().addListener((ObservableValue<? extends String> observable, String oldValue, String newValue) -> {
             filteredData.setPredicate((Mp3FileData mp3FileData) -> {
                 if (newValue == null || newValue.isEmpty()) {
@@ -184,7 +183,7 @@ public class MainPresenter implements Initializable {
         StringProperty sp2 = new SimpleStringProperty();
         sp2.bind(Bindings.size(table.getItems()).asString());
         statusR1.textProperty().bind(sp1.concat(" von ").concat(sp2).concat(" Dateien ausgewählt"));
-        statusR2.textProperty().bind(Bindings.size(tableData).asString().concat(" Dateien insgesamt"));
+        statusR2.textProperty().bind(Bindings.size(masterData).asString().concat(" Dateien insgesamt"));
         statusL1.textProperty().bind(taskPool.titleProperty());
         statusL2.textProperty().bind(taskPool.messageProperty());
         taskProgress.progressProperty().bind(taskPool.progressProperty());
@@ -201,8 +200,8 @@ public class MainPresenter implements Initializable {
      * @param directory Das auszulesende Verzeichnis
      */
     public void readFiles(String directory) {
-        taskPool.addTask(TaskFactory.createReadDirectyTask(directory, tableData, table.disableProperty()));
-        taskPool.addTask(TaskFactory.createLoadFilesTask(tableData));
+        taskPool.addTask(TaskFactory.createReadDirectoryTask(directory, masterData, table.disableProperty()));
+        taskPool.addTask(TaskFactory.createLoadFilesTask(masterData));
         ProgressNotificationView.show();
     }
 

@@ -39,7 +39,7 @@ public class Mp3SystemTrayIcon {
         }
     }
 
-    public void displayMessage(String caption, String message, MessageType messageType) {
+    public void displayMessage(String caption, String message, MessageType messageType) { //TODO benötigt?
         trayIcon.displayMessage(caption, message, messageType);
     }
 

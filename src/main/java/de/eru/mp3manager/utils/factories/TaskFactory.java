@@ -26,11 +26,11 @@ public final class TaskFactory {
      * diese enthalten aber noch keine MP3-spezifischen Informationen!
      *
      * @param directory Das auszulesende Verzeichnis.
-     * @param tableData Die Liste für die Mp3FileData-Objekte der Tabelle.
+     * @param masterData Die Liste für die Mp3FileData-Objekte.
      * @param tableDisableProperty Das BooleanProperty zum sperren/freigeben der Tabelle.
      * @return Einen Task zum Auslesen von Dateien aus einem Verzeichnis.
      */
-    public static Task<Void> createReadDirectyTask(String directory, ObservableList<Mp3FileData> tableData, BooleanProperty tableDisableProperty) {
+    public static Task<Void> createReadDirectoryTask(String directory, ObservableList<Mp3FileData> masterData, BooleanProperty tableDisableProperty) {
         return new Task<Void>() {
 
             @Override
@@ -44,7 +44,7 @@ public final class TaskFactory {
                     Platform.runLater(() -> {
                         for (int i = 0; i < files.size(); i++) {
                             final int j = i;
-                            tableData.add(new Mp3FileData(files.get(j)));
+                            masterData.add(new Mp3FileData(files.get(j)));
                         }
                     });
                     updateTitle("Lesen von " + directory + " abgeschlossen.");
@@ -61,26 +61,26 @@ public final class TaskFactory {
     /**
      * Erzeugt einen Task zum Laden der MP3-spezifischen Informationen.
      *
-     * @param tableData Die Liste mit den Mp3FileData-Objekten der Tabelle.
+     * @param data Die Liste mit den Mp3FileData-Objekten.
      * @return Einen Task zum Laden der Mp3-spezifischen Informationen.
      */
-    public static Task<Void> createLoadFilesTask(ObservableList<Mp3FileData> tableData) {
+    public static Task<Void> createLoadFilesTask(ObservableList<Mp3FileData> data) {
         return new Task<Void>() {
             @Override
             protected Void call() throws Exception {
                 try {
                     updateProgress(-1, 1);
-                    for (int i = 0; i < tableData.size(); i++) {
-                        updateTitle("Lade Datei " + (i + 1) + " von " + tableData.size() + "...");
-                        updateMessage(tableData.get(i).getAbsolutePath());
-                        if (!tableData.get(i).isLoaded()) {
-                            Mapper.fileToMp3FileData(new File(tableData.get(i).getAbsolutePath()), tableData.get(i));
-                            tableData.get(i).setLoaded(true);
+                    for (int i = 0; i < data.size(); i++) {
+                        updateTitle("Lade Datei " + (i + 1) + " von " + data.size() + "...");
+                        updateMessage(data.get(i).getAbsolutePath());
+                        if (!data.get(i).isLoaded()) {
+                            Mapper.fileToMp3FileData(new File(data.get(i).getAbsolutePath()), data.get(i));
+                            data.get(i).setLoaded(true);
                         }
-                        updateProgress(i + 1, tableData.size());
+                        updateProgress(i + 1, data.size());
                     }
                     updateTitle("Laden der Dateien abgeschlossen.");
-                    updateMessage(tableData.size() + " Dateien wurden erfolgreich geladen.");
+                    updateMessage(data.size() + " Dateien wurden erfolgreich geladen.");
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -105,7 +105,7 @@ public final class TaskFactory {
                         dataToSave.get(i).reload();
                         updateProgress(i + 1, dataToSave.size());
                     }
-                    updateTitle("Speichere der Dateien abgeschlossen.");
+                    updateTitle("Speichern der Dateien abgeschlossen.");
                     updateMessage(dataToSave.size() + " Dateien wurden erfolgreich gespeichert.");
                 } catch (Exception e) {
                     e.printStackTrace();
