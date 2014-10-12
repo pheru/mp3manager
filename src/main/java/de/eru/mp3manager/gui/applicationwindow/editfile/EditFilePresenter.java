@@ -8,12 +8,15 @@ import de.eru.mp3manager.utils.factories.ComparatorFactory;
 import de.eru.mp3manager.utils.factories.TaskFactory;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.RandomAccessFile;
 import java.net.URL;
 import java.util.Comparator;
+import java.util.Locale;
 import java.util.ResourceBundle;
 import javafx.beans.binding.DoubleBinding;
-import javafx.beans.binding.ObjectBinding;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
@@ -25,9 +28,13 @@ import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
+import javafx.stage.FileChooser;
+import javafx.stage.FileChooser.ExtensionFilter;
+import javafx.stage.Window;
 import javax.imageio.ImageIO;
 import javax.inject.Inject;
 
@@ -125,26 +132,6 @@ public class EditFilePresenter implements Initializable {
         changeData.genreProperty().bind(genreField.valueProperty());
         changeData.yearProperty().bind(yearField.valueProperty());
         changeData.trackProperty().bind(trackField.valueProperty());
-        changeData.coverProperty().bind(new ObjectBinding<byte[]>() {
-            {
-                bind(coverView.imageProperty());
-            }
-
-            @Override
-            protected byte[] computeValue() {
-                if (coverView.getImage() == null) {
-                    return new byte[0];
-                }
-                BufferedImage bufferedImage = SwingFXUtils.fromFXImage(coverView.getImage(), null);
-                ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-                try {
-                    ImageIO.write(bufferedImage, "png", outputStream);
-                } catch (IOException ex) {
-                    ex.printStackTrace();
-                }
-                return outputStream.toByteArray();
-            }
-        });
     }
 
     /**
@@ -160,7 +147,8 @@ public class EditFilePresenter implements Initializable {
     }
 
     /**
-     * Aktualisiert die Felder mit den Werten der ausgewählten Mp3FileData-Objekte.
+     * Aktualisiert die Felder mit den Werten der ausgewählten
+     * Mp3FileData-Objekte.
      */
     private void updateFields() {
         clearFieldItems();
@@ -205,7 +193,8 @@ public class EditFilePresenter implements Initializable {
     /**
      *
      * Befüllt das Feld mit dem übergebenen Wert. <br>
-     * Ist der Wert darüber hinaus kein leerer String, so wird er auch der Liste der ComboBox hinzugeüft.
+     * Ist der Wert darüber hinaus kein leerer String, so wird er auch der Liste
+     * der ComboBox hinzugeüft.
      *
      * @param field Das betreffende Feld.
      * @param value Der Wert.
@@ -220,8 +209,11 @@ public class EditFilePresenter implements Initializable {
     /**
      * Befüllt die Felder mit den Werten mehrerer Mp3FileData-Objekte. <br>
      * Dabei werden alle Werte den Listen der ComboBoxen hinzugefügt. <br>
-     * Es werden nur Werte hinzugefügt, welche noch nicht in der Liste vorhanden sind. <br>
-     * Ist am Ende nur ein Wert in der Liste, so wird dieser im Feld angezeigt. Sind es mehrere, so wird im Feld der Wert der Konstante DIFF_VALUES angezeigt.
+     * Es werden nur Werte hinzugefügt, welche noch nicht in der Liste vorhanden
+     * sind. <br>
+     * Ist am Ende nur ein Wert in der Liste, so wird dieser im Feld angezeigt.
+     * Sind es mehrere, so wird im Feld der Wert der Konstante DIFF_VALUES
+     * angezeigt.
      */
     private void fillFieldsWithMultipleData() {
         fillFieldItems();
@@ -244,7 +236,8 @@ public class EditFilePresenter implements Initializable {
     }
 
     /**
-     * Fügt der Liste der ComboBox den Wert hinzu, wenn dieser noch nicht vorhanden ist.
+     * Fügt der Liste der ComboBox den Wert hinzu, wenn dieser noch nicht
+     * vorhanden ist.
      *
      * @param field Die ComboBox.
      * @param value Der hinzuzufügende Wert.
@@ -257,8 +250,11 @@ public class EditFilePresenter implements Initializable {
 
     /**
      * Setzt den angezeigten Wert für jedes Feld. <br>
-     * Das Feld für den Dateinamen erhält dabei immer den Wert der Konstante NOT_CHANGABLE, da bei Mehrfachauswahl der Dateiname nicht geändert werden darf.<br>
-     * Enthält die Liste einer ComboBox mehrere Werte, so wird der angezeigte Wert dieses Feldes auf DIFF_VALUES gesetzt.
+     * Das Feld für den Dateinamen erhält dabei immer den Wert der Konstante
+     * NOT_CHANGABLE, da bei Mehrfachauswahl der Dateiname nicht geändert werden
+     * darf.<br>
+     * Enthält die Liste einer ComboBox mehrere Werte, so wird der angezeigte
+     * Wert dieses Feldes auf DIFF_VALUES gesetzt.
      */
     private void setFieldValues() {
         fileNameField.setText(NOT_CHANGABLE);
@@ -290,7 +286,8 @@ public class EditFilePresenter implements Initializable {
     }
 
     /**
-     * Aktiviert bzw. deaktiviert die Synchronisation der Felder für den Dateinamen und den Titel.
+     * Aktiviert bzw. deaktiviert die Synchronisation der Felder für den
+     * Dateinamen und den Titel.
      */
     private void setUpTitleSynchronization() {
         if (synchronizeTitleBox.isSelected()) {
@@ -303,17 +300,41 @@ public class EditFilePresenter implements Initializable {
     }
 
     @FXML
+    protected void chooseCover() {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.getExtensionFilters()
+                .addAll(new ExtensionFilter("All Images", "*.png",
+                                "*.jpg", "*.jpeg", "*.bmp"),
+                        new ExtensionFilter("bmp", "*.bmp"),
+                        new ExtensionFilter("jpg, jpeg", "*.jpg",
+                                "*.jpeg"),
+                        new ExtensionFilter("png", "*.png"),
+                        new ExtensionFilter("All Files", "*.*"));
+        Window ownerWindow = root.getScene().getWindow();
+        File imageAsFile = fileChooser.showOpenDialog(ownerWindow);
+        String mimeType = imageAsFile.getName().substring(imageAsFile.getName().lastIndexOf(".") + 1).toLowerCase(Locale.GERMAN);
+        try (RandomAccessFile imageAsRAF = new RandomAccessFile(imageAsFile, "r")) {
+            byte[] imageAsByteArray = new byte[(int) imageAsRAF.length()];
+            imageAsRAF.read(imageAsByteArray);
+            coverView.setImage(new Image(new FileInputStream(imageAsFile)));
+            changeData.setCover(imageAsByteArray);
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    @FXML
     public void save() {
         taskPool.addTask(TaskFactory.createSaveFilesTask(FXCollections.observableArrayList(selectedData), new Mp3FileData(changeData)));
     }
-    
+
     //@FXML
-    public void discard(){
+    public void discard() {
         //TODO
     }
-    
+
 //    @FXML
-    public void delete(){
+    public void delete() {
         //TODO
     }
 }

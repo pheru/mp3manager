@@ -58,7 +58,7 @@
       </ComboBox>
       <Pane fx:id="coverPane" GridPane.columnSpan="2147483647" GridPane.rowIndex="10" VBox.vgrow="ALWAYS">
          <children>
-            <ImageView fx:id="coverView" pickOnBounds="true" VBox.vgrow="NEVER">
+            <ImageView fx:id="coverView" pickOnBounds="true" VBox.vgrow="NEVER" onMouseClicked="#chooseCover" >
                <VBox.margin>
                   <Insets />
                </VBox.margin>

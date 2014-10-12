@@ -19,7 +19,10 @@ import org.jaudiotagger.tag.FieldDataInvalidException;
 import org.jaudiotagger.tag.FieldKey;
 import org.jaudiotagger.tag.KeyNotFoundException;
 import org.jaudiotagger.tag.TagException;
+import org.jaudiotagger.tag.datatype.Artwork;
 import org.jaudiotagger.tag.id3.AbstractID3v2Tag;
+import org.jaudiotagger.tag.id3.valuepair.ImageFormats;
+import org.jaudiotagger.tag.reference.PictureTypes;
 
 /**
  * Service für den Zugriff auf Dateien und Verzeichnisse.
@@ -47,10 +50,18 @@ public final class FileService {
         setTagField(tag, FieldKey.GENRE, changeData.getGenre());
         setTagField(tag, FieldKey.YEAR, changeData.getYear());
         setTagField(tag, FieldKey.TRACK, changeData.getTrack());
-        tag.getFirstArtwork().setBinaryData(changeData.getCover());
 
+        //TODO Sollte nur null sein, wenn wirklich kein Bild vorhanden/ ausgewählt ist, ansonsten sollte das Cover dem Cover des EditfilePresenters entsprechen
+        if (changeData.getCover() != null && changeData.getCover().length > 0) { 
+            Artwork newArtwork = new Artwork();
+            newArtwork.setBinaryData(changeData.getCover());
+            newArtwork.setMimeType(ImageFormats.getMimeTypeForBinarySignature(changeData.getCover()));
+            newArtwork.setDescription("");
+            newArtwork.setPictureType(PictureTypes.DEFAULT_ID); //DEFAULT_ID == 3 == Cover (Front)
+            tag.deleteArtworkField();
+            tag.setField(newArtwork);
+        }
         file.commit();
-
         if (!dataToSave.getFileName().equals(changeData.getFileName())) {
             file.getFile().renameTo(new File(dataToSave.getFilePath() + "\\" + changeData.getFileName()));
         }
@@ -65,7 +76,8 @@ public final class FileService {
     /**
      * Speichert eine Wiedergabeliste.
      *
-     * @param playlistFile Das File, in welche die Wiedergabeliste gespeichert werden soll.
+     * @param playlistFile Das File, in welche die Wiedergabeliste gespeichert
+     * werden soll.
      * @param playlist Die zu speichernde Wiedergabeliste.
      * @return true, wenn das Speichern erfolgreich war.
      * @throws java.io.IOException TODO Exception-Doc
@@ -96,7 +108,8 @@ public final class FileService {
     }
 
     /**
-     * Sammelt alle MP3-Dateien aus einem Verzeichnis und dessen Unterverzeichnissen.
+     * Sammelt alle MP3-Dateien aus einem Verzeichnis und dessen
+     * Unterverzeichnissen.
      *
      * @param directory Das auszulesende Verzeichnis.
      * @return Eine Liste von Files der MP3-Dateien.

@@ -30,15 +30,15 @@
             <contextMenu>
                 <ContextMenu>
                     <items>
-                        <MenuItem text="Wiedergabe" onAction="#play" />
-                        <MenuItem text="Zur Wiedergabeliste hinzufügen" onAction="#addToPlaylist" />
+                        <MenuItem onAction="#play" text="Wiedergabe" />
+                        <MenuItem onAction="#addToPlaylist" text="Zur Wiedergabeliste hinzufügen" />
                     </items>
                 </ContextMenu>
             </contextMenu>
         </TableView>
         <HBox VBox.vgrow="NEVER">
             <children>
-                <ProgressIndicator fx:id="taskProgress" maxHeight="34.0" progress="0.0">
+                <ProgressIndicator fx:id="taskProgress" progress="0.0">
                     <HBox.margin>
                         <Insets />
                     </HBox.margin>
@@ -46,8 +46,14 @@
                 <Separator orientation="VERTICAL" />
                 <VBox alignment="CENTER_LEFT">
                     <children>
-                        <Label fx:id="statusL1" text="Status - L" />
-                        <Label fx:id="statusL2" text="Status - L2" />
+                        <Label fx:id="statusL1" text="Status - L">
+                     <VBox.margin>
+                        <Insets />
+                     </VBox.margin></Label>
+                        <Label fx:id="statusL2" text="Status - L2">
+                     <VBox.margin>
+                        <Insets />
+                     </VBox.margin></Label>
                     </children>
                 </VBox>
                 <Pane HBox.hgrow="ALWAYS" />
