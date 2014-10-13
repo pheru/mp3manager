@@ -12,7 +12,7 @@
     <children>
         <HBox alignment="CENTER_LEFT" VBox.vgrow="NEVER">
             <children>
-                <Label text="Pfad">
+                <Label fx:id="directoryLabel" text="Pfad">
                     <cursor>
                         <Cursor fx:constant="HAND" />
                     </cursor>
@@ -47,13 +47,15 @@
                 <VBox alignment="CENTER_LEFT">
                     <children>
                         <Label fx:id="statusL1" text="Status - L">
-                     <VBox.margin>
-                        <Insets />
-                     </VBox.margin></Label>
+                            <VBox.margin>
+                                <Insets />
+                            </VBox.margin>
+                        </Label>
                         <Label fx:id="statusL2" text="Status - L2">
-                     <VBox.margin>
-                        <Insets />
-                     </VBox.margin></Label>
+                            <VBox.margin>
+                                <Insets />
+                            </VBox.margin>
+                        </Label>
                     </children>
                 </VBox>
                 <Pane HBox.hgrow="ALWAYS" />

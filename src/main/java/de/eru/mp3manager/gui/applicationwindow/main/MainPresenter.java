@@ -38,6 +38,8 @@ public class MainPresenter implements Initializable {
     private static final Label PLACEHOLDER_EMPTY_DIRECTORY = new Label("Das gewählte Verzeichnis enthält keine MP3-Dateien");
 
     @FXML
+    private Label directoryLabel;
+    @FXML
     private Button clearFilterButton;
     @FXML
     private TextField filterTextField;
@@ -187,6 +189,8 @@ public class MainPresenter implements Initializable {
         statusL1.textProperty().bind(taskPool.titleProperty());
         statusL2.textProperty().bind(taskPool.messageProperty());
         taskProgress.progressProperty().bind(taskPool.progressProperty());
+        directoryLabel.textProperty().bind(settings.musicDirectoryProperty());
+        
     }
     
     public void changeDirectory(){
@@ -211,7 +215,7 @@ public class MainPresenter implements Initializable {
      *
      */
     @FXML
-    protected void play() {
+    private void play() {
     }
 
     /**
@@ -219,12 +223,12 @@ public class MainPresenter implements Initializable {
      * Fügt die ausgewählten Titel der Wiedergabeliste hinzu.
      */
     @FXML
-    protected void addToPlaylist() {
+    private void addToPlaylist() {
         playlist.getTitles().addAll(selectedData);
     }
 
     @FXML
-    protected void clearFilter() {
+    private void clearFilter() {
         filterTextField.setText("");
     }
 

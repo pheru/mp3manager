@@ -150,51 +150,51 @@ public class ApplicationPresenter implements Initializable {
     }
     
     @FXML
-    protected void changeDirectory(){
+    private void changeDirectory(){
         mainPresenter.changeDirectory();
     }
     
     @FXML
-    protected void exit(){
+    private void exit(){
         System.exit(0);
     }
     
     @FXML
-    protected void saveChanges(){
+    private void saveChanges(){
         editFilePresenter.save();
     }
     
     @FXML
-    protected void discardChanges(){
+    private void discardChanges(){
         editFilePresenter.discard();
     }
     
     @FXML
-    protected void delete(){
+    private void delete(){
         editFilePresenter.delete();
     }
     
     @FXML
-    protected void playPause(){
+    private void playPause(){
         musicPlayer.playPause();
     }
     
     @FXML
-    protected void stop(){
+    private void stop(){
         musicPlayer.stop();
     }
     
     @FXML
-    protected void next(){
+    private void next(){
         musicPlayer.next();
     }
     
     @FXML
-    protected void previous(){
+    private void previous(){
         musicPlayer.previous();
     }
     
     @FXML
-    protected void about(){
+    private void about(){
     }
 }

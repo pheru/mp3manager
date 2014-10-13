@@ -1,7 +1,12 @@
 package de.eru.mp3manager.utils.formatter;
 
 import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.RandomAccessFile;
 import java.text.DecimalFormat;
+import java.util.Locale;
 import javafx.scene.image.Image;
 
 /**
@@ -29,6 +34,17 @@ public final class ByteFormatter {
             return new Image(new ByteArrayInputStream(bytes));
         }
         return NO_IMAGE_AVAILABLE;
+    }
+    
+    public static byte[] fileToByteArray(File file){
+        try (RandomAccessFile randomAccessFile = new RandomAccessFile(file, "r")) {
+            byte[] byteArray = new byte[(int) randomAccessFile.length()];
+            randomAccessFile.read(byteArray);
+            return byteArray;
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+        return null;
     }
 
     /**

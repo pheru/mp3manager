@@ -69,7 +69,7 @@ public class PlaylistPresenter implements Initializable{
     }
 
     @FXML
-    protected void savePlaylist() {
+    private void savePlaylist() {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Wiedergabeliste speichern");
         fileChooser.setInitialDirectory(new File("D:\\"));//TODO Pfad durch Settings austauschen
@@ -87,7 +87,7 @@ public class PlaylistPresenter implements Initializable{
     }
 
     @FXML
-    protected void loadPlaylist() {
+    private void loadPlaylist() {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Wiedergabeliste laden");
         fileChooser.setInitialDirectory(new File("D:\\")); //TODO Pfad durch Settings austauschen
@@ -99,7 +99,7 @@ public class PlaylistPresenter implements Initializable{
     }
 
     @FXML
-    protected void deletePlaylist() {
+    private void deletePlaylist() {
         boolean deletePlaylist = FileService.deletePlaylist(playlist.getAbsolutePath());
         //TODO implementieren
     }

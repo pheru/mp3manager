@@ -6,36 +6,28 @@ import de.eru.mp3manager.utils.TaskPool;
 import de.eru.mp3manager.utils.formatter.ByteFormatter;
 import de.eru.mp3manager.utils.factories.ComparatorFactory;
 import de.eru.mp3manager.utils.factories.TaskFactory;
-import java.awt.image.BufferedImage;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.RandomAccessFile;
 import java.net.URL;
+import java.util.Arrays;
 import java.util.Comparator;
-import java.util.Locale;
 import java.util.ResourceBundle;
 import javafx.beans.binding.DoubleBinding;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
-import javafx.embed.swing.SwingFXUtils;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
-import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
 import javafx.stage.Window;
-import javax.imageio.ImageIO;
 import javax.inject.Inject;
 
 public class EditFilePresenter implements Initializable {
@@ -188,6 +180,7 @@ public class EditFilePresenter implements Initializable {
         fillField(trackField, singleData.getTrack());
         fillField(yearField, singleData.getYear());
         coverView.setImage(ByteFormatter.byteArrayToImage(singleData.getCover()));
+        changeData.setCover(singleData.getCover());
     }
 
     /**
@@ -219,6 +212,7 @@ public class EditFilePresenter implements Initializable {
         fillFieldItems();
         setFieldValues();
         sortFieldItems();
+        setCoverImage();
     }
 
     /**
@@ -285,6 +279,19 @@ public class EditFilePresenter implements Initializable {
         genreField.getItems().sort(null);
     }
 
+    private void setCoverImage() {
+        byte[] imageAsByteArray = selectedData.get(0).getCover();
+        for (Mp3FileData data : selectedData) {
+            if (!Arrays.equals(data.getCover(), imageAsByteArray)) {
+                //TODO ungleiche Bilder
+//                imageAsByteArray = ...
+                break;
+            }
+        }
+        coverView.setImage(ByteFormatter.byteArrayToImage(imageAsByteArray));
+        changeData.setCover(imageAsByteArray);
+    }
+
     /**
      * Aktiviert bzw. deaktiviert die Synchronisation der Felder für den
      * Dateinamen und den Titel.
@@ -300,7 +307,7 @@ public class EditFilePresenter implements Initializable {
     }
 
     @FXML
-    protected void chooseCover() {
+    private void chooseCover() {
         FileChooser fileChooser = new FileChooser();
         fileChooser.getExtensionFilters()
                 .addAll(new ExtensionFilter("All Images", "*.png",
@@ -312,14 +319,10 @@ public class EditFilePresenter implements Initializable {
                         new ExtensionFilter("All Files", "*.*"));
         Window ownerWindow = root.getScene().getWindow();
         File imageAsFile = fileChooser.showOpenDialog(ownerWindow);
-        String mimeType = imageAsFile.getName().substring(imageAsFile.getName().lastIndexOf(".") + 1).toLowerCase(Locale.GERMAN);
-        try (RandomAccessFile imageAsRAF = new RandomAccessFile(imageAsFile, "r")) {
-            byte[] imageAsByteArray = new byte[(int) imageAsRAF.length()];
-            imageAsRAF.read(imageAsByteArray);
-            coverView.setImage(new Image(new FileInputStream(imageAsFile)));
+        if (imageAsFile != null) {
+            byte[] imageAsByteArray = ByteFormatter.fileToByteArray(imageAsFile);
+            coverView.setImage(ByteFormatter.byteArrayToImage(imageAsByteArray));
             changeData.setCover(imageAsByteArray);
-        } catch (IOException ex) {
-            ex.printStackTrace();
         }
     }
 
@@ -328,9 +331,9 @@ public class EditFilePresenter implements Initializable {
         taskPool.addTask(TaskFactory.createSaveFilesTask(FXCollections.observableArrayList(selectedData), new Mp3FileData(changeData)));
     }
 
-    //@FXML
+    //@FXML TODO
     public void discard() {
-        //TODO
+        updateFields();
     }
 
 //    @FXML
