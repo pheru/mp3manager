@@ -79,10 +79,8 @@ public final class FileService {
      * werden soll.
      * @param playlist Die zu speichernde Wiedergabeliste.
      * @return true, wenn das Speichern erfolgreich war.
-     * @throws java.io.IOException TODO Exception-Doc
      */
     public static boolean savePlaylist(File playlistFile, Playlist playlist) throws IOException {
-        //TODO richtig implementieren
         if (playlistFile.exists()) {
             boolean success = playlistFile.delete(); //Funktioniert nicht wie erwartet (Änderungsdatum bleibt gleich)
             if (!success) {
@@ -101,7 +99,7 @@ public final class FileService {
      * @param playlistPath Der Pfad der Playlist-Datei.
      * @return true, wenn das Löschen erfolgreich war.
      */
-    public static boolean deletePlaylist(String playlistPath) { //TODO richtig implementieren
+    public static boolean deletePlaylist(String playlistPath) { 
         File playlistFile = new File(playlistPath);
         return playlistFile.delete();
     }
@@ -137,17 +135,10 @@ public final class FileService {
                 }
             }
         } else {
-            //TODO Verzeichnis existiert nicht
+            //Verzeichnis existiert nicht
         }
     }
 
-    /**
-     * TODO
-     *
-     * @param playlistFile
-     * @return
-     * @throws IOException
-     */
     public static Playlist fileToPlaylist(File playlistFile) throws IOException {
         Playlist playlist = new Playlist();
         playlist.setAbsolutePath(playlistFile.getAbsolutePath());

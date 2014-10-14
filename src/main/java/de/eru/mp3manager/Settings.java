@@ -27,7 +27,7 @@ public class Settings {
 
     private final String absolutePath = getClass().getProtectionDomain().getCodeSource().getLocation().getPath() + "settings.properties";
 
-    private final StringProperty musicDirectory = new SimpleStringProperty("D:\\projekte\\TestMusik"); //TODO Vorbelegung entfernen
+    private final StringProperty musicDirectory = new SimpleStringProperty("");
 
     private final BooleanProperty applicationWindowMaximized = new SimpleBooleanProperty(false);
     private final DoubleProperty applicationWindowWidth = new SimpleDoubleProperty(1300.0);

@@ -19,7 +19,7 @@ import javafx.scene.control.TableView;
 import javafx.stage.FileChooser;
 import javax.inject.Inject;
 
-public class PlaylistPresenter implements Initializable{
+public class PlaylistPresenter implements Initializable {
 
     @FXML
     private TableView<Mp3FileData> table;
@@ -31,7 +31,7 @@ public class PlaylistPresenter implements Initializable{
     @Inject
     private Playlist playlist;
 
-    private final ObservableList<Mp3FileData> selectedTitles = FXCollections.observableArrayList();
+    private ObservableList<Mp3FileData> selectedTitles;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -44,7 +44,7 @@ public class PlaylistPresenter implements Initializable{
      */
     private void initTable() {
         table.setItems(playlist.getTitles());
-        Bindings.bindContent(selectedTitles, table.getSelectionModel().getSelectedItems()); //TODO Wieso über Binding?
+        selectedTitles = table.getSelectionModel().getSelectedItems();
     }
 
     /**
@@ -72,7 +72,7 @@ public class PlaylistPresenter implements Initializable{
     private void savePlaylist() {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Wiedergabeliste speichern");
-        fileChooser.setInitialDirectory(new File("D:\\"));//TODO Pfad durch Settings austauschen
+        fileChooser.setInitialDirectory(new File("D:\\"));
         fileChooser.setInitialFileName("Wiedergabeliste." + Playlist.FILE_EXTENSION);
         fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Wiedergabelisten", "*." + Playlist.FILE_EXTENSION));
         File playlistFile = fileChooser.showSaveDialog(table.getScene().getWindow());
@@ -90,17 +90,16 @@ public class PlaylistPresenter implements Initializable{
     private void loadPlaylist() {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Wiedergabeliste laden");
-        fileChooser.setInitialDirectory(new File("D:\\")); //TODO Pfad durch Settings austauschen
+        fileChooser.setInitialDirectory(new File("D:\\"));
         fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Wiedergabelisten", "*." + Playlist.FILE_EXTENSION));
         File playlistFile = fileChooser.showOpenDialog(table.getScene().getWindow());
         if (playlistFile != null) {
-            System.out.println("Playlist laden");//TODO
+            System.out.println("Playlist laden");
         }
     }
 
     @FXML
     private void deletePlaylist() {
         boolean deletePlaylist = FileService.deletePlaylist(playlist.getAbsolutePath());
-        //TODO implementieren
     }
 }

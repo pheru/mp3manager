@@ -27,7 +27,7 @@ public final class ByteFormatter {
      * @param bytes Das Byte-Array des Images.
      * @return Das aus dem Byte-Array erzeugte Image.
      */
-    public static Image byteArrayToImage(byte[] bytes) { //TODO In der richtigen Klasse?
+    public static Image byteArrayToImage(byte[] bytes) {
         if (bytes != null && bytes.length > 0) {
             return new Image(new ByteArrayInputStream(bytes));
         }

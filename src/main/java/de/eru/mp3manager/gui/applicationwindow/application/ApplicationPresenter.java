@@ -69,7 +69,7 @@ public class ApplicationPresenter implements Initializable {
         });
         initViewsAndPresenters();
         bindUI();
-        mainPresenter.readFiles(settings.getMusicDirectory());
+        mainPresenter.readDirectory(settings.getMusicDirectory());
     }
 
     /**

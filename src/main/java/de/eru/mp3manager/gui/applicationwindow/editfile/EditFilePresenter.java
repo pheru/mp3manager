@@ -30,6 +30,7 @@ import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
 import javafx.stage.Window;
 import javax.inject.Inject;
+import javax.inject.Named;
 
 public class EditFilePresenter implements Initializable {
 
@@ -311,6 +312,7 @@ public class EditFilePresenter implements Initializable {
     @FXML
     private void chooseCover() {
         FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Album-Cover auswählen");
         fileChooser.getExtensionFilters()
                 .addAll(new ExtensionFilter("All Images", "*.png",
                                 "*.jpg", "*.jpeg", "*.bmp"),
@@ -333,13 +335,12 @@ public class EditFilePresenter implements Initializable {
         taskPool.addTask(TaskFactory.createSaveFilesTask(FXCollections.observableArrayList(selectedData), new Mp3FileData(changeData)));
     }
 
-    //@FXML TODO
+    //@FXML
     public void discard() {
         updateFields();
     }
 
 //    @FXML
     public void delete() {
-        //TODO
     }
 }

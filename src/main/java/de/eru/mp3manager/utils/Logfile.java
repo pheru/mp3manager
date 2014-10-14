@@ -52,7 +52,7 @@ public final class Logfile {
             try {
                 writer.close();
             } catch (IOException ex) {
-                //TODO exHandling
+                ex.printStackTrace();
             }
         }
     }

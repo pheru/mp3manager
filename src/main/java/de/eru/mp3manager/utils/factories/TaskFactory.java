@@ -22,12 +22,14 @@ public final class TaskFactory {
 
     /**
      * Erzeugt einen Task zum Auslesen von Dateien aus einem Verzeichnis. <br>
-     * Dabei werden aus den Dateien bereits Mp3FileData-Objekte erzeugt und den Tabellen-Daten hinzugefügt; <br>
+     * Dabei werden aus den Dateien bereits Mp3FileData-Objekte erzeugt und den
+     * Tabellen-Daten hinzugefügt; <br>
      * diese enthalten aber noch keine MP3-spezifischen Informationen!
      *
      * @param directory Das auszulesende Verzeichnis.
      * @param masterData Die Liste für die Mp3FileData-Objekte.
-     * @param tableDisableProperty Das BooleanProperty zum sperren/freigeben der Tabelle.
+     * @param tableDisableProperty Das BooleanProperty zum sperren/freigeben der
+     * Tabelle.
      * @return Einen Task zum Auslesen von Dateien aus einem Verzeichnis.
      */
     public static Task<Void> createReadDirectoryTask(String directory, ObservableList<Mp3FileData> masterData, BooleanProperty tableDisableProperty) {
@@ -36,7 +38,10 @@ public final class TaskFactory {
             @Override
             protected Void call() throws Exception {
                 try {
-                    tableDisableProperty.set(true);
+                    Platform.runLater(() -> {
+                        masterData.clear();
+                        tableDisableProperty.set(true);
+                    });
                     updateTitle("Lese Verzeichnis...");
                     updateMessage(directory);
                     updateProgress(-1, 1);
@@ -49,7 +54,9 @@ public final class TaskFactory {
                     });
                     updateTitle("Lesen von " + directory + " abgeschlossen.");
                     updateMessage(files.size() + " Dateien wurden erfolgreich gelesen.");
-                    tableDisableProperty.set(false);
+                    Platform.runLater(() -> {
+                        tableDisableProperty.set(false);
+                    });
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -89,9 +96,6 @@ public final class TaskFactory {
         };
     }
 
-    /**
-     * TODO
-     */
     public static Task<Void> createSaveFilesTask(ObservableList<Mp3FileData> dataToSave, Mp3FileData changeData) {
         return new Task<Void>() {
             @Override

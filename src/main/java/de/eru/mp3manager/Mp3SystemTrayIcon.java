@@ -39,10 +39,6 @@ public class Mp3SystemTrayIcon {
         }
     }
 
-    public void displayMessage(String caption, String message, MessageType messageType) { //TODO benötigt?
-        trayIcon.displayMessage(caption, message, messageType);
-    }
-
     public void addPopUpMenuItem(String label, ActionListener actionListener) {
         if (SystemTray.isSupported()) {
             MenuItem menuItem = new MenuItem(label);

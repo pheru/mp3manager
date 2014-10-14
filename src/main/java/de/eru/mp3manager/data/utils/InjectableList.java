@@ -5,9 +5,7 @@ import javafx.collections.FXCollections;
 import javax.annotation.PostConstruct;
 
 /**
- *TODO
  * @author Philipp Bruckner
- * @param <T> TODO
  */
 public class InjectableList<T> extends SimpleListProperty<T>{
 

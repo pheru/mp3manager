@@ -31,7 +31,6 @@ public final class Mapper {
      *
      * @param file Die Datei, welche in in ein Mp3FileData gemappt werden soll
      * @return Ein Mp3FileData.
-     * @throws IOException TODO JavaDoc für Exception
      */
     public static Mp3FileData fileToMp3FileData(File file) throws IOException {
         Mp3FileData mp3FileData = new Mp3FileData(file);
@@ -49,7 +48,6 @@ public final class Mapper {
      * @param file Die Datei, welche in ein Mp3FileData gemappt werden soll.
      * @param mp3FileData Das bestehende Mp3FileData-Objekt.
      * @throws org.jaudiotagger.audio.exceptions.CannotReadException
-     * @throws IOException TODO JavaDoc für Exception
      * @throws org.jaudiotagger.tag.TagException
      * @throws org.jaudiotagger.audio.exceptions.ReadOnlyFileException
      * @throws org.jaudiotagger.audio.exceptions.InvalidAudioFrameException
