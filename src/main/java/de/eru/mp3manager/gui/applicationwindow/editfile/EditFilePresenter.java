@@ -22,6 +22,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
@@ -34,6 +35,7 @@ public class EditFilePresenter implements Initializable {
 
     public static final String DIFF_VALUES = "<Verschiedene Werte>";
     public static final String NOT_CHANGABLE = "<Bei Mehrfachauswahl nicht editierbar>";
+    private static final Image MULTIPLE_COVERS_IMAGE = new Image("img/noImage.png");
 
     @FXML
     private GridPane root;
@@ -283,9 +285,9 @@ public class EditFilePresenter implements Initializable {
         byte[] imageAsByteArray = selectedData.get(0).getCover();
         for (Mp3FileData data : selectedData) {
             if (!Arrays.equals(data.getCover(), imageAsByteArray)) {
-                //TODO ungleiche Bilder
-//                imageAsByteArray = ...
-                break;
+                coverView.setImage(MULTIPLE_COVERS_IMAGE);
+                changeData.setCover(null);
+                return;
             }
         }
         coverView.setImage(ByteFormatter.byteArrayToImage(imageAsByteArray));

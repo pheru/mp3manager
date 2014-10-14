@@ -2,11 +2,9 @@ package de.eru.mp3manager.utils.formatter;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.text.DecimalFormat;
-import java.util.Locale;
 import javafx.scene.image.Image;
 
 /**
@@ -17,7 +15,7 @@ import javafx.scene.image.Image;
 public final class ByteFormatter {
 
     private static final DecimalFormat TWO_DECIMAL_PLACES_FORMAT = new DecimalFormat("#0.00");
-    private final static Image NO_IMAGE_AVAILABLE = new Image("img/noImage.png");
+    private static final Image NO_IMAGE_AVAILABLE = new Image("img/noImage.png");
 
     private ByteFormatter() {
         //Utility-Klasse

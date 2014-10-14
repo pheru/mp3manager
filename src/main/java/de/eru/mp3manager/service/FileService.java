@@ -51,7 +51,6 @@ public final class FileService {
         setTagField(tag, FieldKey.YEAR, changeData.getYear());
         setTagField(tag, FieldKey.TRACK, changeData.getTrack());
 
-        //TODO Sollte nur null sein, wenn wirklich kein Bild vorhanden/ ausgewählt ist, ansonsten sollte das Cover dem Cover des EditfilePresenters entsprechen
         if (changeData.getCover() != null && changeData.getCover().length > 0) { 
             Artwork newArtwork = new Artwork();
             newArtwork.setBinaryData(changeData.getCover());
@@ -129,9 +128,7 @@ public final class FileService {
     private static void collect(String directory, ObservableList<File> fileList) {
         File dir = new File(directory);
         File[] files = dir.listFiles();
-        if (files == null) {
-            //TODO Verzeichnis existiert nicht
-        } else {
+        if (files != null) {
             for (File file : files) {
                 if (file.isDirectory()) {
                     collect(file.getAbsolutePath(), fileList);
@@ -139,6 +136,8 @@ public final class FileService {
                     fileList.add(file);
                 }
             }
+        } else {
+            //TODO Verzeichnis existiert nicht
         }
     }
 
