@@ -6,8 +6,12 @@ import de.eru.mp3manager.service.FileService;
 import java.io.File;
 import javafx.application.Platform;
 import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.StringProperty;
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
+import javafx.scene.control.Label;
+import javafx.scene.text.TextAlignment;
 
 /**
  * Klasse zum erzeugen von Tasks.
@@ -28,34 +32,46 @@ public final class TaskFactory {
      *
      * @param directory Das auszulesende Verzeichnis.
      * @param masterData Die Liste für die Mp3FileData-Objekte.
-     * @param tableDisableProperty Das BooleanProperty zum sperren/freigeben der
+     * @param tableDisable Das BooleanProperty zum sperren/freigeben der
      * Tabelle.
      * @return Einen Task zum Auslesen von Dateien aus einem Verzeichnis.
      */
-    public static Task<Void> createReadDirectoryTask(String directory, ObservableList<Mp3FileData> masterData, BooleanProperty tableDisableProperty) {
+    public static Task<Void> createReadDirectoryTask(String directory, ObservableList<Mp3FileData> masterData, StringProperty tablePlaceholderText, BooleanProperty tableDisable) {
         return new Task<Void>() {
 
             @Override
             protected Void call() throws Exception {
                 try {
                     Platform.runLater(() -> {
+                        tablePlaceholderText.set("Verzeichnis wird geladen.\nBitte warten...");
                         masterData.clear();
-                        tableDisableProperty.set(true);
+                        tableDisable.set(true);
                     });
+                    //Verzeichnis auslesen
                     updateTitle("Lese Verzeichnis...");
                     updateMessage(directory);
                     updateProgress(-1, 1);
                     ObservableList<File> files = FileService.collectMp3FilesFromDirectory(directory);
+
+                    //Mp3Informationen laden und am Ende der Liste hinzufügen
+                    updateProgress(-1, 1);
+                    ObservableList<Mp3FileData> loadedData = FXCollections.observableArrayList();
+                    for (int i = 0; i < files.size(); i++) {
+                        updateTitle("Lade Datei " + (i + 1) + " von " + files.size() + "...");
+                        updateMessage(files.get(i).getAbsolutePath());
+                        loadedData.add(Mapper.fileToMp3FileData(new File(files.get(i).getAbsolutePath())));
+                        updateProgress(i + 1, files.size());
+                    }
+                    updateTitle("Laden der Dateien abgeschlossen.");
+                    updateMessage(files.size() + " Dateien wurden erfolgreich geladen.");
+                    
                     Platform.runLater(() -> {
-                        for (int i = 0; i < files.size(); i++) {
-                            final int j = i;
-                            masterData.add(new Mp3FileData(files.get(j)));
+                        if(loadedData.size() == 0){
+                            tablePlaceholderText.set("Das gewählte Verzeichnis enthält keine MP3-Dateien");
+                            updateProgress(1, 1);
                         }
-                    });
-                    updateTitle("Lesen von " + directory + " abgeschlossen.");
-                    updateMessage(files.size() + " Dateien wurden erfolgreich gelesen.");
-                    Platform.runLater(() -> {
-                        tableDisableProperty.set(false);
+                        masterData.addAll(loadedData);
+                        tableDisable.set(false);
                     });
                 } catch (Exception e) {
                     e.printStackTrace();

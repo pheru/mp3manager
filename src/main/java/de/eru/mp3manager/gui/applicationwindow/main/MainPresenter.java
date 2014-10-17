@@ -31,13 +31,13 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.VBox;
+import javafx.scene.text.TextAlignment;
 import javafx.stage.DirectoryChooser;
 import javax.inject.Inject;
 
 public class MainPresenter implements Initializable {
 
-    private static final Label PLACEHOLDER_NO_DIRECTORY_CHOSEN = new Label("Es wurde kein Verzeichnis ausgewählt");
-    private static final Label PLACEHOLDER_EMPTY_DIRECTORY = new Label("Das gewählte Verzeichnis enthält keine MP3-Dateien");
+    private static final String PLACEHOLDER_TEXT_NO_DIRECTORY_CHOSEN = "Es wurde kein Verzeichnis ausgewählt";
 
     @FXML
     private VBox root;
@@ -59,6 +59,7 @@ public class MainPresenter implements Initializable {
     private ProgressIndicator taskProgress;
     @FXML
     private TableView<Mp3FileData> table;
+    private final StringProperty tablePlaceholderText = new SimpleStringProperty();
 
     @Inject
     private TaskPool taskPool;
@@ -86,7 +87,10 @@ public class MainPresenter implements Initializable {
      * Initialisiert die Tabelle.
      */
     private void initTable() {
-        table.setPlaceholder(PLACEHOLDER_NO_DIRECTORY_CHOSEN);
+        Label placeholder = new Label(PLACEHOLDER_TEXT_NO_DIRECTORY_CHOSEN);
+        placeholder.setTextAlignment(TextAlignment.CENTER);
+        placeholder.textProperty().bindBidirectional(tablePlaceholderText);
+        table.setPlaceholder(placeholder);
         table.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
         table.setItems(setUpTableFilter());
         selectedData.set(table.getSelectionModel().getSelectedItems());
@@ -214,8 +218,7 @@ public class MainPresenter implements Initializable {
      */
     public void readDirectory(String directory) {
         if (directory != null && !directory.isEmpty()) {
-            taskPool.addTask(TaskFactory.createReadDirectoryTask(directory, masterData, table.disableProperty()));
-            taskPool.addTask(TaskFactory.createLoadFilesTask(masterData));
+            taskPool.addTask(TaskFactory.createReadDirectoryTask(directory, masterData, tablePlaceholderText, table.disableProperty()));
             ProgressNotificationView.show();
         }
     }
