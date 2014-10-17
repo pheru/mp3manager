@@ -3,10 +3,12 @@ package de.eru.mp3manager.gui.applicationwindow.main;
 import de.eru.mp3manager.Settings;
 import de.eru.mp3manager.data.Mp3FileData;
 import de.eru.mp3manager.data.Playlist;
-import de.eru.mp3manager.data.utils.InjectableList;
+import de.eru.mp3manager.cdi.InjectableList;
+import de.eru.mp3manager.cdi.SelectedTableData;
 import de.eru.mp3manager.gui.notifications.progressnotification.ProgressNotificationView;
 import de.eru.mp3manager.utils.TaskPool;
 import de.eru.mp3manager.utils.factories.TaskFactory;
+import java.io.File;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -33,6 +35,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.TextAlignment;
 import javafx.stage.DirectoryChooser;
+import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 public class MainPresenter implements Initializable {
@@ -69,6 +72,7 @@ public class MainPresenter implements Initializable {
     private Settings settings;
 
     @Inject
+    @SelectedTableData(source = SelectedTableData.Source.MAIN)
     private InjectableList<Mp3FileData> selectedData;
 
     private final ObservableList<String> columnsOrder = FXCollections.observableArrayList();
@@ -205,21 +209,21 @@ public class MainPresenter implements Initializable {
     public void changeDirectory() {
         DirectoryChooser dirChooser = new DirectoryChooser();
         dirChooser.setTitle("Musik-Vereichnis auswählen");
-        String directory = dirChooser.showDialog(root.getScene().getWindow()).getAbsolutePath();
-        settings.setMusicDirectory(directory);
-        readDirectory(directory);
+        File directory = dirChooser.showDialog(root.getScene().getWindow());
+        if (directory != null) {
+            settings.setMusicDirectory(directory.getAbsolutePath());
+            readDirectory();
+        }
     }
 
     /**
      * Liest alle MP3-Dateien aus dem übergebenen Verzeichnis, überträgt diese
      * in Mp3FileData-Objekte und fügt sie der Liste von Daten hinzu.
-     *
-     * @param directory Das auszulesende Verzeichnis
      */
-    public void readDirectory(String directory) {
+    public void readDirectory() {
+        String directory = settings.getMusicDirectory();
         if (directory != null && !directory.isEmpty()) {
             taskPool.addTask(TaskFactory.createReadDirectoryTask(directory, masterData, tablePlaceholderText, table.disableProperty()));
-            ProgressNotificationView.show();
         }
     }
 

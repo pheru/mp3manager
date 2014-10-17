@@ -1,7 +1,7 @@
 package de.eru.mp3manager.gui.formatwindow.formatfile;
 
-import com.airhacks.afterburner.views.FXMLView;
+import de.eru.pherufx.gui.JavaFXView;
 
-public class FormatFileView extends FXMLView {
+public class FormatFileView extends JavaFXView {
     //Convention over Configuration
 }

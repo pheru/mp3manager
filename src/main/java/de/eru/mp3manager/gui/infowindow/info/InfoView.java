@@ -1,7 +1,7 @@
 package de.eru.mp3manager.gui.infowindow.info;
 
-import com.airhacks.afterburner.views.FXMLView;
+import de.eru.pherufx.gui.JavaFXView;
 
-public class InfoView extends FXMLView {
+public class InfoView extends JavaFXView {
     //Convention over Configuration
 }

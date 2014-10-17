@@ -1,7 +1,8 @@
 package de.eru.mp3manager.gui.applicationwindow.editfile;
 
 import de.eru.mp3manager.data.Mp3FileData;
-import de.eru.mp3manager.data.utils.InjectableList;
+import de.eru.mp3manager.cdi.InjectableList;
+import de.eru.mp3manager.cdi.SelectedTableData;
 import de.eru.mp3manager.utils.TaskPool;
 import de.eru.mp3manager.utils.formatter.ByteFormatter;
 import de.eru.mp3manager.utils.factories.ComparatorFactory;
@@ -30,7 +31,6 @@ import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
 import javafx.stage.Window;
 import javax.inject.Inject;
-import javax.inject.Named;
 
 public class EditFilePresenter implements Initializable {
 
@@ -74,6 +74,7 @@ public class EditFilePresenter implements Initializable {
     private final Comparator<String> numberComparator = ComparatorFactory.createNumberComparator();
 
     @Inject
+    @SelectedTableData(source = SelectedTableData.Source.MAIN)
     private InjectableList<Mp3FileData> selectedData;
     @Inject
     private TaskPool taskPool;

@@ -1,4 +1,4 @@
-package de.eru.mp3manager.data.utils;
+package de.eru.mp3manager.cdi;
 
 import javafx.beans.property.SimpleListProperty;
 import javafx.collections.FXCollections;

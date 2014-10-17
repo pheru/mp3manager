@@ -17,12 +17,14 @@ import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javax.annotation.PostConstruct;
+import javax.enterprise.context.ApplicationScoped;
 
 /**
  * Klasse zum Speichern und Auslesen von Einstellungen.
  *
  * @author Philipp Bruckner
  */
+@ApplicationScoped
 public class Settings {
 
     private final String absolutePath = getClass().getProtectionDomain().getCodeSource().getLocation().getPath() + "settings.properties";

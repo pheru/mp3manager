@@ -26,6 +26,7 @@ import javafx.scene.control.CheckMenuItem;
 import javafx.scene.control.SplitPane;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
+import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 public class ApplicationPresenter implements Initializable {
@@ -52,9 +53,17 @@ public class ApplicationPresenter implements Initializable {
     @Inject
     private MusicPlayer musicPlayer;
 
+    @Inject
+    private PlaylistView playlistView;
     private PlaylistPresenter playlistPresenter;
+    @Inject
+    private EditFileView editFileView;
     private EditFilePresenter editFilePresenter;
+    @Inject
+    private MainView mainView;
     private MainPresenter mainPresenter;
+    @Inject
+    private MusicPlayerView musicPlayerView;
     private MusicPlayerPresenter musicPlayerPresenter;
 
     private Stage primaryStage;
@@ -69,7 +78,7 @@ public class ApplicationPresenter implements Initializable {
         });
         initViewsAndPresenters();
         bindUI();
-        mainPresenter.readDirectory(settings.getMusicDirectory());
+        mainPresenter.readDirectory();
     }
 
     /**
@@ -77,23 +86,19 @@ public class ApplicationPresenter implements Initializable {
      */
     private void initViewsAndPresenters() {
         //Tab zum editieren der MP3-Dateien
-        EditFileView editFileView = new EditFileView();
         editFilePresenter = (EditFilePresenter) editFileView.getPresenter();
         editFileTab.setContent(editFileView.getView());
 
         //Music-Player
-        MusicPlayerView musicPlayerView = new MusicPlayerView();
         musicPlayerPresenter = (MusicPlayerPresenter) musicPlayerView
                 .getPresenter();
         musicPlayerBox.getChildren().add(musicPlayerView.getView());
 
         //Tab für die aktuelle Wiedergabe
-        PlaylistView playlistView = new PlaylistView();
         playlistPresenter = (PlaylistPresenter) playlistView.getPresenter();
         playlistTab.setContent(playlistView.getView());
 
         //MainView mit Tabelle
-        MainView mainView = new MainView();
         mainPresenter = (MainPresenter) mainView.getPresenter();
         splitPane.getItems().add(mainView.getView());
     }

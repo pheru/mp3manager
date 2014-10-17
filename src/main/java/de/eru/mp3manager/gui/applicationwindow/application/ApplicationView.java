@@ -1,6 +1,6 @@
 package de.eru.mp3manager.gui.applicationwindow.application;
 
-import com.airhacks.afterburner.views.FXMLView;
+import de.eru.pherufx.gui.JavaFXView;
 
 /**
  * Die HauptView.
@@ -8,6 +8,6 @@ import com.airhacks.afterburner.views.FXMLView;
  *
  * @author Philipp Bruckner
  */
-public class ApplicationView extends FXMLView {
+public class ApplicationView extends JavaFXView {
     //Convention over Configuration
 }

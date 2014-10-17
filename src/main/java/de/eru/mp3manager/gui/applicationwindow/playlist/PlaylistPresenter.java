@@ -16,6 +16,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableView;
 import javafx.stage.FileChooser;
+import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 public class PlaylistPresenter implements Initializable {

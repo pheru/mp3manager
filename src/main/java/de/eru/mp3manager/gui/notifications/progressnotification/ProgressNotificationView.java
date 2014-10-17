@@ -1,6 +1,6 @@
 package de.eru.mp3manager.gui.notifications.progressnotification;
 
-import com.airhacks.afterburner.views.FXMLView;
+import de.eru.pherufx.gui.JavaFXView;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Scene;
 import javafx.scene.layout.VBox;
@@ -8,7 +8,7 @@ import javafx.stage.Screen;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
-public class ProgressNotificationView extends FXMLView {
+public class ProgressNotificationView extends JavaFXView {
 
     private static Stage stage;
 

@@ -4,12 +4,14 @@ import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javax.enterprise.context.ApplicationScoped;
 
 /**
  * Klasse zum verwalten einer Wiedergabeliste.
  *
  * @author Philipp Bruckner
  */
+@ApplicationScoped
 public class Playlist {
     
     public static final String FILE_EXTENSION = "mmpl";

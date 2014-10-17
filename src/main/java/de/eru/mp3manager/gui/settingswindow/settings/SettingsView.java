@@ -1,7 +1,7 @@
 package de.eru.mp3manager.gui.settingswindow.settings;
 
-import com.airhacks.afterburner.views.FXMLView;
+import de.eru.pherufx.gui.JavaFXView;
 
-public class SettingsView extends FXMLView {
+public class SettingsView extends JavaFXView {
     //Convention over Configuration
 }

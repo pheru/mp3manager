@@ -1,6 +1,6 @@
 package de.eru.mp3manager.gui.applicationwindow.editfile;
 
-import com.airhacks.afterburner.views.FXMLView;
+import de.eru.pherufx.gui.JavaFXView;
 
 /**
  * Die View für das Bearbeiten von Dateien.
@@ -8,6 +8,6 @@ import com.airhacks.afterburner.views.FXMLView;
  *
  * @author Philipp Bruckner
  */
-public class EditFileView extends FXMLView {
+public class EditFileView extends JavaFXView {
     //Convention over Configuration
 }

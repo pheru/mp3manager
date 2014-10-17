@@ -1,12 +1,12 @@
 package de.eru.mp3manager.gui.applicationwindow.musicplayer;
 
-import com.airhacks.afterburner.views.FXMLView;
+import de.eru.pherufx.gui.JavaFXView;
 
 /**
  * Die View zur Interaktion mit dem Musik-Player und Darstellung der aktuellen Wiedergabe.
  *
  * @author Philipp Bruckner
  */
-public class MusicPlayerView extends FXMLView {
+public class MusicPlayerView extends JavaFXView {
     //Convention over Configuration
 }

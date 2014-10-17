@@ -19,6 +19,7 @@ import javafx.scene.control.ProgressBar;
 import javafx.scene.control.Slider;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.image.ImageView;
+import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 public class MusicPlayerPresenter implements Initializable{
