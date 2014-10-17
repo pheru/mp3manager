@@ -10,7 +10,6 @@ import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.StringBinding;
-import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -45,6 +44,7 @@ public class PlaylistPresenter implements Initializable {
     private void initTable() {
         table.setItems(playlist.getTitles());
         selectedTitles = table.getSelectionModel().getSelectedItems();
+        playlist.currentTitleProperty().bind(table.getSelectionModel().selectedItemProperty()); //TODO auf den richtigen Titel binden
     }
 
     /**

@@ -1,5 +1,7 @@
 package de.eru.mp3manager.data;
 
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
@@ -14,21 +16,30 @@ public class Playlist {
     public static final String FILE_SPLIT = "</>";
     
     private String absolutePath = "D:\\Wiedergabeliste1.mmpl";
-    private ObservableList<Mp3FileData> titles = FXCollections.observableArrayList();
+    private final ObservableList<Mp3FileData> titles = FXCollections.observableArrayList();
+    private final ObjectProperty<Mp3FileData> currentTitle = new SimpleObjectProperty<>();
 
     public ObservableList<Mp3FileData> getTitles() {
         return titles;
     }
 
-    public void setTitles(ObservableList<Mp3FileData> titles) {
-        this.titles = titles;
-    }
-    
     public void setAbsolutePath(String absolutePath){
         this.absolutePath = absolutePath;
     }
     
     public String getAbsolutePath(){
         return absolutePath;
+    }
+
+    public Mp3FileData getCurrentTitle() {
+        return currentTitle.get();
+    }
+
+    public void setCurrentTitle(final Mp3FileData currentTitle) {
+        this.currentTitle.set(currentTitle);
+    }
+
+    public ObjectProperty<Mp3FileData> currentTitleProperty() {
+        return currentTitle;
     }
 }

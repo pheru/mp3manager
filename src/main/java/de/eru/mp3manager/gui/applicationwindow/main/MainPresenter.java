@@ -194,11 +194,11 @@ public class MainPresenter implements Initializable {
         statusL2.textProperty().bind(taskPool.messageProperty());
         taskProgress.progressProperty().bind(taskPool.progressProperty());
         directoryLabel.textProperty().bind(settings.musicDirectoryProperty());
-        
+
     }
-    
+
     @FXML
-    public void changeDirectory(){
+    public void changeDirectory() {
         DirectoryChooser dirChooser = new DirectoryChooser();
         dirChooser.setTitle("Musik-Vereichnis auswählen");
         String directory = dirChooser.showDialog(root.getScene().getWindow()).getAbsolutePath();
@@ -213,9 +213,11 @@ public class MainPresenter implements Initializable {
      * @param directory Das auszulesende Verzeichnis
      */
     public void readDirectory(String directory) {
-        taskPool.addTask(TaskFactory.createReadDirectoryTask(directory, masterData, table.disableProperty()));
-        taskPool.addTask(TaskFactory.createLoadFilesTask(masterData));
-        ProgressNotificationView.show();
+        if (directory != null && !directory.isEmpty()) {
+            taskPool.addTask(TaskFactory.createReadDirectoryTask(directory, masterData, table.disableProperty()));
+            taskPool.addTask(TaskFactory.createLoadFilesTask(masterData));
+            ProgressNotificationView.show();
+        }
     }
 
     /**
