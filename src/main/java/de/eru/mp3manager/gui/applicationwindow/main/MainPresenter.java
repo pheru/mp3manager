@@ -7,7 +7,6 @@ import de.eru.mp3manager.data.utils.InjectableList;
 import de.eru.mp3manager.gui.notifications.progressnotification.ProgressNotificationView;
 import de.eru.mp3manager.utils.TaskPool;
 import de.eru.mp3manager.utils.factories.TaskFactory;
-import java.io.File;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
