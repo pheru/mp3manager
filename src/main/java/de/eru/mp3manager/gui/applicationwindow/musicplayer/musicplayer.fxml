@@ -55,7 +55,7 @@
                     <children>
                         <Button mnemonicParsing="false" text="Previous" />
                         <Button mnemonicParsing="false" text="Stop" />
-                        <Button graphicTextGap="0.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="30.0">
+                        <Button graphicTextGap="0.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="30.0" onAction="#playPause" >
                             <graphic>
                                 <ImageView fitWidth="10.0" preserveRatio="true">
                                     <image>

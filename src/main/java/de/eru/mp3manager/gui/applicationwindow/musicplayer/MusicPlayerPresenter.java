@@ -8,9 +8,9 @@ import de.eru.mp3manager.utils.formatter.ByteFormatter;
 import de.eru.mp3manager.utils.formatter.TimeFormatter;
 import java.net.URL;
 import java.util.ResourceBundle;
+import javafx.beans.binding.ObjectBinding;
 import javafx.beans.binding.StringBinding;
 import javafx.beans.property.IntegerProperty;
-import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -18,6 +18,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.control.Slider;
 import javafx.scene.control.ToggleButton;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -61,7 +62,6 @@ public class MusicPlayerPresenter implements Initializable{
     
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        player = new MusicPlayer();
         bindUI();
     }
 
@@ -84,15 +84,19 @@ public class MusicPlayerPresenter implements Initializable{
         randomButton.selectedProperty().bindBidirectional(settings.musicPlayerRandomProperty());
         repeatButton.selectedProperty().bindBidirectional(settings.musicPlayerRepeatProperty());
         volumeSlider.valueProperty().bindBidirectional(settings.musicPlayerVolumeProperty());
-        playlist.currentTitleProperty().addListener(new ChangeListener<Mp3FileData>() {
-
-            @Override
-            public void changed(ObservableValue<? extends Mp3FileData> observable, Mp3FileData oldValue, Mp3FileData newValue) {
-                titleLabel.setText(newValue.getTitle());
-                albumLabel.setText(newValue.getAlbum());
-                artistLabel.setText(newValue.getArtist());
-                coverView.setImage(ByteFormatter.byteArrayToImage(newValue.getCover()));
-            }
+        playlist.currentTitleProperty().addListener((ObservableValue<? extends Mp3FileData> observable, Mp3FileData oldValue, Mp3FileData newValue) -> {
+            titleLabel.textProperty().bind(newValue.titleProperty());
+            albumLabel.textProperty().bind(newValue.albumProperty());
+            artistLabel.textProperty().bind(newValue.artistProperty());
+            coverView.imageProperty().bind(new ObjectBinding<Image>() {
+                {
+                    bind(newValue.coverProperty());
+                }
+                @Override
+                protected Image computeValue() {
+                    return ByteFormatter.byteArrayToImage(newValue.getCover());
+                }
+            });
         });
     }
 
@@ -107,5 +111,10 @@ public class MusicPlayerPresenter implements Initializable{
                 return TimeFormatter.secondsToDurationFormat(property.get(), false);
             }
         };
+    }
+    
+    @FXML
+    private void playPause(){
+        player.playPause();
     }
 }

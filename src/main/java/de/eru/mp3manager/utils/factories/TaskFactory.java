@@ -64,9 +64,9 @@ public final class TaskFactory {
                     }
                     updateTitle("Laden der Dateien abgeschlossen.");
                     updateMessage(files.size() + " Dateien wurden erfolgreich geladen.");
-                    
+
                     Platform.runLater(() -> {
-                        if(loadedData.size() == 0){
+                        if (loadedData.size() == 0) {
                             tablePlaceholderText.set("Das gewählte Verzeichnis enthält keine MP3-Dateien");
                             updateProgress(1, 1);
                         }
@@ -112,7 +112,7 @@ public final class TaskFactory {
         };
     }
 
-    public static Task<Void> createSaveFilesTask(ObservableList<Mp3FileData> dataToSave, Mp3FileData changeData) {
+    public static Task<Void> createSaveFilesTask(final ObservableList<Mp3FileData> dataToSave, final Mp3FileData changeData) {
         return new Task<Void>() {
             @Override
             protected Void call() throws Exception {
@@ -122,7 +122,7 @@ public final class TaskFactory {
                         updateTitle("Speichere Datei " + (i + 1) + " von " + dataToSave.size() + "...");
                         updateMessage(dataToSave.get(i).getAbsolutePath());
                         FileService.saveFile(dataToSave.get(i), changeData);
-                        dataToSave.get(i).reload();
+                        Platform.runLater(dataToSave.get(i)::reload);
                         updateProgress(i + 1, dataToSave.size());
                     }
                     updateTitle("Speichern der Dateien abgeschlossen.");
