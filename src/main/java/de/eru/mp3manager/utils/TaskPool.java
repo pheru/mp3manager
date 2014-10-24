@@ -9,6 +9,7 @@ import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
+import javax.enterprise.context.ApplicationScoped;
 
 /**
  * Klasse zum abarbeiten von Tasks.<br/>
@@ -17,6 +18,7 @@ import javafx.concurrent.Task;
  *
  * @author Philipp Bruckner
  */
+@ApplicationScoped
 public class TaskPool {
 
     private final ObservableList<Task> tasks = FXCollections.observableArrayList();

@@ -1,6 +1,7 @@
 package de.eru.mp3manager.gui.applicationwindow.editfile;
 
 import de.eru.pherufx.gui.JavaFXView;
+import javax.enterprise.context.ApplicationScoped;
 
 /**
  * Die View für das Bearbeiten von Dateien.
@@ -8,6 +9,7 @@ import de.eru.pherufx.gui.JavaFXView;
  *
  * @author Philipp Bruckner
  */
+@ApplicationScoped
 public class EditFileView extends JavaFXView {
     //Convention over Configuration
 }

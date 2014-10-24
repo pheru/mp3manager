@@ -22,6 +22,7 @@ import javafx.scene.image.ImageView;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
+@ApplicationScoped
 public class MusicPlayerPresenter implements Initializable{
 
     @FXML

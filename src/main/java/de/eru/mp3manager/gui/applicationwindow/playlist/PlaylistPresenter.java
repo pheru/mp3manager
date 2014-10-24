@@ -19,6 +19,7 @@ import javafx.stage.FileChooser;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
+@ApplicationScoped
 public class PlaylistPresenter implements Initializable {
 
     @FXML

@@ -1,8 +1,6 @@
 package de.eru.mp3manager.data.utils;
 
 import de.eru.mp3manager.data.Mp3FileData;
-import de.eru.mp3manager.utils.formatter.ByteFormatter;
-import de.eru.mp3manager.utils.formatter.TimeFormatter;
 import java.io.File;
 import java.io.IOException;
 import org.jaudiotagger.audio.AudioFileIO;

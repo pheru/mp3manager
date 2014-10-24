@@ -5,7 +5,6 @@ import de.eru.mp3manager.data.Mp3FileData;
 import de.eru.mp3manager.data.Playlist;
 import de.eru.mp3manager.cdi.InjectableList;
 import de.eru.mp3manager.cdi.SelectedTableData;
-import de.eru.mp3manager.gui.notifications.progressnotification.ProgressNotificationView;
 import de.eru.mp3manager.utils.TaskPool;
 import de.eru.mp3manager.utils.factories.TaskFactory;
 import java.io.File;
@@ -38,6 +37,7 @@ import javafx.stage.DirectoryChooser;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
+@ApplicationScoped
 public class MainPresenter implements Initializable {
 
     private static final String PLACEHOLDER_TEXT_NO_DIRECTORY_CHOSEN = "Es wurde kein Verzeichnis ausgewählt";

@@ -30,8 +30,10 @@ import javafx.scene.layout.Pane;
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
 import javafx.stage.Window;
+import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
+@ApplicationScoped
 public class EditFilePresenter implements Initializable {
 
     public static final String DIFF_VALUES = "<Verschiedene Werte>";

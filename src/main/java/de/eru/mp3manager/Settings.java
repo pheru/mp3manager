@@ -42,6 +42,11 @@ public class Settings {
     private final DoubleProperty musicPlayerVolume = new SimpleDoubleProperty(100.0);
     private final BooleanProperty musicPlayerRepeat = new SimpleBooleanProperty(false);
     private final BooleanProperty musicPlayerRandom = new SimpleBooleanProperty(false);
+    
+    private final BooleanProperty editFileSortTitle = new SimpleBooleanProperty(false);
+    private final BooleanProperty editFileSortAlbum = new SimpleBooleanProperty(false);
+    private final BooleanProperty editFileSortArtist = new SimpleBooleanProperty(false);
+    private final BooleanProperty editFileSynchronizeTitle = new SimpleBooleanProperty(false);
 
     @PostConstruct
     private void init() {
@@ -218,6 +223,54 @@ public class Settings {
 
     public BooleanProperty applicationWindowMaximizedProperty() {
         return applicationWindowMaximized;
+    }
+
+    public Boolean isEditFileSortTitle() {
+        return editFileSortTitle.get();
+    }
+
+    public void setEditFileSortTitle(final Boolean editFileSortTitle) {
+        this.editFileSortTitle.set(editFileSortTitle);
+    }
+
+    public BooleanProperty editFileSortTitleProperty() {
+        return editFileSortTitle;
+    }
+
+    public Boolean isEditFileSortAlbum() {
+        return editFileSortAlbum.get();
+    }
+
+    public void setEditFileSortAlbum(final Boolean editFileSortAlbum) {
+        this.editFileSortAlbum.set(editFileSortAlbum);
+    }
+
+    public BooleanProperty editFileSortAlbumProperty() {
+        return editFileSortAlbum;
+    }
+
+    public Boolean isEditFileSortArtist() {
+        return editFileSortArtist.get();
+    }
+
+    public void setEditFileSortArtist(final Boolean editFileSortArtist) {
+        this.editFileSortArtist.set(editFileSortArtist);
+    }
+
+    public BooleanProperty editFileSortArtistProperty() {
+        return editFileSortArtist;
+    }
+
+    public Boolean isEditFileSynchronizeTitle() {
+        return editFileSynchronizeTitle.get();
+    }
+
+    public void setEditFileSynchronizeTitle(final Boolean editFileSynchronizeTitle) {
+        this.editFileSynchronizeTitle.set(editFileSynchronizeTitle);
+    }
+
+    public BooleanProperty editFileSynchronizeTitleProperty() {
+        return editFileSynchronizeTitle;
     }
 
 }

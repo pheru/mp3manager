@@ -10,6 +10,7 @@ import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.scene.media.MediaPlayer;
 import javax.annotation.PostConstruct;
+import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 /**
@@ -17,6 +18,7 @@ import javax.inject.Inject;
  *
  * @author Philipp Bruckner
  */
+@ApplicationScoped
 public class MusicPlayer {
 
     private final IntegerProperty currentTime = new SimpleIntegerProperty(88);
