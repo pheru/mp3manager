@@ -55,7 +55,7 @@ public class MusicPlayer {
         } else if (player != null && player.getStatus() == MediaPlayer.Status.PAUSED) {
             player.play();
         } else if (!playlist.getTitles().isEmpty()) {
-            play(playlist.getTitlesToPlay().get(0));
+            play(playlist.getTitles().get(playlist.getCurrentIndex()));
         }
         //TODO Meldung ausgeben, wenn player == null und playlist leer?
     }
@@ -82,11 +82,11 @@ public class MusicPlayer {
     }
 
     public void next() {
-//        play(playlist.nextTitle());
+//        play(playlist.getNextTitle());
     }
 
     public void previous() {
-//        play(playlist.previousTitle());
+//        play(playlist.getPreviousTitle());
     }
 
     public IntegerProperty currentTimeProperty() {

@@ -1,10 +1,12 @@
 package de.eru.mp3manager.data;
 
-import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.SimpleObjectProperty;
+import de.eru.mp3manager.Settings;
+import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.SimpleIntegerProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
 
 /**
  * Klasse zum verwalten einer Wiedergabeliste.
@@ -14,20 +16,34 @@ import javax.enterprise.context.ApplicationScoped;
 @ApplicationScoped
 public class Playlist {
 
+    @Inject
+    private Settings settings;
+    
     public static final String FILE_EXTENSION = "mmpl";
     public static final String FILE_SPLIT = "</>";
 
-    private String absolutePath = "D:\\Wiedergabeliste1.mmpl";
+    private String absolutePath;
     private final ObservableList<Mp3FileData> titles = FXCollections.observableArrayList();
-    private final ObservableList<Mp3FileData> titlesToPlay = FXCollections.observableArrayList();
-    private final ObjectProperty<Mp3FileData> currentTitle = new SimpleObjectProperty<>();
+    private final ObservableList<Integer> indicesToPlay = FXCollections.observableArrayList();
+    private final IntegerProperty currentIndex = new SimpleIntegerProperty(0);
+
+    public Mp3FileData getNextTitle() {
+        if(indicesToPlay.indexOf(currentIndex.get()) == indicesToPlay.size() - 1){
+            currentIndex.set(0);
+        }
+        return titles.get(currentIndex.get());
+    }
+
+    public Mp3FileData getPreviousTitle() {
+        return titles.get(currentIndex.get());
+    }
 
     public ObservableList<Mp3FileData> getTitles() {
         return titles;
     }
 
-    public ObservableList<Mp3FileData> getTitlesToPlay() {
-        return titlesToPlay;
+    public ObservableList<Integer> getTitlesToPlay() {
+        return indicesToPlay;
     }
 
     public void setAbsolutePath(String absolutePath) {
@@ -38,15 +54,15 @@ public class Playlist {
         return absolutePath;
     }
 
-    public Mp3FileData getCurrentTitle() {
-        return currentTitle.get();
+    public Integer getCurrentIndex() {
+        return currentIndex.get();
     }
 
-    public void setCurrentTitle(final Mp3FileData currentTitle) {
-        this.currentTitle.set(currentTitle);
+    public void setCurrentIndex(final Integer currentIndex) {
+        this.currentIndex.set(currentIndex);
     }
 
-    public ObjectProperty<Mp3FileData> currentTitleProperty() {
-        return currentTitle;
+    public IntegerProperty currentIndexProperty() {
+        return currentIndex;
     }
 }

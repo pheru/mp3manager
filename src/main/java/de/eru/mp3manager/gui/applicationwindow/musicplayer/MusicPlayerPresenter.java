@@ -11,6 +11,7 @@ import java.util.ResourceBundle;
 import javafx.beans.binding.ObjectBinding;
 import javafx.beans.binding.StringBinding;
 import javafx.beans.property.IntegerProperty;
+import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -24,7 +25,7 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 @ApplicationScoped
-public class MusicPlayerPresenter implements Initializable{
+public class MusicPlayerPresenter implements Initializable {
 
     @FXML
     private Label titleLabel;
@@ -59,7 +60,7 @@ public class MusicPlayerPresenter implements Initializable{
     private Playlist playlist;
     @Inject
     private MusicPlayer player;
-    
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         bindUI();
@@ -84,17 +85,19 @@ public class MusicPlayerPresenter implements Initializable{
         randomButton.selectedProperty().bindBidirectional(settings.musicPlayerRandomProperty());
         repeatButton.selectedProperty().bindBidirectional(settings.musicPlayerRepeatProperty());
         volumeSlider.valueProperty().bindBidirectional(settings.musicPlayerVolumeProperty());
-        playlist.currentTitleProperty().addListener((ObservableValue<? extends Mp3FileData> observable, Mp3FileData oldValue, Mp3FileData newValue) -> {
-            titleLabel.textProperty().bind(newValue.titleProperty());
-            albumLabel.textProperty().bind(newValue.albumProperty());
-            artistLabel.textProperty().bind(newValue.artistProperty());
+        playlist.currentIndexProperty().addListener((ObservableValue<? extends Number> observable, Number oldValue, Number newValue) -> {
+            Mp3FileData newTitle = playlist.getTitles().get(newValue.intValue());
+            titleLabel.textProperty().bind(newTitle.titleProperty());
+            albumLabel.textProperty().bind(newTitle.albumProperty());
+            artistLabel.textProperty().bind(newTitle.artistProperty());
             coverView.imageProperty().bind(new ObjectBinding<Image>() {
                 {
-                    bind(newValue.coverProperty());
+                    bind(newTitle.coverProperty());
                 }
+                
                 @Override
                 protected Image computeValue() {
-                    return ByteFormatter.byteArrayToImage(newValue.getCover());
+                    return ByteFormatter.byteArrayToImage(newTitle.getCover());
                 }
             });
         });
@@ -112,9 +115,9 @@ public class MusicPlayerPresenter implements Initializable{
             }
         };
     }
-    
+
     @FXML
-    private void playPause(){
+    private void playPause() {
         player.playPause();
     }
 }

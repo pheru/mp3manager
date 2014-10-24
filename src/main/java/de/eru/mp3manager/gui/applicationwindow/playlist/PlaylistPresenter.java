@@ -46,7 +46,6 @@ public class PlaylistPresenter implements Initializable {
     private void initTable() {
         table.setItems(playlist.getTitles());
         selectedTitles = table.getSelectionModel().getSelectedItems();
-        playlist.currentTitleProperty().bind(table.getSelectionModel().selectedItemProperty()); //TODO auf den richtigen Titel binden
     }
 
     /**
