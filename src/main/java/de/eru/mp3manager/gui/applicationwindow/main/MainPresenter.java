@@ -5,6 +5,7 @@ import de.eru.mp3manager.data.Mp3FileData;
 import de.eru.mp3manager.data.Playlist;
 import de.eru.mp3manager.cdi.InjectableList;
 import de.eru.mp3manager.cdi.SelectedTableData;
+import de.eru.mp3manager.gui.utils.TablePlaceholder;
 import de.eru.mp3manager.utils.TaskPool;
 import de.eru.mp3manager.utils.factories.TaskFactory;
 import java.io.File;
@@ -62,6 +63,7 @@ public class MainPresenter implements Initializable {
     private ProgressIndicator taskProgress;
     @FXML
     private TableView<Mp3FileData> table;
+    private final TablePlaceholder placeholder = new TablePlaceholder(PLACEHOLDER_TEXT_NO_DIRECTORY_CHOSEN, false);
     private final StringProperty tablePlaceholderText = new SimpleStringProperty();
 
     @Inject
@@ -91,9 +93,9 @@ public class MainPresenter implements Initializable {
      * Initialisiert die Tabelle.
      */
     private void initTable() {
-        Label placeholder = new Label(PLACEHOLDER_TEXT_NO_DIRECTORY_CHOSEN);
-        placeholder.setTextAlignment(TextAlignment.CENTER);
-        placeholder.textProperty().bindBidirectional(tablePlaceholderText);
+//        Label placeholder = new Label(PLACEHOLDER_TEXT_NO_DIRECTORY_CHOSEN);
+//        placeholder.setTextAlignment(TextAlignment.CENTER);
+//        placeholder.textProperty().bindBidirectional(tablePlaceholderText);
         table.setPlaceholder(placeholder);
         table.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
         table.setItems(setUpTableFilter());
@@ -223,7 +225,7 @@ public class MainPresenter implements Initializable {
     public void readDirectory() {
         String directory = settings.getMusicDirectory();
         if (directory != null && !directory.isEmpty()) {
-            taskPool.addTask(TaskFactory.createReadDirectoryTask(directory, masterData, tablePlaceholderText, table.disableProperty()));
+            taskPool.addTask(TaskFactory.createReadDirectoryTask(directory, masterData, placeholder, table.disableProperty()));
         }
     }
 
