@@ -11,7 +11,6 @@ import java.util.ResourceBundle;
 import javafx.beans.binding.ObjectBinding;
 import javafx.beans.binding.StringBinding;
 import javafx.beans.property.IntegerProperty;
-import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -85,7 +84,7 @@ public class MusicPlayerPresenter implements Initializable {
         randomButton.selectedProperty().bindBidirectional(settings.musicPlayerRandomProperty());
         repeatButton.selectedProperty().bindBidirectional(settings.musicPlayerRepeatProperty());
         volumeSlider.valueProperty().bindBidirectional(settings.musicPlayerVolumeProperty());
-        playlist.currentIndexProperty().addListener((ObservableValue<? extends Number> observable, Number oldValue, Number newValue) -> {
+        playlist.currentTitleIndexProperty().addListener((ObservableValue<? extends Number> observable, Number oldValue, Number newValue) -> {
             Mp3FileData newTitle = playlist.getTitles().get(newValue.intValue());
             titleLabel.textProperty().bind(newTitle.titleProperty());
             albumLabel.textProperty().bind(newTitle.albumProperty());
@@ -94,7 +93,7 @@ public class MusicPlayerPresenter implements Initializable {
                 {
                     bind(newTitle.coverProperty());
                 }
-                
+
                 @Override
                 protected Image computeValue() {
                     return ByteFormatter.byteArrayToImage(newTitle.getCover());
@@ -119,5 +118,20 @@ public class MusicPlayerPresenter implements Initializable {
     @FXML
     private void playPause() {
         player.playPause();
+    }
+
+    @FXML
+    private void next() {
+        player.next();
+    }
+
+    @FXML
+    private void previous() {
+        player.previous();
+    }
+    
+    @FXML
+    private void stop(){
+        player.stop();
     }
 }

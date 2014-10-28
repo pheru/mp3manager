@@ -53,8 +53,8 @@
                 </HBox>
                 <HBox alignment="CENTER" GridPane.columnIndex="1" GridPane.rowIndex="1">
                     <children>
-                        <Button mnemonicParsing="false" text="Previous" />
-                        <Button mnemonicParsing="false" text="Stop" />
+                        <Button mnemonicParsing="false" text="Previous" onAction="#previous" />
+                        <Button mnemonicParsing="false" text="Stop" onAction="#stop" />
                         <Button graphicTextGap="0.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="30.0" onAction="#playPause" >
                             <graphic>
                                 <ImageView fitWidth="10.0" preserveRatio="true">
@@ -64,7 +64,7 @@
                                 </ImageView>
                             </graphic>
                         </Button>
-                        <Button mnemonicParsing="false" text="Next" />
+                        <Button mnemonicParsing="false" text="Next" onAction="#next" />
                         <ToggleButton fx:id="randomButton" mnemonicParsing="false" text="Random">
                             <HBox.margin>
                                 <Insets left="20.0" />

@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package de.eru.mp3manager.cdi;
 
 import static java.lang.annotation.ElementType.FIELD;
@@ -16,7 +11,7 @@ import javax.inject.Qualifier;
 
 /**
  *
- * @author Philipp
+ * @author Philipp Bruckner
  */
 @Qualifier
 @Retention(RUNTIME)

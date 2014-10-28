@@ -21,7 +21,7 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 /**
- * Player zum Abspielen von Musik.
+ * Player zum Abspielen von der MP3-Dateien.
  *
  * @author Philipp Bruckner
  */
@@ -54,8 +54,8 @@ public class MusicPlayer {
             player.pause();
         } else if (player != null && player.getStatus() == MediaPlayer.Status.PAUSED) {
             player.play();
-        } else if (!playlist.getTitles().isEmpty()) {
-            play(playlist.getTitles().get(playlist.getCurrentIndex()));
+        } else if (playlist.getCurrentTitle() != null) {
+            play(playlist.getCurrentTitle());
         }
         //TODO Meldung ausgeben, wenn player == null und playlist leer?
     }
@@ -70,6 +70,8 @@ public class MusicPlayer {
             player = new MediaPlayer(media);
             status.bind(player.statusProperty());
             //TODO...
+            player.play();
+            mp3.setCurrentlyPlayed(true);
         } catch (MalformedURLException ex) {
             ex.printStackTrace();
         }
@@ -82,11 +84,19 @@ public class MusicPlayer {
     }
 
     public void next() {
-//        play(playlist.getNextTitle());
+        playlist.getCurrentTitle().setCurrentlyPlayed(false);
+        playlist.next();
+        if (player != null && player.getStatus() == Status.PLAYING) {
+            play(playlist.getCurrentTitle());
+        }
     }
 
     public void previous() {
-//        play(playlist.getPreviousTitle());
+        playlist.getCurrentTitle().setCurrentlyPlayed(false);
+        playlist.previous();
+        if (player != null && player.getStatus() == Status.PLAYING) {
+            play(playlist.getCurrentTitle());
+        }
     }
 
     public IntegerProperty currentTimeProperty() {
