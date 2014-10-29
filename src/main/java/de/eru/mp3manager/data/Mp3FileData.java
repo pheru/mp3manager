@@ -42,7 +42,6 @@ public class Mp3FileData {
     private final ObjectProperty<byte[]> cover = new SimpleObjectProperty<>();
     private final DoubleProperty duration = new SimpleDoubleProperty(0);
     private final StringProperty formattedDuration = new SimpleStringProperty(NOT_LOADED);
-    private final BooleanProperty currentlyPlayed = new SimpleBooleanProperty(false);
     private final BooleanProperty loaded = new SimpleBooleanProperty(false);
 
     /**
@@ -257,18 +256,6 @@ public class Mp3FileData {
 
     public StringProperty formattedDurationProperty() {
         return formattedDuration;
-    }
-
-    public boolean isCurrentlyPlayed() {
-        return currentlyPlayed.get();
-    }
-
-    public void setCurrentlyPlayed(boolean playing) {
-        this.currentlyPlayed.set(playing);
-    }
-
-    public BooleanProperty currentlyPlayedProperty() {
-        return currentlyPlayed;
     }
 
     public boolean isLoaded() {

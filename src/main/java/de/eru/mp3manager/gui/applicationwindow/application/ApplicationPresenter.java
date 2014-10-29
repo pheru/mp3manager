@@ -17,11 +17,9 @@ import de.eru.mp3manager.gui.applicationwindow.musicplayer.MusicPlayerView;
 import de.eru.mp3manager.gui.applicationwindow.playlist.PlaylistPresenter;
 import de.eru.mp3manager.gui.applicationwindow.playlist.PlaylistView;
 import de.eru.mp3manager.player.MusicPlayer;
-import de.eru.mp3manager.utils.Logfile;
 import javafx.scene.control.CheckMenuItem;
 import javafx.scene.control.SplitPane;
 import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
 @ApplicationScoped

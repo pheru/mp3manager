@@ -29,11 +29,6 @@
                 <Label text="Wiedergabeliste enthält keine Titel" />
             </placeholder>
             <columns>
-                <TableColumn maxWidth="30.0" minWidth="30.0" sortable="false" >
-                    <cellValueFactory>
-                        <PropertyValueFactory property="currentlyPlayed" />
-                    </cellValueFactory>
-                </TableColumn>
                 <TableColumn text="Titel" sortable="false">
                     <cellValueFactory>
                         <PropertyValueFactory property="title" />

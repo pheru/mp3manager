@@ -14,6 +14,7 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
+import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TableView;
 import javafx.stage.FileChooser;
 import javax.enterprise.context.ApplicationScoped;
@@ -44,6 +45,10 @@ public class PlaylistPresenter implements Initializable {
      * Initialisiert die Tabelle.
      */
     private void initTable() {
+        table.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+        PlaylistRowFactory<Mp3FileData> rowFactory = new PlaylistRowFactory<>("played");
+        table.setRowFactory(rowFactory);
+        rowFactory.currentIndexProperty().bind(playlist.currentTitleIndexProperty());
         table.setItems(playlist.getTitles());
         selectedTitles = table.getSelectionModel().getSelectedItems();
     }

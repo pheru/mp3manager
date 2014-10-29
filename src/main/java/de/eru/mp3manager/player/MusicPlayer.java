@@ -71,7 +71,6 @@ public class MusicPlayer {
             status.bind(player.statusProperty());
             //TODO...
             player.play();
-            mp3.setCurrentlyPlayed(true);
         } catch (MalformedURLException ex) {
             ex.printStackTrace();
         }
@@ -84,7 +83,6 @@ public class MusicPlayer {
     }
 
     public void next() {
-        playlist.getCurrentTitle().setCurrentlyPlayed(false);
         playlist.next();
         if (player != null && player.getStatus() == Status.PLAYING) {
             play(playlist.getCurrentTitle());
@@ -92,7 +90,6 @@ public class MusicPlayer {
     }
 
     public void previous() {
-        playlist.getCurrentTitle().setCurrentlyPlayed(false);
         playlist.previous();
         if (player != null && player.getStatus() == Status.PLAYING) {
             play(playlist.getCurrentTitle());
