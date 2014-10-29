@@ -1,12 +1,12 @@
 package de.eru.mp3manager.gui.applicationwindow.editfile;
 
 import de.eru.mp3manager.data.Mp3FileData;
-import de.eru.mp3manager.cdi.InjectableList;
 import de.eru.mp3manager.cdi.SelectedTableData;
 import de.eru.mp3manager.utils.TaskPool;
 import de.eru.mp3manager.utils.formatter.ByteFormatter;
 import de.eru.mp3manager.utils.factories.ComparatorFactory;
 import de.eru.mp3manager.utils.factories.TaskFactory;
+import de.eru.pherufx.utils.InjectableList;
 import java.io.File;
 import java.net.URL;
 import java.util.Arrays;

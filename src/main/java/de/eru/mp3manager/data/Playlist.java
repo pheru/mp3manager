@@ -3,8 +3,6 @@ package de.eru.mp3manager.data;
 import de.eru.mp3manager.Settings;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
@@ -62,21 +60,29 @@ public class Playlist {
         }
     }
 
-    public void next() {
+    /**
+     *
+     * @return true wenn ende der liste erreicht
+     */
+    public boolean next() {
+        boolean endOfListReached = false;
         if (settings.isMusicPlayerRandom()) {
             int nextRandomIndex = randomIndicesToPlay.indexOf(currentTitleIndex.get()) + 1;
             if (nextRandomIndex == randomIndicesToPlay.size()) {
                 resetRandomIndicesToPlay();
                 nextRandomIndex = 0;
+                endOfListReached = true;
             }
             currentTitleIndex.set(randomIndicesToPlay.get(nextRandomIndex));
-        } else {
-            if (currentTitleIndex.get() == titles.size() - 1) {
-                currentTitleIndex.set(0);
-            } else {
-                currentTitleIndex.set(currentTitleIndex.get() + 1);
-            }
+            return endOfListReached;
         }
+        if (currentTitleIndex.get() == titles.size() - 1) {
+            currentTitleIndex.set(0);
+            endOfListReached = true;
+        } else {
+            currentTitleIndex.set(currentTitleIndex.get() + 1);
+        }
+        return endOfListReached;
     }
 
     public void previous() {

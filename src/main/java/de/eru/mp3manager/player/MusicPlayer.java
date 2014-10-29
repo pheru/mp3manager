@@ -5,6 +5,7 @@ import de.eru.mp3manager.data.Mp3FileData;
 import de.eru.mp3manager.data.Playlist;
 import java.io.File;
 import java.net.MalformedURLException;
+import javafx.beans.binding.DoubleBinding;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.IntegerProperty;
@@ -13,9 +14,12 @@ import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaPlayer.Status;
+import javafx.util.Duration;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -28,8 +32,8 @@ import javax.inject.Inject;
 @ApplicationScoped
 public class MusicPlayer {
 
-    private final IntegerProperty currentTime = new SimpleIntegerProperty(88);
-    private final IntegerProperty totalTime = new SimpleIntegerProperty(144);
+    private final DoubleProperty currentTime = new SimpleDoubleProperty(0.0);
+    private final DoubleProperty totalTime = new SimpleDoubleProperty(0.0);
     private final DoubleProperty volume = new SimpleDoubleProperty(100.0);
     private final BooleanProperty repeat = new SimpleBooleanProperty(false);
     private final BooleanProperty random = new SimpleBooleanProperty(false);
@@ -68,9 +72,27 @@ public class MusicPlayer {
         try {
             Media media = new Media(file.toURI().toURL().toExternalForm());
             player = new MediaPlayer(media);
-            status.bind(player.statusProperty());
-            //TODO...
+            player.setOnEndOfMedia(() -> {
+                if (!playlist.next() || repeat.get()) {
+                    play(playlist.getCurrentTitle());
+                } else {
+                    player.stop();
+                }
+            });
             player.play();
+            status.bind(player.statusProperty());
+            totalTime.bind(mp3.durationProperty());
+            currentTime.bind(new DoubleBinding() {
+                {
+                    bind(player.currentTimeProperty());
+                }
+
+                @Override
+                protected double computeValue() {
+                    return player.getCurrentTime().toSeconds();
+                }
+            });
+            player.volumeProperty().bind(volume.divide(100.0));
         } catch (MalformedURLException ex) {
             ex.printStackTrace();
         }
@@ -96,12 +118,8 @@ public class MusicPlayer {
         }
     }
 
-    public IntegerProperty currentTimeProperty() {
-        return currentTime;
-    }
-
-    public IntegerProperty totalTimeProperty() {
-        return totalTime;
+    public void seek(double seconds) {
+        player.seek(Duration.seconds(seconds));
     }
 
     public BooleanProperty repeatProperty() {
@@ -110,5 +128,69 @@ public class MusicPlayer {
 
     public BooleanProperty randomProperty() {
         return random;
+    }
+
+    public Double getVolume() {
+        return volume.get();
+    }
+
+    public void setVolume(final Double volume) {
+        this.volume.set(volume);
+    }
+
+    public DoubleProperty volumeProperty() {
+        return volume;
+    }
+
+    public Boolean isRepeat() {
+        return repeat.get();
+    }
+
+    public void setRepeat(final Boolean repeat) {
+        this.repeat.set(repeat);
+    }
+
+    public Boolean isRandom() {
+        return random.get();
+    }
+
+    public void setRandom(final Boolean random) {
+        this.random.set(random);
+    }
+
+    public Status getStatus() {
+        return status.get();
+    }
+
+    public void setStatus(final Status status) {
+        this.status.set(status);
+    }
+
+    public ObjectProperty<Status> statusProperty() {
+        return status;
+    }
+
+    public Double getCurrentTime() {
+        return currentTime.get();
+    }
+
+    public void setCurrentTime(final Double currentTime) {
+        this.currentTime.set(currentTime);
+    }
+
+    public DoubleProperty currentTimeProperty() {
+        return currentTime;
+    }
+
+    public Double getTotalTime() {
+        return totalTime.get();
+    }
+
+    public void setTotalTime(final Double totalTime) {
+        this.totalTime.set(totalTime);
+    }
+
+    public DoubleProperty totalTimeProperty() {
+        return totalTime;
     }
 }

@@ -8,18 +8,21 @@ import de.eru.mp3manager.utils.formatter.ByteFormatter;
 import de.eru.mp3manager.utils.formatter.TimeFormatter;
 import java.net.URL;
 import java.util.ResourceBundle;
+import javafx.beans.binding.DoubleBinding;
 import javafx.beans.binding.ObjectBinding;
 import javafx.beans.binding.StringBinding;
-import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.DoubleProperty;
 import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.control.Slider;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.media.MediaPlayer;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
@@ -49,6 +52,8 @@ public class MusicPlayerPresenter implements Initializable {
     @FXML
     private Label volumeLabel;
     @FXML
+    private Button playButton;
+    @FXML
     private ToggleButton randomButton;
     @FXML
     private ToggleButton repeatButton;
@@ -60,13 +65,27 @@ public class MusicPlayerPresenter implements Initializable {
     @Inject
     private MusicPlayer player;
 
+    private DoubleBinding durationSliderBinding;
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        durationSliderBinding = new DoubleBinding() {
+            {
+                bind(player.currentTimeProperty());
+            }
+
+            @Override
+            protected double computeValue() {
+                double percentage = (double) player.getCurrentTime() / player.getTotalTime();
+                return percentage;
+            }
+        };
         bindUI();
     }
 
     private void bindUI() {
-        durationProgressBar.progressProperty().bind(durationSlider.valueProperty());
+        durationSlider.valueProperty().bind(durationSliderBinding);
+        durationProgressBar.progressProperty().bind(durationSlider.valueProperty().add(0.005)); //add() damit der Slider die Progressbar komplett überdeckt
         currentTimeLabel.textProperty().bind(createTimeBinding(player.currentTimeProperty()));
         totalTimeLabel.textProperty().bind(createTimeBinding(player.totalTimeProperty()));
 
@@ -79,6 +98,20 @@ public class MusicPlayerPresenter implements Initializable {
             @Override
             protected String computeValue() {
                 return Double.valueOf(volumeSlider.valueProperty().get()).intValue() + "%";
+            }
+        });
+        playButton.textProperty().bind(new StringBinding() {
+            {
+                bind(player.statusProperty());
+            }
+
+            @Override
+            protected String computeValue() {
+                if (player.getStatus() != MediaPlayer.Status.PLAYING) {
+                    return "Play";
+                } else {
+                    return "Pause";
+                }
             }
         });
         randomButton.selectedProperty().bindBidirectional(settings.musicPlayerRandomProperty());
@@ -102,7 +135,7 @@ public class MusicPlayerPresenter implements Initializable {
         });
     }
 
-    private StringBinding createTimeBinding(IntegerProperty property) {
+    private StringBinding createTimeBinding(DoubleProperty property) {
         return new StringBinding() {
             {
                 bind(property);
@@ -129,9 +162,20 @@ public class MusicPlayerPresenter implements Initializable {
     private void previous() {
         player.previous();
     }
-    
+
     @FXML
-    private void stop(){
+    private void stop() {
         player.stop();
+    }
+
+    @FXML
+    private void sliderPressed() {
+        durationSlider.valueProperty().unbind();
+    }
+
+    @FXML
+    private void sliderReleased() {
+        player.seek(durationSlider.getValue() * player.getTotalTime());
+        durationSlider.valueProperty().bind(durationSliderBinding);
     }
 }

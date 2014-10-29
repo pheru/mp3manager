@@ -6,15 +6,16 @@
 <?import java.lang.*?>
 <?import javafx.scene.layout.*?>
 
-<HBox alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="de.eru.mp3manager.gui.applicationwindow.musicplayer.MusicPlayerPresenter">
+<HBox alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" xmlns="http://javafx.com/javafx/8" 
+      xmlns:fx="http://javafx.com/fxml/1" fx:controller="de.eru.mp3manager.gui.applicationwindow.musicplayer.MusicPlayerPresenter">
     <children>
         <ImageView fx:id="coverView" fitHeight="106.0" fitWidth="106.0" pickOnBounds="true" preserveRatio="true">
             <image>
                 <Image url="@testAlbumCover.jpg" />
             </image>
-         <HBox.margin>
-            <Insets bottom="1.0" left="1.0" right="1.0" top="1.0" />
-         </HBox.margin>
+            <HBox.margin>
+                <Insets bottom="1.0" left="1.0" right="1.0" top="1.0" />
+            </HBox.margin>
         </ImageView>
         <GridPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" HBox.hgrow="ALWAYS">
             <columnConstraints>
@@ -35,7 +36,8 @@
                                         <Insets left="7.0" right="7.0" />
                                     </padding>
                                 </ProgressBar>
-                                <Slider fx:id="durationSlider" blockIncrement="0.0" max="1.0" maxWidth="1.7976931348623157E308" value="1.0" />
+                                <Slider fx:id="durationSlider" blockIncrement="0.0" max="1.0" maxWidth="1.7976931348623157E308" value="1.0" 
+                                        onMousePressed="#sliderPressed" onMouseReleased="#sliderReleased"  />
                             </children>
                         </StackPane>
                         <Label fx:id="currentTimeLabel" text="00:00">
@@ -55,15 +57,7 @@
                     <children>
                         <Button mnemonicParsing="false" text="Previous" onAction="#previous" />
                         <Button mnemonicParsing="false" text="Stop" onAction="#stop" />
-                        <Button graphicTextGap="0.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="30.0" onAction="#playPause" >
-                            <graphic>
-                                <ImageView fitWidth="10.0" preserveRatio="true">
-                                    <image>
-                                        <Image url="@play.png" />
-                                    </image>
-                                </ImageView>
-                            </graphic>
-                        </Button>
+                        <Button fx:id="playButton" text="Play"  mnemonicParsing="false" onAction="#playPause" />
                         <Button mnemonicParsing="false" text="Next" onAction="#next" />
                         <ToggleButton fx:id="randomButton" mnemonicParsing="false" text="Random">
                             <HBox.margin>
@@ -80,7 +74,8 @@
                                                 <Insets left="7.0" right="7.0" />
                                             </padding>
                                         </ProgressBar>
-                                        <Slider fx:id="volumeSlider" blockIncrement="0.0" majorTickUnit="1.0" max="100.0" maxWidth="1.7976931348623157E308" minorTickCount="1" value="100.0" />
+                                        <Slider fx:id="volumeSlider" blockIncrement="0.0" majorTickUnit="1.0" max="100.0" maxWidth="1.7976931348623157E308" 
+                                                minorTickCount="1" value="100.0" />
                                     </children>
                                 </StackPane>
                                 <Label fx:id="volumeLabel" alignment="CENTER_RIGHT" minWidth="35.0" text="100%">
