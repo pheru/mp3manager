@@ -12,10 +12,7 @@ import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleDoubleProperty;
-import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleObjectProperty;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaPlayer.Status;
@@ -37,7 +34,7 @@ public class MusicPlayer {
     private final DoubleProperty volume = new SimpleDoubleProperty(100.0);
     private final BooleanProperty repeat = new SimpleBooleanProperty(false);
     private final BooleanProperty random = new SimpleBooleanProperty(false);
-    private final ObjectProperty<Status> status = new SimpleObjectProperty<>(Status.UNKNOWN); //TODO ALternative?
+    private final ObjectProperty<Status> status = new SimpleObjectProperty<>(Status.UNKNOWN);
 
     @Inject
     private Settings settings;
@@ -117,7 +114,7 @@ public class MusicPlayer {
             play(playlist.getCurrentTitle());
         }
     }
-
+    
     public void seek(double seconds) {
         player.seek(Duration.seconds(seconds));
     }

@@ -77,6 +77,9 @@ public class MusicPlayerPresenter implements Initializable {
             @Override
             protected double computeValue() {
                 double percentage = (double) player.getCurrentTime() / player.getTotalTime();
+                if(Double.valueOf(percentage).isNaN()){
+                    return 0.0;
+                }
                 return percentage;
             }
         };
@@ -87,7 +90,6 @@ public class MusicPlayerPresenter implements Initializable {
         durationSlider.valueProperty().bind(durationSliderBinding);
         durationProgressBar.progressProperty().bind(durationSlider.valueProperty().add(0.005)); //add() damit der Slider die Progressbar komplett überdeckt
         currentTimeLabel.textProperty().bind(createTimeBinding(player.currentTimeProperty()));
-        totalTimeLabel.textProperty().bind(createTimeBinding(player.totalTimeProperty()));
 
         volumeProgressBar.progressProperty().bind(volumeSlider.valueProperty().divide(100.0));
         volumeLabel.textProperty().bind(new StringBinding() {
@@ -122,6 +124,7 @@ public class MusicPlayerPresenter implements Initializable {
             titleLabel.textProperty().bind(newTitle.titleProperty());
             albumLabel.textProperty().bind(newTitle.albumProperty());
             artistLabel.textProperty().bind(newTitle.artistProperty());
+            totalTimeLabel.textProperty().bind(createTimeBinding(newTitle.durationProperty()));
             coverView.imageProperty().bind(new ObjectBinding<Image>() {
                 {
                     bind(newTitle.coverProperty());

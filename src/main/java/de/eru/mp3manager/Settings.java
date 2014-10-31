@@ -5,11 +5,19 @@ import de.eru.mp3manager.utils.SortedProperties;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.DoubleProperty;
+import javafx.beans.property.Property;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -42,7 +50,7 @@ public class Settings {
     private final DoubleProperty musicPlayerVolume = new SimpleDoubleProperty(100.0);
     private final BooleanProperty musicPlayerRepeat = new SimpleBooleanProperty(false);
     private final BooleanProperty musicPlayerRandom = new SimpleBooleanProperty(false);
-    
+
     private final BooleanProperty editFileSortTitle = new SimpleBooleanProperty(false);
     private final BooleanProperty editFileSortAlbum = new SimpleBooleanProperty(false);
     private final BooleanProperty editFileSortArtist = new SimpleBooleanProperty(false);
@@ -70,16 +78,27 @@ public class Settings {
         } catch (IOException ex) {
             ex.printStackTrace();
         }
+        getPropertyValues();
     }
 
     private void loadProperties(Properties properties) {
-        musicDirectory.set(properties.getProperty("musicDirectory"));
-        applicationWindowMaximized.set(Boolean.valueOf(properties.getProperty("applicationWindowFullScreen")));
-        applicationWindowWidth.set(Double.valueOf(properties.getProperty("applicationWindowWidth")));
-        applicationWindowHeight.set(Double.valueOf(properties.getProperty("applicationWindowHeight")));
-        musicPlayerVolume.set(Double.valueOf(properties.getProperty("musicPlayerVolume")));
-        musicPlayerRandom.set(Boolean.valueOf(properties.getProperty("musicPlayerRandom")));
-        musicPlayerRepeat.set(Boolean.valueOf(properties.getProperty("musicPlayerRepeat")));
+        for (Field property : getProperties()) {
+            try {
+                Class<?> propertyClass = property.getType();
+                if (BooleanProperty.class.isAssignableFrom(propertyClass)) {
+                    Method m = propertyClass.getMethod("set", boolean.class);
+                    m.invoke(property.get(this), Boolean.valueOf(properties.getProperty(property.getName())));
+                } else if (DoubleProperty.class.isAssignableFrom(propertyClass)) {
+                    Method m = propertyClass.getMethod("set", double.class);
+                    m.invoke(property.get(this), Double.valueOf(properties.getProperty(property.getName())));
+                } else if (StringProperty.class.isAssignableFrom(propertyClass)) {
+                    Method m = propertyClass.getMethod("setValue", String.class);
+                    m.invoke(property.get(this), properties.getProperty(property.getName()));
+                }
+            } catch (NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
+                ex.printStackTrace();
+            }
+        }
 
         mainColumnsOrder.clear();
         String[] mainColumnsOrderSplit = properties.getProperty("mainColumnsOrder").split(",");
@@ -105,13 +124,9 @@ public class Settings {
     }
 
     private void saveProperties(Properties properties) {
-        properties.setProperty("musicDirectory", musicDirectory.get());
-        properties.setProperty("applicationWindowFullScreen", String.valueOf(applicationWindowMaximized.get()));
-        properties.setProperty("applicationWindowWidth", String.valueOf(applicationWindowWidth.get()));
-        properties.setProperty("applicationWindowHeight", String.valueOf(applicationWindowHeight.get()));
-        properties.setProperty("musicPlayerVolume", String.valueOf(musicPlayerVolume.get()));
-        properties.setProperty("musicPlayerRepeat", String.valueOf(musicPlayerRepeat.get()));
-        properties.setProperty("musicPlayerRandom", String.valueOf(musicPlayerRandom.get()));
+        for (Map.Entry<String, Object> entrySet : getPropertyValues().entrySet()) {
+            properties.setProperty(entrySet.getKey(), String.valueOf(entrySet.getValue()));
+        }
 
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < mainColumnsOrder.size(); i++) {
@@ -127,6 +142,31 @@ public class Settings {
         for (Map.Entry<String, DoubleProperty> entrySet : mainColumnWidths.entrySet()) {
             properties.setProperty(entrySet.getKey() + "Width", String.valueOf(entrySet.getValue().get()));
         }
+    }
+
+    private Map<String, Object> getPropertyValues() {
+        Map<String, Object> propertyValues = new HashMap<>();
+        for (Field property : getProperties()) {
+            Class<?> propertyClass = property.getType();
+            try {
+                Method method = propertyClass.getMethod("get");
+                Object value = method.invoke(property.get(this));
+                propertyValues.put(property.getName(), value);
+            } catch (NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
+                ex.printStackTrace();
+            }
+        }
+        return propertyValues;
+    }
+
+    private List<Field> getProperties() {
+        List<Field> properties = new ArrayList<>();
+        for (Field field : this.getClass().getDeclaredFields()) {
+            if (Property.class.isAssignableFrom(field.getType())) {
+                properties.add(field);
+            }
+        }
+        return properties;
     }
 
     public Map<String, BooleanProperty> mainColumnVisibleProperties() {

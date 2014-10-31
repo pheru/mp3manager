@@ -4,6 +4,7 @@ import de.eru.mp3manager.Settings;
 import de.eru.mp3manager.data.Mp3FileData;
 import de.eru.mp3manager.data.Playlist;
 import de.eru.mp3manager.cdi.SelectedTableData;
+import de.eru.mp3manager.gui.utils.CssRowFactory;
 import de.eru.mp3manager.gui.utils.TablePlaceholder;
 import de.eru.mp3manager.utils.TaskPool;
 import de.eru.mp3manager.utils.factories.TaskFactory;
@@ -16,6 +17,7 @@ import java.util.ResourceBundle;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
+import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
@@ -36,6 +38,7 @@ import javafx.scene.layout.VBox;
 import javafx.stage.DirectoryChooser;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+import javax.swing.RowFilter;
 
 @ApplicationScoped
 public class MainPresenter implements Initializable {
@@ -62,8 +65,8 @@ public class MainPresenter implements Initializable {
     private ProgressIndicator taskProgress;
     @FXML
     private TableView<Mp3FileData> table;
+    private CssRowFactory<Mp3FileData> tableRowFactory;
     private final TablePlaceholder placeholder = new TablePlaceholder(PLACEHOLDER_TEXT_NO_DIRECTORY_CHOSEN, false);
-    private final StringProperty tablePlaceholderText = new SimpleStringProperty();
 
     @Inject
     private TaskPool taskPool;
@@ -92,9 +95,11 @@ public class MainPresenter implements Initializable {
      * Initialisiert die Tabelle.
      */
     private void initTable() {
-//        Label placeholder = new Label(PLACEHOLDER_TEXT_NO_DIRECTORY_CHOSEN);
-//        placeholder.setTextAlignment(TextAlignment.CENTER);
-//        placeholder.textProperty().bindBidirectional(tablePlaceholderText);
+        tableRowFactory = new CssRowFactory<>("played");
+        table.setRowFactory(tableRowFactory);
+        playlist.currentTitleIndexProperty().addListener((ObservableValue<? extends Number> observable, Number oldValue, Number newValue) -> {
+            updateStyledIndex(newValue.intValue());
+        });
         table.setPlaceholder(placeholder);
         table.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
         table.setItems(setUpTableFilter());
@@ -111,6 +116,11 @@ public class MainPresenter implements Initializable {
             }
         });
         Bindings.bindContentBidirectional(columnsOrder, settings.getMainColumnsOrder());
+    }
+
+    private void updateStyledIndex(int playlistIndex) {
+        tableRowFactory.getStyledIndices().clear();
+        tableRowFactory.getStyledIndices().add(table.getItems().indexOf(playlist.getTitles().get(playlistIndex)));
     }
 
     /**
@@ -140,6 +150,7 @@ public class MainPresenter implements Initializable {
                 }
                 return false;
             });
+            updateStyledIndex(playlist.getCurrentTitleIndex());
         });
         SortedList<Mp3FileData> sortedData = new SortedList<>(filteredData);
         sortedData.comparatorProperty().bind(table.comparatorProperty());
