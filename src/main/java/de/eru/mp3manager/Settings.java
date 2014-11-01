@@ -13,8 +13,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.Property;
@@ -76,7 +74,8 @@ public class Settings {
                 System.out.println("Fehlerhafte Settings-Datei!");
             }
         } catch (IOException ex) {
-            ex.printStackTrace();
+//            ex.printStackTrace();
+            System.err.println("Keine Properties-Datei gefunden!");
         }
         getPropertyValues();
     }

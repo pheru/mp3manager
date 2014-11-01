@@ -1,19 +1,19 @@
 package de.eru.mp3manager.gui.applicationwindow.playlist;
 
+import de.eru.mp3manager.cdi.SelectedTableData;
 import de.eru.mp3manager.data.Mp3FileData;
 import de.eru.mp3manager.data.Playlist;
 import de.eru.mp3manager.gui.utils.CssRowFactory;
 import de.eru.mp3manager.service.FileService;
 import de.eru.mp3manager.utils.formatter.TimeFormatter;
+import de.eru.pherufx.utils.InjectableList;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.StringBinding;
-import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
-import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
@@ -35,8 +35,9 @@ public class PlaylistPresenter implements Initializable {
 
     @Inject
     private Playlist playlist;
-
-    private ObservableList<Mp3FileData> selectedTitles;
+    @Inject
+    @SelectedTableData(source = SelectedTableData.Source.PLAYLIST) 
+    private InjectableList<Mp3FileData> selectedTitles;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -56,7 +57,7 @@ public class PlaylistPresenter implements Initializable {
             rowFactory.getStyledIndices().add(newValue.intValue());
         });
         table.setItems(playlist.getTitles());
-        selectedTitles = table.getSelectionModel().getSelectedItems();
+        selectedTitles.set(table.getSelectionModel().getSelectedItems());
     }
 
     /**

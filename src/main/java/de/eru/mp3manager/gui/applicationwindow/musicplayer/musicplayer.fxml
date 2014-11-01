@@ -89,9 +89,9 @@
                 </HBox>
                 <VBox alignment="CENTER_LEFT" maxWidth="200.0" minWidth="200.0" GridPane.rowIndex="1">
                     <children>
-                        <Label fx:id="titleLabel" text="Wolves Die Young" />
-                        <Label fx:id="albumLabel" text="Pariah's Child" />
-                        <Label fx:id="artistLabel" text="Sonata Arctica" />
+                        <Label fx:id="titleLabel" text="Titel" />
+                        <Label fx:id="albumLabel" text="Album" />
+                        <Label fx:id="artistLabel" text="Interpret" />
                     </children>
                     <padding>
                         <Insets left="15.0" />

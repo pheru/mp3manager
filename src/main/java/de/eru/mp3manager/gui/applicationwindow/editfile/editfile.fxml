@@ -8,8 +8,33 @@
 
 <GridPane fx:id="root" scaleShape="false" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="de.eru.mp3manager.gui.applicationwindow.editfile.EditFilePresenter">
    <children>
+      <HBox alignment="CENTER_LEFT" GridPane.columnSpan="2147483647" GridPane.rowIndex="1">
+         <children>
+            <TextField fx:id="fileNameField" HBox.hgrow="ALWAYS">
+               <VBox.margin>
+                  <Insets bottom="5.0" />
+               </VBox.margin>
+            </TextField>
+            <Label text=".mp3" />
+         </children>
+         <VBox.margin>
+            <Insets bottom="5.0" />
+         </VBox.margin>
+      </HBox>
       <Label text="Titel" GridPane.rowIndex="2" />
       <ComboBox fx:id="titleField" editable="true" maxWidth="1.7976931348623157E308" GridPane.columnSpan="2147483647" GridPane.rowIndex="3">
+         <VBox.margin>
+            <Insets bottom="5.0" />
+         </VBox.margin>
+      </ComboBox>
+      <Label text="Album" GridPane.rowIndex="4" />
+      <ComboBox fx:id="albumField" editable="true" maxWidth="1.7976931348623157E308" GridPane.columnSpan="2147483647" GridPane.rowIndex="5">
+         <VBox.margin>
+            <Insets bottom="5.0" />
+         </VBox.margin>
+      </ComboBox>
+      <Label text="Interpret" GridPane.rowIndex="6" />
+      <ComboBox fx:id="artistField" editable="true" maxWidth="1.7976931348623157E308" GridPane.columnSpan="2147483647" GridPane.rowIndex="7">
          <VBox.margin>
             <Insets bottom="5.0" />
          </VBox.margin>
@@ -36,26 +61,7 @@
             <Insets bottom="5.0" />
          </VBox.margin>
       </GridPane>
-      <HBox alignment="CENTER_LEFT" GridPane.columnSpan="2147483647" GridPane.rowIndex="1">
-         <children>
-            <TextField fx:id="fileNameField" HBox.hgrow="ALWAYS">
-               <VBox.margin>
-                  <Insets bottom="5.0" />
-               </VBox.margin>
-            </TextField>
-            <Label text=".mp3" />
-         </children>
-         <VBox.margin>
-            <Insets bottom="5.0" />
-         </VBox.margin>
-      </HBox>
-      <Label text="Interpret" GridPane.rowIndex="6" />
       <Label text="Dateiname" />
-      <ComboBox fx:id="artistField" editable="true" maxWidth="1.7976931348623157E308" GridPane.columnSpan="2147483647" GridPane.rowIndex="7">
-         <VBox.margin>
-            <Insets bottom="5.0" />
-         </VBox.margin>
-      </ComboBox>
       <Pane fx:id="coverPane" GridPane.columnSpan="2147483647" GridPane.rowIndex="10" VBox.vgrow="ALWAYS">
          <children>
             <ImageView fx:id="coverView" pickOnBounds="true" VBox.vgrow="NEVER" onMouseClicked="#chooseCover" >
@@ -66,17 +72,11 @@
          </children>
       </Pane>
       <Label text="Albumcover" GridPane.rowIndex="9" />
-      <Label text="Album" GridPane.rowIndex="4" />
-      <ComboBox fx:id="albumField" editable="true" maxWidth="1.7976931348623157E308" GridPane.columnSpan="2147483647" GridPane.rowIndex="5">
-         <VBox.margin>
-            <Insets bottom="5.0" />
-         </VBox.margin>
-      </ComboBox>
+      <Button fx:id="saveButton" mnemonicParsing="false" text="Speichern" GridPane.columnSpan="2147483647" GridPane.halignment="CENTER" GridPane.rowIndex="12" onAction="#save" />
       <CheckBox fx:id="synchronizeTitleBox" mnemonicParsing="false" text="Titel übernehmen" GridPane.columnIndex="1" />
       <CheckBox fx:id="sortTitleBox" mnemonicParsing="false" text="Alphabetisch sortieren" GridPane.columnIndex="1" GridPane.rowIndex="2" />
       <CheckBox fx:id="sortAlbumBox" mnemonicParsing="false" text="Alphabetisch sortieren" GridPane.columnIndex="1" GridPane.rowIndex="4" />
       <CheckBox fx:id="sortArtistBox" mnemonicParsing="false" text="Alphabetisch sortieren" GridPane.columnIndex="1" GridPane.rowIndex="6" />
-      <Button fx:id="saveButton" mnemonicParsing="false" text="Speichern" GridPane.columnSpan="2147483647" GridPane.halignment="CENTER" GridPane.rowIndex="12" onAction="#save" />
       <Separator GridPane.columnSpan="2147483647" GridPane.hgrow="ALWAYS" GridPane.rowIndex="11" />
    </children>
    <columnConstraints>

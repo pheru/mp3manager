@@ -12,11 +12,14 @@ import java.net.URL;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.ResourceBundle;
+import javafx.application.Platform;
 import javafx.beans.binding.DoubleBinding;
+import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
@@ -25,6 +28,8 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.stage.FileChooser;
@@ -142,6 +147,30 @@ public class EditFilePresenter implements Initializable {
         synchronizeTitleBox.selectedProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
             setUpTitleSynchronization();
         });
+        sortArtistBox.addEventFilter(KeyEvent.KEY_PRESSED, (KeyEvent event) -> {
+            if (event.getCode() == KeyCode.TAB) {
+                fileNameField.requestFocus();
+                event.consume();
+            }
+        });
+        fileNameField.focusedProperty().addListener(createSelectAllFocusListener(fileNameField));
+        titleField.focusedProperty().addListener(createSelectAllFocusListener(titleField.getEditor()));
+        albumField.focusedProperty().addListener(createSelectAllFocusListener(albumField.getEditor()));
+        artistField.focusedProperty().addListener(createSelectAllFocusListener(artistField.getEditor()));
+        genreField.focusedProperty().addListener(createSelectAllFocusListener(genreField.getEditor()));
+        yearField.focusedProperty().addListener(createSelectAllFocusListener(yearField.getEditor()));
+        trackField.focusedProperty().addListener(createSelectAllFocusListener(trackField.getEditor()));
+        
+    }
+
+    private ChangeListener<Boolean> createSelectAllFocusListener(TextField target) {
+        return (ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
+            Platform.runLater(() -> {
+                if(newValue){
+                    target.selectAll();
+                }
+            });
+        };
     }
 
     /**
@@ -261,7 +290,7 @@ public class EditFilePresenter implements Initializable {
         for (ComboBox<String> field : fields) {
             if (field.getItems().size() > 1) {
                 field.setValue(DIFF_VALUES);
-            } else {
+            } else if (!field.getItems().isEmpty()) {
                 field.setValue(field.getItems().get(0));
             }
         }

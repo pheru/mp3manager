@@ -5,7 +5,6 @@ import de.eru.pherufx.cdi.StartApplication;
 import java.awt.SystemTray;
 import java.awt.event.ActionEvent;
 import javafx.application.Platform;
-import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.scene.Group;
 import javafx.scene.Scene;
@@ -13,7 +12,6 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
-import javafx.stage.Window;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 

@@ -17,13 +17,13 @@ import java.util.ResourceBundle;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
-import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import javafx.collections.transformation.SortedList;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
@@ -34,11 +34,12 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.VBox;
 import javafx.stage.DirectoryChooser;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
-import javax.swing.RowFilter;
 
 @ApplicationScoped
 public class MainPresenter implements Initializable {
@@ -89,6 +90,12 @@ public class MainPresenter implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         initTable();
         bindUI();
+        table.addEventFilter(KeyEvent.KEY_PRESSED, (KeyEvent event) -> {
+            if (event.getCode() == KeyCode.TAB) {
+                filterTextField.requestFocus();
+                event.consume();
+            }
+        });
     }
 
     /**
@@ -119,8 +126,10 @@ public class MainPresenter implements Initializable {
     }
 
     private void updateStyledIndex(int playlistIndex) {
-        tableRowFactory.getStyledIndices().clear();
-        tableRowFactory.getStyledIndices().add(table.getItems().indexOf(playlist.getTitles().get(playlistIndex)));
+        if (playlistIndex >= 0) {
+            tableRowFactory.getStyledIndices().clear();
+            tableRowFactory.getStyledIndices().add(table.getItems().indexOf(playlist.getTitles().get(playlistIndex)));
+        }
     }
 
     /**

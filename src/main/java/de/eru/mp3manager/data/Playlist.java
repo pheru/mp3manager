@@ -1,8 +1,10 @@
 package de.eru.mp3manager.data;
 
 import de.eru.mp3manager.Settings;
+import java.util.Collections;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
@@ -41,7 +43,7 @@ public class Playlist {
                         randomIndicesToPlay.add(Double.valueOf(Math.random() * (randomIndicesToPlay.size() - randomIndicesToPlay.indexOf(currentTitleIndex.get()))).intValue()
                                 + randomIndicesToPlay.indexOf(currentTitleIndex.get()) + 1, randomIndicesToPlay.size());
                     }
-                } else if (change.wasRemoved()) {
+                } else if (change.wasRemoved()) { //TODO funktioniert so wahrscheinlich nicht
                     if (titles.size() == 0) {
                         currentTitleIndex.set(-1);
                     }
@@ -51,12 +53,18 @@ public class Playlist {
                 }
             }
         });
+        settings.musicPlayerRandomProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
+            if(newValue){
+                Collections.swap(randomIndicesToPlay, 0, randomIndicesToPlay.indexOf(getCurrentTitleIndex()));
+            }
+        });
     }
 
     private void resetRandomIndicesToPlay() {
-        randomIndicesToPlay.clear();
-        for (int i = 0; i < titles.size(); i++) {
-            randomIndicesToPlay.add(Double.valueOf(Math.random() * (randomIndicesToPlay.size() + 1)).intValue(), i);
+        Integer lastRandomIndex = randomIndicesToPlay.get(randomIndicesToPlay.size() -1);
+        Collections.shuffle(randomIndicesToPlay);
+        if(randomIndicesToPlay.indexOf(lastRandomIndex) == 0){
+            Collections.swap(randomIndicesToPlay, 0, randomIndicesToPlay.size() - 1);
         }
     }
 
