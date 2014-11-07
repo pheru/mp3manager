@@ -2,9 +2,12 @@ package de.eru.mp3manager.utils.factories;
 
 import de.eru.mp3manager.data.utils.Mp3Mapper;
 import de.eru.mp3manager.data.Mp3FileData;
+import de.eru.mp3manager.data.Playlist;
 import de.eru.mp3manager.gui.utils.TablePlaceholder;
 import de.eru.mp3manager.service.FileService;
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 import javafx.application.Platform;
 import javafx.beans.property.BooleanProperty;
 import javafx.collections.FXCollections;
@@ -61,15 +64,16 @@ public final class TaskFactory {
                         updateProgress(i + 1, files.size());
                     }
                     updateTitle("Laden der Dateien abgeschlossen.");
-                    updateMessage(files.size() + " Dateien wurden erfolgreich geladen.");
+                    updateMessage(loadedData.size() + " Dateien wurden erfolgreich geladen.");
 
                     Platform.runLater(() -> {
-                        if (loadedData.size() == 0) {
+                        if (!loadedData.isEmpty()) {
+                            masterData.addAll(loadedData);
+                        } else {
                             tablePlaceholder.setText("Das gewählte Verzeichnis enthält keine MP3-Dateien");
                             tablePlaceholder.setIndicatorVisible(false);
                             updateProgress(1, 1);
                         }
-                        masterData.addAll(loadedData);
                     });
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -94,6 +98,50 @@ public final class TaskFactory {
                     }
                     updateTitle("Speichern der Dateien abgeschlossen.");
                     updateMessage(dataToSave.size() + " Dateien wurden erfolgreich gespeichert.");
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                return null;
+            }
+        };
+    }
+
+    public static Task<Void> createLoadPlaylistTask(Playlist playlist, File playlistFile, List<Mp3FileData> masterData) {
+        return new Task<Void>() {
+            @Override
+            protected Void call() throws Exception {
+                try {
+                    updateProgress(-1, 1);
+                    updateTitle("Lade Wiedergabeliste...");
+                    updateMessage(playlistFile.getAbsolutePath());
+                    List<String> filePaths = FileService.loadPlaylist(playlistFile);
+                    List<Mp3FileData> loadedData = new ArrayList<>();
+                    for (int i = 0; i < filePaths.size(); i++) {
+                        boolean dataAlreadyLoaded = false;
+                        for (Mp3FileData data : masterData) {
+                            if (data.getAbsolutePath().equals(filePaths.get(i))) {
+                                loadedData.add(data);
+                                dataAlreadyLoaded = true;
+                                break;
+                            }
+                        }
+                        if (!dataAlreadyLoaded) {
+                            loadedData.add(Mp3Mapper.fileToMp3FileData(new File(filePaths.get(i))));
+                        }
+                        updateProgress(i + 1, filePaths.size());
+                    }
+                    updateTitle("Laden der Wiedergabeliste abgeschlossen.");
+                    updateMessage(loadedData.size() + " Titel wurden erfolgreich geladen.");
+
+                    if (!loadedData.isEmpty()) {
+                        Platform.runLater(() -> {
+                            playlist.getTitles().clear();
+                            playlist.setAbsolutePath(playlistFile.getAbsolutePath());
+                            playlist.getTitles().addAll(loadedData);
+                        });
+                    } else {
+                        updateProgress(1, 1);
+                    }
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

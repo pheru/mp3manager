@@ -75,19 +75,10 @@ public final class FileService {
         }
     }
 
-    public static List<Mp3FileData> loadPlaylist(File playlistFile) throws IOException {
-        List<Mp3FileData> playlistTitles = new ArrayList<>();
+    public static List<String> loadPlaylist(File playlistFile) throws IOException {
+        List<String> playlistTitles = new ArrayList<>();
         Files.lines(playlistFile.toPath())
                 .filter(s -> !s.isEmpty())
-                .map(s -> {
-                    try {
-                        return Mp3Mapper.fileToMp3FileData(new File(s));
-                    } catch (IOException ex) {
-                        System.err.println("IOException - loadPlaylist -> Mp3Mapper.fileToMp3FileData()");
-                        return null;
-                    }
-                })
-                .filter(m -> m != null)
                 .forEach(playlistTitles::add);
         return playlistTitles;
     }
@@ -97,19 +88,18 @@ public final class FileService {
      *
      * @param playlistFile Das File, in welche die Wiedergabeliste gespeichert
      * werden soll.
-     * @param playlist Die zu speichernde Wiedergabeliste.
      * @return true, wenn das Speichern erfolgreich war.
      */
-    public static boolean savePlaylist(File playlistFile, Playlist playlist) throws IOException {
+    public static boolean savePlaylist(File playlistFile, List<Mp3FileData> playlistTitles) throws IOException {
         if (playlistFile.exists()) {
             if (!playlistFile.delete()) {//Funktioniert nicht wie erwartet (Änderungsdatum bleibt gleich)
                 return false;
             }
         }
         try (FileWriter writer = new FileWriter(playlistFile)) {
-            for (int i = 0; i < playlist.getTitles().size(); i++) {
-                writer.append(playlist.getTitles().get(i).getAbsolutePath());
-                if (i < playlist.getTitles().size() - 1) {
+            for (int i = 0; i < playlistTitles.size(); i++) {
+                writer.append(playlistTitles.get(i).getAbsolutePath());
+                if (i < playlistTitles.size() - 1) {
                     writer.append(Playlist.FILE_SPLIT);
                 }
             }
@@ -153,14 +143,7 @@ public final class FileService {
                 }
             }
         } else {
-            //Verzeichnis existiert nicht
+            //TODO Verzeichnis existiert nicht
         }
-    }
-
-    public static Playlist fileToPlaylist(File playlistFile) throws IOException {
-        Playlist playlist = new Playlist();
-        playlist.setAbsolutePath(playlistFile.getAbsolutePath());
-        Files.lines(playlistFile.toPath()).forEach(System.out::println);
-        return playlist;
     }
 }

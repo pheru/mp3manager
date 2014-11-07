@@ -7,6 +7,8 @@ import de.eru.mp3manager.data.Mp3FileData;
 import de.eru.mp3manager.data.Playlist;
 import de.eru.mp3manager.gui.utils.CssRowFactory;
 import de.eru.mp3manager.service.FileService;
+import de.eru.mp3manager.utils.TaskPool;
+import de.eru.mp3manager.utils.factories.TaskFactory;
 import de.eru.mp3manager.utils.formatter.TimeFormatter;
 import de.eru.pherufx.utils.InjectableList;
 import java.io.File;
@@ -42,6 +44,8 @@ public class PlaylistPresenter implements Initializable {
 
     @Inject
     private Playlist playlist;
+    @Inject
+    private TaskPool taskPool;
     @Inject
     @SelectedTableData(source = TableDataSource.PLAYLIST)
     private InjectableList<Mp3FileData> selectedTitles;
@@ -117,7 +121,7 @@ public class PlaylistPresenter implements Initializable {
         File playlistFile = fileChooser.showSaveDialog(table.getScene().getWindow());
         if (playlistFile != null) {
             try {
-                boolean savePlaylist = FileService.savePlaylist(playlistFile, playlist);
+                boolean savePlaylist = FileService.savePlaylist(playlistFile, playlist.getTitles());
                 playlist.setAbsolutePath(playlistFile.getAbsolutePath());
             } catch (IOException e) {
                 e.printStackTrace();
@@ -133,13 +137,7 @@ public class PlaylistPresenter implements Initializable {
         fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Wiedergabelisten", "*." + Playlist.FILE_EXTENSION));
         File playlistFile = fileChooser.showOpenDialog(table.getScene().getWindow());
         if (playlistFile != null) {
-            try {
-                playlist.getTitles().clear();
-                playlist.getTitles().addAll(FileService.loadPlaylist(playlistFile));
-                playlist.setAbsolutePath(playlistFile.getAbsolutePath());
-            } catch (IOException ex) {
-                ex.printStackTrace();
-            }
+            taskPool.addTask(TaskFactory.createLoadPlaylistTask(playlist, playlistFile, mainTitles));
         }
     }
 

@@ -1,10 +1,10 @@
 package de.eru.mp3manager.gui.applicationwindow.main;
 
-import de.eru.mp3manager.Mp3Manager;
 import de.eru.mp3manager.Settings;
 import de.eru.mp3manager.data.Mp3FileData;
 import de.eru.mp3manager.data.Playlist;
 import de.eru.mp3manager.cdi.SelectedTableData;
+import de.eru.mp3manager.cdi.TableData;
 import de.eru.mp3manager.cdi.TableDataSource;
 import de.eru.mp3manager.gui.utils.CssRowFactory;
 import de.eru.mp3manager.gui.utils.TablePlaceholder;
@@ -41,8 +41,6 @@ import javafx.scene.layout.VBox;
 import javafx.stage.DirectoryChooser;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
-import org.jgroups.Message;
-import org.jgroups.ReceiverAdapter;
 
 @ApplicationScoped
 public class MainPresenter implements Initializable {
@@ -80,11 +78,13 @@ public class MainPresenter implements Initializable {
     private Settings settings;
 
     @Inject
+    @TableData(source = TableDataSource.MAIN)
+    private ObservableList<Mp3FileData> masterData;
+    @Inject
     @SelectedTableData(source = TableDataSource.MAIN)
     private InjectableList<Mp3FileData> selectedData;
 
     private final ObservableList<String> columnsOrder = FXCollections.observableArrayList();
-    private final ObservableList<Mp3FileData> masterData = FXCollections.observableArrayList();
 
     private boolean updatingColumnsOrderList = false;
     private boolean updatingColumnsOrderTable = false;
