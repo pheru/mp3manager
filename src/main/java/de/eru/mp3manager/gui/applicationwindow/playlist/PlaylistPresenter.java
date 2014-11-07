@@ -1,6 +1,8 @@
 package de.eru.mp3manager.gui.applicationwindow.playlist;
 
 import de.eru.mp3manager.cdi.SelectedTableData;
+import de.eru.mp3manager.cdi.TableData;
+import de.eru.mp3manager.cdi.TableDataSource;
 import de.eru.mp3manager.data.Mp3FileData;
 import de.eru.mp3manager.data.Playlist;
 import de.eru.mp3manager.gui.utils.CssRowFactory;
@@ -17,6 +19,7 @@ import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
+import javafx.scene.control.MenuItem;
 import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TableView;
 import javafx.stage.FileChooser;
@@ -29,15 +32,22 @@ public class PlaylistPresenter implements Initializable {
     @FXML
     private TableView<Mp3FileData> table;
     @FXML
+    private Label playlistNameLabel;
+    @FXML
     private Label totalDurationLabel;
     @FXML
     private Label titlesSize;
+    @FXML
+    private MenuItem deleteMenuItem;
 
     @Inject
     private Playlist playlist;
     @Inject
-    @SelectedTableData(source = SelectedTableData.Source.PLAYLIST) 
+    @SelectedTableData(source = TableDataSource.PLAYLIST)
     private InjectableList<Mp3FileData> selectedTitles;
+    @Inject
+    @TableData(source = TableDataSource.MAIN)
+    private InjectableList<Mp3FileData> mainTitles;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -64,6 +74,21 @@ public class PlaylistPresenter implements Initializable {
      * Bindet die UI-Elemente untereinander.
      */
     private void bindUI() {
+        playlistNameLabel.textProperty().bind(new StringBinding() {
+            {
+                bind(playlist.absolutePathProperty());
+            }
+
+            @Override
+            protected String computeValue() {
+                if (playlist.getAbsolutePath().isEmpty()) {
+                    return "<Neue Wiedergabeliste>";
+                } else {
+                    String[] split = playlist.getAbsolutePath().split("\\\\");
+                    return split[split.length - 1].split("\\.")[0];
+                }
+            }
+        });
         titlesSize.textProperty().bind(Bindings.size(playlist.getTitles()).asString());
         totalDurationLabel.textProperty().bind(new StringBinding() {
             {
@@ -79,20 +104,21 @@ public class PlaylistPresenter implements Initializable {
                 return TimeFormatter.secondsToDurationFormat(duration, true);
             }
         });
+        deleteMenuItem.disableProperty().bind(playlist.absolutePathProperty().isEmpty());
     }
 
     @FXML
     private void savePlaylist() {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Wiedergabeliste speichern");
-        fileChooser.setInitialDirectory(new File("D:\\"));
+//        fileChooser.setInitialDirectory(new File("D:\\"));
         fileChooser.setInitialFileName("Wiedergabeliste." + Playlist.FILE_EXTENSION);
         fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Wiedergabelisten", "*." + Playlist.FILE_EXTENSION));
         File playlistFile = fileChooser.showSaveDialog(table.getScene().getWindow());
         if (playlistFile != null) {
             try {
                 boolean savePlaylist = FileService.savePlaylist(playlistFile, playlist);
-                System.out.println(savePlaylist);
+                playlist.setAbsolutePath(playlistFile.getAbsolutePath());
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -103,16 +129,22 @@ public class PlaylistPresenter implements Initializable {
     private void loadPlaylist() {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Wiedergabeliste laden");
-        fileChooser.setInitialDirectory(new File("D:\\"));
+//        fileChooser.setInitialDirectory(new File("D:\\")); //TODO
         fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Wiedergabelisten", "*." + Playlist.FILE_EXTENSION));
         File playlistFile = fileChooser.showOpenDialog(table.getScene().getWindow());
         if (playlistFile != null) {
-            System.out.println("Playlist laden");
+            try {
+                playlist.getTitles().clear();
+                playlist.getTitles().addAll(FileService.loadPlaylist(playlistFile));
+                playlist.setAbsolutePath(playlistFile.getAbsolutePath());
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
         }
     }
 
     @FXML
     private void deletePlaylist() {
-        boolean deletePlaylist = FileService.deletePlaylist(playlist.getAbsolutePath());
+        boolean deletePlaylist = FileService.deleteFile(playlist.getAbsolutePath());
     }
 }

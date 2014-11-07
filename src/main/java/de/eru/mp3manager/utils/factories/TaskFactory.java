@@ -1,6 +1,6 @@
 package de.eru.mp3manager.utils.factories;
 
-import de.eru.mp3manager.data.utils.Mapper;
+import de.eru.mp3manager.data.utils.Mp3Mapper;
 import de.eru.mp3manager.data.Mp3FileData;
 import de.eru.mp3manager.gui.utils.TablePlaceholder;
 import de.eru.mp3manager.service.FileService;
@@ -57,7 +57,7 @@ public final class TaskFactory {
                     for (int i = 0; i < files.size(); i++) {
                         updateTitle("Lade Datei " + (i + 1) + " von " + files.size() + "...");
                         updateMessage(files.get(i).getAbsolutePath());
-                        loadedData.add(Mapper.fileToMp3FileData(new File(files.get(i).getAbsolutePath())));
+                        loadedData.add(Mp3Mapper.fileToMp3FileData(new File(files.get(i).getAbsolutePath())));
                         updateProgress(i + 1, files.size());
                     }
                     updateTitle("Laden der Dateien abgeschlossen.");
@@ -88,7 +88,7 @@ public final class TaskFactory {
                     for (int i = 0; i < dataToSave.size(); i++) {
                         updateTitle("Speichere Datei " + (i + 1) + " von " + dataToSave.size() + "...");
                         updateMessage(dataToSave.get(i).getAbsolutePath());
-                        FileService.saveFile(dataToSave.get(i), changeData);
+                        FileService.saveMp3File(dataToSave.get(i), changeData);
                         Platform.runLater(dataToSave.get(i)::reload);
                         updateProgress(i + 1, dataToSave.size());
                     }

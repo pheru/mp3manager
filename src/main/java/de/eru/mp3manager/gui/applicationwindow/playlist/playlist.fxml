@@ -10,18 +10,23 @@
     <children>
         <HBox alignment="CENTER_LEFT" VBox.vgrow="NEVER">
             <children>
-                <MenuButton mnemonicParsing="false" text="Wiedergabeliste...">
+                <Label fx:id="playlistNameLabel" text="Wiedergabeliste.mmpl"/>
+                <Pane HBox.hgrow="ALWAYS" />
+                <Label fx:id="titlesSize" text="11" />
+                <Label text=" Titel" />
+            </children>
+        </HBox>
+        <HBox alignment="CENTER_LEFT" VBox.vgrow="NEVER">
+            <children>
+                <MenuButton mnemonicParsing="false" text="Aktionen...">
                     <items>
                         <MenuItem mnemonicParsing="false" text="Laden..." onAction="#loadPlaylist"  />
                         <MenuItem mnemonicParsing="false" text="Speichern..." onAction="#savePlaylist"  />
-                        <MenuItem mnemonicParsing="false" text="Löschen..." onAction="#deletePlaylist" />
+                        <MenuItem fx:id="deleteMenuItem" mnemonicParsing="false" text="Löschen..." onAction="#deletePlaylist" />
                     </items>
                 </MenuButton>
                 <Pane HBox.hgrow="ALWAYS" />
-                <Label fx:id="titlesSize" text="13" />
-                <Label text=" Titel - " />
-                <Label fx:id="totalDurationLabel" text="00:05:38">
-                </Label>
+                <Label fx:id="totalDurationLabel" text="00:05:38"/>
             </children>
         </HBox>
         <TableView fx:id="table" VBox.vgrow="ALWAYS">

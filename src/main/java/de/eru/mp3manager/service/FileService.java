@@ -2,11 +2,14 @@ package de.eru.mp3manager.service;
 
 import de.eru.mp3manager.data.Mp3FileData;
 import de.eru.mp3manager.data.Playlist;
+import de.eru.mp3manager.data.utils.Mp3Mapper;
 import de.eru.mp3manager.gui.applicationwindow.editfile.EditFilePresenter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.util.ArrayList;
+import java.util.List;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import org.jaudiotagger.audio.AudioFileIO;
@@ -41,7 +44,7 @@ public final class FileService {
      * @param dataToSave Die zu überschreibende Datei.
      * @param changeData Die zu speichernden MP3-Informationen.
      */
-    public static void saveFile(Mp3FileData dataToSave, Mp3FileData changeData) throws KeyNotFoundException, FieldDataInvalidException, CannotReadException, IOException, TagException, ReadOnlyFileException, InvalidAudioFrameException, CannotWriteException {
+    public static void saveMp3File(Mp3FileData dataToSave, Mp3FileData changeData) throws KeyNotFoundException, FieldDataInvalidException, CannotReadException, IOException, TagException, ReadOnlyFileException, InvalidAudioFrameException, CannotWriteException {
         MP3File file = (MP3File) AudioFileIO.read(new File(dataToSave.getAbsolutePath()));
         AbstractID3v2Tag tag = file.getID3v2Tag();
         setTagField(tag, FieldKey.TITLE, changeData.getTitle());
@@ -51,7 +54,7 @@ public final class FileService {
         setTagField(tag, FieldKey.YEAR, changeData.getYear());
         setTagField(tag, FieldKey.TRACK, changeData.getTrack());
 
-        if (changeData.getCover() != null && changeData.getCover().length > 0) { 
+        if (changeData.getCover() != null && changeData.getCover().length > 0) {
             Artwork newArtwork = new Artwork();
             newArtwork.setBinaryData(changeData.getCover());
             newArtwork.setMimeType(ImageFormats.getMimeTypeForBinarySignature(changeData.getCover()));
@@ -72,6 +75,23 @@ public final class FileService {
         }
     }
 
+    public static List<Mp3FileData> loadPlaylist(File playlistFile) throws IOException {
+        List<Mp3FileData> playlistTitles = new ArrayList<>();
+        Files.lines(playlistFile.toPath())
+                .filter(s -> !s.isEmpty())
+                .map(s -> {
+                    try {
+                        return Mp3Mapper.fileToMp3FileData(new File(s));
+                    } catch (IOException ex) {
+                        System.err.println("IOException - loadPlaylist -> Mp3Mapper.fileToMp3FileData()");
+                        return null;
+                    }
+                })
+                .filter(m -> m != null)
+                .forEach(playlistTitles::add);
+        return playlistTitles;
+    }
+
     /**
      * Speichert eine Wiedergabeliste.
      *
@@ -82,26 +102,24 @@ public final class FileService {
      */
     public static boolean savePlaylist(File playlistFile, Playlist playlist) throws IOException {
         if (playlistFile.exists()) {
-            boolean success = playlistFile.delete(); //Funktioniert nicht wie erwartet (Änderungsdatum bleibt gleich)
-            if (!success) {
+            if (!playlistFile.delete()) {//Funktioniert nicht wie erwartet (Änderungsdatum bleibt gleich)
                 return false;
             }
         }
         try (FileWriter writer = new FileWriter(playlistFile)) {
-            writer.append("Test\nTest2\nTest3");
+            for (int i = 0; i < playlist.getTitles().size(); i++) {
+                writer.append(playlist.getTitles().get(i).getAbsolutePath());
+                if (i < playlist.getTitles().size() - 1) {
+                    writer.append(Playlist.FILE_SPLIT);
+                }
+            }
         }
         return playlistFile.exists();
     }
 
-    /**
-     * Löscht eine Wiedergabeliste.
-     *
-     * @param playlistPath Der Pfad der Playlist-Datei.
-     * @return true, wenn das Löschen erfolgreich war.
-     */
-    public static boolean deletePlaylist(String playlistPath) { 
-        File playlistFile = new File(playlistPath);
-        return playlistFile.delete();
+    public static boolean deleteFile(String filePath) {
+        File file = new File(filePath);
+        return file.delete();
     }
 
     /**

@@ -4,6 +4,8 @@ import de.eru.mp3manager.Settings;
 import java.util.Collections;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
@@ -24,9 +26,9 @@ public class Playlist {
     private Settings settings;
 
     public static final String FILE_EXTENSION = "mmpl";
-    public static final String FILE_SPLIT = "</>";
+    public static final String FILE_SPLIT = System.lineSeparator();
 
-    private String absolutePath;
+    private final StringProperty absolutePath = new SimpleStringProperty("");
     private final ObservableList<Mp3FileData> titles = FXCollections.observableArrayList();
     private final ObservableList<Integer> randomIndicesToPlay = FXCollections.observableArrayList();
     private final IntegerProperty currentTitleIndex = new SimpleIntegerProperty(-1);
@@ -54,16 +56,16 @@ public class Playlist {
             }
         });
         settings.musicPlayerRandomProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
-            if(newValue){
+            if (newValue) {
                 Collections.swap(randomIndicesToPlay, 0, randomIndicesToPlay.indexOf(getCurrentTitleIndex()));
             }
         });
     }
 
     private void resetRandomIndicesToPlay() {
-        Integer lastRandomIndex = randomIndicesToPlay.get(randomIndicesToPlay.size() -1);
+        Integer lastRandomIndex = randomIndicesToPlay.get(randomIndicesToPlay.size() - 1);
         Collections.shuffle(randomIndicesToPlay);
-        if(randomIndicesToPlay.indexOf(lastRandomIndex) == 0){
+        if (randomIndicesToPlay.indexOf(lastRandomIndex) == 0) {
             Collections.swap(randomIndicesToPlay, 0, randomIndicesToPlay.size() - 1);
         }
     }
@@ -73,8 +75,11 @@ public class Playlist {
      * @return true wenn ende der liste erreicht
      */
     public boolean next() {
-        boolean endOfListReached = false;
+        if (currentTitleIndex.get() == -1) {
+            return true;
+        }
         if (settings.isMusicPlayerRandom()) {
+            boolean endOfListReached = false;
             int nextRandomIndex = randomIndicesToPlay.indexOf(currentTitleIndex.get()) + 1;
             if (nextRandomIndex == randomIndicesToPlay.size()) {
                 resetRandomIndicesToPlay();
@@ -86,14 +91,17 @@ public class Playlist {
         }
         if (currentTitleIndex.get() == titles.size() - 1) {
             currentTitleIndex.set(0);
-            endOfListReached = true;
+            return true;
         } else {
             currentTitleIndex.set(currentTitleIndex.get() + 1);
+            return false;
         }
-        return endOfListReached;
     }
 
     public void previous() {
+        if (currentTitleIndex.get() == -1) {
+            return;
+        }
         if (settings.isMusicPlayerRandom()) {
             int previousRandomIndex = randomIndicesToPlay.indexOf(currentTitleIndex.get()) - 1;
             if (previousRandomIndex < 0) {
@@ -111,14 +119,6 @@ public class Playlist {
 
     public ObservableList<Mp3FileData> getTitles() {
         return titles;
-    }
-
-    public void setAbsolutePath(String absolutePath) {
-        this.absolutePath = absolutePath;
-    }
-
-    public String getAbsolutePath() {
-        return absolutePath;
     }
 
     public Mp3FileData getCurrentTitle() {
@@ -141,5 +141,17 @@ public class Playlist {
 
     public IntegerProperty currentTitleIndexProperty() {
         return currentTitleIndex;
+    }
+
+    public String getAbsolutePath() {
+        return absolutePath.get();
+    }
+
+    public void setAbsolutePath(final String absolutePath) {
+        this.absolutePath.set(absolutePath);
+    }
+
+    public StringProperty absolutePathProperty() {
+        return absolutePath;
     }
 }

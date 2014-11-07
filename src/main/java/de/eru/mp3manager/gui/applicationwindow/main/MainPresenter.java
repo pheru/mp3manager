@@ -1,9 +1,11 @@
 package de.eru.mp3manager.gui.applicationwindow.main;
 
+import de.eru.mp3manager.Mp3Manager;
 import de.eru.mp3manager.Settings;
 import de.eru.mp3manager.data.Mp3FileData;
 import de.eru.mp3manager.data.Playlist;
 import de.eru.mp3manager.cdi.SelectedTableData;
+import de.eru.mp3manager.cdi.TableDataSource;
 import de.eru.mp3manager.gui.utils.CssRowFactory;
 import de.eru.mp3manager.gui.utils.TablePlaceholder;
 import de.eru.mp3manager.utils.TaskPool;
@@ -23,7 +25,6 @@ import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import javafx.collections.transformation.SortedList;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
@@ -40,6 +41,8 @@ import javafx.scene.layout.VBox;
 import javafx.stage.DirectoryChooser;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+import org.jgroups.Message;
+import org.jgroups.ReceiverAdapter;
 
 @ApplicationScoped
 public class MainPresenter implements Initializable {
@@ -77,7 +80,7 @@ public class MainPresenter implements Initializable {
     private Settings settings;
 
     @Inject
-    @SelectedTableData(source = SelectedTableData.Source.MAIN)
+    @SelectedTableData(source = TableDataSource.MAIN)
     private InjectableList<Mp3FileData> selectedData;
 
     private final ObservableList<String> columnsOrder = FXCollections.observableArrayList();
@@ -96,6 +99,18 @@ public class MainPresenter implements Initializable {
                 event.consume();
             }
         });
+        //TODO Channel
+//        Mp3Manager.CHANNEL.setReceiver(new ReceiverAdapter(){
+//
+//            @Override
+//            public void receive(Message msg) {
+//                String[] args = (String[]) msg.getObject();
+//                for (String arg : args) {
+//                    //TODO
+//                }
+//            }
+//            
+//        });
     }
 
     /**

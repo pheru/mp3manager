@@ -16,20 +16,29 @@ public class InjectableListProducer {
 
     @Inject
     @New
-    InjectableList<Mp3FileData> main;
+    InjectableList<Mp3FileData> selectedMain;
     @Inject
     @New
-    InjectableList<Mp3FileData> playlist;
+    InjectableList<Mp3FileData> selectedPlaylist;
+    @Inject
+    @New
+    InjectableList<Mp3FileData> main;
 
     @Produces
-    @SelectedTableData(source = SelectedTableData.Source.MAIN)
-    public InjectableList<Mp3FileData> createOne() {
-        return main;
+    @SelectedTableData(source = TableDataSource.MAIN)
+    public InjectableList<Mp3FileData> selectedMain() {
+        return selectedMain;
     }
 
     @Produces
-    @SelectedTableData(source = SelectedTableData.Source.PLAYLIST)
-    public InjectableList<Mp3FileData> createTwo() {
-        return playlist;
+    @SelectedTableData(source = TableDataSource.PLAYLIST)
+    public InjectableList<Mp3FileData> selectedPlaylist() {
+        return selectedPlaylist;
+    }
+
+    @Produces
+    @TableData(source = TableDataSource.MAIN)
+    public InjectableList<Mp3FileData> main() {
+        return main;
     }
 }

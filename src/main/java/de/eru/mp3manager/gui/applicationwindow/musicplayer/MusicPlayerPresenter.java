@@ -77,7 +77,7 @@ public class MusicPlayerPresenter implements Initializable {
             @Override
             protected double computeValue() {
                 double percentage = (double) player.getCurrentTime() / player.getTotalTime();
-                if(Double.valueOf(percentage).isNaN()){
+                if (Double.valueOf(percentage).isNaN()) {
                     return 0.0;
                 }
                 return percentage;
@@ -120,21 +120,25 @@ public class MusicPlayerPresenter implements Initializable {
         repeatButton.selectedProperty().bindBidirectional(settings.musicPlayerRepeatProperty());
         volumeSlider.valueProperty().bindBidirectional(settings.musicPlayerVolumeProperty());
         playlist.currentTitleIndexProperty().addListener((ObservableValue<? extends Number> observable, Number oldValue, Number newValue) -> {
-            Mp3FileData newTitle = playlist.getTitles().get(newValue.intValue());
-            titleLabel.textProperty().bind(newTitle.titleProperty());
-            albumLabel.textProperty().bind(newTitle.albumProperty());
-            artistLabel.textProperty().bind(newTitle.artistProperty());
-            totalTimeLabel.textProperty().bind(createTimeBinding(newTitle.durationProperty()));
-            coverView.imageProperty().bind(new ObjectBinding<Image>() {
-                {
-                    bind(newTitle.coverProperty());
-                }
+            if (newValue.intValue() != -1) {
+                Mp3FileData newTitle = playlist.getTitles().get(newValue.intValue());
+                titleLabel.textProperty().bind(newTitle.titleProperty());
+                albumLabel.textProperty().bind(newTitle.albumProperty());
+                artistLabel.textProperty().bind(newTitle.artistProperty());
+                totalTimeLabel.textProperty().bind(createTimeBinding(newTitle.durationProperty()));
+                coverView.imageProperty().bind(new ObjectBinding<Image>() {
+                    {
+                        bind(newTitle.coverProperty());
+                    }
 
-                @Override
-                protected Image computeValue() {
-                    return ByteFormatter.byteArrayToImage(newTitle.getCover());
-                }
-            });
+                    @Override
+                    protected Image computeValue() {
+                        return ByteFormatter.byteArrayToImage(newTitle.getCover());
+                    }
+                });
+            }else{
+                //TODO Labels anpassen
+            }
         });
     }
 

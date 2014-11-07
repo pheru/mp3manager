@@ -1,6 +1,6 @@
 package de.eru.mp3manager.data;
 
-import de.eru.mp3manager.data.utils.Mapper;
+import de.eru.mp3manager.data.utils.Mp3Mapper;
 import de.eru.mp3manager.utils.formatter.ByteFormatter;
 import de.eru.mp3manager.utils.formatter.TimeFormatter;
 import java.io.File;
@@ -92,7 +92,7 @@ public class Mp3FileData {
 
     public void reload() {
         try {
-            Mapper.fileToMp3FileData(new File(getAbsolutePath()), this);
+            Mp3Mapper.fileToMp3FileData(new File(getAbsolutePath()), this);
         } catch (CannotReadException | IOException | TagException | ReadOnlyFileException | InvalidAudioFrameException ex) {
             ex.printStackTrace();
         }

@@ -18,9 +18,9 @@ import org.jaudiotagger.tag.id3.AbstractID3v2Tag;
  *
  * @author Philipp Bruckner
  */
-public final class Mapper {
+public final class Mp3Mapper {
 
-    private Mapper() {
+    private Mp3Mapper() {
         //Utility-Klasse
     }
 
