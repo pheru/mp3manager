@@ -2,7 +2,9 @@ package de.eru.mp3manager.data;
 
 import de.eru.mp3manager.Settings;
 import java.util.Collections;
+import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
@@ -20,18 +22,22 @@ import javax.inject.Inject;
  * @author Philipp Bruckner
  */
 @ApplicationScoped
-public class Playlist {
-
-    @Inject
-    private Settings settings;
+public class Playlist extends FileBasedData{
 
     public static final String FILE_EXTENSION = "mmpl";
     public static final String FILE_SPLIT = System.lineSeparator();
 
-    private final StringProperty absolutePath = new SimpleStringProperty("");
+    @Inject
+    private Settings settings;
+
+    private final BooleanProperty dirty = new SimpleBooleanProperty(false); // TODO wirklich nötig?
     private final ObservableList<Mp3FileData> titles = FXCollections.observableArrayList();
     private final ObservableList<Integer> randomIndicesToPlay = FXCollections.observableArrayList();
     private final IntegerProperty currentTitleIndex = new SimpleIntegerProperty(-1);
+    
+    public Playlist(){
+        super();
+    }
 
     @PostConstruct
     private void init() {
@@ -60,6 +66,7 @@ public class Playlist {
                 Collections.swap(randomIndicesToPlay, 0, randomIndicesToPlay.indexOf(getCurrentTitleIndex()));
             }
         });
+        filePath.bindBidirectional(settings.playlistFilePathProperty());
     }
 
     private void resetRandomIndicesToPlay() {
@@ -143,15 +150,15 @@ public class Playlist {
         return currentTitleIndex;
     }
 
-    public String getAbsolutePath() {
-        return absolutePath.get();
+    public Boolean isDirty() {
+        return dirty.get();
     }
 
-    public void setAbsolutePath(final String absolutePath) {
-        this.absolutePath.set(absolutePath);
+    public void setDirty(final Boolean dirty) {
+        this.dirty.set(dirty);
     }
 
-    public StringProperty absolutePathProperty() {
-        return absolutePath;
+    public BooleanProperty dirtyProperty() {
+        return dirty;
     }
 }

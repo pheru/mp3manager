@@ -80,16 +80,19 @@ public class PlaylistPresenter implements Initializable {
     private void bindUI() {
         playlistNameLabel.textProperty().bind(new StringBinding() {
             {
-                bind(playlist.absolutePathProperty());
+                bind(playlist.absolutePathProperty(), playlist.dirtyProperty());
             }
 
             @Override
             protected String computeValue() {
-                if (playlist.getAbsolutePath().isEmpty()) {
+                if (playlist.getFileName().isEmpty()) {
                     return "<Neue Wiedergabeliste>";
                 } else {
-                    String[] split = playlist.getAbsolutePath().split("\\\\");
-                    return split[split.length - 1].split("\\.")[0];
+                    String fileName = playlist.getFileName();
+                    if(playlist.isDirty()){
+                        fileName += "*";
+                    }
+                    return fileName;
                 }
             }
         });
@@ -121,8 +124,9 @@ public class PlaylistPresenter implements Initializable {
         File playlistFile = fileChooser.showSaveDialog(table.getScene().getWindow());
         if (playlistFile != null) {
             try {
-                boolean savePlaylist = FileService.savePlaylist(playlistFile, playlist.getTitles());
-                playlist.setAbsolutePath(playlistFile.getAbsolutePath());
+                FileService.savePlaylist(playlistFile, playlist.getTitles());
+                playlist.setFilePath(playlistFile.getParent());
+                playlist.setFileName(playlistFile.getName());
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -133,7 +137,7 @@ public class PlaylistPresenter implements Initializable {
     private void loadPlaylist() {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Wiedergabeliste laden");
-//        fileChooser.setInitialDirectory(new File("D:\\")); //TODO
+//        fileChooser.setInitialDirectory(new File("D:\\"));
         fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Wiedergabelisten", "*." + Playlist.FILE_EXTENSION));
         File playlistFile = fileChooser.showOpenDialog(table.getScene().getWindow());
         if (playlistFile != null) {
@@ -144,5 +148,15 @@ public class PlaylistPresenter implements Initializable {
     @FXML
     private void deletePlaylist() {
         boolean deletePlaylist = FileService.deleteFile(playlist.getAbsolutePath());
+    }
+    
+    @FXML
+    private void play(){
+        //TODO 
+    }
+    
+    @FXML
+    private void remove(){
+        //TODO
     }
 }

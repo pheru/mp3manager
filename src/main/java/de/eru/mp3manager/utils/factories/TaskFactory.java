@@ -37,7 +37,8 @@ public final class TaskFactory {
      * Tabelle.
      * @return Einen Task zum Auslesen von Dateien aus einem Verzeichnis.
      */
-    public static Task<Void> createReadDirectoryTask(String directory, ObservableList<Mp3FileData> masterData, TablePlaceholder tablePlaceholder, BooleanProperty tableDisable) {
+    public static Task<Void> createReadDirectoryTask(String directory, ObservableList<Mp3FileData> masterData, TablePlaceholder tablePlaceholder,
+            BooleanProperty tableDisable, List<Mp3FileData> playlistTitles) {
         return new Task<Void>() {
 
             @Override
@@ -60,7 +61,17 @@ public final class TaskFactory {
                     for (int i = 0; i < files.size(); i++) {
                         updateTitle("Lade Datei " + (i + 1) + " von " + files.size() + "...");
                         updateMessage(files.get(i).getAbsolutePath());
-                        loadedData.add(Mp3Mapper.fileToMp3FileData(new File(files.get(i).getAbsolutePath())));
+                        boolean dataAlreadyLoaded = false;
+                        for (Mp3FileData title : playlistTitles) {
+                            if (title.getAbsolutePath().equals(files.get(i).getAbsolutePath())) {
+                                loadedData.add(title);
+                                dataAlreadyLoaded = true;
+                                break;
+                            }
+                        }
+                        if (!dataAlreadyLoaded) {
+                            loadedData.add(Mp3Mapper.fileToMp3FileData(new File(files.get(i).getAbsolutePath())));
+                        }
                         updateProgress(i + 1, files.size());
                     }
                     updateTitle("Laden der Dateien abgeschlossen.");
@@ -70,7 +81,7 @@ public final class TaskFactory {
                         if (!loadedData.isEmpty()) {
                             masterData.addAll(loadedData);
                         } else {
-                            tablePlaceholder.setText("Das gewählte Verzeichnis enthält keine MP3-Dateien");
+                            tablePlaceholder.setText("Das gewählte Verzeichnis enthält keine MP3-Dateien!");
                             tablePlaceholder.setIndicatorVisible(false);
                             updateProgress(1, 1);
                         }
@@ -136,7 +147,8 @@ public final class TaskFactory {
                     if (!loadedData.isEmpty()) {
                         Platform.runLater(() -> {
                             playlist.getTitles().clear();
-                            playlist.setAbsolutePath(playlistFile.getAbsolutePath());
+                            playlist.setFilePath(playlistFile.getParent());
+                            playlist.setFileName(playlistFile.getName());
                             playlist.getTitles().addAll(loadedData);
                         });
                     } else {

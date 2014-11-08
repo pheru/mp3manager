@@ -24,13 +24,10 @@ import org.jaudiotagger.tag.TagException;
  *
  * @author Philipp Bruckner
  */
-public class Mp3FileData {
+public class Mp3FileData extends FileBasedData{
 
     public static final String NOT_LOADED = "<Nicht geladen>";
 
-    private final StringProperty fileName = new SimpleStringProperty(NOT_LOADED);
-    private final StringProperty filePath = new SimpleStringProperty(NOT_LOADED);
-    private final StringProperty absolutePath = new SimpleStringProperty(NOT_LOADED);
     private final StringProperty title = new SimpleStringProperty(NOT_LOADED);
     private final StringProperty album = new SimpleStringProperty(NOT_LOADED);
     private final StringProperty artist = new SimpleStringProperty(NOT_LOADED);
@@ -48,7 +45,7 @@ public class Mp3FileData {
      * Erstellt ein leeres Mp3FileData-Objekt.
      */
     public Mp3FileData() {
-        absolutePath.bind(filePath.concat("\\").concat(fileName));
+        super();
         formattedDuration.bind(new StringBinding() {
             {
                 bind(duration);
@@ -92,42 +89,10 @@ public class Mp3FileData {
 
     public void reload() {
         try {
-            Mp3Mapper.fileToMp3FileData(new File(getAbsolutePath()), this);
+            Mp3Mapper.fileToMp3FileData(new File(absolutePath.get()), this);
         } catch (CannotReadException | IOException | TagException | ReadOnlyFileException | InvalidAudioFrameException ex) {
             ex.printStackTrace();
         }
-    }
-
-    public String getFileName() {
-        return fileName.get();
-    }
-
-    public void setFileName(String fileName) {
-        this.fileName.set(fileName);
-    }
-
-    public StringProperty fileNameProperty() {
-        return fileName;
-    }
-
-    public String getFilePath() {
-        return filePath.get();
-    }
-
-    public void setFilePath(String filePath) {
-        this.filePath.set(filePath);
-    }
-
-    public StringProperty filePathProperty() {
-        return filePath;
-    }
-
-    public String getAbsolutePath() {
-        return absolutePath.get();
-    }
-
-    public StringProperty absolutePathProperty() {
-        return absolutePath;
     }
 
     public String getTitle() {

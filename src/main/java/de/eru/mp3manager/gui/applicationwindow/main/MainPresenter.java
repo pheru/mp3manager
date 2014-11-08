@@ -106,7 +106,6 @@ public class MainPresenter implements Initializable {
 //            public void receive(Message msg) {
 //                String[] args = (String[]) msg.getObject();
 //                for (String arg : args) {
-//                    //TODO
 //                }
 //            }
 //            
@@ -259,7 +258,7 @@ public class MainPresenter implements Initializable {
     public void readDirectory() {
         String directory = settings.getMusicDirectory();
         if (directory != null && !directory.isEmpty()) {
-            taskPool.addTask(TaskFactory.createReadDirectoryTask(directory, masterData, placeholder, table.disableProperty()));
+            taskPool.addTask(TaskFactory.createReadDirectoryTask(directory, masterData, placeholder, table.disableProperty(), playlist.getTitles()));
         }
     }
 

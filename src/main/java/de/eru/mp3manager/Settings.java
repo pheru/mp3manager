@@ -48,6 +48,8 @@ public class Settings {
     private final DoubleProperty musicPlayerVolume = new SimpleDoubleProperty(100.0);
     private final BooleanProperty musicPlayerRepeat = new SimpleBooleanProperty(false);
     private final BooleanProperty musicPlayerRandom = new SimpleBooleanProperty(false);
+    
+    private final StringProperty playlistFilePath = new SimpleStringProperty("");
 
     private final BooleanProperty editFileSortTitle = new SimpleBooleanProperty(false);
     private final BooleanProperty editFileSortAlbum = new SimpleBooleanProperty(false);
@@ -310,6 +312,18 @@ public class Settings {
 
     public BooleanProperty editFileSynchronizeTitleProperty() {
         return editFileSynchronizeTitle;
+    }
+
+    public String getPlaylistFilePath() {
+        return playlistFilePath.get();
+    }
+
+    public void setPlaylistFilePath(final String playlistFilePath) {
+        this.playlistFilePath.set(playlistFilePath);
+    }
+
+    public StringProperty playlistFilePathProperty() {
+        return playlistFilePath;
     }
 
 }
