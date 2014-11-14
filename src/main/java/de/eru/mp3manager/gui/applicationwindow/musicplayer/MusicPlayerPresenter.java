@@ -24,6 +24,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.media.MediaPlayer;
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
 @ApplicationScoped
@@ -120,24 +121,35 @@ public class MusicPlayerPresenter implements Initializable {
         repeatButton.selectedProperty().bindBidirectional(settings.musicPlayerRepeatProperty());
         volumeSlider.valueProperty().bindBidirectional(settings.musicPlayerVolumeProperty());
         playlist.currentTitleIndexProperty().addListener((ObservableValue<? extends Number> observable, Number oldValue, Number newValue) -> {
-            if (newValue.intValue() != -1) {
-                Mp3FileData newTitle = playlist.getTitles().get(newValue.intValue());
-                titleLabel.textProperty().bind(newTitle.titleProperty());
-                albumLabel.textProperty().bind(newTitle.albumProperty());
-                artistLabel.textProperty().bind(newTitle.artistProperty());
-                totalTimeLabel.textProperty().bind(createTimeBinding(newTitle.durationProperty()));
-                coverView.imageProperty().bind(new ObjectBinding<Image>() {
-                    {
-                        bind(newTitle.coverProperty());
-                    }
+            updateCurrentTitleBinding(newValue.intValue());
+        });
+    }
 
-                    @Override
-                    protected Image computeValue() {
-                        return ByteFormatter.byteArrayToImage(newTitle.getCover());
-                    }
-                });
-            }else{
-                //TODO Labels anpassen
+    private void currentTitleIndexUpdated(@Observes Mp3FileData newTitle) { //TODO Aufbau/Ablauf nochmal überdenken
+        updateCurrentTitleBinding(newTitle);
+    }
+
+    public void updateCurrentTitleBinding(int currentTitleIndex) {
+        if (currentTitleIndex != -1) {
+            updateCurrentTitleBinding(playlist.getTitles().get(currentTitleIndex));
+        } else {
+            //TODO Labels anpassen
+        }
+    }
+
+    public void updateCurrentTitleBinding(Mp3FileData newTitle) {
+        titleLabel.textProperty().bind(newTitle.titleProperty());
+        albumLabel.textProperty().bind(newTitle.albumProperty());
+        artistLabel.textProperty().bind(newTitle.artistProperty());
+        totalTimeLabel.textProperty().bind(createTimeBinding(newTitle.durationProperty()));
+        coverView.imageProperty().bind(new ObjectBinding<Image>() {
+            {
+                bind(newTitle.coverProperty());
+            }
+
+            @Override
+            protected Image computeValue() {
+                return ByteFormatter.byteArrayToImage(newTitle.getCover());
             }
         });
     }

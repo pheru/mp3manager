@@ -155,8 +155,11 @@ public class PlaylistPresenter implements Initializable {
         //TODO 
     }
     
+    /*
+    TODO - Index wird in der main-Tabelle nicht aktualisiert
+    */
     @FXML
     private void remove(){
-        //TODO
+        playlist.getTitles().removeAll(table.getSelectionModel().getSelectedItems());
     }
 }

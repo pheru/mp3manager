@@ -1,19 +1,21 @@
 package de.eru.mp3manager.data;
 
 import de.eru.mp3manager.Settings;
+import de.eru.mp3manager.cdi.TableData;
+import de.eru.mp3manager.cdi.TableDataSource;
 import java.util.Collections;
+import java.util.List;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleIntegerProperty;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
 /**
@@ -22,7 +24,7 @@ import javax.inject.Inject;
  * @author Philipp Bruckner
  */
 @ApplicationScoped
-public class Playlist extends FileBasedData{
+public class Playlist extends FileBasedData {
 
     public static final String FILE_EXTENSION = "mmpl";
     public static final String FILE_SPLIT = System.lineSeparator();
@@ -34,11 +36,10 @@ public class Playlist extends FileBasedData{
     private final ObservableList<Mp3FileData> titles = FXCollections.observableArrayList();
     private final ObservableList<Integer> randomIndicesToPlay = FXCollections.observableArrayList();
     private final IntegerProperty currentTitleIndex = new SimpleIntegerProperty(-1);
-    
-    public Playlist(){
-        super();
-    }
 
+    @Inject
+    private Event<Mp3FileData> currentTitleUpdateEvent;
+    
     @PostConstruct
     private void init() {
         titles.addListener((ListChangeListener.Change<? extends Mp3FileData> change) -> {
@@ -51,21 +52,57 @@ public class Playlist extends FileBasedData{
                         randomIndicesToPlay.add(Double.valueOf(Math.random() * (randomIndicesToPlay.size() - randomIndicesToPlay.indexOf(currentTitleIndex.get()))).intValue()
                                 + randomIndicesToPlay.indexOf(currentTitleIndex.get()) + 1, randomIndicesToPlay.size());
                     }
-                } else if (change.wasRemoved()) { //TODO funktioniert so wahrscheinlich nicht
-                    if (titles.size() == 0) {
+                } else if (change.wasRemoved()) {
+                    if (titles.isEmpty()) {
+                        randomIndicesToPlay.clear();
                         currentTitleIndex.set(-1);
-                    }
-                    for (int i = 0; i < change.getRemovedSize(); i++) {
-                        randomIndicesToPlay.remove(Integer.valueOf(change.getFrom() + i));
+                    } else {
+                        for (int i = change.getRemovedSize() - 1; i >= 0; i--) {
+                            int currentRandomIndex = randomIndicesToPlay.indexOf(currentTitleIndex.get());
+                            int removedIndex = change.getFrom() + i;
+                            randomIndicesToPlay.remove(Integer.valueOf(removedIndex));
+                            for (int j = 0; j < randomIndicesToPlay.size(); j++) {
+                                if (randomIndicesToPlay.get(j) > removedIndex) {
+                                    randomIndicesToPlay.set(j, randomIndicesToPlay.get(j) - 1);
+                                }
+                            }
+                            if (settings.isMusicPlayerRandom()) {
+                                if (currentRandomIndex == randomIndicesToPlay.size()) {
+                                    resetRandomIndicesToPlay();
+                                    currentTitleIndex.set(randomIndicesToPlay.get(0));
+                                } else {
+                                    currentTitleIndex.set(randomIndicesToPlay.get(currentRandomIndex));
+                                }
+                            } else {
+                                if (removedIndex < currentTitleIndex.get()) {
+                                    if (currentTitleIndex.get() > 0) {
+                                        currentTitleIndex.set(currentTitleIndex.get() - 1);
+                                    } else {
+                                        currentTitleIndex.set(0);//titles.size() - 1);
+                                    }
+                                } else if (removedIndex == currentTitleIndex.get()) {
+                                    currentTitleUpdateEvent.fire(titles.get(currentTitleIndex.get()));
+                                }
+                            }
+                        }
                     }
                 }
+                //TODO Testausgaben entfernen
+                System.out.println("-----------------");
+                for (int i = 0; i < randomIndicesToPlay.size(); i++) {
+                    System.out.print(randomIndicesToPlay.get(i));
+                    System.out.println(" - " + titles.get(randomIndicesToPlay.get(i)).getTitle());
+                }
             }
-        });
-        settings.musicPlayerRandomProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
-            if (newValue) {
-                Collections.swap(randomIndicesToPlay, 0, randomIndicesToPlay.indexOf(getCurrentTitleIndex()));
-            }
-        });
+        }
+        );
+        settings.musicPlayerRandomProperty()
+                .addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
+                    if (newValue) {
+                        Collections.swap(randomIndicesToPlay, 0, randomIndicesToPlay.indexOf(getCurrentTitleIndex()));
+                    }
+                }
+                );
         filePath.bindBidirectional(settings.playlistFilePathProperty());
     }
 

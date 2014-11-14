@@ -140,8 +140,8 @@ public class MainPresenter implements Initializable {
     }
 
     private void updateStyledIndex(int playlistIndex) {
+        tableRowFactory.getStyledIndices().clear();
         if (playlistIndex >= 0) {
-            tableRowFactory.getStyledIndices().clear();
             tableRowFactory.getStyledIndices().add(table.getItems().indexOf(playlist.getTitles().get(playlistIndex)));
         }
     }
