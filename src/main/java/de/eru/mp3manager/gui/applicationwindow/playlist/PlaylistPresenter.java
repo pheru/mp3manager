@@ -1,8 +1,10 @@
 package de.eru.mp3manager.gui.applicationwindow.playlist;
 
+import de.eru.mp3manager.cdi.CurrentTitleEvent;
 import de.eru.mp3manager.cdi.SelectedTableData;
 import de.eru.mp3manager.cdi.TableData;
 import de.eru.mp3manager.cdi.TableDataSource;
+import de.eru.mp3manager.cdi.Updated;
 import de.eru.mp3manager.data.Mp3FileData;
 import de.eru.mp3manager.data.Playlist;
 import de.eru.mp3manager.gui.utils.CssRowFactory;
@@ -26,6 +28,7 @@ import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TableView;
 import javafx.stage.FileChooser;
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
 @ApplicationScoped
@@ -41,6 +44,8 @@ public class PlaylistPresenter implements Initializable {
     private Label titlesSize;
     @FXML
     private MenuItem deleteMenuItem;
+
+    private CssRowFactory<Mp3FileData> tableRowFactory;
 
     @Inject
     private Playlist playlist;
@@ -64,14 +69,25 @@ public class PlaylistPresenter implements Initializable {
      */
     private void initTable() {
         table.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
-        CssRowFactory<Mp3FileData> rowFactory = new CssRowFactory<>("played");
-        table.setRowFactory(rowFactory);
-        playlist.currentTitleIndexProperty().addListener((ObservableValue<? extends Number> observable, Number oldValue, Number newValue) -> {
-            rowFactory.getStyledIndices().clear();
-            rowFactory.getStyledIndices().add(newValue.intValue());
-        });
+        tableRowFactory = new CssRowFactory<>("played");
+        table.setRowFactory(tableRowFactory);
+//        playlist.currentTitleIndexProperty().addListener((ObservableValue<? extends Number> observable, Number oldValue, Number newValue) -> {
+//            rowFactory.getStyledIndices().clear();
+//            rowFactory.getStyledIndices().add(newValue.intValue());
+//        });
         table.setItems(playlist.getTitles());
         selectedTitles.set(table.getSelectionModel().getSelectedItems());
+    }
+
+    private void currentTitleUpdated(@Observes @Updated CurrentTitleEvent event) { //TODO Aufbau/Ablauf nochmal überdenken
+        updateStyledIndex(event.getNewCurrentTitleIndex());
+    }
+
+    private void updateStyledIndex(int playlistIndex) {
+        tableRowFactory.getStyledIndices().clear();
+        if (playlistIndex >= 0) {
+            tableRowFactory.getStyledIndices().add(playlistIndex);
+        }
     }
 
     /**
@@ -89,7 +105,7 @@ public class PlaylistPresenter implements Initializable {
                     return "<Neue Wiedergabeliste>";
                 } else {
                     String fileName = playlist.getFileName();
-                    if(playlist.isDirty()){
+                    if (playlist.isDirty()) {
                         fileName += "*";
                     }
                     return fileName;
@@ -149,17 +165,17 @@ public class PlaylistPresenter implements Initializable {
     private void deletePlaylist() {
         boolean deletePlaylist = FileService.deleteFile(playlist.getAbsolutePath());
     }
-    
+
     @FXML
-    private void play(){
+    private void play() {
         //TODO 
     }
-    
+
     /*
-    TODO - Index wird in der main-Tabelle nicht aktualisiert
-    */
+     TODO - Index wird in der main-Tabelle nicht aktualisiert
+     */
     @FXML
-    private void remove(){
+    private void remove() {
         playlist.getTitles().removeAll(table.getSelectionModel().getSelectedItems());
     }
 }

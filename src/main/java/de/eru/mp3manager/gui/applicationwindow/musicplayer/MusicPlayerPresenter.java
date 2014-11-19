@@ -1,6 +1,8 @@
 package de.eru.mp3manager.gui.applicationwindow.musicplayer;
 
 import de.eru.mp3manager.Settings;
+import de.eru.mp3manager.cdi.CurrentTitleEvent;
+import de.eru.mp3manager.cdi.Updated;
 import de.eru.mp3manager.data.Mp3FileData;
 import de.eru.mp3manager.data.Playlist;
 import de.eru.mp3manager.player.MusicPlayer;
@@ -120,21 +122,13 @@ public class MusicPlayerPresenter implements Initializable {
         randomButton.selectedProperty().bindBidirectional(settings.musicPlayerRandomProperty());
         repeatButton.selectedProperty().bindBidirectional(settings.musicPlayerRepeatProperty());
         volumeSlider.valueProperty().bindBidirectional(settings.musicPlayerVolumeProperty());
-        playlist.currentTitleIndexProperty().addListener((ObservableValue<? extends Number> observable, Number oldValue, Number newValue) -> {
-            updateCurrentTitleBinding(newValue.intValue());
-        });
+//        playlist.currentTitleIndexProperty().addListener((ObservableValue<? extends Number> observable, Number oldValue, Number newValue) -> {
+//            updateCurrentTitleBinding(newValue.intValue());
+//        });
     }
 
-    private void currentTitleIndexUpdated(@Observes Mp3FileData newTitle) { //TODO Aufbau/Ablauf nochmal überdenken
-        updateCurrentTitleBinding(newTitle);
-    }
-
-    public void updateCurrentTitleBinding(int currentTitleIndex) {
-        if (currentTitleIndex != -1) {
-            updateCurrentTitleBinding(playlist.getTitles().get(currentTitleIndex));
-        } else {
-            //TODO Labels anpassen
-        }
+    private void currentTitleUpdated(@Observes @Updated CurrentTitleEvent event) { //TODO Aufbau/Ablauf nochmal überdenken
+        updateCurrentTitleBinding(event.getNewCurrentTitle());
     }
 
     public void updateCurrentTitleBinding(Mp3FileData newTitle) {

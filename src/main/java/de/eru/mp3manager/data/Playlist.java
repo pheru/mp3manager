@@ -1,8 +1,10 @@
 package de.eru.mp3manager.data;
 
 import de.eru.mp3manager.Settings;
+import de.eru.mp3manager.cdi.CurrentTitleEvent;
 import de.eru.mp3manager.cdi.TableData;
 import de.eru.mp3manager.cdi.TableDataSource;
+import de.eru.mp3manager.cdi.Updated;
 import java.util.Collections;
 import java.util.List;
 import javafx.beans.property.BooleanProperty;
@@ -31,15 +33,15 @@ public class Playlist extends FileBasedData {
 
     @Inject
     private Settings settings;
+    @Inject
+    @Updated
+    private Event<CurrentTitleEvent> currentTitleUpdateEvent;
 
     private final BooleanProperty dirty = new SimpleBooleanProperty(false); // TODO wirklich nötig?
     private final ObservableList<Mp3FileData> titles = FXCollections.observableArrayList();
     private final ObservableList<Integer> randomIndicesToPlay = FXCollections.observableArrayList();
     private final IntegerProperty currentTitleIndex = new SimpleIntegerProperty(-1);
 
-    @Inject
-    private Event<Mp3FileData> currentTitleUpdateEvent;
-    
     @PostConstruct
     private void init() {
         titles.addListener((ListChangeListener.Change<? extends Mp3FileData> change) -> {
@@ -81,7 +83,7 @@ public class Playlist extends FileBasedData {
                                         currentTitleIndex.set(0);//titles.size() - 1);
                                     }
                                 } else if (removedIndex == currentTitleIndex.get()) {
-                                    currentTitleUpdateEvent.fire(titles.get(currentTitleIndex.get()));
+                                    //TODO?
                                 }
                             }
                         }
@@ -94,6 +96,7 @@ public class Playlist extends FileBasedData {
                     System.out.println(" - " + titles.get(randomIndicesToPlay.get(i)).getTitle());
                 }
             }
+            currentTitleUpdateEvent.fire(new CurrentTitleEvent(titles.get(currentTitleIndex.get()), currentTitleIndex.get()));
         }
         );
         settings.musicPlayerRandomProperty()
@@ -119,27 +122,26 @@ public class Playlist extends FileBasedData {
      * @return true wenn ende der liste erreicht
      */
     public boolean next() {
+        boolean reachedEndOfList = false;
         if (currentTitleIndex.get() == -1) {
-            return true;
-        }
-        if (settings.isMusicPlayerRandom()) {
-            boolean endOfListReached = false;
+            reachedEndOfList = true;
+        } else if (settings.isMusicPlayerRandom()) {
             int nextRandomIndex = randomIndicesToPlay.indexOf(currentTitleIndex.get()) + 1;
             if (nextRandomIndex == randomIndicesToPlay.size()) {
                 resetRandomIndicesToPlay();
                 nextRandomIndex = 0;
-                endOfListReached = true;
+                reachedEndOfList = true;
             }
             currentTitleIndex.set(randomIndicesToPlay.get(nextRandomIndex));
-            return endOfListReached;
-        }
-        if (currentTitleIndex.get() == titles.size() - 1) {
+        } else if (currentTitleIndex.get() == titles.size() - 1) {
             currentTitleIndex.set(0);
-            return true;
+            reachedEndOfList = true;
         } else {
             currentTitleIndex.set(currentTitleIndex.get() + 1);
-            return false;
+            reachedEndOfList = false;
         }
+        currentTitleUpdateEvent.fire(new CurrentTitleEvent(titles.get(currentTitleIndex.get()), currentTitleIndex.get()));
+        return reachedEndOfList;
     }
 
     public void previous() {
@@ -159,6 +161,7 @@ public class Playlist extends FileBasedData {
                 currentTitleIndex.set(currentTitleIndex.get() - 1);
             }
         }
+        currentTitleUpdateEvent.fire(new CurrentTitleEvent(titles.get(currentTitleIndex.get()), currentTitleIndex.get()));
     }
 
     public ObservableList<Mp3FileData> getTitles() {

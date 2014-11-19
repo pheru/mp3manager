@@ -1,11 +1,13 @@
 package de.eru.mp3manager.gui.applicationwindow.main;
 
 import de.eru.mp3manager.Settings;
+import de.eru.mp3manager.cdi.CurrentTitleEvent;
 import de.eru.mp3manager.data.Mp3FileData;
 import de.eru.mp3manager.data.Playlist;
 import de.eru.mp3manager.cdi.SelectedTableData;
 import de.eru.mp3manager.cdi.TableData;
 import de.eru.mp3manager.cdi.TableDataSource;
+import de.eru.mp3manager.cdi.Updated;
 import de.eru.mp3manager.gui.utils.CssRowFactory;
 import de.eru.mp3manager.gui.utils.TablePlaceholder;
 import de.eru.mp3manager.utils.TaskPool;
@@ -40,6 +42,7 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.VBox;
 import javafx.stage.DirectoryChooser;
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
 @ApplicationScoped
@@ -118,9 +121,9 @@ public class MainPresenter implements Initializable {
     private void initTable() {
         tableRowFactory = new CssRowFactory<>("played");
         table.setRowFactory(tableRowFactory);
-        playlist.currentTitleIndexProperty().addListener((ObservableValue<? extends Number> observable, Number oldValue, Number newValue) -> {
-            updateStyledIndex(newValue.intValue());
-        });
+//        playlist.currentTitleIndexProperty().addListener((ObservableValue<? extends Number> observable, Number oldValue, Number newValue) -> {
+//            updateStyledIndex(newValue.intValue());
+//        });
         table.setPlaceholder(placeholder);
         table.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
         table.setItems(setUpTableFilter());
@@ -137,6 +140,10 @@ public class MainPresenter implements Initializable {
             }
         });
         Bindings.bindContentBidirectional(columnsOrder, settings.getMainColumnsOrder());
+    }
+    
+    private void currentTitleUpdated(@Observes @Updated CurrentTitleEvent event) { //TODO Aufbau/Ablauf nochmal überdenken
+        updateStyledIndex(event.getNewCurrentTitleIndex());
     }
 
     private void updateStyledIndex(int playlistIndex) {
