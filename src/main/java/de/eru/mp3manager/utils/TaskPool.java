@@ -13,8 +13,10 @@ import javax.enterprise.context.ApplicationScoped;
 
 /**
  * Klasse zum abarbeiten von Tasks.<br/>
- * Ein TaskPool enthält eine Liste von Tasks, welche nacheinander abgearbeitet werden.<br/>
- * Wird ein neuer Task hinzugefügt, reiht sich dieser in die Liste von Tasks ein. Ist die Liste leer, so wird der Task direkt gestartet.
+ * Ein TaskPool enthält eine Liste von Tasks, welche nacheinander abgearbeitet
+ * werden.<br/>
+ * Wird ein neuer Task hinzugefügt, reiht sich dieser in die Liste von Tasks
+ * ein. Ist die Liste leer, so wird der Task direkt gestartet.
  *
  * @author Philipp Bruckner
  */
@@ -32,7 +34,8 @@ public class TaskPool {
     private boolean stopping = false;
 
     /**
-     * Fügt dem Taskpool einen Task hinzu und startet den TaskPool, falls dieser nicht läuft.
+     * Fügt dem Taskpool einen Task hinzu und startet den TaskPool, falls dieser
+     * nicht läuft.
      *
      * @param task Der hinzuzufügende Task.
      */
@@ -42,7 +45,8 @@ public class TaskPool {
     }
 
     /**
-     * Fügt dem Taskpool einen Task hinzu und stellt diesen an die erste Stelle der abzuarbeitenden Tasks.
+     * Fügt dem Taskpool einen Task hinzu und stellt diesen an die erste Stelle
+     * der abzuarbeitenden Tasks.
      *
      * @param task Der hinzuzufügende Task.
      */
@@ -54,7 +58,8 @@ public class TaskPool {
     /**
      * Stoppt den TaskPool.
      *
-     * @param cancelCurrentTask Ob der aktuelle Task sofort gestoppt werden oder noch zu Ende laufen soll.
+     * @param cancelCurrentTask Ob der aktuelle Task sofort gestoppt werden oder
+     * noch zu Ende laufen soll.
      */
     public void stop(boolean cancelCurrentTask) {
         stopping = true;
@@ -66,7 +71,8 @@ public class TaskPool {
     /**
      * Leert den TaskPool.
      *
-     * @param cancelCurrentTask Ob der aktuelle Task sofort gestoppt werden oder noch zu Ende laufen soll.
+     * @param cancelCurrentTask Ob der aktuelle Task sofort gestoppt werden oder
+     * noch zu Ende laufen soll.
      */
     public void clear(boolean cancelCurrentTask) {
         tasks.clear();
@@ -87,6 +93,13 @@ public class TaskPool {
             message.bind(currentTask.messageProperty());
             title.bind(currentTask.titleProperty());
             progress.bind(currentTask.progressProperty());
+            currentTask.exceptionProperty().addListener((ObservableValue observable, Object oldValue, Object newValue) -> {
+                if (newValue instanceof Throwable) {
+                    ExceptionHandler.handle((Throwable) newValue);
+                }else{
+                    //TODO eigene Exception werfen?
+                }
+            });
             Thread thread = new Thread(currentTask);
             thread.setDaemon(true);
             thread.start();
@@ -94,7 +107,9 @@ public class TaskPool {
     }
 
     /**
-     * Erzeugt einen ChangeListener, welcher dem RunningProperties eines Tasks hinzugefügt wird und den nächsten Task startet, sobald dieser beendet ist.
+     * Erzeugt einen ChangeListener, welcher dem RunningProperties eines Tasks
+     * hinzugefügt wird und den nächsten Task startet, sobald dieser beendet
+     * ist.
      *
      * @return Ein ChangeListener für das RunningProperty eines Tasks.
      */

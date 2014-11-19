@@ -1,17 +1,14 @@
 package de.eru.mp3manager;
 
 import de.eru.mp3manager.gui.applicationwindow.application.ApplicationView;
+import de.eru.mp3manager.utils.ExceptionHandler;
 import de.eru.pherufx.cdi.StartApplication;
 import java.awt.SystemTray;
 import java.awt.event.ActionEvent;
 import javafx.application.Platform;
 import javafx.beans.value.ObservableValue;
-import javafx.scene.Group;
 import javafx.scene.Scene;
-import javafx.scene.paint.Color;
-import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
-import javafx.stage.StageStyle;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
@@ -35,18 +32,21 @@ public class ApplicationStarter {
                 settings.save();
             }
         });
+        Thread.setDefaultUncaughtExceptionHandler((Thread t, Throwable e) -> {
+            ExceptionHandler.handle(e);
+        });
         initPrimaryStage(primaryStage);
         initSystemTrayIcon(primaryStage);
         primaryStage.show();
 
         //TODO Test-Stage
-        Rectangle rect = new Rectangle(400, 100);
-        rect.setFill(Color.RED);
-        rect.setArcHeight(15.0);
-        rect.setArcWidth(50.0);
-        Group group = new Group(rect);
-        Stage stage = new Stage(StageStyle.TRANSPARENT);
-        stage.setScene(new Scene(group, Color.TRANSPARENT));
+//        Rectangle rect = new Rectangle(400, 100);
+//        rect.setFill(Color.RED);
+//        rect.setArcHeight(15.0);
+//        rect.setArcWidth(50.0);
+//        Group group = new Group(rect);
+//        Stage stage = new Stage(StageStyle.TRANSPARENT);
+//        stage.setScene(new Scene(group, Color.TRANSPARENT));
 //        stage.show();
     }
 
@@ -62,7 +62,7 @@ public class ApplicationStarter {
             settings.applicationWindowWidthProperty().bind(primaryStage.widthProperty());
             settings.applicationWindowHeightProperty().bind(primaryStage.heightProperty());
         }
-        
+
         settings.applicationWindowMaximizedProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
             if (newValue) {
                 settings.applicationWindowWidthProperty().unbind();

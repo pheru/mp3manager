@@ -1,5 +1,8 @@
 package de.eru.mp3manager.utils;
 
+import de.eru.pherufxcontrols.dialogs.Dialog;
+import de.eru.pherufxcontrols.dialogs.Dialogs;
+import de.eru.pherufxcontrols.utils.InfoType;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -12,10 +15,20 @@ import java.util.Date;
  *
  * @author Philipp Bruckner
  */
-public final class Logfile {
+public final class ExceptionHandler {
 
-    private Logfile() {
+    private ExceptionHandler() {
         //Utility-Klasse
+    }
+    
+    public static void handle(Throwable t){
+        Dialogs.createInfoDialog()
+                .setType(InfoType.ERROR)
+                .setTitle("Ein Fehler ist aufgetreten!")
+                .setHeader(t.getLocalizedMessage())
+                .setText("Es ist ein Fehler aufgetreten!\nDetails befinden sich im Logfile.")
+                .showAndWait();
+        //TODO writeLogfile
     }
 
     /**
