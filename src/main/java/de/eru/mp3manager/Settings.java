@@ -33,7 +33,7 @@ import javax.enterprise.context.ApplicationScoped;
 @ApplicationScoped
 public class Settings {
 
-    private final String absolutePath = getClass().getProtectionDomain().getCodeSource().getLocation().getPath() + "settings.properties";
+    private final String absolutePath = Mp3Manager.APPLICATION_PATH + "/settings.properties";
 
     private final StringProperty musicDirectory = new SimpleStringProperty("");
 

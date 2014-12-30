@@ -94,11 +94,7 @@ public class TaskPool {
             title.bind(currentTask.titleProperty());
             progress.bind(currentTask.progressProperty());
             currentTask.exceptionProperty().addListener((ObservableValue observable, Object oldValue, Object newValue) -> {
-                if (newValue instanceof Throwable) {
-                    ExceptionHandler.handle((Throwable) newValue);
-                }else{
-                    //TODO eigene Exception werfen?
-                }
+                ExceptionHandler.handle((Throwable) newValue);
             });
             Thread thread = new Thread(currentTask);
             thread.setDaemon(true);
