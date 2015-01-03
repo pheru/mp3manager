@@ -83,7 +83,7 @@ public final class ExceptionHandler {
                 .setType(InfoType.ERROR)
                 .setTitle("Fehler beim Erstellen eines Logfiles!")
                 .setHeader(header)
-                .setText("Es konnte kein Logfile erzeugt werden! Kopieren Sie sich folgenden Inhalt bitte manuell:")
+                .setText("Es konnte kein Logfile erzeugt werden! Kopieren Sie sich den folgenden Inhalt bitte manuell:")
                 .showAndWait();
     }
 }
