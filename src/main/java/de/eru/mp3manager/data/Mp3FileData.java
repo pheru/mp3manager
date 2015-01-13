@@ -24,9 +24,10 @@ import org.jaudiotagger.tag.TagException;
  *
  * @author Philipp Bruckner
  */
-public class Mp3FileData extends FileBasedData{
+public class Mp3FileData extends FileBasedData {
 
     public static final String NOT_LOADED = "<Nicht geladen>";
+    public static final Mp3FileData EMPTY_LIST_DATA = new Mp3FileData("Titel", "Album", "Interpret", 0.0);
 
     private final StringProperty title = new SimpleStringProperty(NOT_LOADED);
     private final StringProperty album = new SimpleStringProperty(NOT_LOADED);
@@ -45,7 +46,6 @@ public class Mp3FileData extends FileBasedData{
      * Erstellt ein leeres Mp3FileData-Objekt.
      */
     public Mp3FileData() {
-        super();
         formattedDuration.bind(new StringBinding() {
             {
                 bind(duration);
@@ -85,6 +85,14 @@ public class Mp3FileData extends FileBasedData{
         lastModified.set(copyData.getLastModified());
         cover.set(copyData.getCover());
         duration.set(copyData.getDuration());
+    }
+
+    private Mp3FileData(String title, String album, String artist, double duration) {
+        this();
+        this.title.set(title);
+        this.album.set(album);
+        this.artist.set(artist);
+        this.duration.set(duration);
     }
 
     public void reload() {

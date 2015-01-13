@@ -1,7 +1,11 @@
 package de.eru.mp3manager.utils;
 
+import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.DoubleProperty;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleDoubleProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.beans.value.ChangeListener;
@@ -30,8 +34,11 @@ public class TaskPool {
     private final StringProperty title = new SimpleStringProperty();
     private final DoubleProperty progress = new SimpleDoubleProperty();
 
-    private boolean running = false;
-    private boolean stopping = false;
+    private final BooleanProperty running = new SimpleBooleanProperty(false);
+    private final BooleanProperty cancelling = new SimpleBooleanProperty(false);
+    private final BooleanProperty stopping = new SimpleBooleanProperty(false);
+
+    private final ObjectProperty<TaskStatus> status = new SimpleObjectProperty<>(TaskStatus.READY);
 
     /**
      * Fügt dem Taskpool einen Task hinzu und startet den TaskPool, falls dieser
@@ -62,10 +69,18 @@ public class TaskPool {
      * noch zu Ende laufen soll.
      */
     public void stop(boolean cancelCurrentTask) {
-        stopping = true;
+        stopping.set(true);
         if (cancelCurrentTask) {
-            currentTask.cancel();
+            cancelCurrentTask();
         }
+    }
+
+    /**
+     * Bricht den aktuellen Task ab.
+     */
+    public void cancelCurrentTask() {
+        cancelling.set(true);
+        currentTask.cancel(false);
     }
 
     /**
@@ -77,7 +92,7 @@ public class TaskPool {
     public void clear(boolean cancelCurrentTask) {
         tasks.clear();
         if (cancelCurrentTask) {
-            currentTask.cancel();
+            cancelCurrentTask();
         }
     }
 
@@ -85,8 +100,9 @@ public class TaskPool {
      * Startet den nächsten Task, sofern kein anderer zu diesem Zeitpunkt läuft.
      */
     public void start() {
-        if (!running && !stopping && tasks.size() > 0) {
-            running = true;
+        if (!running.get() && !stopping.get() && tasks.size() > 0) {
+            running.set(true);
+            status.set(TaskStatus.RUNNING);
             currentTask = tasks.get(0);
             tasks.remove(currentTask);
             currentTask.runningProperty().addListener(createTaskRunningListener());
@@ -112,11 +128,17 @@ public class TaskPool {
     private ChangeListener<Boolean> createTaskRunningListener() {
         return (ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
             if (!newValue) {
-                running = false;
-                if (!stopping) {
+                if (!cancelling.get()) {
+                    status.set(TaskStatus.SUCCESSFUL);
+                } else {
+                    status.set(TaskStatus.CANCELLED);
+                    cancelling.set(false);
+                }
+                running.set(false);
+                if (!stopping.get()) {
                     start();
                 } else {
-                    stopping = false;
+                    stopping.set(false);
                 }
             }
         };
@@ -134,4 +156,15 @@ public class TaskPool {
         return progress;
     }
 
+    public BooleanProperty runningProperty() {
+        return running;
+    }
+
+    public BooleanProperty cancellingProperty() {
+        return cancelling;
+    }
+
+    public ObjectProperty<TaskStatus> statusProperty() {
+        return status;
+    }
 }

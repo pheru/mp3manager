@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.paint.*?>
 <?import javafx.geometry.*?>
 <?import javafx.scene.text.*?>
 <?import javafx.scene.*?>
@@ -12,7 +13,7 @@
     <children>
         <HBox alignment="CENTER_LEFT" VBox.vgrow="NEVER">
             <children>
-                <Label fx:id="directoryLabel" text="Pfad" onMouseClicked="#changeDirectory">
+                <Label fx:id="directoryLabel" onMouseClicked="#changeDirectory" text="Pfad">
                     <cursor>
                         <Cursor fx:constant="HAND" />
                     </cursor>
@@ -38,11 +39,16 @@
         </TableView>
         <HBox VBox.vgrow="NEVER">
             <children>
-                <ProgressIndicator fx:id="taskProgress" progress="0.0">
+                <ProgressIndicator fx:id="taskProgress" minWidth="46.0" progress="0.0" style="-fx-progress-color: dodgerblue;">
                     <HBox.margin>
                         <Insets />
                     </HBox.margin>
                 </ProgressIndicator>
+                <Button fx:id="taskCancelButton" alignment="TOP_LEFT" disable="true" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#cancelTask" prefHeight="20.0" prefWidth="20.0" text="X" textFill="RED">
+                    <font>
+                        <Font size="10.0" />
+                    </font>
+                </Button>
                 <Separator orientation="VERTICAL" />
                 <VBox alignment="CENTER_LEFT">
                     <children>

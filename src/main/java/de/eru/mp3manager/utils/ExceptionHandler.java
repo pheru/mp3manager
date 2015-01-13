@@ -1,12 +1,13 @@
 package de.eru.mp3manager.utils;
 
 import de.eru.mp3manager.Mp3Manager;
-import de.eru.pherufxcontrols.dialogs.Dialog;
 import de.eru.pherufxcontrols.dialogs.Dialogs;
 import de.eru.pherufxcontrols.utils.InfoType;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -23,6 +24,7 @@ public final class ExceptionHandler {
     }
 
     public static void handle(Throwable t, String dialogTitle, String dialogText, String logfileMessage) {
+        t.printStackTrace(); //TODO Entfernen
         Dialogs.createInfoDialog()
                 .setType(InfoType.ERROR)
                 .setTitle(dialogTitle.isEmpty() ? "Ein Fehler ist aufgetreten!" : dialogTitle)
@@ -60,13 +62,13 @@ public final class ExceptionHandler {
             content.append("  -  ");
             content.append(message);
         }
-        StackTraceElement[] stackTrace = t.getStackTrace();
-        for (StackTraceElement stackTraceElement : stackTrace) {
-            content.append("\n");
-            content.append(stackTraceElement.toString());
-        }
+        content.append(System.lineSeparator());
+        StringWriter stackTraceWriter = new StringWriter();
+        t.printStackTrace(new PrintWriter(stackTraceWriter));
+        content.append(stackTraceWriter.toString());
+        
         File logfile = new File(Mp3Manager.APPLICATION_PATH + "/logs/" + date.getTime() + ".txt");
-        if (logfile.mkdirs()) {
+        if (logfile.getParentFile().exists() || logfile.getParentFile().mkdirs()) {
             try (FileWriter writer = new FileWriter(logfile)) {
                 writer.write(content.toString());
                 logfile.createNewFile();

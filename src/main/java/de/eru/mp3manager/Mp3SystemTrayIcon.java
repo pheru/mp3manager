@@ -1,6 +1,6 @@
 package de.eru.mp3manager;
 
-import de.eru.mp3manager.utils.Command;
+import de.eru.mp3manager.utils.ExceptionHandler;
 import java.awt.AWTException;
 import java.awt.Font;
 import java.awt.Image;
@@ -12,8 +12,13 @@ import java.awt.TrayIcon;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.io.File;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
+import javax.imageio.ImageIO;
 
 /**
  *
@@ -48,7 +53,7 @@ public class Mp3SystemTrayIcon {
         }
     }
 
-    public void addOnClick(Command command) {
+    public void addOnClick(Runnable runnable) {
         if (SystemTray.isSupported()) {
             trayIcon.addMouseListener(new MouseListener() {
                 @Override
@@ -64,7 +69,7 @@ public class Mp3SystemTrayIcon {
                 @Override
                 public void mouseReleased(MouseEvent e) {
                     if (e.getButton() == MouseEvent.BUTTON1) {
-                        command.execute();
+                        runnable.run();
                     }
                 }
 

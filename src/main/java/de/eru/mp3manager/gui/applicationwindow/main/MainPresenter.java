@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 import javafx.beans.binding.Bindings;
+import javafx.beans.binding.StringBinding;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.beans.value.ObservableValue;
@@ -58,6 +59,8 @@ public class MainPresenter implements Initializable {
     private Button clearFilterButton;
     @FXML
     private TextField filterTextField;
+    @FXML
+    private Button taskCancelButton;
     @FXML
     private Label statusL1;
     @FXML
@@ -141,7 +144,7 @@ public class MainPresenter implements Initializable {
         });
         Bindings.bindContentBidirectional(columnsOrder, settings.getMainColumnsOrder());
     }
-    
+
     private void currentTitleUpdated(@Observes @Updated CurrentTitleEvent event) { //TODO Aufbau/Ablauf nochmal überdenken
         updateStyledIndex(event.getNewCurrentTitleIndex());
     }
@@ -234,6 +237,17 @@ public class MainPresenter implements Initializable {
      */
     private void bindUI() {
         clearFilterButton.visibleProperty().bind(filterTextField.textProperty().isEmpty().not());
+        taskCancelButton.disableProperty().bind(taskPool.cancellingProperty().or(taskPool.runningProperty().not()));
+        taskProgress.styleProperty().bind(new StringBinding() {
+            {
+                bind(taskPool.statusProperty());
+            }
+
+            @Override
+            protected String computeValue() {
+                return "-fx-progress-color: " + taskPool.statusProperty().get().getColor() + ";";
+            }
+        });
         StringProperty sp1 = new SimpleStringProperty();
         sp1.bind(Bindings.size(table.getSelectionModel().getSelectedItems()).asString());
         StringProperty sp2 = new SimpleStringProperty();
@@ -267,6 +281,11 @@ public class MainPresenter implements Initializable {
         if (directory != null && !directory.isEmpty()) {
             taskPool.addTask(TaskFactory.createReadDirectoryTask(directory, masterData, placeholder, table.disableProperty(), playlist.getTitles()));
         }
+    }
+
+    @FXML
+    private void cancelTask() {
+        taskPool.cancelCurrentTask();
     }
 
     /**

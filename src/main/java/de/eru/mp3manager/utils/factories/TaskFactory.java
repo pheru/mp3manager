@@ -58,6 +58,12 @@ public final class TaskFactory {
                 updateProgress(-1, 1);
                 ObservableList<Mp3FileData> loadedData = FXCollections.observableArrayList();
                 for (int i = 0; i < files.size(); i++) {
+                    if (isCancelled()) {
+                        updateTitle("Laden der Dateien abgebrochen!");
+                        updateMessage(loadedData.size() + " von " + files.size() + " Dateien wurden erfolgreich geladen.");
+                        updateProgress(1, 1);
+                        break;
+                    }
                     updateTitle("Lade Datei " + (i + 1) + " von " + files.size() + "...");
                     updateMessage(files.get(i).getAbsolutePath());
                     boolean dataAlreadyLoaded = false;
@@ -73,8 +79,10 @@ public final class TaskFactory {
                     }
                     updateProgress(i + 1, files.size());
                 }
-                updateTitle("Laden der Dateien abgeschlossen.");
-                updateMessage(loadedData.size() + " Dateien wurden erfolgreich geladen.");
+                if (!isCancelled()) {
+                    updateTitle("Laden der Dateien abgeschlossen.");
+                    updateMessage(loadedData.size() + " von " + files.size() + " Dateien wurden erfolgreich geladen.");
+                }
 
                 Platform.runLater(() -> {
                     if (!loadedData.isEmpty()) {
@@ -96,6 +104,12 @@ public final class TaskFactory {
             protected Void call() throws Exception {
                 updateProgress(-1, 1);
                 for (int i = 0; i < dataToSave.size(); i++) {
+                    if (isCancelled()) {
+                        updateTitle("Speichern der Dateien abgebrochen!");
+                        updateMessage(i + " von " + dataToSave.size() + " Dateien wurden erfolgreich gespeichert.");
+                        updateProgress(1, 1);
+                        return null;
+                    }
                     updateTitle("Speichere Datei " + (i + 1) + " von " + dataToSave.size() + "...");
                     updateMessage(dataToSave.get(i).getAbsolutePath());
                     FileService.saveMp3File(dataToSave.get(i), changeData);
@@ -103,7 +117,7 @@ public final class TaskFactory {
                     updateProgress(i + 1, dataToSave.size());
                 }
                 updateTitle("Speichern der Dateien abgeschlossen.");
-                updateMessage(dataToSave.size() + " Dateien wurden erfolgreich gespeichert.");
+                updateMessage(dataToSave.size() + " von " + dataToSave.size() + " Dateien wurden erfolgreich gespeichert.");
                 return null;
             }
         };

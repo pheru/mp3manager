@@ -71,6 +71,10 @@ public class MusicPlayerPresenter implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        bindUI();
+    }
+
+    private void bindUI() {
         durationSliderBinding = new DoubleBinding() {
             {
                 bind(player.currentTimeProperty());
@@ -85,10 +89,6 @@ public class MusicPlayerPresenter implements Initializable {
                 return percentage;
             }
         };
-        bindUI();
-    }
-
-    private void bindUI() {
         durationSlider.valueProperty().bind(durationSliderBinding);
         durationProgressBar.progressProperty().bind(durationSlider.valueProperty().add(0.005)); //add() damit der Slider die Progressbar komplett überdeckt
         currentTimeLabel.textProperty().bind(createTimeBinding(player.currentTimeProperty()));

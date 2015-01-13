@@ -1,6 +1,8 @@
 package de.eru.mp3manager.player;
 
 import de.eru.mp3manager.Settings;
+import de.eru.mp3manager.cdi.CurrentTitleEvent;
+import de.eru.mp3manager.cdi.Updated;
 import de.eru.mp3manager.data.Mp3FileData;
 import de.eru.mp3manager.data.Playlist;
 import java.io.File;
@@ -8,17 +10,16 @@ import java.net.MalformedURLException;
 import javafx.beans.binding.DoubleBinding;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.DoubleProperty;
-import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
-import javafx.scene.media.MediaPlayer.Status;
 import javafx.util.Duration;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
 /**
@@ -34,7 +35,7 @@ public class MusicPlayer {
     private final DoubleProperty volume = new SimpleDoubleProperty(100.0);
     private final BooleanProperty repeat = new SimpleBooleanProperty(false);
     private final BooleanProperty random = new SimpleBooleanProperty(false);
-    private final ObjectProperty<Status> status = new SimpleObjectProperty<>(Status.UNKNOWN);
+    private final ObjectProperty<MediaPlayer.Status> status = new SimpleObjectProperty<>(MediaPlayer.Status.UNKNOWN);
 
     @Inject
     private Settings settings;
@@ -70,6 +71,7 @@ public class MusicPlayer {
             Media media = new Media(file.toURI().toURL().toExternalForm());
             player = new MediaPlayer(media);
             player.setOnEndOfMedia(() -> {
+                System.out.println("EndOfMedia-Status: - " + player.getStatus());
                 if (!playlist.next() || repeat.get()) {
                     play(playlist.getCurrentTitle());
                 } else {
@@ -103,20 +105,26 @@ public class MusicPlayer {
 
     public void next() {
         playlist.next();
-        if (player != null && player.getStatus() == Status.PLAYING) {
+        if (player != null && player.getStatus() == MediaPlayer.Status.PLAYING) {
             play(playlist.getCurrentTitle());
         }
     }
 
     public void previous() {
         playlist.previous();
-        if (player != null && player.getStatus() == Status.PLAYING) {
+        if (player != null && player.getStatus() == MediaPlayer.Status.PLAYING) {
             play(playlist.getCurrentTitle());
         }
     }
-    
+
     public void seek(double seconds) {
         player.seek(Duration.seconds(seconds));
+    }
+
+    private void currentTitleUpdated(@Observes @Updated CurrentTitleEvent event) {
+        if (player != null && player.getStatus() == MediaPlayer.Status.PLAYING) {
+            play(event.getNewCurrentTitle());
+        }
     }
 
     public BooleanProperty repeatProperty() {
@@ -155,15 +163,15 @@ public class MusicPlayer {
         this.random.set(random);
     }
 
-    public Status getStatus() {
+    public MediaPlayer.Status getStatus() {
         return status.get();
     }
 
-    public void setStatus(final Status status) {
+    public void setStatus(final MediaPlayer.Status status) {
         this.status.set(status);
     }
 
-    public ObjectProperty<Status> statusProperty() {
+    public ObjectProperty<MediaPlayer.Status> statusProperty() {
         return status;
     }
 

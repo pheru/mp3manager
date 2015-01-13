@@ -16,10 +16,11 @@ import de.eru.pherufx.utils.InjectableList;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.ResourceBundle;
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.StringBinding;
-import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
@@ -71,23 +72,8 @@ public class PlaylistPresenter implements Initializable {
         table.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
         tableRowFactory = new CssRowFactory<>("played");
         table.setRowFactory(tableRowFactory);
-//        playlist.currentTitleIndexProperty().addListener((ObservableValue<? extends Number> observable, Number oldValue, Number newValue) -> {
-//            rowFactory.getStyledIndices().clear();
-//            rowFactory.getStyledIndices().add(newValue.intValue());
-//        });
         table.setItems(playlist.getTitles());
         selectedTitles.set(table.getSelectionModel().getSelectedItems());
-    }
-
-    private void currentTitleUpdated(@Observes @Updated CurrentTitleEvent event) { //TODO Aufbau/Ablauf nochmal überdenken
-        updateStyledIndex(event.getNewCurrentTitleIndex());
-    }
-
-    private void updateStyledIndex(int playlistIndex) {
-        tableRowFactory.getStyledIndices().clear();
-        if (playlistIndex >= 0) {
-            tableRowFactory.getStyledIndices().add(playlistIndex);
-        }
     }
 
     /**
@@ -176,6 +162,20 @@ public class PlaylistPresenter implements Initializable {
      */
     @FXML
     private void remove() {
-        playlist.getTitles().removeAll(table.getSelectionModel().getSelectedItems());
+        List<Integer> selectedIndices = new ArrayList<>(table.getSelectionModel().getSelectedIndices());
+        for (int i = selectedIndices.size() - 1; i >= 0; i--) {
+            playlist.getTitles().remove(selectedIndices.get(i).intValue());
+        }
+    }
+
+    private void currentTitleUpdated(@Observes @Updated CurrentTitleEvent event) { //TODO Aufbau/Ablauf nochmal überdenken
+        updateStyledIndex(event.getNewCurrentTitleIndex());
+    }
+
+    private void updateStyledIndex(int playlistIndex) {
+        tableRowFactory.getStyledIndices().clear();
+        if (playlistIndex >= 0) {
+            tableRowFactory.getStyledIndices().add(playlistIndex);
+        }
     }
 }
