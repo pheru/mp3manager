@@ -55,6 +55,7 @@ public final class Mp3Mapper {
         AudioHeader audioHeader = mp3File.getAudioHeader();
 
         mp3FileData.setDuration(audioHeader.getTrackLength());
+        mp3FileData.setBitrate(audioHeader.getBitRate().replace("~","") + Mp3FileData.UNIT_BITRATE);
         if (mp3File.hasID3v2Tag()) {
             AbstractID3v2Tag tag = mp3File.getID3v2Tag();
             mp3FileData.setTitle(tag.getFirst(FieldKey.TITLE));

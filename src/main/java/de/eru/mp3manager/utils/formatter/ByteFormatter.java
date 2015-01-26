@@ -1,5 +1,6 @@
 package de.eru.mp3manager.utils.formatter;
 
+import de.eru.mp3manager.data.Mp3FileData;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
@@ -53,7 +54,7 @@ public final class ByteFormatter {
      */
     public static String bytesToMB(Long bytes) {
         Double mb = Double.valueOf(bytes) / 1048576;
-        return TWO_DECIMAL_PLACES_FORMAT.format(mb) + " MB";
+        return TWO_DECIMAL_PLACES_FORMAT.format(mb) + Mp3FileData.UNIT_SIZE;
     }
 
     /**

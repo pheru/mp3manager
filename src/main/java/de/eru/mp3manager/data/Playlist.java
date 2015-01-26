@@ -3,7 +3,9 @@ package de.eru.mp3manager.data;
 import de.eru.mp3manager.Settings;
 import de.eru.mp3manager.cdi.CurrentTitleEvent;
 import de.eru.mp3manager.cdi.Updated;
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleBooleanProperty;
@@ -41,85 +43,75 @@ public class Playlist extends FileBasedData {
 
     @PostConstruct
     private void init() {
-        titles.addListener((ListChangeListener.Change<? extends Mp3FileData> change) -> {
-            while (change.next()) {
-                if (change.wasAdded()) {
-                    changeAdded(change);
-                } else if (change.wasRemoved()) {
-                    changeRemoved(change);
-                }
-                //TODO Testausgaben entfernen
-                System.out.println("-----------------");
-                for (int i = 0; i < randomIndicesToPlay.size(); i++) {
-                    System.out.print(randomIndicesToPlay.get(i));
-                    System.out.println(" - " + titles.get(randomIndicesToPlay.get(i)).getTitle());
-                }
-            }
-//            currentTitleUpdateEvent.fire(new CurrentTitleEvent(titles.get(currentTitleIndex.get()), currentTitleIndex.get()));
-        }
-        );
         settings.musicPlayerRandomProperty()
                 .addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
-                    if (newValue && !titles.isEmpty()) {
-                        Collections.swap(randomIndicesToPlay, 0, randomIndicesToPlay.indexOf(getCurrentTitleIndex()));
+                    if (newValue) {
+                        resetRandomIndicesToPlay();
                     }
                 }
                 );
         filePath.bindBidirectional(settings.playlistFilePathProperty());
     }
 
-    private void changeAdded(ListChangeListener.Change<? extends Mp3FileData> change) {
-        if (change.getAddedSize() == titles.size()) {
+    public void add(List<Mp3FileData> dataToAdd) {
+        titles.addAll(dataToAdd);
+        if (dataToAdd.size() == titles.size()) {
             currentTitleIndex.set(0);
             currentTitleUpdateEvent.fire(new CurrentTitleEvent(titles.get(currentTitleIndex.get()), currentTitleIndex.get()));
         }
-        for (int i = 0; i < change.getAddedSize(); i++) {
+        for (int i = 0; i < dataToAdd.size(); i++) {
             randomIndicesToPlay.add(Double.valueOf(Math.random() * (randomIndicesToPlay.size() - randomIndicesToPlay.indexOf(currentTitleIndex.get()))).intValue()
                     + randomIndicesToPlay.indexOf(currentTitleIndex.get()) + 1, randomIndicesToPlay.size());
         }
     }
 
-    private void changeRemoved(ListChangeListener.Change<? extends Mp3FileData> change) {
-        if (titles.isEmpty()) {
+    public void remove(List<Integer> selectedIndices) {
+        List<Integer> indicesToRemove = new ArrayList<>(selectedIndices);
+        if (titles.size() == selectedIndices.size()) {
+            titles.clear();
             randomIndicesToPlay.clear();
             currentTitleUpdateEvent.fire(new CurrentTitleEvent(Mp3FileData.EMPTY_LIST_DATA, -1));
         } else {
-            for (int i = change.getRemovedSize() - 1; i >= 0; i--) {
+            for (int i = indicesToRemove.size() - 1; i >= 0; i--) {
+                titles.remove(indicesToRemove.get(i).intValue());
                 int currentRandomIndex = randomIndicesToPlay.indexOf(currentTitleIndex.get());
-                int removedIndex = change.getFrom() + i;
-                randomIndicesToPlay.remove(Integer.valueOf(removedIndex));
+                randomIndicesToPlay.remove(indicesToRemove.get(i));
                 for (int j = 0; j < randomIndicesToPlay.size(); j++) {
-                    if (randomIndicesToPlay.get(j) > removedIndex) {
+                    if (randomIndicesToPlay.get(j) > indicesToRemove.get(i)) {
                         randomIndicesToPlay.set(j, randomIndicesToPlay.get(j) - 1);
                     }
                 }
                 if (settings.isMusicPlayerRandom()) {
-                    if (currentRandomIndex == randomIndicesToPlay.size()) {
+                    if (currentRandomIndex >= randomIndicesToPlay.size()) {
                         resetRandomIndicesToPlay();
                         currentTitleIndex.set(randomIndicesToPlay.get(0));
                     } else {
                         currentTitleIndex.set(randomIndicesToPlay.get(currentRandomIndex));
                     }
                 } else {
-                    if (removedIndex < currentTitleIndex.get()) {
-                        if (currentTitleIndex.get() > 0) {
-                            currentTitleIndex.set(currentTitleIndex.get() - 1);
-                        } else { //TODO Überhaupt möglich?
-                            currentTitleIndex.set(0);
-                        }
-                    }// else if (removedIndex == currentTitleIndex.get()) {
-                    currentTitleUpdateEvent.fire(new CurrentTitleEvent(titles.get(currentTitleIndex.get()), currentTitleIndex.get()));
-                    //}
+                    if (indicesToRemove.get(i) < currentTitleIndex.get()) {
+                        currentTitleIndex.set(currentTitleIndex.get() - 1);
+                    } else if (indicesToRemove.get(i) == currentTitleIndex.get() && currentTitleIndex.get() >= titles.size()) {
+                        currentTitleIndex.set(titles.size() - 1);
+                    }
                 }
             }
+            currentTitleUpdateEvent.fire(new CurrentTitleEvent(titles.get(currentTitleIndex.get()), currentTitleIndex.get()));
+        }
+        System.out.println("-----------------");
+        for (int j = 0; j < randomIndicesToPlay.size(); j++) {
+            System.out.print(randomIndicesToPlay.get(j));
+            System.out.println(" - " + titles.get(randomIndicesToPlay.get(j)).getTitle());
         }
     }
 
     private void resetRandomIndicesToPlay() {
-        Integer lastRandomIndex = randomIndicesToPlay.get(randomIndicesToPlay.size() - 1);
-        Collections.shuffle(randomIndicesToPlay);
-        if (randomIndicesToPlay.indexOf(lastRandomIndex) == 0) {
-            Collections.swap(randomIndicesToPlay, 0, randomIndicesToPlay.size() - 1); //TODO Wirklich nötig?
+        if (!randomIndicesToPlay.isEmpty()) {
+            Integer lastRandomIndex = randomIndicesToPlay.get(randomIndicesToPlay.size() - 1);
+            Collections.shuffle(randomIndicesToPlay);
+            if (randomIndicesToPlay.indexOf(lastRandomIndex) == 0) {
+                Collections.swap(randomIndicesToPlay, 0, randomIndicesToPlay.size() - 1);
+            }
         }
     }
 

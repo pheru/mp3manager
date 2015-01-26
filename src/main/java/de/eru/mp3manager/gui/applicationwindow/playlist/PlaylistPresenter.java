@@ -27,6 +27,8 @@ import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TableView;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.stage.FileChooser;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
@@ -154,17 +156,20 @@ public class PlaylistPresenter implements Initializable {
 
     @FXML
     private void play() {
-        //TODO 
+        //TODO implementieren
     }
 
-    /*
-     TODO - Index wird in der main-Tabelle nicht aktualisiert
-     */
     @FXML
     private void remove() {
-        List<Integer> selectedIndices = new ArrayList<>(table.getSelectionModel().getSelectedIndices());
-        for (int i = selectedIndices.size() - 1; i >= 0; i--) {
-            playlist.getTitles().remove(selectedIndices.get(i).intValue());
+        playlist.remove(table.getSelectionModel().getSelectedIndices());
+    }
+
+    @FXML
+    private void tableKeyReleased(KeyEvent event) {
+        switch (event.getCode()) {
+            case DELETE:
+                remove();
+                break;
         }
     }
 

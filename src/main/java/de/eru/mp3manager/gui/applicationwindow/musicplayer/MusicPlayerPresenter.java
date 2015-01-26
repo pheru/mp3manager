@@ -169,7 +169,7 @@ public class MusicPlayerPresenter implements Initializable {
     private void next() {
         player.next();
     }
-
+    
     @FXML
     private void previous() {
         player.previous();

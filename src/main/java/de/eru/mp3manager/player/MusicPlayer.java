@@ -70,8 +70,7 @@ public class MusicPlayer {
         try {
             Media media = new Media(file.toURI().toURL().toExternalForm());
             player = new MediaPlayer(media);
-            player.setOnEndOfMedia(() -> {
-                System.out.println("EndOfMedia-Status: - " + player.getStatus());
+            player.setOnEndOfMedia(() -> { //TODO überprüfen
                 if (!playlist.next() || repeat.get()) {
                     play(playlist.getCurrentTitle());
                 } else {
@@ -88,6 +87,7 @@ public class MusicPlayer {
 
                 @Override
                 protected double computeValue() {
+                    System.out.println(player.getCurrentTime().toSeconds() + " - " + player.getTotalDuration().toSeconds());
                     return player.getCurrentTime().toSeconds();
                 }
             });

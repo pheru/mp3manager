@@ -3,9 +3,9 @@ package de.eru.mp3manager.gui.applicationwindow.editfile;
 import de.eru.mp3manager.data.Mp3FileData;
 import de.eru.mp3manager.cdi.SelectedTableData;
 import de.eru.mp3manager.cdi.TableDataSource;
+import de.eru.mp3manager.utils.Comparators;
 import de.eru.mp3manager.utils.TaskPool;
 import de.eru.mp3manager.utils.formatter.ByteFormatter;
-import de.eru.mp3manager.utils.factories.ComparatorFactory;
 import de.eru.mp3manager.utils.factories.TaskFactory;
 import de.eru.pherufx.utils.InjectableList;
 import java.io.File;
@@ -77,8 +77,6 @@ public class EditFilePresenter implements Initializable {
     private Button saveButton;
 
     private final ObservableList<ComboBox<String>> fields = FXCollections.observableArrayList();
-
-    private final Comparator<String> numberComparator = ComparatorFactory.createNumberComparator();
 
     @Inject
     @SelectedTableData(source = TableDataSource.MAIN)
@@ -309,8 +307,8 @@ public class EditFilePresenter implements Initializable {
         if (sortArtistBox.isSelected()) {
             artistField.getItems().sort(null);
         }
-        trackField.getItems().sort(numberComparator);
-        yearField.getItems().sort(numberComparator);
+        trackField.getItems().sort(Comparators.NUMBER_COMPARATOR);
+        yearField.getItems().sort(Comparators.NUMBER_COMPARATOR);
         genreField.getItems().sort(null);
     }
 

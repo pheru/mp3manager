@@ -28,6 +28,8 @@ public class Mp3FileData extends FileBasedData {
 
     public static final String NOT_LOADED = "<Nicht geladen>";
     public static final Mp3FileData EMPTY_LIST_DATA = new Mp3FileData("Titel", "Album", "Interpret", 0.0);
+    public static final String UNIT_SIZE = " MB";
+    public static final String UNIT_BITRATE = " kBit/s";
 
     private final StringProperty title = new SimpleStringProperty(NOT_LOADED);
     private final StringProperty album = new SimpleStringProperty(NOT_LOADED);
@@ -37,6 +39,7 @@ public class Mp3FileData extends FileBasedData {
     private final StringProperty year = new SimpleStringProperty(NOT_LOADED);
     private final StringProperty size = new SimpleStringProperty(NOT_LOADED);
     private final StringProperty lastModified = new SimpleStringProperty(NOT_LOADED);
+    private final StringProperty bitrate = new SimpleStringProperty(NOT_LOADED);
     private final ObjectProperty<byte[]> cover = new SimpleObjectProperty<>();
     private final DoubleProperty duration = new SimpleDoubleProperty(0);
     private final StringProperty formattedDuration = new SimpleStringProperty(NOT_LOADED);
@@ -241,5 +244,17 @@ public class Mp3FileData extends FileBasedData {
 
     public BooleanProperty loadedProperty() {
         return loaded;
+    }
+
+    public String getBitrate() {
+        return bitrate.get();
+    }
+
+    public void setBitrate(final String bitrate) {
+        this.bitrate.set(bitrate);
+    }
+
+    public StringProperty bitrateProperty() {
+        return bitrate;
     }
 }

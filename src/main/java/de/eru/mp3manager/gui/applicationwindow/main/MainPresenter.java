@@ -28,12 +28,14 @@ import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import javafx.collections.transformation.SortedList;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressIndicator;
 import javafx.scene.control.SelectionMode;
+import javafx.scene.control.SortEvent;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
@@ -143,17 +145,9 @@ public class MainPresenter implements Initializable {
             }
         });
         Bindings.bindContentBidirectional(columnsOrder, settings.getMainColumnsOrder());
-    }
-
-    private void currentTitleUpdated(@Observes @Updated CurrentTitleEvent event) { //TODO Aufbau/Ablauf nochmal überdenken
-        updateStyledIndex(event.getNewCurrentTitleIndex());
-    }
-
-    private void updateStyledIndex(int playlistIndex) {
-        tableRowFactory.getStyledIndices().clear();
-        if (playlistIndex >= 0) {
-            tableRowFactory.getStyledIndices().add(table.getItems().indexOf(playlist.getTitles().get(playlistIndex)));
-        }
+        table.setOnSort((SortEvent<TableView<Mp3FileData>> event) -> {
+            updateStyledIndex(playlist.getCurrentTitleIndex());
+        });
     }
 
     /**
@@ -261,6 +255,17 @@ public class MainPresenter implements Initializable {
 
     }
 
+    private void currentTitleUpdated(@Observes @Updated CurrentTitleEvent event) { //TODO Aufbau/Ablauf nochmal überdenken
+        updateStyledIndex(event.getNewCurrentTitleIndex());
+    }
+
+    private void updateStyledIndex(int playlistIndex) {
+        tableRowFactory.getStyledIndices().clear();
+        if (playlistIndex >= 0) {
+            tableRowFactory.getStyledIndices().add(table.getItems().indexOf(playlist.getTitles().get(playlistIndex)));
+        }
+    }
+
     @FXML
     public void changeDirectory() {
         DirectoryChooser dirChooser = new DirectoryChooser();
@@ -303,7 +308,7 @@ public class MainPresenter implements Initializable {
      */
     @FXML
     private void addToPlaylist() {
-        playlist.getTitles().addAll(selectedData);
+        playlist.add(selectedData);
     }
 
     @FXML

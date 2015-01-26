@@ -1,6 +1,5 @@
 package de.eru.mp3manager;
 
-import de.eru.mp3manager.utils.ExceptionHandler;
 import java.awt.AWTException;
 import java.awt.Font;
 import java.awt.Image;
@@ -12,13 +11,8 @@ import java.awt.TrayIcon;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.io.File;
-import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
-import javax.imageio.ImageIO;
 
 /**
  *
@@ -33,7 +27,7 @@ public class Mp3SystemTrayIcon {
     private void init() {
         if (SystemTray.isSupported()) {
             SystemTray systemTray = SystemTray.getSystemTray();
-            Image image = Toolkit.getDefaultToolkit().getImage(this.getClass().getClassLoader().getResource("img/trayIcon.png").getPath());
+            Image image = Toolkit.getDefaultToolkit().getImage(this.getClass().getClassLoader().getResource("img/trayIcon.png"));
             trayIcon = new TrayIcon(image, "Mp3Manager", new PopupMenu());
             trayIcon.setImageAutoSize(true);
             trayIcon.getPopupMenu().setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));

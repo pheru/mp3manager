@@ -1,6 +1,6 @@
 package de.eru.mp3manager.gui.applicationwindow.main;
 
-import de.eru.mp3manager.utils.factories.ComparatorFactory;
+import de.eru.mp3manager.utils.Comparators;
 import java.util.Comparator;
 
 /**
@@ -13,12 +13,13 @@ public enum MainColumn {
     TITLE("Titel", "title", null, 100.0, true),
     ALBUM("Album", "album", null, 100.0, true),
     ARTIST("Interpret", "artist", null, 100.0, true),
-    TRACK("Titelnummer", "track", ComparatorFactory.createNumberComparator(), 100.0, true),
-    DURATION("Dauer", "formattedDuration", ComparatorFactory.createTimeComparator(), 100.0, true),
+    TRACK("Titelnummer", "track", Comparators.NUMBER_COMPARATOR, 100.0, true),
+    DURATION("Dauer", "formattedDuration", Comparators.TIME_COMPARATOR, 100.0, true),
     GENRE("Genre", "genre", null, 100.0, true),
-    YEAR("Jahr", "year", ComparatorFactory.createNumberComparator(), 100.0, true),
-    SIZE("Dateigröße", "size", ComparatorFactory.createSizeComparator(), 100.0, true),
-    LAST_MODIFIED("Zuletzt bearbeitet", "lastModified", ComparatorFactory.createDateComparator(), 100.0, true);
+    YEAR("Jahr", "year", Comparators.NUMBER_COMPARATOR, 100.0, true),
+    SIZE("Dateigröße", "size", Comparators.SIZE_COMPARATOR, 100.0, true),
+    BITRATE("Bitrate", "bitrate", Comparators.BITRATE_COMPARATOR, 100.0, true),
+    LAST_MODIFIED("Zuletzt bearbeitet", "lastModified", Comparators.DATE_COMPARATOR, 100.0, true);
 
     private final String columnName;
     private final String propertyName;
