@@ -16,18 +16,16 @@ import de.eru.pherufx.utils.InjectableList;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.ResourceBundle;
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.StringBinding;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
+import javafx.scene.control.Menu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TableView;
-import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.stage.FileChooser;
 import javax.enterprise.context.ApplicationScoped;
@@ -47,6 +45,10 @@ public class PlaylistPresenter implements Initializable {
     private Label titlesSize;
     @FXML
     private MenuItem deleteMenuItem;
+    @FXML
+    private Menu saveMenu;
+    @FXML
+    private MenuItem saveMenuItem;
 
     private CssRowFactory<Mp3FileData> tableRowFactory;
 
@@ -92,7 +94,7 @@ public class PlaylistPresenter implements Initializable {
                 if (playlist.getFileName().isEmpty()) {
                     return "<Neue Wiedergabeliste>";
                 } else {
-                    String fileName = playlist.getFileName();
+                    String fileName = playlist.getFileName().replace(Playlist.FILE_EXTENSION, "");
                     if (playlist.isDirty()) {
                         fileName += "*";
                     }
@@ -115,16 +117,23 @@ public class PlaylistPresenter implements Initializable {
                 return TimeFormatter.secondsToDurationFormat(duration, true);
             }
         });
-        deleteMenuItem.disableProperty().bind(playlist.absolutePathProperty().isEmpty());
+        deleteMenuItem.disableProperty().bind(playlist.fileNameProperty().isEmpty());
+        saveMenuItem.disableProperty().bind(playlist.dirtyProperty().not());
+        saveMenu.disableProperty().bind(Bindings.size(playlist.getTitles()).isEqualTo(0));
     }
 
     @FXML
     private void savePlaylist() {
+        System.out.println("TODO!");//TODO
+    }
+    
+    @FXML
+    private void savePlaylistAs() {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Wiedergabeliste speichern");
 //        fileChooser.setInitialDirectory(new File("D:\\"));
-        fileChooser.setInitialFileName("Wiedergabeliste." + Playlist.FILE_EXTENSION);
-        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Wiedergabelisten", "*." + Playlist.FILE_EXTENSION));
+        fileChooser.setInitialFileName("Wiedergabeliste" + Playlist.FILE_EXTENSION);
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Wiedergabelisten", "*" + Playlist.FILE_EXTENSION));
         File playlistFile = fileChooser.showSaveDialog(table.getScene().getWindow());
         if (playlistFile != null) {
             try {
@@ -142,7 +151,7 @@ public class PlaylistPresenter implements Initializable {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Wiedergabeliste laden");
 //        fileChooser.setInitialDirectory(new File("D:\\"));
-        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Wiedergabelisten", "*." + Playlist.FILE_EXTENSION));
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Wiedergabelisten", "*" + Playlist.FILE_EXTENSION));
         File playlistFile = fileChooser.showOpenDialog(table.getScene().getWindow());
         if (playlistFile != null) {
             taskPool.addTask(TaskFactory.createLoadPlaylistTask(playlist, playlistFile, mainTitles));

@@ -3,16 +3,21 @@ package de.eru.mp3manager.data;
 import de.eru.mp3manager.Settings;
 import de.eru.mp3manager.cdi.CurrentTitleEvent;
 import de.eru.mp3manager.cdi.Updated;
+import de.eru.mp3manager.service.FileService;
+import de.eru.mp3manager.utils.ExceptionHandler;
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
-import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
@@ -27,7 +32,7 @@ import javax.inject.Inject;
 @ApplicationScoped
 public class Playlist extends FileBasedData {
 
-    public static final String FILE_EXTENSION = "mmpl";
+    public static final String FILE_EXTENSION = ".mmpl";
     public static final String FILE_SPLIT = System.lineSeparator();
 
     @Inject
@@ -63,6 +68,7 @@ public class Playlist extends FileBasedData {
             randomIndicesToPlay.add(Double.valueOf(Math.random() * (randomIndicesToPlay.size() - randomIndicesToPlay.indexOf(currentTitleIndex.get()))).intValue()
                     + randomIndicesToPlay.indexOf(currentTitleIndex.get()) + 1, randomIndicesToPlay.size());
         }
+        dirty.set(checkIfDirty());
     }
 
     public void remove(List<Integer> selectedIndices) {
@@ -98,11 +104,36 @@ public class Playlist extends FileBasedData {
             }
             currentTitleUpdateEvent.fire(new CurrentTitleEvent(titles.get(currentTitleIndex.get()), currentTitleIndex.get()));
         }
-        System.out.println("-----------------");
-        for (int j = 0; j < randomIndicesToPlay.size(); j++) {
-            System.out.print(randomIndicesToPlay.get(j));
-            System.out.println(" - " + titles.get(randomIndicesToPlay.get(j)).getTitle());
+        dirty.set(checkIfDirty());
+//        System.out.println("-----------------");
+//        for (int j = 0; j < randomIndicesToPlay.size(); j++) {
+//            System.out.print(randomIndicesToPlay.get(j));
+//            System.out.println(" - " + titles.get(randomIndicesToPlay.get(j)).getTitle());
+//        }
+    }
+
+    /**
+     *
+     * @return true, wenn Playlist "dirty"
+     */
+    private boolean checkIfDirty() {
+        if (fileName.get().isEmpty()) {
+            return false;
         }
+        try {
+            List<String> filePaths = FileService.loadPlaylist(new File(absolutePath.get()));
+            if (titles.size() != filePaths.size()) {
+                return true;
+            }
+            for (int i = 0; i < filePaths.size(); i++) {
+                if (!titles.get(i).getAbsolutePath().equals(filePaths.get(i))) {
+                    return true;
+                }
+            }
+        } catch (IOException ex) {
+            ExceptionHandler.handle(ex);
+        }
+        return false;
     }
 
     private void resetRandomIndicesToPlay() {

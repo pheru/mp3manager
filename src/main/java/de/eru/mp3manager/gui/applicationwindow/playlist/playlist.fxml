@@ -10,7 +10,7 @@
     <children>
         <HBox alignment="CENTER_LEFT" VBox.vgrow="NEVER">
             <children>
-                <Label fx:id="playlistNameLabel" text="Wiedergabeliste.mmpl"/>
+                <Label fx:id="playlistNameLabel" text="Wiedergabeliste.mmpl" />
                 <Pane HBox.hgrow="ALWAYS" />
                 <Label fx:id="titlesSize" text="11" />
                 <Label text=" Titel" />
@@ -20,26 +20,31 @@
             <children>
                 <MenuButton mnemonicParsing="false" text="Aktionen...">
                     <items>
-                        <MenuItem mnemonicParsing="false" text="Laden..." onAction="#loadPlaylist"  />
-                        <MenuItem mnemonicParsing="false" text="Speichern..." onAction="#savePlaylist"  />
-                        <MenuItem fx:id="deleteMenuItem" mnemonicParsing="false" text="Löschen..." onAction="#deletePlaylist" />
+                        <MenuItem mnemonicParsing="false" onAction="#loadPlaylist" text="Laden..." />
+                  <Menu fx:id="saveMenu" mnemonicParsing="false" text="Speichern...">
+                     <items>
+                              <MenuItem fx:id="saveMenuItem" mnemonicParsing="false" onAction="#savePlaylist" text="Speichern" />
+                        <MenuItem mnemonicParsing="false" onAction="#savePlaylistAs" text="Speichern unter..." />
+                     </items>
+                  </Menu>
+                        <MenuItem fx:id="deleteMenuItem" mnemonicParsing="false" onAction="#deletePlaylist" text="Löschen..." />
                     </items>
                 </MenuButton>
                 <Pane HBox.hgrow="ALWAYS" />
-                <Label fx:id="totalDurationLabel" text="00:05:38"/>
+                <Label fx:id="totalDurationLabel" text="00:05:38" />
             </children>
         </HBox>
-        <TableView fx:id="table" VBox.vgrow="ALWAYS" onKeyReleased="#tableKeyReleased" >
+        <TableView fx:id="table" onKeyReleased="#tableKeyReleased" VBox.vgrow="ALWAYS">
             <placeholder>
                 <Label text="Wiedergabeliste enthält keine Titel" />
             </placeholder>
             <columns>
-                <TableColumn text="Titel" sortable="false">
+                <TableColumn sortable="false" text="Titel">
                     <cellValueFactory>
                         <PropertyValueFactory property="title" />
                     </cellValueFactory>
                 </TableColumn>
-                <TableColumn minWidth="40.0" maxWidth="40.0" text="Dauer" sortable="false">
+                <TableColumn maxWidth="40.0" minWidth="40.0" sortable="false" text="Dauer">
                     <cellValueFactory>
                         <PropertyValueFactory property="formattedDuration" />
                     </cellValueFactory>
