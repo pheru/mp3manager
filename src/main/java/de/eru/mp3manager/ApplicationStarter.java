@@ -2,12 +2,13 @@ package de.eru.mp3manager;
 
 import de.eru.mp3manager.gui.applicationwindow.application.ApplicationView;
 import de.eru.mp3manager.utils.ExceptionHandler;
-import de.eru.pherufx.cdi.StartApplication;
+import de.eru.pherufx.mvp.StartApplication;
 import java.awt.SystemTray;
 import java.awt.event.ActionEvent;
 import javafx.application.Platform;
 import javafx.beans.value.ObservableValue;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.stage.Stage;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
@@ -38,7 +39,12 @@ public class ApplicationStarter {
         initPrimaryStage(primaryStage);
         initSystemTrayIcon(primaryStage);
         primaryStage.show();
-
+        
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setHeaderText(null);
+        alert.setContentText("AShldKHA");
+        alert.showAndWait();
+        
         //TODO Test-Stage
 //        Rectangle rect = new Rectangle(400, 100);
 //        rect.setFill(Color.RED);

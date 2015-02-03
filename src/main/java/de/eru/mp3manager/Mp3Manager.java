@@ -1,11 +1,10 @@
 package de.eru.mp3manager;
 
-import de.eru.pherufx.cdi.PheruFXApplication;
+import de.eru.pherufx.mvp.PheruFXApplication;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import static javafx.application.Application.launch;
 import org.jgroups.JChannel;
-import org.jgroups.Message;
 
 /**
  * Application-Klasse als Startpunkt für die JavaFX-Anwendung.

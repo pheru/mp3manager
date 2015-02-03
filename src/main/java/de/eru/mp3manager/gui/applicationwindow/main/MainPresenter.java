@@ -12,7 +12,7 @@ import de.eru.mp3manager.gui.utils.CssRowFactory;
 import de.eru.mp3manager.gui.utils.TablePlaceholder;
 import de.eru.mp3manager.utils.TaskPool;
 import de.eru.mp3manager.utils.factories.TaskFactory;
-import de.eru.pherufx.utils.InjectableList;
+import de.eru.pherufx.mvp.InjectableList;
 import java.io.File;
 import java.net.URL;
 import java.util.ArrayList;

@@ -1,8 +1,6 @@
 package de.eru.mp3manager.utils;
 
 import de.eru.mp3manager.Mp3Manager;
-import de.eru.pherufxcontrols.dialogs.Dialogs;
-import de.eru.pherufxcontrols.utils.InfoType;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -25,12 +23,12 @@ public final class ExceptionHandler {
 
     public static void handle(Throwable t, String dialogTitle, String dialogText, String logfileMessage) {
         t.printStackTrace(); //TODO Entfernen
-        Dialogs.createInfoDialog()
-                .setType(InfoType.ERROR)
-                .setTitle(dialogTitle.isEmpty() ? "Ein Fehler ist aufgetreten!" : dialogTitle)
-                .setHeader(t.getLocalizedMessage())
-                .setText(dialogText.isEmpty() ? "Es ist ein unerwartetes Problem aufgetreten!\nDetails befinden sich im Logfile." : dialogText)
-                .showAndWait();
+//        Dialogs.createInfoDialog()
+//                .setType(InfoType.ERROR)
+//                .setTitle(dialogTitle.isEmpty() ? "Ein Fehler ist aufgetreten!" : dialogTitle)
+//                .setHeader(t.getLocalizedMessage())
+//                .setText(dialogText.isEmpty() ? "Es ist ein unerwartetes Problem aufgetreten!\nDetails befinden sich im Logfile." : dialogText)
+//                .showAndWait();
         writeLogfile(t, logfileMessage.isEmpty() ? "Unexpected Exception" : logfileMessage);
     }
 
@@ -81,11 +79,11 @@ public final class ExceptionHandler {
     }
 
     private static void createLogfileErrorDialog(String header) {
-        Dialogs.createInfoDialog()
-                .setType(InfoType.ERROR)
-                .setTitle("Fehler beim Erstellen eines Logfiles!")
-                .setHeader(header)
-                .setText("Es konnte kein Logfile erzeugt werden! Kopieren Sie sich den folgenden Inhalt bitte manuell:")
-                .showAndWait();
+//        Dialogs.createInfoDialog()
+//                .setType(InfoType.ERROR)
+//                .setTitle("Fehler beim Erstellen eines Logfiles!")
+//                .setHeader(header)
+//                .setText("Es konnte kein Logfile erzeugt werden! Kopieren Sie sich den folgenden Inhalt bitte manuell:")
+//                .showAndWait();
     }
 }

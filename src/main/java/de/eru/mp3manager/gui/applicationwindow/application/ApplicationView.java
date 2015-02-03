@@ -1,6 +1,6 @@
 package de.eru.mp3manager.gui.applicationwindow.application;
 
-import de.eru.pherufx.gui.JavaFXView;
+import de.eru.pherufx.mvp.JavaFXView;
 import javax.enterprise.context.ApplicationScoped;
 
 /**

@@ -1,7 +1,7 @@
 package de.eru.mp3manager.cdi;
 
 import de.eru.mp3manager.data.Mp3FileData;
-import de.eru.pherufx.utils.InjectableList;
+import de.eru.pherufx.mvp.InjectableList;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.New;
 import javax.enterprise.inject.Produces;
