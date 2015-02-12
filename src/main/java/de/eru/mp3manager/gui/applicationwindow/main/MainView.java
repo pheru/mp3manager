@@ -1,6 +1,6 @@
 package de.eru.mp3manager.gui.applicationwindow.main;
 
-import de.eru.pherufx.mvp.JavaFXView;
+import de.eru.pherufx.mvp.PheruFXView;
 import javax.enterprise.context.ApplicationScoped;
 
 /**
@@ -9,6 +9,6 @@ import javax.enterprise.context.ApplicationScoped;
  * @author Philipp Bruckner
  */
 @ApplicationScoped
-public class MainView extends JavaFXView {
+public class MainView extends PheruFXView {
  //Convention over Configuration
 }
