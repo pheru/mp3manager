@@ -50,7 +50,7 @@ public final class ByteFormatter {
      * Wandelt einen Long mit Bytes in einen formatierten String mit MegaBytes.
      *
      * @param bytes Die zu formatierenden Bytes.
-     * @return Einen String mit den Bytes in MegaBytes und angeh‰ngtem "MB";
+     * @return Einen String mit den Bytes in MegaBytes und angeh√§ngtem "MB";
      */
     public static String bytesToMB(Long bytes) {
         Double mb = Double.valueOf(bytes) / 1048576;
@@ -61,7 +61,7 @@ public final class ByteFormatter {
      * Wandelt einen String mit Bytes in einen formatierten String mit MegaBytes.
      *
      * @param bytes Die zu formatierenden Bytes.
-     * @return Einen String mit den Bytes in MegaBytes und angeh‰ngtem "MB";
+     * @return Einen String mit den Bytes in MegaBytes und angeh√§ngtem "MB";
      */
     public static String bytesToMB(String bytes) {
         return bytesToMB(Long.valueOf(bytes));

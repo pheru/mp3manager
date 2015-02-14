@@ -70,7 +70,7 @@ public class MusicPlayer {
         try {
             Media media = new Media(file.toURI().toURL().toExternalForm());
             player = new MediaPlayer(media);
-            player.setOnEndOfMedia(() -> { //TODO überprüfen
+            player.setOnEndOfMedia(() -> { //TODO Ã¼berprÃ¼fen
                 if (!playlist.next() || repeat.get()) {
                     play(playlist.getCurrentTitle());
                 } else {

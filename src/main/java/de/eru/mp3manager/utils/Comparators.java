@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package de.eru.mp3manager.utils;
 
 import de.eru.mp3manager.data.Mp3FileData;
@@ -22,7 +17,7 @@ public class Comparators {
     }
 
     /**
-     * Comparator für Zahlen.
+     * Ein Comparator fÃ¼r Zahlen.
      *
      */
     public static final Comparator<String> NUMBER_COMPARATOR = (String o1, String o2) -> {
@@ -36,7 +31,7 @@ public class Comparators {
     };
 
     /**
-     * Ein Comparator für Daten.
+     * Ein Comparator fÃ¼r Daten.
      */
     public static final Comparator<String> DATE_COMPARATOR = (String o1, String o2) -> {
         if (!isComparable(o1)) {
@@ -56,7 +51,7 @@ public class Comparators {
     };
 
     /**
-     * Ein Comparator für Dateigrößen.
+     * Ein Comparator fÃ¼r DateigrÃ¶ÃŸen.
      */
     public static final Comparator<String> SIZE_COMPARATOR = (String o1, String o2) -> {
         if (!isComparable(o1)) {
@@ -71,7 +66,7 @@ public class Comparators {
     };
 
     /**
-     * Ein Comparator für Bitraten
+     * Ein Comparator fÃ¼r Bitraten.
      */
     public static final Comparator<String> BITRATE_COMPARATOR = (String o1, String o2)
             -> {
@@ -87,7 +82,7 @@ public class Comparators {
             };
 
     /**
-     * Ein Comparator für Zeitangaben.
+     * Ein Comparator fÃ¼r Zeitangaben.
      */
     public static final Comparator<String> TIME_COMPARATOR = (String o1, String o2) -> {
         if (!isComparable(o1)) {
@@ -118,7 +113,7 @@ public class Comparators {
      * - Format in ein Date-Objekt.
      *
      * @param duration Die zu parsende Zeitangabe.
-     * @return Das Date-Objekt zu der übergebenen Zeitangabe.
+     * @return Das Date-Objekt zu der Ã¼bergebenen Zeitangabe.
      * @throws ParseException Wenn die Zeitangabe weder im DURATION_FORMAT, noch
      * im DURATION_WITH_HOURS_FORMAT ist.
      */

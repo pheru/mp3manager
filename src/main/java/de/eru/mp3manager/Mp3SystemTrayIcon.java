@@ -52,12 +52,12 @@ public class Mp3SystemTrayIcon {
             trayIcon.addMouseListener(new MouseListener() {
                 @Override
                 public void mouseClicked(MouseEvent e) {
-                    //Nicht benötigt
+                    //Nicht benÃ¶tigt
                 }
 
                 @Override
                 public void mousePressed(MouseEvent e) {
-                    //Nicht benötigt
+                    //Nicht benÃ¶tigt
                 }
 
                 @Override
@@ -69,12 +69,12 @@ public class Mp3SystemTrayIcon {
 
                 @Override
                 public void mouseEntered(MouseEvent e) {
-                    //Nicht unterstützt
+                    //Nicht unterstÃ¼tzt
                 }
 
                 @Override
                 public void mouseExited(MouseEvent e) {
-                    //Nicht unterstützt
+                    //Nicht unterstÃ¼tzt
                 }
             });
         }

@@ -20,7 +20,7 @@ import org.jaudiotagger.audio.exceptions.ReadOnlyFileException;
 import org.jaudiotagger.tag.TagException;
 
 /**
- * Datenmodell für die Mp3-Dateien.
+ * Datenmodell fÃ¼r die Mp3-Dateien.
  *
  * @author Philipp Bruckner
  */
@@ -64,7 +64,7 @@ public class Mp3FileData extends FileBasedData {
     /**
      * Erstellt ein Mp3FileData-Objekt mit allgemeinen File-Informationen.
      *
-     * @param file Die Datei für den Pfad.
+     * @param file Die Datei fÃ¼r den Pfad.
      */
     public Mp3FileData(File file) {
         this();

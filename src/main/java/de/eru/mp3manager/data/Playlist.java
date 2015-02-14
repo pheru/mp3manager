@@ -10,8 +10,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleBooleanProperty;
@@ -41,7 +39,7 @@ public class Playlist extends FileBasedData {
     @Updated
     private Event<CurrentTitleEvent> currentTitleUpdateEvent;
 
-    private final BooleanProperty dirty = new SimpleBooleanProperty(false); // TODO wirklich nötig?
+    private final BooleanProperty dirty = new SimpleBooleanProperty(false); // TODO wirklich nÃ¶tig?
     private final ObservableList<Mp3FileData> titles = FXCollections.observableArrayList();
     private final ObservableList<Integer> randomIndicesToPlay = FXCollections.observableArrayList();
     private final IntegerProperty currentTitleIndex = new SimpleIntegerProperty(-1);

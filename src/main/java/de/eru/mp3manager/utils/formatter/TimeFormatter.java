@@ -24,7 +24,7 @@ public final class TimeFormatter {
      * Wandelt einen double in einen String mit HH:mm:ss oder mm:ss Format.
      *
      * @param seconds Die zu formatierenden Sekunden.
-     * @param withHours true, wenn HH:mm:ss Format. false für mm:ss.
+     * @param withHours true, wenn HH:mm:ss Format. false fÃ¼r mm:ss.
      * @return String im HH:mm:ss oder mm:ss Format.
      */
     public static String secondsToDurationFormat(double seconds, boolean withHours) {
@@ -47,7 +47,7 @@ public final class TimeFormatter {
      * Wandelt einen Long in einen String mit HH:mm:ss oder mm:ss Format.
      *
      * @param seconds Die zu formatierenden Sekunden.
-     * @param withHours true, wenn HH:mm:ss Format. false für mm:ss.
+     * @param withHours true, wenn HH:mm:ss Format. false fÃ¼r mm:ss.
      * @return String im HH:mm:ss oder mm:ss Format.
      */
     public static String secondsToDurationFormat(Long seconds, boolean withHours) {
@@ -58,7 +58,7 @@ public final class TimeFormatter {
      * Wandelt einen String in einen String mit HH:mm:ss oder mm:ss Format.
      *
      * @param seconds Die zu formatierenden Sekunden.
-     * @param withHours true, wenn HH:mm:ss Format. false für mm:ss.
+     * @param withHours true, wenn HH:mm:ss Format. false fÃ¼r mm:ss.
      * @return String im HH:mm:ss oder mm:ss Format.
      */
     public static String secondsToDurationFormat(String seconds, boolean withHours) {
@@ -69,7 +69,7 @@ public final class TimeFormatter {
      * Wandelt einen double in einen String mit HH:mm:ss oder mm:ss Format.
      *
      * @param milliseconds Die zu formatierenden Millisekunden.
-     * @param withHours true, wenn HH:mm:ss Format. false für mm:ss.
+     * @param withHours true, wenn HH:mm:ss Format. false fÃ¼r mm:ss.
      * @return String im HH:mm:ss oder mm:ss Format.
      */
     public static String millisecondsToDurationFormat(double milliseconds, boolean withHours) {
@@ -92,7 +92,7 @@ public final class TimeFormatter {
      * Wandelt einen Long in einen String mit HH:mm:ss oder mm:ss Format.
      *
      * @param milliseconds Die zu formatierenden Millisekunden.
-     * @param withHours true, wenn HH:mm:ss Format. false für mm:ss.
+     * @param withHours true, wenn HH:mm:ss Format. false fÃ¼r mm:ss.
      * @return String im HH:mm:ss oder mm:ss Format.
      */
     public static String millisecondsToDurationFormat(Long milliseconds, boolean withHours) {
@@ -103,7 +103,7 @@ public final class TimeFormatter {
      * Wandelt einen String in einen String mit HH:mm:ss oder mm:ss Format.
      *
      * @param milliseconds Die zu formatierenden Millisekunden.
-     * @param withHours true, wenn HH:mm:ss Format. false für mm:ss.
+     * @param withHours true, wenn HH:mm:ss Format. false fÃ¼r mm:ss.
      * @return String im HH:mm:ss oder mm:ss Format.
      */
     public static String millisecondsToDurationFormat(String milliseconds, boolean withHours) {

@@ -17,7 +17,7 @@ public enum MainColumn {
     DURATION("Dauer", "formattedDuration", Comparators.TIME_COMPARATOR, 100.0, true),
     GENRE("Genre", "genre", null, 100.0, true),
     YEAR("Jahr", "year", Comparators.NUMBER_COMPARATOR, 100.0, true),
-    SIZE("Dateigröße", "size", Comparators.SIZE_COMPARATOR, 100.0, true),
+    SIZE("DateigrÃ¶ÃŸe", "size", Comparators.SIZE_COMPARATOR, 100.0, true),
     BITRATE("Bitrate", "bitrate", Comparators.BITRATE_COMPARATOR, 100.0, true),
     LAST_MODIFIED("Zuletzt bearbeitet", "lastModified", Comparators.DATE_COMPARATOR, 100.0, true);
 

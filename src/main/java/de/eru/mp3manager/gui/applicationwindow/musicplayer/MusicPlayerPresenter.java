@@ -90,7 +90,7 @@ public class MusicPlayerPresenter implements Initializable {
             }
         };
         durationSlider.valueProperty().bind(durationSliderBinding);
-        durationProgressBar.progressProperty().bind(durationSlider.valueProperty().add(0.005)); //add() damit der Slider die Progressbar komplett überdeckt
+        durationProgressBar.progressProperty().bind(durationSlider.valueProperty().add(0.005)); //add() damit der Slider die Progressbar komplett Ã¼berdeckt
         currentTimeLabel.textProperty().bind(createTimeBinding(player.currentTimeProperty()));
 
         volumeProgressBar.progressProperty().bind(volumeSlider.valueProperty().divide(100.0));
@@ -126,7 +126,7 @@ public class MusicPlayerPresenter implements Initializable {
 //        });
     }
 
-    private void currentTitleUpdated(@Observes @Updated CurrentTitleEvent event) { //TODO Aufbau/Ablauf nochmal überdenken
+    private void currentTitleUpdated(@Observes @Updated CurrentTitleEvent event) { //TODO Aufbau/Ablauf nochmal Ã¼berdenken
         updateCurrentTitleBinding(event.getNewCurrentTitle());
     }
 

@@ -75,7 +75,7 @@ public class ApplicationPresenter implements Initializable {
                 .getPresenter();
         musicPlayerBox.getChildren().add(musicPlayerView.getView());
 
-        //Tab für die aktuelle Wiedergabe
+        //Tab fÃ¼r die aktuelle Wiedergabe
         playlistPresenter = (PlaylistPresenter) playlistView.getPresenter();
         playlistTab.setContent(playlistView.getView());
 

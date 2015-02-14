@@ -90,7 +90,7 @@ public class ApplicationStarter {
                     primaryStage.show();
                 });
             });
-            systemTrayIcon.addPopUpMenuItem("Öffnen", (ActionEvent e) -> {
+            systemTrayIcon.addPopUpMenuItem("Ã–ffnen", (ActionEvent e) -> {
                 Platform.runLater(() -> {
                     primaryStage.show();
                 });

@@ -4,7 +4,7 @@ import de.eru.pherufx.mvp.PheruFXView;
 import javax.enterprise.context.ApplicationScoped;
 
 /**
- * Die View für die Darstellung der mp3-Dateien.
+ * Die View fÃ¼r die Darstellung der mp3-Dateien.
  *
  * @author Philipp Bruckner
  */

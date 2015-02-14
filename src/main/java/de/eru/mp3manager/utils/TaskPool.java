@@ -17,9 +17,9 @@ import javax.enterprise.context.ApplicationScoped;
 
 /**
  * Klasse zum abarbeiten von Tasks.<br/>
- * Ein TaskPool enthält eine Liste von Tasks, welche nacheinander abgearbeitet
+ * Ein TaskPool enthÃ¤lt eine Liste von Tasks, welche nacheinander abgearbeitet
  * werden.<br/>
- * Wird ein neuer Task hinzugefügt, reiht sich dieser in die Liste von Tasks
+ * Wird ein neuer Task hinzugefÃ¼gt, reiht sich dieser in die Liste von Tasks
  * ein. Ist die Liste leer, so wird der Task direkt gestartet.
  *
  * @author Philipp Bruckner
@@ -41,10 +41,10 @@ public class TaskPool {
     private final ObjectProperty<TaskStatus> status = new SimpleObjectProperty<>(TaskStatus.READY);
 
     /**
-     * Fügt dem Taskpool einen Task hinzu und startet den TaskPool, falls dieser
-     * nicht läuft.
+     * FÃ¼gt dem Taskpool einen Task hinzu und startet den TaskPool, falls dieser
+     * nicht lÃ¤uft.
      *
-     * @param task Der hinzuzufügende Task.
+     * @param task Der hinzuzufÃ¼gende Task.
      */
     public void addTask(Task task) {
         tasks.add(task);
@@ -52,10 +52,10 @@ public class TaskPool {
     }
 
     /**
-     * Fügt dem Taskpool einen Task hinzu und stellt diesen an die erste Stelle
+     * FÃ¼gt dem Taskpool einen Task hinzu und stellt diesen an die erste Stelle
      * der abzuarbeitenden Tasks.
      *
-     * @param task Der hinzuzufügende Task.
+     * @param task Der hinzuzufÃ¼gende Task.
      */
     public void addTaskAsNextTask(Task task) {
         tasks.add(0, task);
@@ -97,7 +97,7 @@ public class TaskPool {
     }
 
     /**
-     * Startet den nächsten Task, sofern kein anderer zu diesem Zeitpunkt läuft.
+     * Startet den nÃ¤chsten Task, sofern kein anderer zu diesem Zeitpunkt lÃ¤uft.
      */
     public void start() {
         if (!running.get() && !stopping.get() && tasks.size() > 0) {
@@ -120,10 +120,10 @@ public class TaskPool {
 
     /**
      * Erzeugt einen ChangeListener, welcher dem RunningProperties eines Tasks
-     * hinzugefügt wird und den nächsten Task startet, sobald dieser beendet
+     * hinzugefÃ¼gt wird und den nÃ¤chsten Task startet, sobald dieser beendet
      * ist.
      *
-     * @return Ein ChangeListener für das RunningProperty eines Tasks.
+     * @return Ein ChangeListener fÃ¼r das RunningProperty eines Tasks.
      */
     private ChangeListener<Boolean> createTaskRunningListener() {
         return (ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {

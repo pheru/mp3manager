@@ -182,7 +182,7 @@ public class PlaylistPresenter implements Initializable {
         }
     }
 
-    private void currentTitleUpdated(@Observes @Updated CurrentTitleEvent event) { //TODO Aufbau/Ablauf nochmal überdenken
+    private void currentTitleUpdated(@Observes @Updated CurrentTitleEvent event) { //TODO Aufbau/Ablauf nochmal Ã¼berdenken
         updateStyledIndex(event.getNewCurrentTitleIndex());
     }
 

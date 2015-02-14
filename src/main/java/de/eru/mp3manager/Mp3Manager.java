@@ -7,14 +7,14 @@ import static javafx.application.Application.launch;
 import org.jgroups.JChannel;
 
 /**
- * Application-Klasse als Startpunkt für die JavaFX-Anwendung.
+ * Application-Klasse als Startpunkt fÃ¼r die JavaFX-Anwendung.
  *
  * @author Philipp Bruckner
  */
 public class Mp3Manager extends PheruFXApplication {
 
     private static final String JAR_PATH = Mp3Manager.class.getProtectionDomain().getCodeSource().getLocation().getPath();
-    //TODO Geht das auch in schön?
+    //TODO Geht das auch in schÃ¶n?
     public static final String APPLICATION_PATH = JAR_PATH.substring(0,
             JAR_PATH.lastIndexOf("/app") >= 0 ? JAR_PATH.lastIndexOf("/app") : JAR_PATH.length());
 

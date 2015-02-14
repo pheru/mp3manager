@@ -5,7 +5,7 @@ import javax.enterprise.context.ApplicationScoped;
 
 /**
  * Die HauptView.
- * Beinhaltet die Menüleiste und alle anderen Views.
+ * Beinhaltet die MenÃ¼leiste und alle anderen Views.
  *
  * @author Philipp Bruckner
  */

@@ -50,7 +50,7 @@ import javax.inject.Inject;
 @ApplicationScoped
 public class MainPresenter implements Initializable {
 
-    private static final String PLACEHOLDER_TEXT_NO_DIRECTORY_CHOSEN = "Es wurde kein Verzeichnis ausgewählt";
+    private static final String PLACEHOLDER_TEXT_NO_DIRECTORY_CHOSEN = "Es wurde kein Verzeichnis ausgewÃ¤hlt";
 
     @FXML
     private VBox root;
@@ -150,7 +150,7 @@ public class MainPresenter implements Initializable {
     }
 
     /**
-     * Setzt Alles für den Tabellen-Filter auf und gibt eine Liste zurück,
+     * Setzt Alles fÃ¼r den Tabellen-Filter auf und gibt eine Liste zurÃ¼ck,
      * welche von der Tabelle dargestellt werden kann.
      *
      * @return Die sortierte und gefilterte Liste.
@@ -245,7 +245,7 @@ public class MainPresenter implements Initializable {
         sp1.bind(Bindings.size(table.getSelectionModel().getSelectedItems()).asString());
         StringProperty sp2 = new SimpleStringProperty();
         sp2.bind(Bindings.size(table.getItems()).asString());
-        statusR1.textProperty().bind(sp1.concat(" von ").concat(sp2).concat(" Dateien ausgewählt"));
+        statusR1.textProperty().bind(sp1.concat(" von ").concat(sp2).concat(" Dateien ausgewÃ¤hlt"));
         statusR2.textProperty().bind(Bindings.size(masterData).asString().concat(" Dateien insgesamt"));
         statusL1.textProperty().bind(taskPool.titleProperty());
         statusL2.textProperty().bind(taskPool.messageProperty());
@@ -254,7 +254,7 @@ public class MainPresenter implements Initializable {
 
     }
 
-    private void currentTitleUpdated(@Observes @Updated CurrentTitleEvent event) { //TODO Aufbau/Ablauf nochmal überdenken
+    private void currentTitleUpdated(@Observes @Updated CurrentTitleEvent event) { //TODO Aufbau/Ablauf nochmal Ã¼berdenken
         updateStyledIndex(event.getNewCurrentTitleIndex());
     }
 
@@ -268,7 +268,7 @@ public class MainPresenter implements Initializable {
     @FXML
     public void changeDirectory() {
         DirectoryChooser dirChooser = new DirectoryChooser();
-        dirChooser.setTitle("Musik-Vereichnis auswählen");
+        dirChooser.setTitle("Musik-Verzeichnis auswÃ¤hlen");
         File directory = dirChooser.showDialog(root.getScene().getWindow());
         if (directory != null) {
             settings.setMusicDirectory(directory.getAbsolutePath());
@@ -277,8 +277,8 @@ public class MainPresenter implements Initializable {
     }
 
     /**
-     * Liest alle MP3-Dateien aus dem übergebenen Verzeichnis, überträgt diese
-     * in Mp3FileData-Objekte und fügt sie der Liste von Daten hinzu.
+     * Liest alle MP3-Dateien aus dem Ã¼bergebenen Verzeichnis, Ã¼bertrÃ¤gt diese
+     * in Mp3FileData-Objekte und fÃ¼gt sie der Liste von Daten hinzu.
      */
     public void readDirectory() {
         String directory = settings.getMusicDirectory();
@@ -293,8 +293,8 @@ public class MainPresenter implements Initializable {
     }
 
     /**
-     * Kontextmenü-Methode.<br/>
-     * Spielt die ausgewählten Titel ab.
+     * KontextmenÃ¼-Methode.<br/>
+     * Spielt die ausgewÃ¤hlten Titel ab.
      *
      */
     @FXML
@@ -302,8 +302,8 @@ public class MainPresenter implements Initializable {
     }
 
     /**
-     * Kontexmenü-Methode.<br/>
-     * Fügt die ausgewählten Titel der Wiedergabeliste hinzu.
+     * KontexmenÃ¼-Methode.<br/>
+     * FÃ¼gt die ausgewÃ¤hlten Titel der Wiedergabeliste hinzu.
      */
     @FXML
     private void addToPlaylist() {

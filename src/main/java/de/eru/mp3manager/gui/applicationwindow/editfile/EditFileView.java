@@ -4,7 +4,7 @@ import de.eru.pherufx.mvp.PheruFXView;
 import javax.enterprise.context.ApplicationScoped;
 
 /**
- * Die View für das Bearbeiten von Dateien.
+ * Die View fÃ¼r das Bearbeiten von Dateien.
  * Stellt den Tab "MP3-Editor" der ApplicationView dar.
  *
  * @author Philipp Bruckner

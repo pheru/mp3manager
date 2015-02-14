@@ -2,7 +2,6 @@ package de.eru.mp3manager.service;
 
 import de.eru.mp3manager.data.Mp3FileData;
 import de.eru.mp3manager.data.Playlist;
-import de.eru.mp3manager.data.utils.Mp3Mapper;
 import de.eru.mp3manager.gui.applicationwindow.editfile.EditFilePresenter;
 import java.io.File;
 import java.io.FileWriter;
@@ -28,7 +27,7 @@ import org.jaudiotagger.tag.id3.valuepair.ImageFormats;
 import org.jaudiotagger.tag.reference.PictureTypes;
 
 /**
- * Service für den Zugriff auf Dateien und Verzeichnisse.
+ * Service fÃ¼r den Zugriff auf Dateien und Verzeichnisse.
  *
  * @author Philipp Bruckner
  */
@@ -39,9 +38,9 @@ public final class FileService {
     }
 
     /**
-     * Speichert die geänderten MP3-Informationen ab.
+     * Speichert die geÃ¤nderten MP3-Informationen ab.
      *
-     * @param dataToSave Die zu überschreibende Datei.
+     * @param dataToSave Die zu Ã¼berschreibende Datei.
      * @param changeData Die zu speichernden MP3-Informationen.
      */
     public static void saveMp3File(Mp3FileData dataToSave, Mp3FileData changeData) throws KeyNotFoundException, FieldDataInvalidException, CannotReadException, IOException, TagException, ReadOnlyFileException, InvalidAudioFrameException, CannotWriteException {
@@ -92,7 +91,7 @@ public final class FileService {
      */
     public static boolean savePlaylist(File playlistFile, List<Mp3FileData> playlistTitles) throws IOException {
         if (playlistFile.exists()) {
-            if (!playlistFile.delete()) {//Funktioniert nicht wie erwartet (Änderungsdatum bleibt gleich)
+            if (!playlistFile.delete()) {//Funktioniert nicht wie erwartet (Ã„nderungsdatum bleibt gleich)
                 return false;
             }
         }

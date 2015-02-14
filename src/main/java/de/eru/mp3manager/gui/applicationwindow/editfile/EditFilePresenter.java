@@ -93,7 +93,7 @@ public class EditFilePresenter implements Initializable {
     }
 
     /**
-     * Fügt alle ComboBoxen der Liste mit Feldern hinzu.
+     * FÃ¼gt alle ComboBoxen der Liste mit Feldern hinzu.
      */
     private void addAllFieldsToList() {
         fields.add(artistField);
@@ -171,7 +171,7 @@ public class EditFilePresenter implements Initializable {
     }
 
     /**
-     * Aktualisiert die Felder mit den Werten der ausgewählten
+     * Aktualisiert die Felder mit den Werten der ausgewÃ¤hlten
      * Mp3FileData-Objekte.
      */
     private void updateFields() {
@@ -198,7 +198,7 @@ public class EditFilePresenter implements Initializable {
     }
 
     /**
-     * Befüllt die Felder mit den Werten eines einzelnen Mp3FileData-Objektes.
+     * BefÃ¼llt die Felder mit den Werten eines einzelnen Mp3FileData-Objektes.
      */
     private void fillFieldsWithSingleData() {
         Mp3FileData singleData = selectedData.get(0);
@@ -217,9 +217,9 @@ public class EditFilePresenter implements Initializable {
 
     /**
      *
-     * Befüllt das Feld mit dem übergebenen Wert. <br>
-     * Ist der Wert darüber hinaus kein leerer String, so wird er auch der Liste
-     * der ComboBox hinzugeüft.
+     * BefÃ¼llt das Feld mit dem Ã¼bergebenen Wert. <br>
+     * Ist der Wert darÃ¼ber hinaus kein leerer String, so wird er auch der Liste
+     * der ComboBox hinzugefÃ¼gt.
      *
      * @param field Das betreffende Feld.
      * @param value Der Wert.
@@ -232,9 +232,9 @@ public class EditFilePresenter implements Initializable {
     }
 
     /**
-     * Befüllt die Felder mit den Werten mehrerer Mp3FileData-Objekte. <br>
-     * Dabei werden alle Werte den Listen der ComboBoxen hinzugefügt. <br>
-     * Es werden nur Werte hinzugefügt, welche noch nicht in der Liste vorhanden
+     * BefÃ¼llt die Felder mit den Werten mehrerer Mp3FileData-Objekte. <br>
+     * Dabei werden alle Werte den Listen der ComboBoxen hinzugefÃ¼gt. <br>
+     * Es werden nur Werte hinzugefÃ¼gt, welche noch nicht in der Liste vorhanden
      * sind. <br>
      * Ist am Ende nur ein Wert in der Liste, so wird dieser im Feld angezeigt.
      * Sind es mehrere, so wird im Feld der Wert der Konstante DIFF_VALUES
@@ -248,7 +248,7 @@ public class EditFilePresenter implements Initializable {
     }
 
     /**
-     * Befüllt die Listen der ComboBoxen.
+     * BefÃ¼llt die Listen der ComboBoxen.
      */
     private void fillFieldItems() {
         for (Mp3FileData data : selectedData) {
@@ -262,11 +262,11 @@ public class EditFilePresenter implements Initializable {
     }
 
     /**
-     * Fügt der Liste der ComboBox den Wert hinzu, wenn dieser noch nicht
+     * FÃ¼gt der Liste der ComboBox den Wert hinzu, wenn dieser noch nicht
      * vorhanden ist.
      *
      * @param field Die ComboBox.
-     * @param value Der hinzuzufügende Wert.
+     * @param value Der hinzuzufÃ¼gende Wert.
      */
     private void addToFieldItemsOnce(ComboBox<String> field, String value) {
         if (!field.getItems().contains(value) && !value.isEmpty()) {
@@ -275,11 +275,11 @@ public class EditFilePresenter implements Initializable {
     }
 
     /**
-     * Setzt den angezeigten Wert für jedes Feld. <br>
-     * Das Feld für den Dateinamen erhält dabei immer den Wert der Konstante
-     * NOT_CHANGABLE, da bei Mehrfachauswahl der Dateiname nicht geändert werden
+     * Setzt den angezeigten Wert fÃ¼r jedes Feld. <br>
+     * Das Feld fÃ¼r den Dateinamen erhÃ¤lt dabei immer den Wert der Konstante
+     * NOT_CHANGABLE, da bei Mehrfachauswahl der Dateiname nicht geÃ¤ndert werden
      * darf.<br>
-     * Enthält die Liste einer ComboBox mehrere Werte, so wird der angezeigte
+     * EnthÃ¤lt die Liste einer ComboBox mehrere Werte, so wird der angezeigte
      * Wert dieses Feldes auf DIFF_VALUES gesetzt.
      */
     private void setFieldValues() {
@@ -325,7 +325,7 @@ public class EditFilePresenter implements Initializable {
     }
 
     /**
-     * Aktiviert bzw. deaktiviert die Synchronisation der Felder für den
+     * Aktiviert bzw. deaktiviert die Synchronisation der Felder fÃ¼r den
      * Dateinamen und den Titel.
      */
     private void setUpTitleSynchronization() {
@@ -341,7 +341,7 @@ public class EditFilePresenter implements Initializable {
     @FXML
     private void chooseCover() {
         FileChooser fileChooser = new FileChooser();
-        fileChooser.setTitle("Album-Cover auswählen");
+        fileChooser.setTitle("Album-Cover auswÃ¤hlen");
         fileChooser.getExtensionFilters()
                 .addAll(new ExtensionFilter("All Images", "*.png",
                                 "*.jpg", "*.jpeg", "*.bmp"),

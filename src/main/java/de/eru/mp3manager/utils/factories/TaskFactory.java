@@ -28,11 +28,11 @@ public final class TaskFactory {
     /**
      * Erzeugt einen Task zum Auslesen von Dateien aus einem Verzeichnis. <br>
      * Dabei werden aus den Dateien bereits Mp3FileData-Objekte erzeugt und den
-     * Tabellen-Daten hinzugefügt; <br>
+     * Tabellen-Daten hinzugefÃ¼gt; <br>
      * diese enthalten aber noch keine MP3-spezifischen Informationen!
      *
      * @param directory Das auszulesende Verzeichnis.
-     * @param masterData Die Liste für die Mp3FileData-Objekte.
+     * @param masterData Die Liste fÃ¼r die Mp3FileData-Objekte.
      * @param tableDisable Das BooleanProperty zum sperren/freigeben der
      * Tabelle.
      * @return Einen Task zum Auslesen von Dateien aus einem Verzeichnis.
@@ -54,7 +54,7 @@ public final class TaskFactory {
                 updateProgress(-1, 1);
                 ObservableList<File> files = FileService.collectMp3FilesFromDirectory(directory);
 
-                //Mp3Informationen laden und am Ende der Liste hinzufügen
+                //Mp3Informationen laden und am Ende der Liste hinzufÃ¼gen
                 updateProgress(-1, 1);
                 ObservableList<Mp3FileData> loadedData = FXCollections.observableArrayList();
                 for (int i = 0; i < files.size(); i++) {
@@ -88,7 +88,7 @@ public final class TaskFactory {
                     if (!loadedData.isEmpty()) {
                         masterData.addAll(loadedData);
                     } else {
-                        tablePlaceholder.setText("Das gewählte Verzeichnis enthält keine MP3-Dateien!");
+                        tablePlaceholder.setText("Das gewÃ¤hlte Verzeichnis enthÃ¤lt keine MP3-Dateien!");
                         tablePlaceholder.setIndicatorVisible(false);
                         updateProgress(1, 1);
                     }
