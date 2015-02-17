@@ -3,16 +3,18 @@ package de.eru.mp3manager.utils.factories;
 import de.eru.mp3manager.data.utils.Mp3Mapper;
 import de.eru.mp3manager.data.Mp3FileData;
 import de.eru.mp3manager.data.Playlist;
-import de.eru.mp3manager.gui.utils.TablePlaceholder;
+import de.eru.mp3manager.gui.utils.TablePlaceholders;
 import de.eru.mp3manager.service.FileService;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import javafx.application.Platform;
 import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.ObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
+import javafx.scene.Node;
 
 /**
  * Klasse zum erzeugen von Tasks.
@@ -33,19 +35,16 @@ public final class TaskFactory {
      *
      * @param directory Das auszulesende Verzeichnis.
      * @param masterData Die Liste für die Mp3FileData-Objekte.
-     * @param tableDisable Das BooleanProperty zum sperren/freigeben der
-     * Tabelle.
      * @return Einen Task zum Auslesen von Dateien aus einem Verzeichnis.
      */
-    public static Task<Void> createReadDirectoryTask(String directory, ObservableList<Mp3FileData> masterData, TablePlaceholder tablePlaceholder,
-            BooleanProperty tableDisable, List<Mp3FileData> playlistTitles) {
+    public static Task<Void> createReadDirectoryTask(String directory, ObservableList<Mp3FileData> masterData, ObjectProperty<Node> placeholderProperty,
+            List<Mp3FileData> playlistTitles) {
         return new Task<Void>() {
 
             @Override
             protected Void call() throws Exception {
                 Platform.runLater(() -> {
-                    tablePlaceholder.setText("Verzeichnis wird geladen.\nBitte warten...");
-                    tablePlaceholder.setIndicatorVisible(true);
+                    placeholderProperty.set(TablePlaceholders.READING_DIRECTORY);
                     masterData.clear();
                 });
                 //Verzeichnis auslesen
@@ -88,8 +87,7 @@ public final class TaskFactory {
                     if (!loadedData.isEmpty()) {
                         masterData.addAll(loadedData);
                     } else {
-                        tablePlaceholder.setText("Das gewählte Verzeichnis enthält keine MP3-Dateien!");
-                        tablePlaceholder.setIndicatorVisible(false);
+                        placeholderProperty.set(TablePlaceholders.EMPTY_DIRECTORY);
                         updateProgress(1, 1);
                     }
                 });

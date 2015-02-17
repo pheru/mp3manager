@@ -9,7 +9,7 @@ import de.eru.mp3manager.cdi.TableData;
 import de.eru.mp3manager.cdi.TableDataSource;
 import de.eru.mp3manager.cdi.Updated;
 import de.eru.mp3manager.gui.utils.CssRowFactory;
-import de.eru.mp3manager.gui.utils.TablePlaceholder;
+import de.eru.mp3manager.gui.utils.TablePlaceholders;
 import de.eru.mp3manager.utils.TaskPool;
 import de.eru.mp3manager.utils.factories.TaskFactory;
 import de.eru.pherufx.mvp.InjectableList;
@@ -28,6 +28,8 @@ import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import javafx.collections.transformation.SortedList;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
@@ -75,7 +77,6 @@ public class MainPresenter implements Initializable {
     @FXML
     private TableView<Mp3FileData> table;
     private CssRowFactory<Mp3FileData> tableRowFactory;
-    private final TablePlaceholder placeholder = new TablePlaceholder(PLACEHOLDER_TEXT_NO_DIRECTORY_CHOSEN, false);
 
     @Inject
     private TaskPool taskPool;
@@ -106,6 +107,14 @@ public class MainPresenter implements Initializable {
                 event.consume();
             }
         });
+        TablePlaceholders.getEmptyDirectoryButton().setText("Verzeichnis wechseln");
+        TablePlaceholders.getEmptyDirectoryButton().setOnAction((ActionEvent event) -> {
+            changeDirectory();
+        });
+        TablePlaceholders.getNoDirectoryButton().setText("Verzeichnis wählen");
+        TablePlaceholders.getNoDirectoryButton().setOnAction((ActionEvent event) -> {
+            changeDirectory();
+        });
         //TODO Channel
 //        Mp3Manager.CHANNEL.setReceiver(new ReceiverAdapter(){
 //
@@ -128,7 +137,7 @@ public class MainPresenter implements Initializable {
 //        playlist.currentTitleIndexProperty().addListener((ObservableValue<? extends Number> observable, Number oldValue, Number newValue) -> {
 //            updateStyledIndex(newValue.intValue());
 //        });
-        table.setPlaceholder(placeholder);
+        table.setPlaceholder(TablePlaceholders.NO_DIRECTORY);
         table.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
         table.setItems(setUpTableFilter());
         selectedData.set(table.getSelectionModel().getSelectedItems());
@@ -283,7 +292,7 @@ public class MainPresenter implements Initializable {
     public void readDirectory() {
         String directory = settings.getMusicDirectory();
         if (directory != null && !directory.isEmpty()) {
-            taskPool.addTask(TaskFactory.createReadDirectoryTask(directory, masterData, placeholder, table.disableProperty(), playlist.getTitles()));
+            taskPool.addTask(TaskFactory.createReadDirectoryTask(directory, masterData, table.placeholderProperty(), playlist.getTitles()));
         }
     }
 

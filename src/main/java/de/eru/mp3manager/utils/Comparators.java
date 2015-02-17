@@ -12,101 +12,116 @@ import java.util.Date;
  */
 public class Comparators {
 
+    public static final Comparator<String> NUMBER_COMPARATOR = createNumberComparator();
+    public static final Comparator<String> DATE_COMPARATOR = createDateComparator();
+    public static final Comparator<String> SIZE_COMPARATOR = createSizeComparator();
+    public static final Comparator<String> BITRATE_COMPARATOR = createBitrateComparator();
+    public static final Comparator<String> TIME_COMPARATOR = createTimeComparator();
+
     private Comparators() {
         //Utility-Klasse
     }
 
     /**
-     * Ein Comparator für Zahlen.
-     *
+     * @return Einen Comparator für Zahlen.
      */
-    public static final Comparator<String> NUMBER_COMPARATOR = (String o1, String o2) -> {
-        if (!isComparable(o1)) {
-            return -1;
-        }
-        if (!isComparable(o2)) {
-            return 1;
-        }
-        return Integer.compare(Integer.valueOf(o1), Integer.valueOf(o2));
-    };
+    public static Comparator<String> createNumberComparator() {
+        return (String o1, String o2) -> {
+            if (!isComparable(o1)) {
+                return -1;
+            }
+            if (!isComparable(o2)) {
+                return 1;
+            }
+            return Integer.compare(Integer.valueOf(o1), Integer.valueOf(o2));
+        };
+    }
 
     /**
-     * Ein Comparator für Daten.
+     * @return Einen Comparator für Daten.
      */
-    public static final Comparator<String> DATE_COMPARATOR = (String o1, String o2) -> {
-        if (!isComparable(o1)) {
-            return -1;
-        }
-        if (!isComparable(o2)) {
-            return 1;
-        }
-        try {
-            Date d1 = TimeFormatter.DATE_TIME_FORMAT.parse(o1);
-            Date d2 = TimeFormatter.DATE_TIME_FORMAT.parse(o2);
+    public static Comparator<String> createDateComparator() {
+        return (String o1, String o2) -> {
+            if (!isComparable(o1)) {
+                return -1;
+            }
+            if (!isComparable(o2)) {
+                return 1;
+            }
+            try {
+                Date d1 = TimeFormatter.DATE_TIME_FORMAT.parse(o1);
+                Date d2 = TimeFormatter.DATE_TIME_FORMAT.parse(o2);
+                return Long.compare(d1.getTime(), d2.getTime());
+            } catch (ParseException ex) {
+                ex.printStackTrace();
+                return 0;
+            }
+        };
+    }
+
+    /**
+     * @return Einen Comparator für Dateigrößen.
+     */
+    public static Comparator<String> createSizeComparator() {
+        return (String o1, String o2) -> {
+            if (!isComparable(o1)) {
+                return -1;
+            }
+            if (!isComparable(o2)) {
+                return 1;
+            }
+            Double d1 = Double.valueOf(o1.replace(',', '.').replace(Mp3FileData.UNIT_SIZE, ""));
+            Double d2 = Double.valueOf(o2.replace(',', '.').replace(Mp3FileData.UNIT_SIZE, ""));
+            return Double.compare(d1, d2);
+        };
+    }
+
+    /**
+     * @return Einen Comparator für Bitraten.
+     */
+    public static Comparator<String> createBitrateComparator() {
+        return (String o1, String o2)
+                -> {
+                    if (!isComparable(o1)) {
+                        return -1;
+                    }
+                    if (!isComparable(o2)) {
+                        return 1;
+                    }
+                    Double d1 = Double.valueOf(o1.replace(Mp3FileData.UNIT_BITRATE, ""));
+                    Double d2 = Double.valueOf(o2.replace(Mp3FileData.UNIT_BITRATE, ""));
+                    return Double.compare(d1, d2);
+                };
+    }
+
+    /**
+     * @return Einen Comparator für Zeitangaben.
+     */
+    public static Comparator<String> createTimeComparator() {
+        return (String o1, String o2) -> {
+            if (!isComparable(o1)) {
+                return -1;
+            }
+            if (!isComparable(o2)) {
+                return 1;
+            }
+            Date d1;
+            Date d2;
+            try {
+                d1 = parseDuration(o1);
+            } catch (ParseException e) {
+                e.printStackTrace();
+                return -1;
+            }
+            try {
+                d2 = parseDuration(o2);
+            } catch (ParseException e) {
+                e.printStackTrace();
+                return 1;
+            }
             return Long.compare(d1.getTime(), d2.getTime());
-        } catch (ParseException ex) {
-            ex.printStackTrace();
-            return 0;
-        }
-    };
-
-    /**
-     * Ein Comparator für Dateigrößen.
-     */
-    public static final Comparator<String> SIZE_COMPARATOR = (String o1, String o2) -> {
-        if (!isComparable(o1)) {
-            return -1;
-        }
-        if (!isComparable(o2)) {
-            return 1;
-        }
-        Double d1 = Double.valueOf(o1.replace(',', '.').replace(Mp3FileData.UNIT_SIZE, ""));
-        Double d2 = Double.valueOf(o2.replace(',', '.').replace(Mp3FileData.UNIT_SIZE, ""));
-        return Double.compare(d1, d2);
-    };
-
-    /**
-     * Ein Comparator für Bitraten.
-     */
-    public static final Comparator<String> BITRATE_COMPARATOR = (String o1, String o2)
-            -> {
-                if (!isComparable(o1)) {
-                    return -1;
-                }
-                if (!isComparable(o2)) {
-                    return 1;
-                }
-                Double d1 = Double.valueOf(o1.replace(Mp3FileData.UNIT_BITRATE, ""));
-                Double d2 = Double.valueOf(o2.replace(Mp3FileData.UNIT_BITRATE, ""));
-                return Double.compare(d1, d2);
-            };
-
-    /**
-     * Ein Comparator für Zeitangaben.
-     */
-    public static final Comparator<String> TIME_COMPARATOR = (String o1, String o2) -> {
-        if (!isComparable(o1)) {
-            return -1;
-        }
-        if (!isComparable(o2)) {
-            return 1;
-        }
-        Date d1;
-        Date d2;
-        try {
-            d1 = parseDuration(o1);
-        } catch (ParseException e) {
-            e.printStackTrace();
-            return -1;
-        }
-        try {
-            d2 = parseDuration(o2);
-        } catch (ParseException e) {
-            e.printStackTrace();
-            return 1;
-        }
-        return Long.compare(d1.getTime(), d2.getTime());
-    };
+        };
+    }
 
     /**
      * Parsed eine Zeitangabe im DURATION_FORMAT oder DURATION_WITH_HOURS_FORMAT

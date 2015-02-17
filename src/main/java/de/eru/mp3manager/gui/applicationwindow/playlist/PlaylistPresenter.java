@@ -8,6 +8,7 @@ import de.eru.mp3manager.cdi.Updated;
 import de.eru.mp3manager.data.Mp3FileData;
 import de.eru.mp3manager.data.Playlist;
 import de.eru.mp3manager.gui.utils.CssRowFactory;
+import de.eru.mp3manager.gui.utils.DragAndDropRowFactory;
 import de.eru.mp3manager.service.FileService;
 import de.eru.mp3manager.utils.TaskPool;
 import de.eru.mp3manager.utils.factories.TaskFactory;
@@ -74,7 +75,8 @@ public class PlaylistPresenter implements Initializable {
      */
     private void initTable() {
         table.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
-        tableRowFactory = new CssRowFactory<>("played");
+        DragAndDropRowFactory dndRowFactory = new DragAndDropRowFactory(table);
+        tableRowFactory = new CssRowFactory<>("played", dndRowFactory);
         table.setRowFactory(tableRowFactory);
         table.setItems(playlist.getTitles());
         selectedTitles.set(table.getSelectionModel().getSelectedItems());

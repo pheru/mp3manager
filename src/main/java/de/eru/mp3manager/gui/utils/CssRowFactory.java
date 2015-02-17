@@ -15,8 +15,7 @@ import javafx.util.Callback;
  *
  * @author Philipp Bruckner
  */
-public class CssRowFactory<T> implements
-        Callback<TableView<T>, TableRow<T>> {
+public class CssRowFactory<T> implements Callback<TableView<T>, TableRow<T>> {
 
     private final PseudoClass pseudoClass;
     private final ObservableList<Integer> styledIndices;

@@ -40,10 +40,10 @@ public class ApplicationStarter {
         initSystemTrayIcon(primaryStage);
         primaryStage.show();
         
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-        alert.setHeaderText(null);
-        alert.setContentText("AShldKHA");
-        alert.showAndWait();
+//        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+//        alert.setHeaderText(null);
+//        alert.setContentText("AShldKHA");
+//        alert.showAndWait();
         
         //TODO Test-Stage
 //        Rectangle rect = new Rectangle(400, 100);

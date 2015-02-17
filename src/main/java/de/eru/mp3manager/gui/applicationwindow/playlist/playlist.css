@@ -22,3 +22,6 @@
     -fx-table-cell-border-color: transparent;
 }
 
+.drag-over {
+    -fx-border-color: blue transparent transparent transparent;
+}
