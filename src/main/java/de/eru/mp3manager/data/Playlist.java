@@ -46,13 +46,11 @@ public class Playlist extends FileBasedData {
 
     @PostConstruct
     private void init() {
-        settings.musicPlayerRandomProperty()
-                .addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
-                    if (newValue) {
-                        resetRandomIndicesToPlay();
-                    }
-                }
-                );
+        settings.musicPlayerRandomProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
+            if (newValue) {
+                resetRandomIndicesToPlay();
+            }
+        });
         filePath.bindBidirectional(settings.playlistFilePathProperty());
     }
 
@@ -63,8 +61,10 @@ public class Playlist extends FileBasedData {
             currentTitleUpdateEvent.fire(new CurrentTitleEvent(titles.get(currentTitleIndex.get()), currentTitleIndex.get()));
         }
         for (int i = 0; i < dataToAdd.size(); i++) {
-            randomIndicesToPlay.add(Double.valueOf(Math.random() * (randomIndicesToPlay.size() - randomIndicesToPlay.indexOf(currentTitleIndex.get()))).intValue()
-                    + randomIndicesToPlay.indexOf(currentTitleIndex.get()) + 1, randomIndicesToPlay.size());
+            randomIndicesToPlay.add(Double.valueOf(Math.random() * (randomIndicesToPlay.size()
+                    - randomIndicesToPlay.indexOf(currentTitleIndex.get()))).intValue()
+                    + randomIndicesToPlay.indexOf(currentTitleIndex.get()) + 1,
+                    randomIndicesToPlay.size());
         }
         dirty.set(checkIfDirty());
     }

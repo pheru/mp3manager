@@ -45,15 +45,6 @@ public class ApplicationStarter {
 //        alert.setContentText("AShldKHA");
 //        alert.showAndWait();
         
-        //TODO Test-Stage
-//        Rectangle rect = new Rectangle(400, 100);
-//        rect.setFill(Color.RED);
-//        rect.setArcHeight(15.0);
-//        rect.setArcWidth(50.0);
-//        Group group = new Group(rect);
-//        Stage stage = new Stage(StageStyle.TRANSPARENT);
-//        stage.setScene(new Scene(group, Color.TRANSPARENT));
-//        stage.show();
     }
 
     private void initPrimaryStage(Stage primaryStage) {

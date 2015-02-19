@@ -126,7 +126,7 @@ public class MusicPlayerPresenter implements Initializable {
 //        });
     }
 
-    private void currentTitleUpdated(@Observes @Updated CurrentTitleEvent event) { //TODO Aufbau/Ablauf nochmal überdenken
+    private void currentTitleUpdated(@Observes @Updated CurrentTitleEvent event) {
         updateCurrentTitleBinding(event.getNewCurrentTitle());
     }
 

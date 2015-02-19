@@ -126,7 +126,7 @@ public class PlaylistPresenter implements Initializable {
 
     @FXML
     private void savePlaylist() {
-        System.out.println("TODO!");//TODO
+        System.out.println("TODO!");//TODO implementieren
     }
     
     @FXML
@@ -184,7 +184,7 @@ public class PlaylistPresenter implements Initializable {
         }
     }
 
-    private void currentTitleUpdated(@Observes @Updated CurrentTitleEvent event) { //TODO Aufbau/Ablauf nochmal überdenken
+    private void currentTitleUpdated(@Observes @Updated CurrentTitleEvent event) {
         updateStyledIndex(event.getNewCurrentTitleIndex());
     }
 

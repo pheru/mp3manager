@@ -2,6 +2,7 @@ package de.eru.mp3manager.gui.utils;
 
 import com.sun.javafx.scene.control.skin.TableViewSkin;
 import com.sun.javafx.scene.control.skin.VirtualFlow;
+import java.util.stream.Collectors;
 import javafx.application.Platform;
 import javafx.event.EventHandler;
 import javafx.scene.control.TableRow;
@@ -17,14 +18,12 @@ import javafx.util.Callback;
  *
  * @author Philipp Bruckner
  */
-public class DragAndDropRowFactory<T, S> implements Callback<TableView<T>, TableRow<T>> {
+public class DragAndDropRowFactory<T> implements Callback<TableView<T>, TableRow<T>> {
 
     private final Callback<TableView<T>, TableRow<T>> baseFactory;
-    private TableView<T> table;
     private VirtualFlow<?> virtualFlow;
 
     public DragAndDropRowFactory(TableView<T> table, Callback<TableView<T>, TableRow<T>> baseFactory) {
-        this.table = table;
         this.baseFactory = baseFactory;
         Platform.runLater(() -> {
             TableViewSkin<?> tableSkin = (TableViewSkin<?>) table.getSkin();
@@ -45,19 +44,22 @@ public class DragAndDropRowFactory<T, S> implements Callback<TableView<T>, Table
             row = baseFactory.call(tableView);
         }
         
-        row.setOnDragDetected(createDragDetectedHandler(row));
+        row.setOnDragDetected(createDragDetectedHandler(row, tableView));
         row.setOnDragOver(createDragOverHandler(row));
         row.setOnDragExited(createDragExitedHandler(row));
-        row.setOnDragDropped(createDragDroppedHandler(row));
+        row.setOnDragDropped(createDragDroppedHandler(row, tableView));
 
         return row;
     }
 
-    private EventHandler<MouseEvent> createDragDetectedHandler(TableRow<T> row) {
+    private EventHandler<MouseEvent> createDragDetectedHandler(TableRow<T> row, TableView<T> table) {
         return (MouseEvent event) -> {
             Dragboard db = row.startDragAndDrop(TransferMode.ANY);
             ClipboardContent content = new ClipboardContent();
-            content.putString(String.valueOf(row.getIndex()));
+            String indicesAsString = table.getSelectionModel().getSelectedIndices().stream()
+                    .map((Integer t) -> t.toString())
+                    .collect(Collectors.joining("-"));
+            content.putString(indicesAsString);
             db.setContent(content);
         };
     }
@@ -85,20 +87,33 @@ public class DragAndDropRowFactory<T, S> implements Callback<TableView<T>, Table
         };
     }
 
-    private EventHandler<DragEvent> createDragDroppedHandler(TableRow<T> row) {
+    private EventHandler<DragEvent> createDragDroppedHandler(TableRow<T> row, TableView<T> table) {
         return (DragEvent event) -> {
             Dragboard db = event.getDragboard();
-            int myIndex = row.getIndex();
-            if (myIndex < 0 || myIndex >= table.getItems().size()) {
-                myIndex = table.getItems().size() - 1;
+            int targetIndex = row.getIndex();
+            if (targetIndex < 0) {
+                targetIndex = 0;
+            } else if (targetIndex >= table.getItems().size()) {
+                targetIndex = table.getItems().size() - 1; //TODO Kein -1
             }
-            int incomingIndex = Integer.parseInt(db.getString());
-            System.out.println(incomingIndex + " ---> " + myIndex);
-            T removed = table.getItems().remove(incomingIndex);
-            table.getItems().add(myIndex, removed);
-            table.getSelectionModel().clearAndSelect(myIndex);
+            table.getSelectionModel().clearSelection();
+            int movedCount = 0;
+            for (String s : db.getString().split("-")) {
+                int incomingIndex = Integer.parseInt(s);
+                if (incomingIndex < targetIndex) {
+                    T removed = table.getItems().remove(incomingIndex - movedCount);
+                    table.getItems().add(targetIndex - 1, removed);
+                } else if (incomingIndex > targetIndex) {
+                    T removed = table.getItems().remove(incomingIndex);
+                    table.getItems().add(targetIndex, removed);
+                    targetIndex++;
+                }
+                movedCount++;
+            }
+            for (int i = 0; i < movedCount; i++) {
+                table.getSelectionModel().select(targetIndex - 1 - i);
+            }
             event.setDropCompleted(true);
         };
     }
-
 }
