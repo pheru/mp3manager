@@ -74,7 +74,7 @@ public class Playlist extends FileBasedData {
         if (titles.size() == selectedIndices.size()) {
             titles.clear();
             randomIndicesToPlay.clear();
-            currentTitleUpdateEvent.fire(new CurrentTitleEvent(Mp3FileData.EMPTY_LIST_DATA, -1));
+            currentTitleUpdateEvent.fire(new CurrentTitleEvent(Mp3FileData.DEFAULT_MUSICPLAYER_DATA, -1));
         } else {
             for (int i = indicesToRemove.size() - 1; i >= 0; i--) {
                 titles.remove(indicesToRemove.get(i).intValue());

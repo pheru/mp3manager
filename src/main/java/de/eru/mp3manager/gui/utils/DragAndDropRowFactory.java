@@ -22,17 +22,19 @@ public class DragAndDropRowFactory<T> implements Callback<TableView<T>, TableRow
 
     private final Callback<TableView<T>, TableRow<T>> baseFactory;
     private VirtualFlow<?> virtualFlow;
+    private final T emptyData;
 
-    public DragAndDropRowFactory(TableView<T> table, Callback<TableView<T>, TableRow<T>> baseFactory) {
+    public DragAndDropRowFactory(TableView<T> table, T emptyData, Callback<TableView<T>, TableRow<T>> baseFactory) {
         this.baseFactory = baseFactory;
+        this.emptyData = emptyData;
         Platform.runLater(() -> {
             TableViewSkin<?> tableSkin = (TableViewSkin<?>) table.getSkin();
             virtualFlow = (VirtualFlow<?>) tableSkin.getChildren().get(1);
         });
     }
 
-    public DragAndDropRowFactory(TableView<T> table) {
-        this(table, null);
+    public DragAndDropRowFactory(TableView<T> table, T emptyData) {
+        this(table, emptyData, null);
     }
 
     @Override
@@ -43,7 +45,7 @@ public class DragAndDropRowFactory<T> implements Callback<TableView<T>, TableRow
         } else {
             row = baseFactory.call(tableView);
         }
-        
+
         row.setOnDragDetected(createDragDetectedHandler(row, tableView));
         row.setOnDragOver(createDragOverHandler(row));
         row.setOnDragExited(createDragExitedHandler(row));
@@ -61,12 +63,13 @@ public class DragAndDropRowFactory<T> implements Callback<TableView<T>, TableRow
                     .collect(Collectors.joining("-"));
             content.putString(indicesAsString);
             db.setContent(content);
+            table.getItems().add(emptyData);
         };
     }
 
     private EventHandler<DragEvent> createDragOverHandler(TableRow<T> row) {
         return (DragEvent event) -> {
-            if (event.getDragboard().hasString()) {
+            if (event.getDragboard().hasString() && row.getItem() != null) {
                 if (!row.getStyleClass().contains("drag-over")) {
                     row.getStyleClass().add("drag-over");
                 }
@@ -110,6 +113,7 @@ public class DragAndDropRowFactory<T> implements Callback<TableView<T>, TableRow
                 }
                 movedCount++;
             }
+            table.getItems().remove(emptyData);
             for (int i = 0; i < movedCount; i++) {
                 table.getSelectionModel().select(targetIndex - 1 - i);
             }

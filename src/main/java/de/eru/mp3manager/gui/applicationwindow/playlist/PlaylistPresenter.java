@@ -75,7 +75,7 @@ public class PlaylistPresenter implements Initializable {
      */
     private void initTable() {
         table.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
-        DragAndDropRowFactory dndRowFactory = new DragAndDropRowFactory(table);
+        DragAndDropRowFactory dndRowFactory = new DragAndDropRowFactory(table, Mp3FileData.EMPTY_PLAYLIST_DATA);
         tableRowFactory = new CssRowFactory<>("played", dndRowFactory);
         table.setRowFactory(tableRowFactory);
         table.setItems(playlist.getTitles());
