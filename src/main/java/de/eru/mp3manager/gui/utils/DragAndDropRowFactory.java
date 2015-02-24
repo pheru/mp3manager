@@ -18,7 +18,7 @@ import javafx.util.Callback;
  *
  * @author Philipp Bruckner
  */
-public class DragAndDropRowFactory<T> implements Callback<TableView<T>, TableRow<T>> {
+public abstract class DragAndDropRowFactory<T> implements Callback<TableView<T>, TableRow<T>> {
 
     private final Callback<TableView<T>, TableRow<T>> baseFactory;
     private VirtualFlow<?> virtualFlow;
@@ -97,19 +97,23 @@ public class DragAndDropRowFactory<T> implements Callback<TableView<T>, TableRow
             if (targetIndex < 0) {
                 targetIndex = 0;
             } else if (targetIndex >= table.getItems().size()) {
-                targetIndex = table.getItems().size() - 1; //TODO Kein -1
+                targetIndex = table.getItems().size() - 1;
             }
             table.getSelectionModel().clearSelection();
             int movedCount = 0;
             for (String s : db.getString().split("-")) {
                 int incomingIndex = Integer.parseInt(s);
-                if (incomingIndex < targetIndex) {
+                if (incomingIndex == targetIndex) {
+                    continue;
+                } else if (incomingIndex < targetIndex) {
                     T removed = table.getItems().remove(incomingIndex - movedCount);
                     table.getItems().add(targetIndex - 1, removed);
+                    onEveryRowDropCompleted(incomingIndex - movedCount, targetIndex - 1);
                 } else if (incomingIndex > targetIndex) {
                     T removed = table.getItems().remove(incomingIndex);
                     table.getItems().add(targetIndex, removed);
                     targetIndex++;
+                    onEveryRowDropCompleted(incomingIndex, targetIndex - 1);
                 }
                 movedCount++;
             }
@@ -120,4 +124,6 @@ public class DragAndDropRowFactory<T> implements Callback<TableView<T>, TableRow
             event.setDropCompleted(true);
         };
     }
+
+    public abstract void onEveryRowDropCompleted(int oldIndex, int targetIndex);
 }

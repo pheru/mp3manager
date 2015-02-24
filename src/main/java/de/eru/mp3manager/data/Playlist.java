@@ -211,6 +211,7 @@ public class Playlist extends FileBasedData {
 
     public void setCurrentTitleIndex(final Integer currentTitleIndex) {
         this.currentTitleIndex.set(currentTitleIndex);
+        currentTitleUpdateEvent.fire(new CurrentTitleEvent(titles.get(this.currentTitleIndex.get()), this.currentTitleIndex.get()));
     }
 
     public IntegerProperty currentTitleIndexProperty() {

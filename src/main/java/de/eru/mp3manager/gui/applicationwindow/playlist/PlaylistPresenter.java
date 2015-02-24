@@ -75,7 +75,26 @@ public class PlaylistPresenter implements Initializable {
      */
     private void initTable() {
         table.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
-        DragAndDropRowFactory dndRowFactory = new DragAndDropRowFactory(table, Mp3FileData.EMPTY_PLAYLIST_DATA);
+        DragAndDropRowFactory dndRowFactory = new DragAndDropRowFactory(table, Mp3FileData.EMPTY_PLAYLIST_DATA) {
+
+            @Override
+            public void onEveryRowDropCompleted(int oldIndex, int targetIndex) {
+                System.out.println("Current: " + playlist.getCurrentTitleIndex() + " - Old: " + oldIndex + " - target: " + targetIndex);
+                if (oldIndex == playlist.getCurrentTitleIndex()) {
+                    System.out.println("1");
+                    playlist.setCurrentTitleIndex(targetIndex); //Event wird automatisch gefeuert
+                } else if (oldIndex > playlist.getCurrentTitleIndex() && targetIndex <= playlist.getCurrentTitleIndex()) {
+                    System.out.println("2");
+                    playlist.setCurrentTitleIndex(playlist.getCurrentTitleIndex() + 1); //Event wird automatisch gefeuert
+                } else if (oldIndex < playlist.getCurrentTitleIndex() && targetIndex >= playlist.getCurrentTitleIndex()) {
+                    System.out.println("3");
+                    playlist.setCurrentTitleIndex(playlist.getCurrentTitleIndex() - 1); //Event wird automatisch gefeuert
+                } else {
+                    System.out.println("else");
+                }
+            }
+
+        };
         tableRowFactory = new CssRowFactory<>("played", dndRowFactory);
         table.setRowFactory(tableRowFactory);
         table.setItems(playlist.getTitles());
@@ -128,7 +147,7 @@ public class PlaylistPresenter implements Initializable {
     private void savePlaylist() {
         System.out.println("TODO!");//TODO implementieren
     }
-    
+
     @FXML
     private void savePlaylistAs() {
         FileChooser fileChooser = new FileChooser();
