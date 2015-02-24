@@ -2,6 +2,8 @@ package de.eru.mp3manager.gui.utils;
 
 import com.sun.javafx.scene.control.skin.TableViewSkin;
 import com.sun.javafx.scene.control.skin.VirtualFlow;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.stream.Collectors;
 import javafx.application.Platform;
 import javafx.event.EventHandler;
@@ -92,36 +94,41 @@ public abstract class DragAndDropRowFactory<T> implements Callback<TableView<T>,
 
     private EventHandler<DragEvent> createDragDroppedHandler(TableRow<T> row, TableView<T> table) {
         return (DragEvent event) -> {
-            Dragboard db = event.getDragboard();
-            int targetIndex = row.getIndex();
-            if (targetIndex < 0) {
-                targetIndex = 0;
-            } else if (targetIndex >= table.getItems().size()) {
-                targetIndex = table.getItems().size() - 1;
-            }
-            table.getSelectionModel().clearSelection();
-            int movedCount = 0;
-            for (String s : db.getString().split("-")) {
-                int incomingIndex = Integer.parseInt(s);
-                if (incomingIndex == targetIndex) {
-                    continue;
-                } else if (incomingIndex < targetIndex) {
-                    T removed = table.getItems().remove(incomingIndex - movedCount);
-                    table.getItems().add(targetIndex - 1, removed);
-                    onEveryRowDropCompleted(incomingIndex - movedCount, targetIndex - 1);
-                } else if (incomingIndex > targetIndex) {
-                    T removed = table.getItems().remove(incomingIndex);
-                    table.getItems().add(targetIndex, removed);
-                    targetIndex++;
-                    onEveryRowDropCompleted(incomingIndex, targetIndex - 1);
+            try {
+
+                Dragboard db = event.getDragboard();
+                int initialTargetIndex = row.getIndex();
+                if (initialTargetIndex < 0) {
+                    initialTargetIndex = 0;
+                } else if (initialTargetIndex >= table.getItems().size()) {
+                    initialTargetIndex = table.getItems().size() - 1;
                 }
-                movedCount++;
+                table.getSelectionModel().clearSelection();
+
+                int adjustedTargetIndex = initialTargetIndex;
+                List<T> dragData = new ArrayList<>();
+                for (String s : db.getString().split("-")) {
+                    int incomingIndex = Integer.parseInt(s);
+                    dragData.add(table.getItems().remove(incomingIndex - dragData.size()));
+                    if (incomingIndex < initialTargetIndex) {
+                        adjustedTargetIndex--;
+                    }
+                }
+                table.getItems().remove(emptyData);
+
+                for (int i = dragData.size() - 1; i >= 0; i--) {
+                    table.getItems().add(adjustedTargetIndex, dragData.get(i));
+                    table.getSelectionModel().select(adjustedTargetIndex);
+                }
+                event.setDropCompleted(true);
+            } catch (Exception e) {
+                /*
+                 TODO 
+                 Exception vermutlich nicht korrekt verarbeitet.
+                 Siehe RT-38641: https://javafx-jira.kenai.com/browse/RT-38641
+                 */
+                e.printStackTrace();
             }
-            table.getItems().remove(emptyData);
-            for (int i = 0; i < movedCount; i++) {
-                table.getSelectionModel().select(targetIndex - 1 - i);
-            }
-            event.setDropCompleted(true);
         };
     }
 
