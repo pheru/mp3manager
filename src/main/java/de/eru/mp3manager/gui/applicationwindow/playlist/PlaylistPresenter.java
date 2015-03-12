@@ -17,6 +17,7 @@ import de.eru.pherufx.mvp.InjectableList;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.util.List;
 import java.util.ResourceBundle;
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.StringBinding;
@@ -29,6 +30,7 @@ import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TableView;
 import javafx.scene.input.KeyEvent;
 import javafx.stage.FileChooser;
+import javafx.util.Pair;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
@@ -78,23 +80,46 @@ public class PlaylistPresenter implements Initializable {
         DragAndDropRowFactory dndRowFactory = new DragAndDropRowFactory(table, Mp3FileData.EMPTY_PLAYLIST_DATA) {
 
             @Override
-            public void onEveryRowDropCompleted(int oldIndex, int targetIndex) {
-                System.out.println("Current: " + playlist.getCurrentTitleIndex() + " - Old: " + oldIndex + " - target: " + targetIndex);
-                if (oldIndex == playlist.getCurrentTitleIndex()) {
-                    System.out.println("1");
-                    playlist.setCurrentTitleIndex(targetIndex); //Event wird automatisch gefeuert
-                } else if (oldIndex > playlist.getCurrentTitleIndex() && targetIndex <= playlist.getCurrentTitleIndex()) {
-                    System.out.println("2");
-                    playlist.setCurrentTitleIndex(playlist.getCurrentTitleIndex() + 1); //Event wird automatisch gefeuert
-                } else if (oldIndex < playlist.getCurrentTitleIndex() && targetIndex >= playlist.getCurrentTitleIndex()) {
-                    System.out.println("3");
-                    playlist.setCurrentTitleIndex(playlist.getCurrentTitleIndex() - 1); //Event wird automatisch gefeuert
-                } else {
-                    System.out.println("else");
+            protected void onDropCompleted(List movedIndices) { //TODO nicht gut
+                Integer newCurrentIndex = playlist.getCurrentTitleIndex();
+                for (Object movedIndex : movedIndices) {
+                    Pair<Integer, Integer> p = (Pair<Integer, Integer>) movedIndex;
+                    System.out.println("C:" + playlist.getCurrentTitleIndex() + " | " + p.getKey() + " -> " + p.getValue());
+                    if (p.getKey().equals(playlist.getCurrentTitleIndex())) {
+                        System.out.println("==");
+                        newCurrentIndex = p.getValue();
+                        break;
+                    } else if (p.getKey() < playlist.getCurrentTitleIndex() && p.getValue() >= playlist.getCurrentTitleIndex()) {
+                        System.out.println("--");
+                        newCurrentIndex--;
+                    } else if (p.getKey() > playlist.getCurrentTitleIndex() && p.getValue() <= playlist.getCurrentTitleIndex()) {
+                        System.out.println("++");
+                        newCurrentIndex++;
+                    }
                 }
+                playlist.setCurrentTitleIndex(newCurrentIndex);
             }
-
         };
+//        {
+//
+//            @Override
+//            public void onEveryRowDropCompleted(int oldIndex, int targetIndex) {
+//                System.out.println("Current: " + playlist.getCurrentTitleIndex() + " - Old: " + oldIndex + " - target: " + targetIndex);
+//                if (oldIndex == playlist.getCurrentTitleIndex()) {
+//                    System.out.println("1");
+//                    playlist.setCurrentTitleIndex(targetIndex); //Event wird automatisch gefeuert
+//                } else if (oldIndex > playlist.getCurrentTitleIndex() && targetIndex <= playlist.getCurrentTitleIndex()) {
+//                    System.out.println("2");
+//                    playlist.setCurrentTitleIndex(playlist.getCurrentTitleIndex() + 1); //Event wird automatisch gefeuert
+//                } else if (oldIndex < playlist.getCurrentTitleIndex() && targetIndex >= playlist.getCurrentTitleIndex()) {
+//                    System.out.println("3");
+//                    playlist.setCurrentTitleIndex(playlist.getCurrentTitleIndex() - 1); //Event wird automatisch gefeuert
+//                } else {
+//                    System.out.println("else");
+//                }
+//            }
+//
+//        };
         tableRowFactory = new CssRowFactory<>("played", dndRowFactory);
         table.setRowFactory(tableRowFactory);
         table.setItems(playlist.getTitles());

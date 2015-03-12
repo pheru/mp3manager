@@ -79,7 +79,7 @@ public class Settings {
 //            ex.printStackTrace();
             System.err.println("Keine Properties-Datei gefunden!");
         }
-        getPropertyValues();
+        getPropertyValues(); //TODO Sinn?
     }
 
     private void loadProperties(Properties properties) {

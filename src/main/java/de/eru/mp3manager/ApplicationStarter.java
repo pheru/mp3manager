@@ -8,7 +8,6 @@ import java.awt.event.ActionEvent;
 import javafx.application.Platform;
 import javafx.beans.value.ObservableValue;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
 import javafx.stage.Stage;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
@@ -39,12 +38,6 @@ public class ApplicationStarter {
         initPrimaryStage(primaryStage);
         initSystemTrayIcon(primaryStage);
         primaryStage.show();
-        
-//        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-//        alert.setHeaderText(null);
-//        alert.setContentText("AShldKHA");
-//        alert.showAndWait();
-        
     }
 
     private void initPrimaryStage(Stage primaryStage) {

@@ -15,6 +15,7 @@ import javafx.scene.input.Dragboard;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.TransferMode;
 import javafx.util.Callback;
+import javafx.util.Pair;
 
 /**
  *
@@ -22,6 +23,7 @@ import javafx.util.Callback;
  */
 public abstract class DragAndDropRowFactory<T> implements Callback<TableView<T>, TableRow<T>> {
 
+    //TODO com.sun. package Siehe: https://javafx-jira.kenai.com/browse/RT-39294
     private final Callback<TableView<T>, TableRow<T>> baseFactory;
     private VirtualFlow<?> virtualFlow;
     private final T emptyData;
@@ -52,7 +54,6 @@ public abstract class DragAndDropRowFactory<T> implements Callback<TableView<T>,
         row.setOnDragOver(createDragOverHandler(row));
         row.setOnDragExited(createDragExitedHandler(row));
         row.setOnDragDropped(createDragDroppedHandler(row, tableView));
-
         return row;
     }
 
@@ -95,9 +96,9 @@ public abstract class DragAndDropRowFactory<T> implements Callback<TableView<T>,
     private EventHandler<DragEvent> createDragDroppedHandler(TableRow<T> row, TableView<T> table) {
         return (DragEvent event) -> {
             try {
-
                 Dragboard db = event.getDragboard();
                 int initialTargetIndex = row.getIndex();
+                String[] incomingIndices = db.getString().split("-");
                 if (initialTargetIndex < 0) {
                     initialTargetIndex = 0;
                 } else if (initialTargetIndex >= table.getItems().size()) {
@@ -107,7 +108,8 @@ public abstract class DragAndDropRowFactory<T> implements Callback<TableView<T>,
 
                 int adjustedTargetIndex = initialTargetIndex;
                 List<T> dragData = new ArrayList<>();
-                for (String s : db.getString().split("-")) {
+                List<Pair<Integer, Integer>> movedIndices = new ArrayList<>();
+                for (String s : incomingIndices) {
                     int incomingIndex = Integer.parseInt(s);
                     dragData.add(table.getItems().remove(incomingIndex - dragData.size()));
                     if (incomingIndex < initialTargetIndex) {
@@ -116,11 +118,18 @@ public abstract class DragAndDropRowFactory<T> implements Callback<TableView<T>,
                 }
                 table.getItems().remove(emptyData);
 
-                for (int i = dragData.size() - 1; i >= 0; i--) {
-                    table.getItems().add(adjustedTargetIndex, dragData.get(i));
-                    table.getSelectionModel().select(adjustedTargetIndex);
+//                for (int i = dragData.size() - 1; i >= 0; i--) {
+//                    table.getItems().add(adjustedTargetIndex, dragData.get(i));
+//                    table.getSelectionModel().select(adjustedTargetIndex);
+//                }
+                for (int i = 0; i < dragData.size(); i++) {
+                    table.getItems().add(adjustedTargetIndex + i, dragData.get(i));
+                    table.getSelectionModel().select(adjustedTargetIndex + i);
+                    movedIndices.add(new Pair<>(Integer.parseInt(incomingIndices[i]), adjustedTargetIndex + i));
                 }
+
                 event.setDropCompleted(true);
+                onDropCompleted(movedIndices);
             } catch (Exception e) {
                 /*
                  TODO 
@@ -132,5 +141,5 @@ public abstract class DragAndDropRowFactory<T> implements Callback<TableView<T>,
         };
     }
 
-    public abstract void onEveryRowDropCompleted(int oldIndex, int targetIndex);
+    protected abstract void onDropCompleted(List<Pair<Integer, Integer>> movedIndices);
 }

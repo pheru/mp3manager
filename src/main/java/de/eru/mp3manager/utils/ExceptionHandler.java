@@ -9,6 +9,7 @@ import java.io.StringWriter;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import javafx.scene.control.Alert;
 
 /**
  * Klasse zum schreiben von Logfiles.
@@ -22,13 +23,10 @@ public final class ExceptionHandler {
     }
 
     public static void handle(Throwable t, String dialogTitle, String dialogText, String logfileMessage) {
-        t.printStackTrace(); //TODO Entfernen
-//        Dialogs.createInfoDialog()
-//                .setType(InfoType.ERROR)
-//                .setTitle(dialogTitle.isEmpty() ? "Ein Fehler ist aufgetreten!" : dialogTitle)
-//                .setHeader(t.getLocalizedMessage())
-//                .setText(dialogText.isEmpty() ? "Es ist ein unerwartetes Problem aufgetreten!\nDetails befinden sich im Logfile." : dialogText)
-//                .showAndWait();
+//        Alert alert = new Alert(Alert.AlertType.ERROR);
+//        alert.setTitle(dialogTitle);
+//        alert.setContentText(dialogText);
+//        alert.show();
         writeLogfile(t, logfileMessage.isEmpty() ? "Unexpected Exception" : logfileMessage);
     }
 
@@ -61,9 +59,7 @@ public final class ExceptionHandler {
             content.append(message);
         }
         content.append(System.lineSeparator());
-        StringWriter stackTraceWriter = new StringWriter();
-        t.printStackTrace(new PrintWriter(stackTraceWriter));
-        content.append(stackTraceWriter.toString());
+        content.append(getStacktraceAsString(t));
         
         File logfile = new File(Mp3Manager.APPLICATION_PATH + "/logs/" + date.getTime() + ".txt");
         if (logfile.getParentFile().exists() || logfile.getParentFile().mkdirs()) {
@@ -85,5 +81,11 @@ public final class ExceptionHandler {
 //                .setHeader(header)
 //                .setText("Es konnte kein Logfile erzeugt werden! Kopieren Sie sich den folgenden Inhalt bitte manuell:")
 //                .showAndWait();
+    }
+    
+    private static String getStacktraceAsString(Throwable t){
+        StringWriter stackTraceWriter = new StringWriter();
+        t.printStackTrace(new PrintWriter(stackTraceWriter));
+        return stackTraceWriter.toString();
     }
 }

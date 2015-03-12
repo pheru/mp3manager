@@ -121,7 +121,7 @@ public class MusicPlayer {
         player.seek(Duration.seconds(seconds));
     }
 
-    private void currentTitleUpdated(@Observes @Updated CurrentTitleEvent event) {
+    private void currentTitleUpdated(@Observes @Updated CurrentTitleEvent event) { //TODO wird bei DnD aufgerufen
         if (player != null && player.getStatus() == MediaPlayer.Status.PLAYING) {
             play(event.getNewCurrentTitle());
         }
