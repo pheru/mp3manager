@@ -1,8 +1,9 @@
 package de.eru.mp3manager.gui.applicationwindow.musicplayer;
 
-import de.eru.mp3manager.Settings;
+import de.eru.mp3manager.settings.Settings;
 import de.eru.mp3manager.cdi.CurrentTitleEvent;
 import de.eru.mp3manager.cdi.Updated;
+import de.eru.mp3manager.cdi.XMLSettings;
 import de.eru.mp3manager.data.Mp3FileData;
 import de.eru.mp3manager.data.Playlist;
 import de.eru.mp3manager.player.MusicPlayer;
@@ -61,6 +62,7 @@ public class MusicPlayerPresenter implements Initializable {
     private ToggleButton repeatButton;
 
     @Inject
+    @XMLSettings
     private Settings settings;
     @Inject
     private Playlist playlist;

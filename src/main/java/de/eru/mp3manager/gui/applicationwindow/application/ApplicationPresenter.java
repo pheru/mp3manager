@@ -1,6 +1,7 @@
 package de.eru.mp3manager.gui.applicationwindow.application;
 
-import de.eru.mp3manager.Settings;
+import de.eru.mp3manager.cdi.XMLSettings;
+import de.eru.mp3manager.settings.Settings;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.fxml.FXML;
@@ -38,6 +39,7 @@ public class ApplicationPresenter implements Initializable {
     private CheckMenuItem randomMenuItem;
 
     @Inject
+    @XMLSettings
     private Settings settings;
     @Inject
     private MusicPlayer musicPlayer;

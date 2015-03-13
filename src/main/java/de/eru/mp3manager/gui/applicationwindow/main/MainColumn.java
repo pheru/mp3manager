@@ -34,6 +34,15 @@ public enum MainColumn {
         this.defaultWidth = defaultWidth;
         this.defaultVisible = defaultVisible;
     }
+    
+    public static MainColumn getMainColumnByColumnName(String columnName){
+        for (MainColumn mc : MainColumn.values()) {
+            if(mc.getColumnName().equals(columnName)){
+                return mc;
+            }
+        }
+        return null;
+    }
 
     public String getColumnName() {
         return columnName;

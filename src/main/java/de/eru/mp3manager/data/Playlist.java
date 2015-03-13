@@ -1,8 +1,9 @@
 package de.eru.mp3manager.data;
 
-import de.eru.mp3manager.Settings;
+import de.eru.mp3manager.settings.Settings;
 import de.eru.mp3manager.cdi.CurrentTitleEvent;
 import de.eru.mp3manager.cdi.Updated;
+import de.eru.mp3manager.cdi.XMLSettings;
 import de.eru.mp3manager.service.FileService;
 import de.eru.mp3manager.utils.ExceptionHandler;
 import java.io.File;
@@ -34,6 +35,7 @@ public class Playlist extends FileBasedData {
     public static final String FILE_SPLIT = System.lineSeparator();
 
     @Inject
+    @XMLSettings
     private Settings settings;
     @Inject
     @Updated

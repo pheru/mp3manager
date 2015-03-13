@@ -28,6 +28,8 @@ public final class ExceptionHandler {
 //        alert.setContentText(dialogText);
 //        alert.show();
         writeLogfile(t, logfileMessage.isEmpty() ? "Unexpected Exception" : logfileMessage);
+        t.printStackTrace();
+        System.out.println(logfileMessage);
     }
 
     public static void handle(Throwable t) {

@@ -1,6 +1,6 @@
 package de.eru.mp3manager.gui.applicationwindow.main;
 
-import de.eru.mp3manager.Settings;
+import de.eru.mp3manager.settings.Settings;
 import de.eru.mp3manager.cdi.CurrentTitleEvent;
 import de.eru.mp3manager.data.Mp3FileData;
 import de.eru.mp3manager.data.Playlist;
@@ -8,8 +8,10 @@ import de.eru.mp3manager.cdi.SelectedTableData;
 import de.eru.mp3manager.cdi.TableData;
 import de.eru.mp3manager.cdi.TableDataSource;
 import de.eru.mp3manager.cdi.Updated;
+import de.eru.mp3manager.cdi.XMLSettings;
 import de.eru.mp3manager.gui.utils.CssRowFactory;
 import de.eru.mp3manager.gui.utils.TablePlaceholders;
+import de.eru.mp3manager.settings.ColumnSettings;
 import de.eru.mp3manager.utils.TaskPool;
 import de.eru.mp3manager.utils.factories.TaskFactory;
 import de.eru.pherufx.mvp.InjectableList;
@@ -23,7 +25,6 @@ import javafx.beans.binding.StringBinding;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.beans.value.ObservableValue;
-import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
@@ -82,6 +83,7 @@ public class MainPresenter implements Initializable {
     @Inject
     private Playlist playlist;
     @Inject
+    @XMLSettings
     private Settings settings;
 
     @Inject
@@ -91,8 +93,7 @@ public class MainPresenter implements Initializable {
     @SelectedTableData(source = TableDataSource.MAIN)
     private InjectableList<Mp3FileData> selectedData;
 
-    private final ObservableList<String> columnsOrder = FXCollections.observableArrayList();
-
+//    private final ObservableList<String> columnsOrder = FXCollections.observableArrayList();
     private boolean updatingColumnsOrderList = false;
     private boolean updatingColumnsOrderTable = false;
 
@@ -141,17 +142,23 @@ public class MainPresenter implements Initializable {
         table.setItems(setUpTableFilter());
         selectedData.set(table.getSelectionModel().getSelectedItems());
         initColumns();
-        columnsOrder.addListener((ListChangeListener.Change<? extends String> change) -> {
+        settings.getAllMainColumnSettings().addListener((ListChangeListener.Change<? extends ColumnSettings> change) -> {
             if (!updatingColumnsOrderList) {
                 updateColumnsOrderTable();
             }
         });
+//        columnsOrder.addListener((ListChangeListener.Change<? extends String> change) -> {
+//            if (!updatingColumnsOrderList) {
+//                updateColumnsOrderTable();
+//            }
+//        });
         table.getColumns().addListener((ListChangeListener.Change<? extends TableColumn<Mp3FileData, ?>> change) -> {
             if (!updatingColumnsOrderTable) {
                 updateColumnsOrderList();
             }
         });
-        Bindings.bindContentBidirectional(columnsOrder, settings.getMainColumnsOrder());
+        updateColumnsOrderTable(); // Initiale Anpassung der Reihenfolge an die Settings
+//        Bindings.bindContentBidirectional(columnsOrder, settings.getMainColumnsOrder());
         table.setOnSort((SortEvent<TableView<Mp3FileData>> event) -> {
             updateStyledIndex(playlist.getCurrentTitleIndex());
         });
@@ -194,9 +201,12 @@ public class MainPresenter implements Initializable {
     private void initColumns() {
         for (MainColumn column : MainColumn.values()) {
             TableColumn<Mp3FileData, String> tableColumn = new TableColumn<>(column.getColumnName());
-            tableColumn.prefWidthProperty().bind(settings.mainColumnWidthProperties().get(column.getColumnName()));
-            settings.mainColumnWidthProperties().get(column.getColumnName()).bind(tableColumn.widthProperty());
-            tableColumn.visibleProperty().bindBidirectional(settings.mainColumnVisibleProperties().get(column.getColumnName()));
+//            tableColumn.prefWidthProperty().bind(settings.mainColumnWidthProperties().get(column.getColumnName()));
+//            settings.mainColumnWidthProperties().get(column.getColumnName()).bind(tableColumn.widthProperty());
+//            tableColumn.visibleProperty().bindBidirectional(settings.mainColumnVisibleProperties().get(column.getColumnName()));
+            tableColumn.prefWidthProperty().bind(settings.getMainColumnSettings(column).widthProperty());
+            settings.getMainColumnSettings(column).widthProperty().bind(tableColumn.widthProperty());
+            tableColumn.visibleProperty().bindBidirectional(settings.getMainColumnSettings(column).visibleProperty());
             tableColumn.setCellValueFactory(new PropertyValueFactory(column.getPropertyName()));
             if (column.getComparator() != null) {
                 tableColumn.setComparator(column.getComparator());
@@ -209,8 +219,8 @@ public class MainPresenter implements Initializable {
         updatingColumnsOrderTable = true;
         List<TableColumn> columns = new ArrayList<>(table.getColumns());
         table.getColumns().clear();
-        for (String columnName : columnsOrder) {
-            table.getColumns().add(getColumnByName(columns, columnName));
+        for (ColumnSettings cs : settings.getAllMainColumnSettings()) {
+            table.getColumns().add(getColumnByName(columns, cs.getColumn().getColumnName()));
         }
         updatingColumnsOrderTable = false;
     }
@@ -226,9 +236,13 @@ public class MainPresenter implements Initializable {
 
     private void updateColumnsOrderList() {
         updatingColumnsOrderList = true;
-        columnsOrder.clear();
+        List<ColumnSettings> newOrder = new ArrayList<>();
         for (TableColumn<Mp3FileData, ?> column : table.getColumns()) {
-            columnsOrder.add(column.getText());
+            newOrder.add(settings.getMainColumnSettings(MainColumn.getMainColumnByColumnName(column.getText())));
+        }
+        settings.getAllMainColumnSettings().clear();
+        for (ColumnSettings cs : newOrder) {
+            settings.getAllMainColumnSettings().add(cs);
         }
         updatingColumnsOrderList = false;
     }

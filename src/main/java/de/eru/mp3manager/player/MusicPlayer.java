@@ -1,8 +1,9 @@
 package de.eru.mp3manager.player;
 
-import de.eru.mp3manager.Settings;
+import de.eru.mp3manager.settings.Settings;
 import de.eru.mp3manager.cdi.CurrentTitleEvent;
 import de.eru.mp3manager.cdi.Updated;
+import de.eru.mp3manager.cdi.XMLSettings;
 import de.eru.mp3manager.data.Mp3FileData;
 import de.eru.mp3manager.data.Playlist;
 import java.io.File;
@@ -38,6 +39,7 @@ public class MusicPlayer {
     private final ObjectProperty<MediaPlayer.Status> status = new SimpleObjectProperty<>(MediaPlayer.Status.UNKNOWN);
 
     @Inject
+    @XMLSettings
     private Settings settings;
     @Inject
     private Playlist playlist;

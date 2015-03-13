@@ -1,5 +1,7 @@
 package de.eru.mp3manager;
 
+import de.eru.mp3manager.cdi.XMLSettings;
+import de.eru.mp3manager.settings.Settings;
 import de.eru.mp3manager.gui.applicationwindow.application.ApplicationView;
 import de.eru.mp3manager.utils.ExceptionHandler;
 import de.eru.pherufx.mvp.StartApplication;
@@ -19,6 +21,7 @@ import javax.inject.Inject;
 public class ApplicationStarter {
 
     @Inject
+    @XMLSettings
     private Settings settings;
     @Inject
     private Mp3SystemTrayIcon systemTrayIcon;
