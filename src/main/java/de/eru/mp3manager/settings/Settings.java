@@ -4,9 +4,6 @@ import de.eru.mp3manager.Mp3Manager;
 import de.eru.mp3manager.gui.applicationwindow.main.MainColumn;
 import de.eru.mp3manager.utils.ExceptionHandler;
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.util.ArrayList;
-import java.util.List;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleBooleanProperty;
@@ -21,10 +18,13 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.bind.ValidationEvent;
-import javax.xml.bind.ValidationEventHandler;
 import javax.xml.bind.ValidationException;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
+import org.eclipse.persistence.oxm.annotations.XmlPath;
 
 /**
  * Klasse zum Speichern und Auslesen von Einstellungen.
@@ -33,34 +33,53 @@ import javax.xml.bind.annotation.XmlRootElement;
  */
 @ApplicationScoped
 @XmlRootElement
+@XmlAccessorType(XmlAccessType.NONE)
 public class Settings {
 
-    public static final String ABSOLUTE_PATH = Mp3Manager.APPLICATION_PATH + "/settings.xml";
+    public static final String FILE_PATH = Mp3Manager.APPLICATION_PATH + "/settings.xml";
 
+    private static final String XMLPATH_ENDING = "/text()";
+    private static final String XMLPATH_DIRECTORIES = "directories/";
+    private static final String XMLPATH_APPLICATION_WINDOW = "applicationWindow/";
+    private static final String XMLPATH_EDITFILETAB = "editFileTab/";
+    private static final String XMLPATH_MUSICPLAYER = "musicPlayer/";
+
+    @XmlPath(XMLPATH_DIRECTORIES + "music" + XMLPATH_ENDING)
     private final StringProperty musicDirectory = new SimpleStringProperty("");
-
-    private final BooleanProperty applicationWindowMaximized = new SimpleBooleanProperty(false);
-    private final DoubleProperty applicationWindowWidth = new SimpleDoubleProperty(1300.0);
-    private final DoubleProperty applicationWindowHeight = new SimpleDoubleProperty(800.0);
-
-    @XmlElementWrapper
-    private final ObservableList<ColumnSettings> mainColumnSettings = FXCollections.observableArrayList();
-
-    private final DoubleProperty musicPlayerVolume = new SimpleDoubleProperty(100.0);
-    private final BooleanProperty musicPlayerRepeat = new SimpleBooleanProperty(false);
-    private final BooleanProperty musicPlayerRandom = new SimpleBooleanProperty(false);
-
+    @XmlPath(XMLPATH_DIRECTORIES + "playlists" + XMLPATH_ENDING)
     private final StringProperty playlistFilePath = new SimpleStringProperty("");
 
+    @XmlPath(XMLPATH_APPLICATION_WINDOW + "maximized" + XMLPATH_ENDING)
+    private final BooleanProperty applicationWindowMaximized = new SimpleBooleanProperty(false);
+    @XmlPath(XMLPATH_APPLICATION_WINDOW + "width" + XMLPATH_ENDING)
+    private final DoubleProperty applicationWindowWidth = new SimpleDoubleProperty(1300.0);
+    @XmlPath(XMLPATH_APPLICATION_WINDOW + "height" + XMLPATH_ENDING)
+    private final DoubleProperty applicationWindowHeight = new SimpleDoubleProperty(800.0);
+
+    @XmlPath(XMLPATH_MUSICPLAYER + "volume" + XMLPATH_ENDING)
+    private final DoubleProperty musicPlayerVolume = new SimpleDoubleProperty(100.0);
+    @XmlPath(XMLPATH_MUSICPLAYER + "repeat" + XMLPATH_ENDING)
+    private final BooleanProperty musicPlayerRepeat = new SimpleBooleanProperty(false);
+    @XmlPath(XMLPATH_MUSICPLAYER + "random" + XMLPATH_ENDING)
+    private final BooleanProperty musicPlayerRandom = new SimpleBooleanProperty(false);
+
+    @XmlPath(XMLPATH_EDITFILETAB + "sortTitles" + XMLPATH_ENDING)
     private final BooleanProperty editFileSortTitle = new SimpleBooleanProperty(false);
+    @XmlPath(XMLPATH_EDITFILETAB + "sortAlbums" + XMLPATH_ENDING)
     private final BooleanProperty editFileSortAlbum = new SimpleBooleanProperty(false);
+    @XmlPath(XMLPATH_EDITFILETAB + "sortArtists" + XMLPATH_ENDING)
     private final BooleanProperty editFileSortArtist = new SimpleBooleanProperty(false);
+    @XmlPath(XMLPATH_EDITFILETAB + "synchronizeTitle" + XMLPATH_ENDING)
     private final BooleanProperty editFileSynchronizeTitle = new SimpleBooleanProperty(false);
+
+    @XmlElementWrapper(name = "tableColumns")
+    @XmlElement(name = "tableColumn")
+    private final ObservableList<ColumnSettings> mainColumnSettings = FXCollections.observableArrayList();
 
     public Settings() {
     }
 
-    private void initMainColumnSettings() {
+    private void initDefaultMainColumnSettings() {
         for (MainColumn column : MainColumn.values()) {
             mainColumnSettings.add(new ColumnSettings(column));
         }
@@ -75,7 +94,7 @@ public class Settings {
                 return false;
             });
             marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
-            marshaller.marshal(this, new File(ABSOLUTE_PATH));
+            marshaller.marshal(this, new File(FILE_PATH));
             return true;
         } catch (JAXBException ex) {
             ExceptionHandler.handle(ex);
@@ -91,11 +110,11 @@ public class Settings {
                 ExceptionHandler.handle(new ValidationException("XML ist fehlerhaft"), "XML ist nicht valide!");
                 return false;
             });
-            return (Settings) unmarshaller.unmarshal(new File(ABSOLUTE_PATH));
+            return (Settings) unmarshaller.unmarshal(new File(FILE_PATH));
         } catch (JAXBException ex) {
             ExceptionHandler.handle(ex, "XML fehlerhaft oder nicht vorhanden!");
             Settings defaultSettings = new Settings();
-            defaultSettings.initMainColumnSettings();
+            defaultSettings.initDefaultMainColumnSettings();
 //            if (defaultSettings.save()) {
 //                return load();
 //            }

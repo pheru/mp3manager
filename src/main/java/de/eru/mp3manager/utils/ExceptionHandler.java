@@ -9,7 +9,6 @@ import java.io.StringWriter;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import javafx.scene.control.Alert;
 
 /**
  * Klasse zum schreiben von Logfiles.
@@ -63,7 +62,12 @@ public final class ExceptionHandler {
         content.append(System.lineSeparator());
         content.append(getStacktraceAsString(t));
         
-        File logfile = new File(Mp3Manager.APPLICATION_PATH + "/logs/" + date.getTime() + ".txt");
+        File logfile = new File(Mp3Manager.APPLICATION_PATH + "/logs/" + new SimpleDateFormat("dd-MM-yyyy").format(date) + ".txt");
+        int fileCount = 2;
+        while(logfile.exists()){
+            logfile = new File(Mp3Manager.APPLICATION_PATH + "/logs/" + new SimpleDateFormat("dd-MM-yyyy").format(date) + " (" + fileCount + ").txt");
+            fileCount++;
+        }
         if (logfile.getParentFile().exists() || logfile.getParentFile().mkdirs()) {
             try (FileWriter writer = new FileWriter(logfile)) {
                 writer.write(content.toString());
