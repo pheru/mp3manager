@@ -5,11 +5,13 @@ import de.eru.mp3manager.cdi.SelectedTableData;
 import de.eru.mp3manager.cdi.TableData;
 import de.eru.mp3manager.cdi.TableDataSource;
 import de.eru.mp3manager.cdi.Updated;
+import de.eru.mp3manager.cdi.XMLSettings;
 import de.eru.mp3manager.data.Mp3FileData;
 import de.eru.mp3manager.data.Playlist;
 import de.eru.mp3manager.gui.utils.CssRowFactory;
 import de.eru.mp3manager.gui.utils.DragAndDropRowFactory;
 import de.eru.mp3manager.service.FileService;
+import de.eru.mp3manager.settings.Settings;
 import de.eru.mp3manager.utils.TaskPool;
 import de.eru.mp3manager.utils.factories.TaskFactory;
 import de.eru.mp3manager.utils.formatter.TimeFormatter;
@@ -55,6 +57,9 @@ public class PlaylistPresenter implements Initializable {
 
     private CssRowFactory<Mp3FileData> tableRowFactory;
 
+    @Inject
+    @XMLSettings
+    private Settings settings;
     @Inject
     private Playlist playlist;
     @Inject
@@ -140,7 +145,7 @@ public class PlaylistPresenter implements Initializable {
                 if (playlist.getFileName().isEmpty()) {
                     return "<Neue Wiedergabeliste>";
                 } else {
-                    String fileName = playlist.getFileName().replace(Playlist.FILE_EXTENSION, "");
+                    String fileName = playlist.getFileName().replace("." + Playlist.FILE_EXTENSION, "");
                     if (playlist.isDirty()) {
                         fileName += "*";
                     }
@@ -170,22 +175,34 @@ public class PlaylistPresenter implements Initializable {
 
     @FXML
     private void savePlaylist() {
-        System.out.println("TODO!");//TODO implementieren
+        try {
+            FileService.savePlaylist(new File(playlist.getAbsolutePath()), playlist.getTitles());
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
     }
 
     @FXML
     private void savePlaylistAs() {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Wiedergabeliste speichern");
-//        fileChooser.setInitialDirectory(new File("D:\\"));
-        fileChooser.setInitialFileName("Wiedergabeliste" + Playlist.FILE_EXTENSION);
-        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Wiedergabelisten", "*" + Playlist.FILE_EXTENSION));
+        fileChooser.setInitialDirectory(new File(settings.getPlaylistFilePath()));
+
+        String fileName = "Wiedergabeliste";
+        int i = 2;
+        while (new File(settings.getPlaylistFilePath() + fileName + "." + Playlist.FILE_EXTENSION).exists()) {
+            fileName = "Wiedergabeliste (" + i + ")";
+        }
+        fileChooser.setInitialFileName(fileName + "." + Playlist.FILE_EXTENSION);
+
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Wiedergabelisten", "*." + Playlist.FILE_EXTENSION));
         File playlistFile = fileChooser.showSaveDialog(table.getScene().getWindow());
         if (playlistFile != null) {
             try {
                 FileService.savePlaylist(playlistFile, playlist.getTitles());
                 playlist.setFilePath(playlistFile.getParent());
                 playlist.setFileName(playlistFile.getName());
+                settings.setPlaylistFilePath(fileChooser.getInitialDirectory().getAbsolutePath());
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -196,8 +213,8 @@ public class PlaylistPresenter implements Initializable {
     private void loadPlaylist() {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Wiedergabeliste laden");
-//        fileChooser.setInitialDirectory(new File("D:\\"));
-        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Wiedergabelisten", "*" + Playlist.FILE_EXTENSION));
+        fileChooser.setInitialDirectory(new File(settings.getPlaylistFilePath()));
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Wiedergabelisten", "*." + Playlist.FILE_EXTENSION));
         File playlistFile = fileChooser.showOpenDialog(table.getScene().getWindow());
         if (playlistFile != null) {
             taskPool.addTask(TaskFactory.createLoadPlaylistTask(playlist, playlistFile, mainTitles));

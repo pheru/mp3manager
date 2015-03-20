@@ -28,7 +28,6 @@ public final class ExceptionHandler {
 //        alert.show();
         writeLogfile(t, logfileMessage.isEmpty() ? "Unexpected Exception" : logfileMessage);
         t.printStackTrace();
-        System.out.println(logfileMessage);
     }
 
     public static void handle(Throwable t) {
@@ -63,10 +62,10 @@ public final class ExceptionHandler {
         content.append(getStacktraceAsString(t));
         
         File logfile = new File(Mp3Manager.APPLICATION_PATH + "/logs/" + new SimpleDateFormat("dd-MM-yyyy").format(date) + ".txt");
-        int fileCount = 2;
+        int i = 2;
         while(logfile.exists()){
-            logfile = new File(Mp3Manager.APPLICATION_PATH + "/logs/" + new SimpleDateFormat("dd-MM-yyyy").format(date) + " (" + fileCount + ").txt");
-            fileCount++;
+            logfile = new File(Mp3Manager.APPLICATION_PATH + "/logs/" + new SimpleDateFormat("dd-MM-yyyy").format(date) + " (" + i + ").txt");
+            i++;
         }
         if (logfile.getParentFile().exists() || logfile.getParentFile().mkdirs()) {
             try (FileWriter writer = new FileWriter(logfile)) {

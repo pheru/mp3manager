@@ -75,6 +75,10 @@ public class EditFilePresenter implements Initializable {
     @FXML
     private Button saveButton;
 
+    private final ChangeListener<Boolean> sortListener = (ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
+        updateFields(); //Es wird ein komplettes Update durchgeführt, um auch die ursprüngliche Reihenfolge wiederherzustellen
+    };
+
     private final ObservableList<ComboBox<String>> fields = FXCollections.observableArrayList();
 
     @Inject
@@ -144,12 +148,13 @@ public class EditFilePresenter implements Initializable {
         synchronizeTitleBox.selectedProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
             setUpTitleSynchronization();
         });
-        sortArtistBox.addEventFilter(KeyEvent.KEY_PRESSED, (KeyEvent event) -> {
-            if (event.getCode() == KeyCode.TAB) {
-                fileNameField.requestFocus();
-                event.consume();
-            }
-        });
+        //TODO Ansatz für Issue #7
+//        sortArtistBox.addEventFilter(KeyEvent.KEY_PRESSED, (KeyEvent event) -> {
+//            if (event.getCode() == KeyCode.TAB) {
+//                fileNameField.requestFocus();
+//                event.consume();
+//            }
+//        });
         fileNameField.focusedProperty().addListener(createSelectAllFocusListener(fileNameField));
         titleField.focusedProperty().addListener(createSelectAllFocusListener(titleField.getEditor()));
         albumField.focusedProperty().addListener(createSelectAllFocusListener(albumField.getEditor()));
@@ -157,13 +162,15 @@ public class EditFilePresenter implements Initializable {
         genreField.focusedProperty().addListener(createSelectAllFocusListener(genreField.getEditor()));
         yearField.focusedProperty().addListener(createSelectAllFocusListener(yearField.getEditor()));
         trackField.focusedProperty().addListener(createSelectAllFocusListener(trackField.getEditor()));
-        
+        sortTitleBox.selectedProperty().addListener(sortListener);
+        sortAlbumBox.selectedProperty().addListener(sortListener);
+        sortArtistBox.selectedProperty().addListener(sortListener);
     }
 
     private ChangeListener<Boolean> createSelectAllFocusListener(TextField target) {
         return (ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
             Platform.runLater(() -> {
-                if(newValue){
+                if (newValue) {
                     target.selectAll();
                 }
             });

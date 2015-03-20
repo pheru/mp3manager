@@ -20,10 +20,12 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
+import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.StringBinding;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
+import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
@@ -93,7 +95,6 @@ public class MainPresenter implements Initializable {
     @SelectedTableData(source = TableDataSource.MAIN)
     private InjectableList<Mp3FileData> selectedData;
 
-//    private final ObservableList<String> columnsOrder = FXCollections.observableArrayList();
     private boolean updatingColumnsOrderList = false;
     private boolean updatingColumnsOrderTable = false;
 
@@ -101,20 +102,13 @@ public class MainPresenter implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         initTable();
         bindUI();
-        table.addEventFilter(KeyEvent.KEY_PRESSED, (KeyEvent event) -> {
-            if (event.getCode() == KeyCode.TAB) {
-                filterTextField.requestFocus();
-                event.consume();
-            }
-        });
-        TablePlaceholders.getEmptyDirectoryButton().setText("Verzeichnis wechseln");
-        TablePlaceholders.getEmptyDirectoryButton().setOnAction((ActionEvent event) -> {
-            changeDirectory();
-        });
-        TablePlaceholders.getNoDirectoryButton().setText("Verzeichnis wählen");
-        TablePlaceholders.getNoDirectoryButton().setOnAction((ActionEvent event) -> {
-            changeDirectory();
-        });
+        //TODO Ansatz für Issue #7
+//        table.addEventFilter(KeyEvent.KEY_PRESSED, (KeyEvent event) -> {
+//            if (event.getCode() == KeyCode.TAB) {
+//                filterTextField.requestFocus();
+//                event.consume();
+//            }
+//        });
         //TODO Channel
 //        Mp3Manager.CHANNEL.setReceiver(new ReceiverAdapter(){
 //
@@ -147,20 +141,22 @@ public class MainPresenter implements Initializable {
                 updateColumnsOrderTable();
             }
         });
-//        columnsOrder.addListener((ListChangeListener.Change<? extends String> change) -> {
-//            if (!updatingColumnsOrderList) {
-//                updateColumnsOrderTable();
-//            }
-//        });
         table.getColumns().addListener((ListChangeListener.Change<? extends TableColumn<Mp3FileData, ?>> change) -> {
             if (!updatingColumnsOrderTable) {
                 updateColumnsOrderList();
             }
         });
         updateColumnsOrderTable(); // Initiale Anpassung der Reihenfolge an die Settings
-//        Bindings.bindContentBidirectional(columnsOrder, settings.getMainColumnsOrder());
         table.setOnSort((SortEvent<TableView<Mp3FileData>> event) -> {
             updateStyledIndex(playlist.getCurrentTitleIndex());
+        });
+        TablePlaceholders.getEmptyDirectoryButton().setText("Verzeichnis wechseln");
+        TablePlaceholders.getEmptyDirectoryButton().setOnAction((ActionEvent event) -> {
+            changeDirectory();
+        });
+        TablePlaceholders.getNoDirectoryButton().setText("Verzeichnis wählen");
+        TablePlaceholders.getNoDirectoryButton().setOnAction((ActionEvent event) -> {
+            changeDirectory();
         });
     }
 
@@ -192,6 +188,13 @@ public class MainPresenter implements Initializable {
                 return false;
             });
             updateStyledIndex(playlist.getCurrentTitleIndex());
+        });
+        filterTextField.focusedProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
+            Platform.runLater(() -> {
+                if(newValue){
+                    filterTextField.selectAll();
+                }
+            });
         });
         SortedList<Mp3FileData> sortedData = new SortedList<>(filteredData);
         sortedData.comparatorProperty().bind(table.comparatorProperty());

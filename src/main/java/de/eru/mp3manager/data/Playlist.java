@@ -31,7 +31,7 @@ import javax.inject.Inject;
 @ApplicationScoped
 public class Playlist extends FileBasedData {
 
-    public static final String FILE_EXTENSION = ".mmpl";
+    public static final String FILE_EXTENSION = "mmpl";
     public static final String FILE_SPLIT = System.lineSeparator();
 
     @Inject
