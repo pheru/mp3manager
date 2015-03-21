@@ -107,13 +107,18 @@ public class Mp3FileData extends FileBasedData {
         }
     }
 
-    private static Mp3FileData createEmptyData(){
+    private static Mp3FileData createEmptyData() {
         Mp3FileData empty = new Mp3FileData("", "", "", 0.0);
         empty.formattedDuration.unbind();
         empty.formattedDuration.set("");
         return empty;
     }
-    
+
+    @Override
+    public String toString() {
+        return "[" + title.get() + "] - [" + album.get() + "] - [" + artist.get() + "]";
+    }
+
     public String getTitle() {
         return title.get();
     }

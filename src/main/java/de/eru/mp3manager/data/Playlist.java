@@ -50,7 +50,7 @@ public class Playlist extends FileBasedData {
     private void init() {
         settings.musicPlayerRandomProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
             if (newValue) {
-                resetRandomIndicesToPlay();
+                initRandomIndicesToPlay();
             }
         });
         filePath.bindBidirectional(settings.playlistFilePathProperty());
@@ -81,6 +81,9 @@ public class Playlist extends FileBasedData {
             for (int i = indicesToRemove.size() - 1; i >= 0; i--) {
                 titles.remove(indicesToRemove.get(i).intValue());
                 int currentRandomIndex = randomIndicesToPlay.indexOf(currentTitleIndex.get());
+                if(randomIndicesToPlay.indexOf(indicesToRemove.get(i)) < currentRandomIndex){
+                    currentRandomIndex--;
+                }
                 randomIndicesToPlay.remove(indicesToRemove.get(i));
                 for (int j = 0; j < randomIndicesToPlay.size(); j++) {
                     if (randomIndicesToPlay.get(j) > indicesToRemove.get(i)) {
@@ -134,6 +137,13 @@ public class Playlist extends FileBasedData {
             ExceptionHandler.handle(ex);
         }
         return false;
+    }
+
+    private void initRandomIndicesToPlay() {
+        if (!randomIndicesToPlay.isEmpty()) {
+            Collections.shuffle(randomIndicesToPlay);
+            Collections.swap(randomIndicesToPlay, 0, randomIndicesToPlay.indexOf(currentTitleIndex.get()));
+        }
     }
 
     private void resetRandomIndicesToPlay() {
