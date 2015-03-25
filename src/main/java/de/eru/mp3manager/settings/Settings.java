@@ -47,7 +47,7 @@ public class Settings {
     @XmlPath(XMLPATH_DIRECTORIES + "music" + XMLPATH_ENDING)
     private final StringProperty musicDirectory = new SimpleStringProperty("");
     @XmlPath(XMLPATH_DIRECTORIES + "playlists" + XMLPATH_ENDING)
-    private final StringProperty playlistFilePath = new SimpleStringProperty("");
+    private final StringProperty playlistFilePath = new SimpleStringProperty(Mp3Manager.APPLICATION_PATH);
 
     @XmlPath(XMLPATH_APPLICATION_WINDOW + "maximized" + XMLPATH_ENDING)
     private final BooleanProperty applicationWindowMaximized = new SimpleBooleanProperty(false);

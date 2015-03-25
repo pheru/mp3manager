@@ -90,46 +90,18 @@ public class PlaylistPresenter implements Initializable {
             public void handle(DropCompletedEvent event) {
                 Integer newCurrentIndex = playlist.getCurrentTitleIndex();
                 for (Pair<Integer, Integer> p : event.getMovedIndices()) {
-                    System.out.println("C:" + newCurrentIndex + " | " + p.getKey() + " -> " + p.getValue());
-                    if (p.getKey().equals(newCurrentIndex)) {
-                        System.out.println("==");
+                    if (p.getKey().equals(playlist.getCurrentTitleIndex())) {
                         newCurrentIndex = p.getValue();
                         break;
-                    } else if (p.getKey() < newCurrentIndex && p.getValue() >= newCurrentIndex) {
-                        System.out.println("--");
+                    } else if (p.getKey() < playlist.getCurrentTitleIndex() && event.getTargetIndex() > playlist.getCurrentTitleIndex()) {
                         newCurrentIndex--;
-                    } else if (p.getKey() > newCurrentIndex && p.getValue() <= newCurrentIndex) {
-                        System.out.println("++");
+                    } else if (p.getKey() > playlist.getCurrentTitleIndex() && event.getTargetIndex() <= playlist.getCurrentTitleIndex()) {
                         newCurrentIndex++;
                     }
                 }
                 playlist.setCurrentTitleIndex(newCurrentIndex);
             }
         });
-//            @Override
-//            protected void onDropCompleted(DropCompletedEvent event) { 
-//            }
-//        };
-//        {
-//
-//            @Override
-//            public void onEveryRowDropCompleted(int oldIndex, int targetIndex) {
-//                System.out.println("Current: " + playlist.getCurrentTitleIndex() + " - Old: " + oldIndex + " - target: " + targetIndex);
-//                if (oldIndex == playlist.getCurrentTitleIndex()) {
-//                    System.out.println("1");
-//                    playlist.setCurrentTitleIndex(targetIndex); //Event wird automatisch gefeuert
-//                } else if (oldIndex > playlist.getCurrentTitleIndex() && targetIndex <= playlist.getCurrentTitleIndex()) {
-//                    System.out.println("2");
-//                    playlist.setCurrentTitleIndex(playlist.getCurrentTitleIndex() + 1); //Event wird automatisch gefeuert
-//                } else if (oldIndex < playlist.getCurrentTitleIndex() && targetIndex >= playlist.getCurrentTitleIndex()) {
-//                    System.out.println("3");
-//                    playlist.setCurrentTitleIndex(playlist.getCurrentTitleIndex() - 1); //Event wird automatisch gefeuert
-//                } else {
-//                    System.out.println("else");
-//                }
-//            }
-//
-//        };
         tableRowFactory = new CssRowFactory<>("played", dndRowFactory);
         table.setRowFactory(tableRowFactory);
         table.setItems(playlist.getTitles());
@@ -207,7 +179,6 @@ public class PlaylistPresenter implements Initializable {
                 FileService.savePlaylist(playlistFile, playlist.getTitles());
                 playlist.setFilePath(playlistFile.getParent());
                 playlist.setFileName(playlistFile.getName());
-                settings.setPlaylistFilePath(fileChooser.getInitialDirectory().getAbsolutePath());
             } catch (IOException e) {
                 e.printStackTrace();
             }
