@@ -31,6 +31,7 @@ import javax.inject.Inject;
 @ApplicationScoped
 public class Playlist extends FileBasedData {
 
+    public static final int UNDEFINED_CURRENT_INDEX = -42;
     public static final String FILE_EXTENSION = "mmpl";
     public static final String FILE_SPLIT = System.lineSeparator();
 
@@ -44,7 +45,7 @@ public class Playlist extends FileBasedData {
     private final BooleanProperty dirty = new SimpleBooleanProperty(false); // TODO wirklich nötig?
     private final ObservableList<Mp3FileData> titles = FXCollections.observableArrayList();
     private final ObservableList<Integer> randomIndicesToPlay = FXCollections.observableArrayList();
-    private final IntegerProperty currentTitleIndex = new SimpleIntegerProperty(-1);
+    private final IntegerProperty currentTitleIndex = new SimpleIntegerProperty(UNDEFINED_CURRENT_INDEX);
 
     @PostConstruct
     private void init() {
@@ -59,8 +60,7 @@ public class Playlist extends FileBasedData {
     public void add(List<Mp3FileData> dataToAdd) {
         titles.addAll(dataToAdd);
         if (dataToAdd.size() == titles.size()) {
-            currentTitleIndex.set(0);
-            currentTitleUpdateEvent.fire(new CurrentTitleEvent(titles.get(currentTitleIndex.get()), currentTitleIndex.get()));
+            setCurrentTitleIndex(0);
         }
         for (int i = 0; i < dataToAdd.size(); i++) {
             randomIndicesToPlay.add(Double.valueOf(Math.random() * (randomIndicesToPlay.size()
@@ -76,12 +76,12 @@ public class Playlist extends FileBasedData {
         if (titles.size() == selectedIndices.size()) {
             titles.clear();
             randomIndicesToPlay.clear();
-            currentTitleUpdateEvent.fire(new CurrentTitleEvent(Mp3FileData.DEFAULT_MUSICPLAYER_DATA, -1));
+            setCurrentTitleIndex(UNDEFINED_CURRENT_INDEX);
         } else {
             for (int i = indicesToRemove.size() - 1; i >= 0; i--) {
                 titles.remove(indicesToRemove.get(i).intValue());
                 int currentRandomIndex = randomIndicesToPlay.indexOf(currentTitleIndex.get());
-                if(randomIndicesToPlay.indexOf(indicesToRemove.get(i)) < currentRandomIndex){
+                if (randomIndicesToPlay.indexOf(indicesToRemove.get(i)) < currentRandomIndex) {
                     currentRandomIndex--;
                 }
                 randomIndicesToPlay.remove(indicesToRemove.get(i));
@@ -93,19 +93,18 @@ public class Playlist extends FileBasedData {
                 if (settings.isMusicPlayerRandom()) {
                     if (currentRandomIndex >= randomIndicesToPlay.size()) {
                         resetRandomIndicesToPlay();
-                        currentTitleIndex.set(randomIndicesToPlay.get(0));
+                        setCurrentTitleIndex(randomIndicesToPlay.get(0));
                     } else {
-                        currentTitleIndex.set(randomIndicesToPlay.get(currentRandomIndex));
+                        setCurrentTitleIndex(randomIndicesToPlay.get(currentRandomIndex));
                     }
                 } else {
                     if (indicesToRemove.get(i) < currentTitleIndex.get()) {
-                        currentTitleIndex.set(currentTitleIndex.get() - 1);
+                        setCurrentTitleIndex(currentTitleIndex.get() - 1);
                     } else if (indicesToRemove.get(i) == currentTitleIndex.get() && currentTitleIndex.get() >= titles.size()) {
-                        currentTitleIndex.set(titles.size() - 1);
+                        setCurrentTitleIndex(titles.size() - 1);
                     }
                 }
             }
-            currentTitleUpdateEvent.fire(new CurrentTitleEvent(titles.get(currentTitleIndex.get()), currentTitleIndex.get()));
         }
         dirty.set(checkIfDirty());
 //        System.out.println("-----------------");
@@ -162,7 +161,7 @@ public class Playlist extends FileBasedData {
      */
     public boolean next() {
         boolean reachedEndOfList = false;
-        if (currentTitleIndex.get() == -1) {
+        if (currentTitleIndex.get() == UNDEFINED_CURRENT_INDEX) {
             return false;
         } else if (settings.isMusicPlayerRandom()) {
             int nextRandomIndex = randomIndicesToPlay.indexOf(currentTitleIndex.get()) + 1;
@@ -171,20 +170,19 @@ public class Playlist extends FileBasedData {
                 nextRandomIndex = 0;
                 reachedEndOfList = true;
             }
-            currentTitleIndex.set(randomIndicesToPlay.get(nextRandomIndex));
+            setCurrentTitleIndex(randomIndicesToPlay.get(nextRandomIndex));
         } else if (currentTitleIndex.get() == titles.size() - 1) {
-            currentTitleIndex.set(0);
+            setCurrentTitleIndex(0);
             reachedEndOfList = true;
         } else {
-            currentTitleIndex.set(currentTitleIndex.get() + 1);
+            setCurrentTitleIndex(currentTitleIndex.get() + 1);
             reachedEndOfList = false;
         }
-        currentTitleUpdateEvent.fire(new CurrentTitleEvent(titles.get(currentTitleIndex.get()), currentTitleIndex.get()));
         return reachedEndOfList;
     }
 
     public void previous() {
-        if (currentTitleIndex.get() == -1) {
+        if (currentTitleIndex.get() == UNDEFINED_CURRENT_INDEX) {
             return;
         }
         if (settings.isMusicPlayerRandom()) {
@@ -192,15 +190,14 @@ public class Playlist extends FileBasedData {
             if (previousRandomIndex < 0) {
                 previousRandomIndex = randomIndicesToPlay.size() - 1;
             }
-            currentTitleIndex.set(randomIndicesToPlay.get(previousRandomIndex));
+            setCurrentTitleIndex(randomIndicesToPlay.get(previousRandomIndex));
         } else {
             if (currentTitleIndex.get() <= 0) {
-                currentTitleIndex.set(titles.size() - 1);
+                setCurrentTitleIndex(titles.size() - 1);
             } else {
-                currentTitleIndex.set(currentTitleIndex.get() - 1);
+                setCurrentTitleIndex(currentTitleIndex.get() - 1);
             }
         }
-        currentTitleUpdateEvent.fire(new CurrentTitleEvent(titles.get(currentTitleIndex.get()), currentTitleIndex.get()));
     }
 
     public ObservableList<Mp3FileData> getTitles() {
@@ -211,7 +208,7 @@ public class Playlist extends FileBasedData {
         if (titles.isEmpty()) {
             return null;
         }
-        if (currentTitleIndex.get() == -1) {
+        if (currentTitleIndex.get() == UNDEFINED_CURRENT_INDEX) {
             currentTitleIndex.set(0);
         }
         return titles.get(currentTitleIndex.get());
@@ -223,7 +220,11 @@ public class Playlist extends FileBasedData {
 
     public void setCurrentTitleIndex(final Integer currentTitleIndex) {
         this.currentTitleIndex.set(currentTitleIndex);
-        currentTitleUpdateEvent.fire(new CurrentTitleEvent(titles.get(this.currentTitleIndex.get()), this.currentTitleIndex.get()));
+        if (currentTitleIndex != UNDEFINED_CURRENT_INDEX) {
+            currentTitleUpdateEvent.fire(new CurrentTitleEvent(titles.get(this.currentTitleIndex.get()), this.currentTitleIndex.get()));
+        } else {
+            currentTitleUpdateEvent.fire(new CurrentTitleEvent(Mp3FileData.MUSICPLAYER_PLACEHOLDER_DATA, this.currentTitleIndex.get()));
+        }
     }
 
     public IntegerProperty currentTitleIndexProperty() {

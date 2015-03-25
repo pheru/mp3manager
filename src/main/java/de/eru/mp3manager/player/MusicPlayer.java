@@ -1,8 +1,6 @@
 package de.eru.mp3manager.player;
 
 import de.eru.mp3manager.settings.Settings;
-import de.eru.mp3manager.cdi.CurrentTitleEvent;
-import de.eru.mp3manager.cdi.Updated;
 import de.eru.mp3manager.cdi.XMLSettings;
 import de.eru.mp3manager.data.Mp3FileData;
 import de.eru.mp3manager.data.Playlist;
@@ -20,7 +18,6 @@ import javafx.scene.media.MediaPlayer;
 import javafx.util.Duration;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
 /**
@@ -89,7 +86,6 @@ public class MusicPlayer {
 
                 @Override
                 protected double computeValue() {
-                    System.out.println(player.getCurrentTime().toSeconds() + " - " + player.getTotalDuration().toSeconds());
                     return player.getCurrentTime().toSeconds();
                 }
             });
@@ -121,12 +117,6 @@ public class MusicPlayer {
 
     public void seek(double seconds) {
         player.seek(Duration.seconds(seconds));
-    }
-
-    private void currentTitleUpdated(@Observes @Updated CurrentTitleEvent event) { //TODO wird bei DnD aufgerufen
-        if (player != null && player.getStatus() == MediaPlayer.Status.PLAYING) {
-            play(event.getNewCurrentTitle());
-        }
     }
 
     public BooleanProperty repeatProperty() {

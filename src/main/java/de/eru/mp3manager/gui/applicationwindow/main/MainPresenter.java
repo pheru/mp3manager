@@ -25,12 +25,12 @@ import javafx.beans.binding.Bindings;
 import javafx.beans.binding.StringBinding;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
-import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import javafx.collections.transformation.SortedList;
+import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -40,11 +40,11 @@ import javafx.scene.control.ProgressIndicator;
 import javafx.scene.control.SelectionMode;
 import javafx.scene.control.SortEvent;
 import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyEvent;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
 import javafx.stage.DirectoryChooser;
 import javax.enterprise.context.ApplicationScoped;
@@ -126,7 +126,16 @@ public class MainPresenter implements Initializable {
      * Initialisiert die Tabelle.
      */
     private void initTable() {
-        tableRowFactory = new CssRowFactory<>("played");
+        tableRowFactory = new CssRowFactory<>("played", (TableView<Mp3FileData> param) -> {
+            TableRow<Mp3FileData> row = new TableRow<>();
+            row.setOnMouseClicked((MouseEvent event) -> {
+                if(event.getClickCount() == 2 && !row.isEmpty()){
+                    play();
+                }
+            });
+            return row;
+        });
+                
         table.setRowFactory(tableRowFactory);
 //        playlist.currentTitleIndexProperty().addListener((ObservableValue<? extends Number> observable, Number oldValue, Number newValue) -> {
 //            updateStyledIndex(newValue.intValue());
@@ -308,7 +317,13 @@ public class MainPresenter implements Initializable {
     public void readDirectory() {
         String directory = settings.getMusicDirectory();
         if (directory != null && !directory.isEmpty()) {
-            taskPool.addTask(TaskFactory.createReadDirectoryTask(directory, masterData, table.placeholderProperty(), playlist.getTitles()));
+            Task<Void> readDirectoryTask = TaskFactory.createReadDirectoryTask(directory, masterData, table.placeholderProperty(), playlist.getTitles());
+            readDirectoryTask.runningProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
+                if(oldValue && !newValue){
+                    updateStyledIndex(playlist.getCurrentTitleIndex());
+                }
+            });
+            taskPool.addTask(readDirectoryTask);
         }
     }
 
@@ -324,6 +339,7 @@ public class MainPresenter implements Initializable {
      */
     @FXML
     private void play() {
+        System.out.println("TODO - play()");
     }
 
     /**

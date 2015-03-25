@@ -10,6 +10,7 @@ import de.eru.mp3manager.data.Mp3FileData;
 import de.eru.mp3manager.data.Playlist;
 import de.eru.mp3manager.gui.utils.CssRowFactory;
 import de.eru.mp3manager.gui.utils.DragAndDropRowFactory;
+import de.eru.mp3manager.gui.utils.DropCompletedEvent;
 import de.eru.mp3manager.service.FileService;
 import de.eru.mp3manager.settings.Settings;
 import de.eru.mp3manager.utils.TaskPool;
@@ -19,10 +20,10 @@ import de.eru.pherufx.mvp.InjectableList;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
-import java.util.List;
 import java.util.ResourceBundle;
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.StringBinding;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
@@ -82,29 +83,33 @@ public class PlaylistPresenter implements Initializable {
      */
     private void initTable() {
         table.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
-        DragAndDropRowFactory dndRowFactory = new DragAndDropRowFactory(table, Mp3FileData.EMPTY_PLAYLIST_DATA) {
+        DragAndDropRowFactory dndRowFactory = new DragAndDropRowFactory(table, Mp3FileData.EMPTY_PLAYLIST_DATA);// {
+        dndRowFactory.setOnDropCompleted(new EventHandler<DropCompletedEvent>() {
 
             @Override
-            protected void onDropCompleted(List movedIndices) { //TODO nicht gut
+            public void handle(DropCompletedEvent event) {
                 Integer newCurrentIndex = playlist.getCurrentTitleIndex();
-                for (Object movedIndex : movedIndices) {
-                    Pair<Integer, Integer> p = (Pair<Integer, Integer>) movedIndex;
-                    System.out.println("C:" + playlist.getCurrentTitleIndex() + " | " + p.getKey() + " -> " + p.getValue());
-                    if (p.getKey().equals(playlist.getCurrentTitleIndex())) {
+                for (Pair<Integer, Integer> p : event.getMovedIndices()) {
+                    System.out.println("C:" + newCurrentIndex + " | " + p.getKey() + " -> " + p.getValue());
+                    if (p.getKey().equals(newCurrentIndex)) {
                         System.out.println("==");
                         newCurrentIndex = p.getValue();
                         break;
-                    } else if (p.getKey() < playlist.getCurrentTitleIndex() && p.getValue() >= playlist.getCurrentTitleIndex()) {
+                    } else if (p.getKey() < newCurrentIndex && p.getValue() >= newCurrentIndex) {
                         System.out.println("--");
                         newCurrentIndex--;
-                    } else if (p.getKey() > playlist.getCurrentTitleIndex() && p.getValue() <= playlist.getCurrentTitleIndex()) {
+                    } else if (p.getKey() > newCurrentIndex && p.getValue() <= newCurrentIndex) {
                         System.out.println("++");
                         newCurrentIndex++;
                     }
                 }
                 playlist.setCurrentTitleIndex(newCurrentIndex);
             }
-        };
+        });
+//            @Override
+//            protected void onDropCompleted(DropCompletedEvent event) { 
+//            }
+//        };
 //        {
 //
 //            @Override
