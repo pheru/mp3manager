@@ -15,9 +15,11 @@ public class ColumnSettings {
 
     @XmlElement //nötig, da kein public setter vorhanden ist
     private MainColumn column;
-    //XmlElement nicht nötig, da public getter/setter vorhanden
+    //XmlElement 
+    //Darf nicht direkt annotiert werden, da die public getter/setter verwendet werden sollen (ansonsten wäre ein Adapter nötig)
     private final DoubleProperty width = new SimpleDoubleProperty(0.0);
-    //XmlElement nicht nötig, da public getter/setter vorhanden
+    //XmlElement 
+    //Darf nicht direkt annotiert werden, da die public getter/setter verwendet werden sollen (ansonsten wäre ein Adapter nötig)
     private final BooleanProperty visible = new SimpleBooleanProperty(false);
 
     public ColumnSettings(MainColumn column) {

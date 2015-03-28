@@ -1,7 +1,7 @@
 package de.eru.mp3manager.gui.applicationwindow.editfile;
 
 import de.eru.mp3manager.data.Mp3FileData;
-import de.eru.mp3manager.cdi.SelectedTableData;
+import de.eru.mp3manager.cdi.TableData;
 import de.eru.mp3manager.cdi.TableDataSource;
 import de.eru.mp3manager.utils.Comparators;
 import de.eru.mp3manager.utils.TaskPool;
@@ -27,8 +27,6 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.stage.FileChooser;
@@ -82,7 +80,7 @@ public class EditFilePresenter implements Initializable {
     private final ObservableList<ComboBox<String>> fields = FXCollections.observableArrayList();
 
     @Inject
-    @SelectedTableData(source = TableDataSource.MAIN)
+    @TableData(source = TableDataSource.MAIN_SELECTED)
     private InjectableList<Mp3FileData> selectedData;
     @Inject
     private TaskPool taskPool;

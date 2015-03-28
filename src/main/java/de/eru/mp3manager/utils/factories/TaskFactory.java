@@ -148,10 +148,11 @@ public final class TaskFactory {
 
                 if (!loadedData.isEmpty()) {
                     Platform.runLater(() -> {
-                        playlist.getTitles().clear();
                         playlist.setFilePath(playlistFile.getParent());
                         playlist.setFileName(playlistFile.getName());
+                        playlist.getTitles().clear();
                         playlist.getTitles().addAll(loadedData);
+                        playlist.setCurrentTitleIndex(0);
                     });
                 } else {
                     updateProgress(1, 1);

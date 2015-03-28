@@ -1,7 +1,6 @@
 package de.eru.mp3manager.gui.applicationwindow.playlist;
 
 import de.eru.mp3manager.cdi.CurrentTitleEvent;
-import de.eru.mp3manager.cdi.SelectedTableData;
 import de.eru.mp3manager.cdi.TableData;
 import de.eru.mp3manager.cdi.TableDataSource;
 import de.eru.mp3manager.cdi.Updated;
@@ -21,17 +20,19 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
+import javafx.application.Application.Parameters;
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.StringBinding;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.SelectionMode;
+import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.input.MouseEvent;
 import javafx.stage.FileChooser;
 import javafx.util.Pair;
 import javax.enterprise.context.ApplicationScoped;
@@ -66,16 +67,23 @@ public class PlaylistPresenter implements Initializable {
     @Inject
     private TaskPool taskPool;
     @Inject
-    @SelectedTableData(source = TableDataSource.PLAYLIST)
+    @TableData(source = TableDataSource.PLAYLIST_SELECTED)
     private InjectableList<Mp3FileData> selectedTitles;
     @Inject
-    @TableData(source = TableDataSource.MAIN)
+    @TableData(source = TableDataSource.MAIN_ALL)
     private InjectableList<Mp3FileData> mainTitles;
+    
+    @Inject
+    private Parameters params;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         initTable();
         bindUI();
+        if(!params.getRaw().isEmpty()){
+            taskPool.addTask(TaskFactory.createLoadPlaylistTask(playlist, new File(params.getRaw().get(0)), mainTitles));
+            //TODO Wiedergabe starten
+        }
     }
 
     /**
@@ -83,24 +91,28 @@ public class PlaylistPresenter implements Initializable {
      */
     private void initTable() {
         table.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
-        DragAndDropRowFactory dndRowFactory = new DragAndDropRowFactory(table, Mp3FileData.EMPTY_PLAYLIST_DATA);// {
-        dndRowFactory.setOnDropCompleted(new EventHandler<DropCompletedEvent>() {
-
-            @Override
-            public void handle(DropCompletedEvent event) {
-                Integer newCurrentIndex = playlist.getCurrentTitleIndex();
-                for (Pair<Integer, Integer> p : event.getMovedIndices()) {
-                    if (p.getKey().equals(playlist.getCurrentTitleIndex())) {
-                        newCurrentIndex = p.getValue();
-                        break;
-                    } else if (p.getKey() < playlist.getCurrentTitleIndex() && event.getTargetIndex() > playlist.getCurrentTitleIndex()) {
-                        newCurrentIndex--;
-                    } else if (p.getKey() > playlist.getCurrentTitleIndex() && event.getTargetIndex() <= playlist.getCurrentTitleIndex()) {
-                        newCurrentIndex++;
-                    }
+        DragAndDropRowFactory<Mp3FileData> dndRowFactory = new DragAndDropRowFactory<>(table, Mp3FileData.EMPTY_PLAYLIST_DATA, (TableView<Mp3FileData> param) -> {
+            TableRow<Mp3FileData> row = new TableRow<>();
+            row.setOnMouseClicked((MouseEvent event) -> {
+                if(event.getClickCount() == 2 && !row.isEmpty()){
+                    play();
                 }
-                playlist.setCurrentTitleIndex(newCurrentIndex);
+            });
+            return row;
+        });
+        dndRowFactory.setOnDropCompleted((DropCompletedEvent event) -> {
+            Integer newCurrentIndex = playlist.getCurrentTitleIndex();
+            for (Pair<Integer, Integer> p : event.getMovedIndices()) {
+                if (p.getKey().equals(playlist.getCurrentTitleIndex())) {
+                    newCurrentIndex = p.getValue();
+                    break;
+                } else if (p.getKey() < playlist.getCurrentTitleIndex() && event.getTargetIndex() > playlist.getCurrentTitleIndex()) {
+                    newCurrentIndex--;
+                } else if (p.getKey() > playlist.getCurrentTitleIndex() && event.getTargetIndex() <= playlist.getCurrentTitleIndex()) {
+                    newCurrentIndex++;
+                }
             }
+            playlist.setCurrentTitleIndex(newCurrentIndex);
         });
         tableRowFactory = new CssRowFactory<>("played", dndRowFactory);
         table.setRowFactory(tableRowFactory);
@@ -114,7 +126,7 @@ public class PlaylistPresenter implements Initializable {
     private void bindUI() {
         playlistNameLabel.textProperty().bind(new StringBinding() {
             {
-                bind(playlist.absolutePathProperty(), playlist.dirtyProperty());
+                bind(playlist.fileNameProperty(), playlist.dirtyProperty());
             }
 
             @Override
@@ -130,7 +142,19 @@ public class PlaylistPresenter implements Initializable {
                 }
             }
         });
-        titlesSize.textProperty().bind(Bindings.size(playlist.getTitles()).asString());
+        titlesSize.textProperty().bind(new StringBinding() {
+            {
+                bind(playlist.getTitles());
+            }
+
+            @Override
+            protected String computeValue() {
+                if (playlist.getTitles().contains(Mp3FileData.EMPTY_PLAYLIST_DATA)) {
+                    return String.valueOf(playlist.getTitles().size() - 1);
+                }
+                return String.valueOf(playlist.getTitles().size());
+            }
+        });
         totalDurationLabel.textProperty().bind(new StringBinding() {
             {
                 bind(playlist.getTitles());
@@ -204,11 +228,16 @@ public class PlaylistPresenter implements Initializable {
 
     @FXML
     private void play() {
+        System.out.println("TODO: Play!");
         //TODO implementieren
     }
 
     @FXML
     private void remove() {
+        if(table.getSelectionModel().getSelectedIndices().contains(playlist.getCurrentTitleIndex())){
+            //TODO Wiedergabe stoppen
+            System.out.println("Stop!");
+        }
         playlist.remove(table.getSelectionModel().getSelectedIndices());
     }
 

@@ -42,7 +42,7 @@ public class Playlist extends FileBasedData {
     @Updated
     private Event<CurrentTitleEvent> currentTitleUpdateEvent;
 
-    private final BooleanProperty dirty = new SimpleBooleanProperty(false); // TODO wirklich nötig?
+    private final BooleanProperty dirty = new SimpleBooleanProperty(false);
     private final ObservableList<Mp3FileData> titles = FXCollections.observableArrayList();
     private final ObservableList<Integer> randomIndicesToPlay = FXCollections.observableArrayList();
     private final IntegerProperty currentTitleIndex = new SimpleIntegerProperty(UNDEFINED_CURRENT_INDEX);
@@ -209,7 +209,7 @@ public class Playlist extends FileBasedData {
             return null;
         }
         if (currentTitleIndex.get() == UNDEFINED_CURRENT_INDEX) {
-            currentTitleIndex.set(0);
+            setCurrentTitleIndex(0);
         }
         return titles.get(currentTitleIndex.get());
     }

@@ -25,19 +25,19 @@ public class InjectableListProducer {
     InjectableList<Mp3FileData> main;
 
     @Produces
-    @SelectedTableData(source = TableDataSource.MAIN)
+    @TableData(source = TableDataSource.MAIN_SELECTED)
     public InjectableList<Mp3FileData> selectedMain() {
         return selectedMain;
     }
 
     @Produces
-    @SelectedTableData(source = TableDataSource.PLAYLIST)
+    @TableData(source = TableDataSource.PLAYLIST_SELECTED)
     public InjectableList<Mp3FileData> selectedPlaylist() {
         return selectedPlaylist;
     }
 
     @Produces
-    @TableData(source = TableDataSource.MAIN)
+    @TableData(source = TableDataSource.MAIN_ALL)
     public InjectableList<Mp3FileData> main() {
         return main;
     }

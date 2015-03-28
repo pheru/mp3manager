@@ -4,7 +4,6 @@ import de.eru.mp3manager.settings.Settings;
 import de.eru.mp3manager.cdi.CurrentTitleEvent;
 import de.eru.mp3manager.data.Mp3FileData;
 import de.eru.mp3manager.data.Playlist;
-import de.eru.mp3manager.cdi.SelectedTableData;
 import de.eru.mp3manager.cdi.TableData;
 import de.eru.mp3manager.cdi.TableDataSource;
 import de.eru.mp3manager.cdi.Updated;
@@ -27,7 +26,6 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.ListChangeListener;
-import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import javafx.collections.transformation.SortedList;
 import javafx.concurrent.Task;
@@ -78,7 +76,7 @@ public class MainPresenter implements Initializable {
     private ProgressIndicator taskProgress;
     @FXML
     private TableView<Mp3FileData> table;
-    private CssRowFactory<Mp3FileData> tableRowFactory;
+    private CssRowFactory<Mp3FileData> tableRowFactory; //TODO Liste der Indizes würde reichen
 
     @Inject
     private TaskPool taskPool;
@@ -89,10 +87,10 @@ public class MainPresenter implements Initializable {
     private Settings settings;
 
     @Inject
-    @TableData(source = TableDataSource.MAIN)
-    private ObservableList<Mp3FileData> masterData;
+    @TableData(source = TableDataSource.MAIN_ALL)
+    private InjectableList<Mp3FileData> masterData;
     @Inject
-    @SelectedTableData(source = TableDataSource.MAIN)
+    @TableData(source = TableDataSource.MAIN_SELECTED)
     private InjectableList<Mp3FileData> selectedData;
 
     private boolean updatingColumnsOrderList = false;
@@ -183,6 +181,7 @@ public class MainPresenter implements Initializable {
                     return true;
                 }
                 String filter = newValue.toLowerCase();
+                //TODO null überhaupt möglich?
                 if (mp3FileData.getAlbum() != null && mp3FileData.getAlbum().toLowerCase().contains(filter)) {
                     return true;
                 } else if (mp3FileData.getArtist() != null && mp3FileData.getArtist().toLowerCase().contains(filter)) {
@@ -213,9 +212,6 @@ public class MainPresenter implements Initializable {
     private void initColumns() {
         for (MainColumn column : MainColumn.values()) {
             TableColumn<Mp3FileData, String> tableColumn = new TableColumn<>(column.getColumnName());
-//            tableColumn.prefWidthProperty().bind(settings.mainColumnWidthProperties().get(column.getColumnName()));
-//            settings.mainColumnWidthProperties().get(column.getColumnName()).bind(tableColumn.widthProperty());
-//            tableColumn.visibleProperty().bindBidirectional(settings.mainColumnVisibleProperties().get(column.getColumnName()));
             tableColumn.prefWidthProperty().bind(settings.getMainColumnSettings(column).widthProperty());
             settings.getMainColumnSettings(column).widthProperty().bind(tableColumn.widthProperty());
             tableColumn.visibleProperty().bindBidirectional(settings.getMainColumnSettings(column).visibleProperty());
@@ -275,11 +271,11 @@ public class MainPresenter implements Initializable {
                 return "-fx-progress-color: " + taskPool.statusProperty().get().getColor() + ";";
             }
         });
-        StringProperty sp1 = new SimpleStringProperty();
-        sp1.bind(Bindings.size(table.getSelectionModel().getSelectedItems()).asString());
-        StringProperty sp2 = new SimpleStringProperty();
-        sp2.bind(Bindings.size(table.getItems()).asString());
-        statusR1.textProperty().bind(sp1.concat(" von ").concat(sp2).concat(" Dateien ausgewählt"));
+        StringProperty sizeSelected = new SimpleStringProperty();
+        sizeSelected.bind(Bindings.size(table.getSelectionModel().getSelectedItems()).asString());
+        StringProperty sizeAll = new SimpleStringProperty();
+        sizeAll.bind(Bindings.size(table.getItems()).asString());
+        statusR1.textProperty().bind(sizeSelected.concat(" von ").concat(sizeAll).concat(" Dateien ausgewählt"));
         statusR2.textProperty().bind(Bindings.size(masterData).asString().concat(" Dateien insgesamt"));
         statusL1.textProperty().bind(taskPool.titleProperty());
         statusL2.textProperty().bind(taskPool.messageProperty());

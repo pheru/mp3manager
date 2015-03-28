@@ -25,7 +25,7 @@ public class Comparators {
     /**
      * @return Einen Comparator für Zahlen.
      */
-    public static Comparator<String> createNumberComparator() {
+    private static Comparator<String> createNumberComparator() {
         return (String o1, String o2) -> {
             if (!isComparable(o1)) {
                 return -1;
@@ -40,7 +40,7 @@ public class Comparators {
     /**
      * @return Einen Comparator für Daten.
      */
-    public static Comparator<String> createDateComparator() {
+    private static Comparator<String> createDateComparator() {
         return (String o1, String o2) -> {
             if (!isComparable(o1)) {
                 return -1;
@@ -62,7 +62,7 @@ public class Comparators {
     /**
      * @return Einen Comparator für Dateigrößen.
      */
-    public static Comparator<String> createSizeComparator() {
+    private static Comparator<String> createSizeComparator() {
         return (String o1, String o2) -> {
             if (!isComparable(o1)) {
                 return -1;
@@ -79,7 +79,7 @@ public class Comparators {
     /**
      * @return Einen Comparator für Bitraten.
      */
-    public static Comparator<String> createBitrateComparator() {
+    private static Comparator<String> createBitrateComparator() {
         return (String o1, String o2)
                 -> {
                     if (!isComparable(o1)) {
@@ -97,7 +97,7 @@ public class Comparators {
     /**
      * @return Einen Comparator für Zeitangaben.
      */
-    public static Comparator<String> createTimeComparator() {
+    private static Comparator<String> createTimeComparator() {
         return (String o1, String o2) -> {
             if (!isComparable(o1)) {
                 return -1;
