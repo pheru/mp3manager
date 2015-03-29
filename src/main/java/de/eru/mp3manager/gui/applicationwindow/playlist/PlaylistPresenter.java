@@ -72,7 +72,7 @@ public class PlaylistPresenter implements Initializable {
     @Inject
     @TableData(source = TableDataSource.MAIN_ALL)
     private InjectableList<Mp3FileData> mainTitles;
-    
+
     @Inject
     private Parameters params;
 
@@ -80,7 +80,7 @@ public class PlaylistPresenter implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         initTable();
         bindUI();
-        if(!params.getRaw().isEmpty()){
+        if (!params.getRaw().isEmpty()) {
             taskPool.addTask(TaskFactory.createLoadPlaylistTask(playlist, new File(params.getRaw().get(0)), mainTitles));
             //TODO Wiedergabe starten
         }
@@ -94,7 +94,7 @@ public class PlaylistPresenter implements Initializable {
         DragAndDropRowFactory<Mp3FileData> dndRowFactory = new DragAndDropRowFactory<>(table, Mp3FileData.EMPTY_PLAYLIST_DATA, (TableView<Mp3FileData> param) -> {
             TableRow<Mp3FileData> row = new TableRow<>();
             row.setOnMouseClicked((MouseEvent event) -> {
-                if(event.getClickCount() == 2 && !row.isEmpty()){
+                if (event.getClickCount() == 2 && !row.isEmpty()) {
                     play();
                 }
             });
@@ -191,8 +191,9 @@ public class PlaylistPresenter implements Initializable {
 
         String fileName = "Wiedergabeliste";
         int i = 2;
-        while (new File(settings.getPlaylistFilePath() + fileName + "." + Playlist.FILE_EXTENSION).exists()) {
+        while (new File(settings.getPlaylistFilePath() + "\\" + fileName + "." + Playlist.FILE_EXTENSION).exists()) {
             fileName = "Wiedergabeliste (" + i + ")";
+            i++;
         }
         fileChooser.setInitialFileName(fileName + "." + Playlist.FILE_EXTENSION);
 
@@ -234,7 +235,7 @@ public class PlaylistPresenter implements Initializable {
 
     @FXML
     private void remove() {
-        if(table.getSelectionModel().getSelectedIndices().contains(playlist.getCurrentTitleIndex())){
+        if (table.getSelectionModel().getSelectedIndices().contains(playlist.getCurrentTitleIndex())) {
             //TODO Wiedergabe stoppen
             System.out.println("Stop!");
         }

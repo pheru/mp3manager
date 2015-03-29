@@ -7,8 +7,10 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Stream;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import org.jaudiotagger.audio.AudioFileIO;
@@ -76,9 +78,10 @@ public final class FileService {
 
     public static List<String> loadPlaylist(File playlistFile) throws IOException {
         List<String> playlistTitles = new ArrayList<>();
-        Files.lines(playlistFile.toPath())
-                .filter(s -> !s.isEmpty())
+        try (Stream<String> lines = Files.lines(playlistFile.toPath())){
+                lines.filter(s -> !s.isEmpty())
                 .forEach(playlistTitles::add);
+        }
         return playlistTitles;
     }
 
