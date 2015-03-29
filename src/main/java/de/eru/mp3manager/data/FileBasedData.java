@@ -1,5 +1,6 @@
 package de.eru.mp3manager.data;
 
+import javafx.beans.binding.StringBinding;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
@@ -13,7 +14,18 @@ public abstract class FileBasedData {
     protected final StringProperty absolutePath = new SimpleStringProperty("");
     
     public FileBasedData(){
-        absolutePath.bind(filePath.concat("\\").concat(fileName));
+        absolutePath.bind(new StringBinding() {
+            {
+                bind(filePath, fileName);
+            }
+            @Override
+            protected String computeValue() {
+                if(!filePath.get().isEmpty() && !fileName.get().isEmpty()){
+                    return filePath.get() + "\\" + fileName.get();
+                }
+                return "";
+            }
+        });
     }
     
     public String getFileName() {
