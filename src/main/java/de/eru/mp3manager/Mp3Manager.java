@@ -5,6 +5,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import static javafx.application.Application.launch;
 import org.jgroups.JChannel;
+import org.jgroups.Message;
 
 /**
  * Application-Klasse als Startpunkt für die JavaFX-Anwendung.
@@ -23,18 +24,20 @@ public class Mp3Manager extends PheruFXApplication {
     public static JChannel channel;
 
     public static void main(String[] args) {
-        //TODO Channel
-//        try {
-//            channel = new JChannel();
-//            channel.connect("mp3manager");
-//            if(channel.getView().getMembers().size() > 1){
-//                channel.send(new Message(null, args));
-//                channel.close();
-//                System.exit(0);
-//            }
-//        } catch (Exception ex) {
-//            ex.printStackTrace();
-//        }
+        //TODO eventuell in ApplicationStarter um Dialog zu zeigen oder Anwendung in den Vordergrund zu holen
+        try {
+            channel = new JChannel();
+            channel.connect("de.eru.mp3manager");
+            if (channel.getView().getMembers().size() > 1) {
+                if (args.length > 0) {
+                    channel.send(new Message(null, args[0]));
+                }
+                channel.close();
+                System.exit(0);
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
         JAUDIOTAGGER_LOGGER.setLevel(Level.WARNING);
         launch(args);
     }

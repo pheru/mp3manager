@@ -107,17 +107,6 @@ public class MainPresenter implements Initializable {
 //                event.consume();
 //            }
 //        });
-        //TODO Channel
-//        Mp3Manager.CHANNEL.setReceiver(new ReceiverAdapter(){
-//
-//            @Override
-//            public void receive(Message msg) {
-//                String[] args = (String[]) msg.getObject();
-//                for (String arg : args) {
-//                }
-//            }
-//            
-//        });
     }
 
     /**

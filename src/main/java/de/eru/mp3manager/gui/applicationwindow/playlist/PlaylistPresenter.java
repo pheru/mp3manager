@@ -1,5 +1,6 @@
 package de.eru.mp3manager.gui.applicationwindow.playlist;
 
+import de.eru.mp3manager.Mp3Manager;
 import de.eru.mp3manager.cdi.CurrentTitleEvent;
 import de.eru.mp3manager.cdi.TableData;
 import de.eru.mp3manager.cdi.TableDataSource;
@@ -38,6 +39,8 @@ import javafx.util.Pair;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
+import org.jgroups.Message;
+import org.jgroups.ReceiverAdapter;
 
 @ApplicationScoped
 public class PlaylistPresenter implements Initializable {
@@ -81,9 +84,18 @@ public class PlaylistPresenter implements Initializable {
         initTable();
         bindUI();
         if (!params.getRaw().isEmpty()) {
+            //TODO Prüfen, ob Argument wirklich ein Pfad ist
             taskPool.addTask(TaskFactory.createLoadPlaylistTask(playlist, new File(params.getRaw().get(0)), mainTitles));
             //TODO Wiedergabe starten
         }
+        Mp3Manager.channel.setReceiver(new ReceiverAdapter() {
+            @Override
+            public void receive(Message msg) {
+                //TODO Prüfen, ob Argument wirklich ein Pfad ist
+                taskPool.addTask(TaskFactory.createLoadPlaylistTask(playlist, new File((String) msg.getObject()), mainTitles));
+            }
+
+        });
     }
 
     /**
