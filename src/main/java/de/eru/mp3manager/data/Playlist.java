@@ -54,6 +54,7 @@ public class Playlist extends FileBasedData {
                 initRandomIndicesToPlay();
             }
         });
+        filePath.bindBidirectional(settings.playlistFilePathProperty());
     }
 
     public void add(List<Mp3FileData> dataToAdd) {
@@ -67,7 +68,7 @@ public class Playlist extends FileBasedData {
                     + randomIndicesToPlay.indexOf(currentTitleIndex.get()) + 1,
                     randomIndicesToPlay.size());
         }
-        setDirtyByCheck();
+        dirty.set(checkIfDirty());
     }
 
     public void remove(List<Integer> selectedIndices) {
@@ -105,7 +106,7 @@ public class Playlist extends FileBasedData {
                 }
             }
         }
-        setDirtyByCheck();
+        dirty.set(checkIfDirty());
 //        System.out.println("-----------------");
 //        for (int j = 0; j < randomIndicesToPlay.size(); j++) {
 //            System.out.print(randomIndicesToPlay.get(j));
@@ -135,10 +136,6 @@ public class Playlist extends FileBasedData {
             ExceptionHandler.handle(ex);
         }
         return false;
-    }
-    
-    public void setDirtyByCheck(){
-        dirty.set(checkIfDirty());
     }
 
     private void initRandomIndicesToPlay() {

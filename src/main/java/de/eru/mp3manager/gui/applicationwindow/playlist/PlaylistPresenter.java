@@ -125,9 +125,7 @@ public class PlaylistPresenter implements Initializable {
                 }
             }
             playlist.setCurrentTitleIndex(newCurrentIndex);
-            playlist.setDirtyByCheck();
         });
-
         tableRowFactory = new CssRowFactory<>("played", dndRowFactory);
         table.setRowFactory(tableRowFactory);
         table.setItems(playlist.getTitles());
@@ -192,7 +190,6 @@ public class PlaylistPresenter implements Initializable {
     private void savePlaylist() {
         try {
             FileService.savePlaylist(new File(playlist.getAbsolutePath()), playlist.getTitles());
-            playlist.setDirty(false);
         } catch (IOException ex) {
             ex.printStackTrace();
         }
@@ -202,9 +199,7 @@ public class PlaylistPresenter implements Initializable {
     private void savePlaylistAs() {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Wiedergabeliste speichern");
-        if (!settings.getPlaylistFilePath().isEmpty()) {
-            fileChooser.setInitialDirectory(new File(settings.getPlaylistFilePath()));
-        }
+        fileChooser.setInitialDirectory(new File(settings.getPlaylistFilePath()));
 
         String fileName = "Wiedergabeliste";
         int i = 2;
@@ -218,12 +213,9 @@ public class PlaylistPresenter implements Initializable {
         File playlistFile = fileChooser.showSaveDialog(table.getScene().getWindow());
         if (playlistFile != null) {
             try {
-                if (FileService.savePlaylist(playlistFile, playlist.getTitles())) {
-                    playlist.setFilePath(playlistFile.getParent());
-                    playlist.setFileName(playlistFile.getName());
-                    playlist.setDirty(false);
-                    settings.setPlaylistFilePath(playlistFile.getParent());
-                }
+                FileService.savePlaylist(playlistFile, playlist.getTitles());
+                playlist.setFilePath(playlistFile.getParent());
+                playlist.setFileName(playlistFile.getName());
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -234,24 +226,17 @@ public class PlaylistPresenter implements Initializable {
     private void loadPlaylist() {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Wiedergabeliste laden");
-        if (!settings.getPlaylistFilePath().isEmpty()) {
-            fileChooser.setInitialDirectory(new File(settings.getPlaylistFilePath()));
-        }
+        fileChooser.setInitialDirectory(new File(settings.getPlaylistFilePath()));
         fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Wiedergabelisten", "*." + Playlist.FILE_EXTENSION));
         File playlistFile = fileChooser.showOpenDialog(table.getScene().getWindow());
         if (playlistFile != null) {
             taskPool.addTask(TaskFactory.createLoadPlaylistTask(playlist, playlistFile, mainTitles));
-            settings.setPlaylistFilePath(playlistFile.getParent());
         }
     }
 
     @FXML
     private void deletePlaylist() {
-        //TODO Bestätigungsdialog mit Option die Titel aus der aktuellen Wiedergabe zu entfernen
-        if (FileService.deleteFile(playlist.getAbsolutePath())) {
-            playlist.setFilePath("");
-            playlist.setFileName("");
-        }
+        boolean deletePlaylist = FileService.deleteFile(playlist.getAbsolutePath());
     }
 
     @FXML
