@@ -10,6 +10,7 @@ import de.eru.mp3manager.data.Playlist;
 import de.eru.mp3manager.gui.utils.CssRowFactory;
 import de.eru.mp3manager.gui.utils.DragAndDropRowFactory;
 import de.eru.mp3manager.gui.utils.DropCompletedEvent;
+import de.eru.mp3manager.player.MusicPlayer;
 import de.eru.mp3manager.service.FileService;
 import de.eru.mp3manager.settings.Settings;
 import de.eru.mp3manager.utils.TaskPool;
@@ -23,6 +24,8 @@ import java.util.ResourceBundle;
 import javafx.application.Application.Parameters;
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.StringBinding;
+import javafx.beans.value.ObservableValue;
+import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
@@ -72,6 +75,8 @@ public class PlaylistPresenter implements Initializable {
     @Inject
     @TableData(source = TableDataSource.MAIN_ALL)
     private InjectableList<Mp3FileData> mainTitles;
+    @Inject
+    private MusicPlayer musicPlayer;
 
     @Inject
     private Parameters params;
@@ -81,8 +86,13 @@ public class PlaylistPresenter implements Initializable {
         initTable();
         bindUI();
         if (!params.getRaw().isEmpty()) {
-            taskPool.addTask(TaskFactory.createLoadPlaylistTask(playlist, new File(params.getRaw().get(0)), mainTitles));
-            //TODO Wiedergabe starten
+            Task<Void> loadPlaylistTask = TaskFactory.createLoadPlaylistTask(playlist, new File(params.getRaw().get(0)), mainTitles);
+            loadPlaylistTask.runningProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
+                if (oldValue && !newValue) {
+                    musicPlayer.playPause();
+                }
+            });
+            taskPool.addTask(loadPlaylistTask);
         }
     }
 
@@ -228,7 +238,13 @@ public class PlaylistPresenter implements Initializable {
         fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Wiedergabelisten", "*." + Playlist.FILE_EXTENSION));
         File playlistFile = fileChooser.showOpenDialog(table.getScene().getWindow());
         if (playlistFile != null) {
-            taskPool.addTask(TaskFactory.createLoadPlaylistTask(playlist, playlistFile, mainTitles));
+            Task<Void> loadPlaylistTask = TaskFactory.createLoadPlaylistTask(playlist, playlistFile, mainTitles);
+            loadPlaylistTask.runningProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
+                if (oldValue && !newValue) {
+                    musicPlayer.stop();
+                }
+            });
+            taskPool.addTask(loadPlaylistTask);
             settings.setPlaylistFilePath(playlistFile.getParent());
         }
     }
@@ -251,8 +267,7 @@ public class PlaylistPresenter implements Initializable {
     @FXML
     private void remove() {
         if (table.getSelectionModel().getSelectedIndices().contains(playlist.getCurrentTitleIndex())) {
-            //TODO Wiedergabe stoppen
-            System.out.println("Stop!");
+            musicPlayer.stop();
         }
         playlist.remove(table.getSelectionModel().getSelectedIndices());
     }

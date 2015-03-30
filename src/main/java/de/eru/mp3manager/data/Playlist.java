@@ -70,6 +70,7 @@ public class Playlist extends FileBasedData {
         setDirtyByCheck();
     }
 
+    //TODO kann etwas refactored werden (event wird mit jedem schleifendurchlauf gefeuert)
     public void remove(List<Integer> selectedIndices) {
         List<Integer> indicesToRemove = new ArrayList<>(selectedIndices);
         if (titles.size() == selectedIndices.size()) {
@@ -99,8 +100,12 @@ public class Playlist extends FileBasedData {
                 } else {
                     if (indicesToRemove.get(i) < currentTitleIndex.get()) {
                         setCurrentTitleIndex(currentTitleIndex.get() - 1);
-                    } else if (indicesToRemove.get(i) == currentTitleIndex.get() && currentTitleIndex.get() >= titles.size()) {
-                        setCurrentTitleIndex(titles.size() - 1);
+                    } else if (indicesToRemove.get(i) == currentTitleIndex.get()) {// && currentTitleIndex.get() >= titles.size()) {
+                        if (currentTitleIndex.get() < titles.size()) {
+                            setCurrentTitleIndex(getCurrentTitleIndex());
+                        } else {
+                            setCurrentTitleIndex(titles.size() - 1);
+                        }
                     }
                 }
             }
@@ -136,8 +141,8 @@ public class Playlist extends FileBasedData {
         }
         return false;
     }
-    
-    public void setDirtyByCheck(){
+
+    public void setDirtyByCheck() {
         dirty.set(checkIfDirty());
     }
 

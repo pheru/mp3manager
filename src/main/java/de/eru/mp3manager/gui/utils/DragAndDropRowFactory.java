@@ -137,8 +137,7 @@ public class DragAndDropRowFactory<T> implements Callback<TableView<T>, TableRow
                 }
             } catch (Exception e) {
                 /*
-                 TODO 
-                 Exception vermutlich nicht korrekt verarbeitet.
+                 TODO Exception vermutlich nicht korrekt verarbeitet.
                  Siehe RT-38641: https://javafx-jira.kenai.com/browse/RT-38641
                  */
                 e.printStackTrace();
