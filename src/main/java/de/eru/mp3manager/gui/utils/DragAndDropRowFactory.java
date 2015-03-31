@@ -27,7 +27,7 @@ public class DragAndDropRowFactory<T> implements Callback<TableView<T>, TableRow
     private final Callback<TableView<T>, TableRow<T>> baseFactory;
     private VirtualFlow<?> virtualFlow;
     private final T emptyData;
-    private EventHandler<? super DropCompletedEvent> dropCompletedHandler;
+    private EventHandler<DropCompletedEvent> dropCompletedHandler;
 
     public DragAndDropRowFactory(TableView<T> table, T emptyData, Callback<TableView<T>, TableRow<T>> baseFactory) {
         this.baseFactory = baseFactory;
@@ -145,7 +145,7 @@ public class DragAndDropRowFactory<T> implements Callback<TableView<T>, TableRow
         };
     }
 
-    public final void setOnDropCompleted(EventHandler<? super DropCompletedEvent> value) {
+    public final void setOnDropCompleted(EventHandler<DropCompletedEvent> value) {
         this.dropCompletedHandler = value;
     }
 
