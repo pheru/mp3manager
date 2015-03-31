@@ -1,5 +1,6 @@
 package de.eru.mp3manager.data.utils;
 
+import de.eru.mp3manager.data.ArtworkData;
 import de.eru.mp3manager.data.Mp3FileData;
 import java.io.File;
 import java.io.IOException;
@@ -11,6 +12,7 @@ import org.jaudiotagger.audio.exceptions.ReadOnlyFileException;
 import org.jaudiotagger.audio.mp3.MP3File;
 import org.jaudiotagger.tag.FieldKey;
 import org.jaudiotagger.tag.TagException;
+import org.jaudiotagger.tag.datatype.Artwork;
 import org.jaudiotagger.tag.id3.AbstractID3v2Tag;
 
 /**
@@ -55,7 +57,7 @@ public final class Mp3Mapper {
         AudioHeader audioHeader = mp3File.getAudioHeader();
 
         mp3FileData.setDuration(audioHeader.getTrackLength());
-        mp3FileData.setBitrate(audioHeader.getBitRate().replace("~","") + Mp3FileData.UNIT_BITRATE);
+        mp3FileData.setBitrate(audioHeader.getBitRate().replace("~", "") + Mp3FileData.UNIT_BITRATE);
         if (mp3File.hasID3v2Tag()) {
             AbstractID3v2Tag tag = mp3File.getID3v2Tag();
             mp3FileData.setTitle(tag.getFirst(FieldKey.TITLE));
@@ -65,7 +67,8 @@ public final class Mp3Mapper {
             mp3FileData.setYear(tag.getFirst(FieldKey.YEAR));
             mp3FileData.setTrack(tag.getFirst(FieldKey.TRACK));
             if (tag.getFirstArtwork() != null) {
-                mp3FileData.setCover(tag.getFirstArtwork().getBinaryData());
+                Artwork artwork = tag.getFirstArtwork();
+                mp3FileData.setArtworkData(new ArtworkData(artwork.getBinaryData(), artwork.getMimeType()));
             }
         }
     }

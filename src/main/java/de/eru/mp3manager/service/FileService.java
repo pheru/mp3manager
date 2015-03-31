@@ -24,7 +24,6 @@ import org.jaudiotagger.tag.KeyNotFoundException;
 import org.jaudiotagger.tag.TagException;
 import org.jaudiotagger.tag.datatype.Artwork;
 import org.jaudiotagger.tag.id3.AbstractID3v2Tag;
-import org.jaudiotagger.tag.id3.valuepair.ImageFormats;
 import org.jaudiotagger.tag.reference.PictureTypes;
 
 /**
@@ -54,10 +53,10 @@ public final class FileService {
         setTagField(tag, FieldKey.YEAR, changeData.getYear());
         setTagField(tag, FieldKey.TRACK, changeData.getTrack());
 
-        if (changeData.getCover() != null && changeData.getCover().length > 0) {
+        if (changeData.getArtworkData() != null && changeData.getArtworkData().getBinaryData().length > 0) {
             Artwork newArtwork = new Artwork();
-            newArtwork.setBinaryData(changeData.getCover());
-            newArtwork.setMimeType(ImageFormats.getMimeTypeForBinarySignature(changeData.getCover()));
+            newArtwork.setBinaryData(changeData.getArtworkData().getBinaryData());
+            newArtwork.setMimeType(changeData.getArtworkData().getMimeType());
             newArtwork.setDescription("");
             newArtwork.setPictureType(PictureTypes.DEFAULT_ID); //DEFAULT_ID == 3 == Cover (Front)
             tag.deleteArtworkField();
@@ -77,9 +76,9 @@ public final class FileService {
 
     public static List<String> loadPlaylist(File playlistFile) throws IOException {
         List<String> playlistTitles = new ArrayList<>();
-        try (Stream<String> lines = Files.lines(playlistFile.toPath())){
-                lines.filter(s -> !s.isEmpty())
-                .forEach(playlistTitles::add);
+        try (Stream<String> lines = Files.lines(playlistFile.toPath())) {
+            lines.filter(s -> !s.isEmpty())
+                    .forEach(playlistTitles::add);
         }
         return playlistTitles;
     }

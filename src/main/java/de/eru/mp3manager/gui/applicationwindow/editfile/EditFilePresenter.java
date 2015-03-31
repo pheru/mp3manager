@@ -3,6 +3,7 @@ package de.eru.mp3manager.gui.applicationwindow.editfile;
 import de.eru.mp3manager.data.Mp3FileData;
 import de.eru.mp3manager.cdi.TableData;
 import de.eru.mp3manager.cdi.TableDataSource;
+import de.eru.mp3manager.data.ArtworkData;
 import de.eru.mp3manager.utils.Comparators;
 import de.eru.mp3manager.utils.TaskPool;
 import de.eru.mp3manager.utils.formatter.ByteFormatter;
@@ -21,9 +22,9 @@ import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -34,6 +35,7 @@ import javafx.stage.FileChooser.ExtensionFilter;
 import javafx.stage.Window;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+import org.jaudiotagger.tag.id3.valuepair.ImageFormats;
 
 @ApplicationScoped
 public class EditFilePresenter implements Initializable {
@@ -41,7 +43,7 @@ public class EditFilePresenter implements Initializable {
     public static final String DIFF_VALUES = "<Verschiedene Werte>";
     public static final String NOT_CHANGABLE = "<Bei Mehrfachauswahl nicht editierbar>";
     private static final Image MULTIPLE_COVERS_IMAGE = new Image("img/noImage.png");
-
+    
     @FXML
     private GridPane root;
     @FXML
@@ -71,7 +73,7 @@ public class EditFilePresenter implements Initializable {
     @FXML
     private ImageView coverView;
     @FXML
-    private Button saveButton;
+    private Label coverInfo;
 
     private final ChangeListener<Boolean> sortListener = (ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
         updateFields(); //Es wird ein komplettes Update durchgeführt, um auch die ursprüngliche Reihenfolge wiederherzustellen
@@ -110,20 +112,20 @@ public class EditFilePresenter implements Initializable {
      * Bindet die UI-Elemente untereinander.
      */
     private void bindUI() {
-        coverPane.maxHeightProperty().bind(root.heightProperty().subtract(coverPane.layoutYProperty()));
         coverView.fitHeightProperty().bind(coverView.fitWidthProperty());
         coverView.fitWidthProperty().bind(new DoubleBinding() {
             {
-                bind(coverPane.widthProperty(), coverPane.maxHeightProperty());
+                bind(coverPane.widthProperty(), coverPane.heightProperty());
             }
 
             @Override
             protected double computeValue() {
-                double maxHeight = coverPane.maxHeightProperty().get() - saveButton.getHeight() - 4; //-4 wegen Separator
-                if (coverPane.widthProperty().get() > maxHeight) {
-                    return maxHeight;
+                double height = coverPane.heightProperty().get();
+                double width = coverPane.widthProperty().get();
+                if (width > height) {
+                    return height;
                 } else {
-                    return coverPane.widthProperty().get();
+                    return width;
                 }
             }
         });
@@ -216,8 +218,8 @@ public class EditFilePresenter implements Initializable {
         fillField(genreField, singleData.getGenre());
         fillField(trackField, singleData.getTrack());
         fillField(yearField, singleData.getYear());
-        coverView.setImage(ByteFormatter.byteArrayToImage(singleData.getCover()));
-        changeData.setCover(singleData.getCover());
+        setCover(singleData.getArtworkData());
+        changeData.setArtworkData(singleData.getArtworkData());
     }
 
     /**
@@ -249,7 +251,7 @@ public class EditFilePresenter implements Initializable {
         fillFieldItems();
         setFieldValues();
         sortFieldItems();
-        setCoverImage();
+        setCoverImageForMultipleData();
     }
 
     /**
@@ -316,17 +318,18 @@ public class EditFilePresenter implements Initializable {
         genreField.getItems().sort(null);
     }
 
-    private void setCoverImage() {
-        byte[] imageAsByteArray = selectedData.get(0).getCover();
+    private void setCoverImageForMultipleData() {
+        ArtworkData selectedArtworkData = selectedData.get(0).getArtworkData();
         for (Mp3FileData data : selectedData) {
-            if (!Arrays.equals(data.getCover(), imageAsByteArray)) {
-                coverView.setImage(MULTIPLE_COVERS_IMAGE);
-                changeData.setCover(null);
+            //TODO genauerer Image-Vergleich
+            if (!Arrays.equals(data.getArtworkData().getBinaryData(), selectedArtworkData.getBinaryData())) {
+                setCover(null);
+                changeData.setArtworkData(null);
                 return;
             }
         }
-        coverView.setImage(ByteFormatter.byteArrayToImage(imageAsByteArray));
-        changeData.setCover(imageAsByteArray);
+        setCover(selectedArtworkData);
+        changeData.setArtworkData(selectedArtworkData);
     }
 
     /**
@@ -340,6 +343,16 @@ public class EditFilePresenter implements Initializable {
         } else {
             fileNameField.textProperty().unbind();
             fileNameField.setDisable(false);
+        }
+    }
+
+    private void setCover(ArtworkData artworkData) {
+        if (artworkData != null) {
+            coverView.setImage(ByteFormatter.byteArrayToImage(artworkData.getBinaryData()));
+            coverInfo.setText(artworkData.getMimeType() + " | " + artworkData.getHeight() + " x " + artworkData.getWidth()); //Höhe x Breite oder Breite x Höhe?
+        } else {
+            coverView.setImage(MULTIPLE_COVERS_IMAGE); //TODO Bild für nicht gesetztes Cover
+            coverInfo.setText("Keines oder verschiedene Cover vorhanden!"); //TODO Zwischen keinem und verschiedenen Cover unterscheiden
         }
     }
 
@@ -359,8 +372,12 @@ public class EditFilePresenter implements Initializable {
         File imageAsFile = fileChooser.showOpenDialog(ownerWindow);
         if (imageAsFile != null) {
             byte[] imageAsByteArray = ByteFormatter.fileToByteArray(imageAsFile);
-            coverView.setImage(ByteFormatter.byteArrayToImage(imageAsByteArray));
-            changeData.setCover(imageAsByteArray);
+            Image image = ByteFormatter.byteArrayToImage(imageAsByteArray);
+            ArtworkData artworkData = new ArtworkData(imageAsByteArray, Double.valueOf(image.getWidth()).intValue(),
+                    Double.valueOf(image.getHeight()).intValue(), ImageFormats.getMimeTypeForBinarySignature(imageAsByteArray));
+            changeData.setArtworkData(artworkData);
+            setCover(artworkData);
+
         }
     }
 

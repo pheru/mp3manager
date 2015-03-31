@@ -41,7 +41,7 @@ public class Mp3FileData extends FileBasedData {
     private final StringProperty size = new SimpleStringProperty(NOT_LOADED);
     private final StringProperty lastModified = new SimpleStringProperty(NOT_LOADED);
     private final StringProperty bitrate = new SimpleStringProperty(NOT_LOADED);
-    private final ObjectProperty<byte[]> cover = new SimpleObjectProperty<>();
+    private final ObjectProperty<ArtworkData> artworkData = new SimpleObjectProperty<>();
     private final DoubleProperty duration = new SimpleDoubleProperty(0);
     private final StringProperty formattedDuration = new SimpleStringProperty(NOT_LOADED);
     private final BooleanProperty loaded = new SimpleBooleanProperty(false);
@@ -87,7 +87,7 @@ public class Mp3FileData extends FileBasedData {
         year.set(copyData.getYear());
         size.set(copyData.getSize());
         lastModified.set(copyData.getLastModified());
-        cover.set(copyData.getCover());
+        artworkData.set(copyData.getArtworkData());
         duration.set(copyData.getDuration());
     }
 
@@ -215,18 +215,6 @@ public class Mp3FileData extends FileBasedData {
         return size;
     }
 
-    public byte[] getCover() {
-        return cover.get();
-    }
-
-    public void setCover(byte[] cover) {
-        this.cover.set(cover);
-    }
-
-    public ObjectProperty<byte[]> coverProperty() {
-        return cover;
-    }
-
     public double getDuration() {
         return duration.get();
     }
@@ -269,5 +257,17 @@ public class Mp3FileData extends FileBasedData {
 
     public StringProperty bitrateProperty() {
         return bitrate;
+    }
+
+    public ArtworkData getArtworkData() {
+        return artworkData.get();
+    }
+
+    public void setArtworkData(final ArtworkData artworkData) {
+        this.artworkData.set(artworkData);
+    }
+
+    public ObjectProperty<ArtworkData> artworkDataProperty() {
+        return artworkData;
     }
 }

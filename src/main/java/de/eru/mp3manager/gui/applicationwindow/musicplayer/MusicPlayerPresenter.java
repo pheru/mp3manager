@@ -139,12 +139,12 @@ public class MusicPlayerPresenter implements Initializable {
         totalTimeLabel.textProperty().bind(createTimeBinding(newTitle.durationProperty()));
         coverView.imageProperty().bind(new ObjectBinding<Image>() {
             {
-                bind(newTitle.coverProperty());
+                bind(newTitle.artworkDataProperty());
             }
 
             @Override
             protected Image computeValue() {
-                return ByteFormatter.byteArrayToImage(newTitle.getCover());
+                return ByteFormatter.byteArrayToImage(newTitle.getArtworkData().getBinaryData());
             }
         });
     }

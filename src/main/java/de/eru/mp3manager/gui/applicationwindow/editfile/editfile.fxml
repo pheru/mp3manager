@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?> 
+<?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.image.*?>
 <?import javafx.geometry.*?>
@@ -62,9 +62,9 @@
          </VBox.margin>
       </GridPane>
       <Label text="Dateiname" />
-      <Pane fx:id="coverPane" GridPane.columnSpan="2147483647" GridPane.rowIndex="10" VBox.vgrow="ALWAYS">
+      <Pane fx:id="coverPane" GridPane.columnSpan="2147483647" GridPane.hgrow="ALWAYS" GridPane.rowIndex="11" GridPane.vgrow="ALWAYS" VBox.vgrow="ALWAYS">
          <children>
-            <ImageView fx:id="coverView" pickOnBounds="true" VBox.vgrow="NEVER" onMouseClicked="#chooseCover" >
+            <ImageView fx:id="coverView" onMouseClicked="#chooseCover" pickOnBounds="true" VBox.vgrow="NEVER">
                <VBox.margin>
                   <Insets />
                </VBox.margin>
@@ -72,18 +72,23 @@
          </children>
       </Pane>
       <Label text="Albumcover" GridPane.rowIndex="9" />
-      <Button fx:id="saveButton" mnemonicParsing="false" text="Speichern" GridPane.columnSpan="2147483647" GridPane.halignment="CENTER" GridPane.rowIndex="12" onAction="#save" />
+      <Button fx:id="saveButton" mnemonicParsing="false" onAction="#save" text="Speichern" GridPane.columnSpan="2147483647" GridPane.halignment="CENTER" GridPane.rowIndex="13" />
       <CheckBox fx:id="synchronizeTitleBox" mnemonicParsing="false" text="Titel übernehmen" GridPane.columnIndex="1" />
       <CheckBox fx:id="sortTitleBox" mnemonicParsing="false" text="Alphabetisch sortieren" GridPane.columnIndex="1" GridPane.rowIndex="2" />
       <CheckBox fx:id="sortAlbumBox" mnemonicParsing="false" text="Alphabetisch sortieren" GridPane.columnIndex="1" GridPane.rowIndex="4" />
       <CheckBox fx:id="sortArtistBox" mnemonicParsing="false" text="Alphabetisch sortieren" GridPane.columnIndex="1" GridPane.rowIndex="6" />
-      <Separator GridPane.columnSpan="2147483647" GridPane.hgrow="ALWAYS" GridPane.rowIndex="11" />
+      <Separator GridPane.columnSpan="2147483647" GridPane.hgrow="ALWAYS" GridPane.rowIndex="12">
+         <padding>
+            <Insets top="2.0" />
+         </padding></Separator>
+      <Label fx:id="coverInfo" text="Coverinfo" GridPane.columnSpan="2147483647" GridPane.rowIndex="10" />
    </children>
    <columnConstraints>
       <ColumnConstraints hgrow="SOMETIMES" />
       <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" />
    </columnConstraints>
    <rowConstraints>
+      <RowConstraints vgrow="NEVER" />
       <RowConstraints vgrow="NEVER" />
       <RowConstraints vgrow="NEVER" />
       <RowConstraints vgrow="NEVER" />
