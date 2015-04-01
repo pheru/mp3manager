@@ -81,7 +81,14 @@
          <padding>
             <Insets top="2.0" />
          </padding></Separator>
-      <Label fx:id="coverInfo" text="Coverinfo" GridPane.columnSpan="2147483647" GridPane.rowIndex="10" />
+      <Label fx:id="coverInfo" text="Coverinfo" GridPane.columnSpan="2147483647" GridPane.rowIndex="10">
+         <graphic>
+            <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="img/info_16.png" />
+               </image>
+            </ImageView>
+         </graphic></Label>
    </children>
    <columnConstraints>
       <ColumnConstraints hgrow="SOMETIMES" />

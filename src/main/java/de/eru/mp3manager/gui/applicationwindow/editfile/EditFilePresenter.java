@@ -43,7 +43,7 @@ public class EditFilePresenter implements Initializable {
     public static final String DIFF_VALUES = "<Verschiedene Werte>";
     public static final String NOT_CHANGABLE = "<Bei Mehrfachauswahl nicht editierbar>";
     private static final Image MULTIPLE_COVERS_IMAGE = new Image("img/noImage.png");
-    
+
     @FXML
     private GridPane root;
     @FXML
@@ -323,7 +323,7 @@ public class EditFilePresenter implements Initializable {
         for (Mp3FileData data : selectedData) {
             //TODO genauerer Image-Vergleich
             if (!Arrays.equals(data.getArtworkData().getBinaryData(), selectedArtworkData.getBinaryData())) {
-                setCover(null);
+                removeCover("Verschiedene Cover vorhanden");
                 changeData.setArtworkData(null);
                 return;
             }
@@ -349,11 +349,15 @@ public class EditFilePresenter implements Initializable {
     private void setCover(ArtworkData artworkData) {
         if (artworkData != null) {
             coverView.setImage(ByteFormatter.byteArrayToImage(artworkData.getBinaryData()));
-            coverInfo.setText(artworkData.getMimeType() + " | " + artworkData.getHeight() + " x " + artworkData.getWidth()); //Höhe x Breite oder Breite x Höhe?
-        } else {
-            coverView.setImage(MULTIPLE_COVERS_IMAGE); //TODO Bild für nicht gesetztes Cover
-            coverInfo.setText("Keines oder verschiedene Cover vorhanden!"); //TODO Zwischen keinem und verschiedenen Cover unterscheiden
+            coverInfo.setText(artworkData.getMimeType() + " | " + artworkData.getHeight() + " x " + artworkData.getWidth()); //TODO Höhe x Breite oder Breite x Höhe?
+        } else{
+            removeCover("Kein Cover vorhanden");
         }
+    }
+
+    private void removeCover(String coverInfoText) {
+        coverView.setImage(null);
+        coverInfo.setText(coverInfoText);
     }
 
     @FXML

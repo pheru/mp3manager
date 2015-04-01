@@ -7,6 +7,7 @@ import java.util.logging.Logger;
 import static javafx.application.Application.launch;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
+import javafx.scene.image.ImageView;
 import org.jgroups.JChannel;
 
 /**
@@ -44,6 +45,7 @@ public class Mp3Manager extends PheruFXApplication {
             startAlert.setResult(ButtonType.CLOSE);
             startAlert.setTitle("Mp3Manager");
             startAlert.setContentText("Starte Mp3Manager...");
+//            startAlert.setGraphic(new ImageView("img/clock_48.png"));
             startAlert.show();
         });
         setOnStartFinished((StartEvent event) -> {
