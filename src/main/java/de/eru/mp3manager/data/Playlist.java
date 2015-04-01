@@ -228,6 +228,7 @@ public class Playlist extends FileBasedData {
 
     public void setCurrentTitleIndex(final Integer currentTitleIndex) {
         this.currentTitleIndex.set(currentTitleIndex);
+        //TODO Code in setter?
         if (currentTitleIndex != UNDEFINED_CURRENT_INDEX) {
             currentTitleUpdateEvent.fire(new CurrentTitleEvent(titles.get(this.currentTitleIndex.get()), this.currentTitleIndex.get()));
         } else {

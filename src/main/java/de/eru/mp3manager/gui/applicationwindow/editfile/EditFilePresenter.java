@@ -323,7 +323,7 @@ public class EditFilePresenter implements Initializable {
         for (Mp3FileData data : selectedData) {
             //TODO genauerer Image-Vergleich
             if (!Arrays.equals(data.getArtworkData().getBinaryData(), selectedArtworkData.getBinaryData())) {
-                removeCover("Verschiedene Cover vorhanden");
+                removeCover("<Verschiedene Cover vorhanden>");
                 changeData.setArtworkData(null);
                 return;
             }
@@ -351,7 +351,7 @@ public class EditFilePresenter implements Initializable {
             coverView.setImage(ByteFormatter.byteArrayToImage(artworkData.getBinaryData()));
             coverInfo.setText(artworkData.getMimeType() + " | " + artworkData.getHeight() + " x " + artworkData.getWidth()); //TODO Höhe x Breite oder Breite x Höhe?
         } else{
-            removeCover("Kein Cover vorhanden");
+            removeCover("<Kein Cover vorhanden>");
         }
     }
 
