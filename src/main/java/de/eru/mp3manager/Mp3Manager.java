@@ -7,7 +7,6 @@ import java.util.logging.Logger;
 import static javafx.application.Application.launch;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
-import javafx.scene.image.ImageView;
 import org.jgroups.JChannel;
 
 /**

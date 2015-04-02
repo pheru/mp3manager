@@ -55,6 +55,8 @@ public class Settings {
     private final DoubleProperty applicationWindowWidth = new SimpleDoubleProperty(1300.0);
     @XmlPath(XMLPATH_APPLICATION_WINDOW + "height" + XMLPATH_ENDING)
     private final DoubleProperty applicationWindowHeight = new SimpleDoubleProperty(800.0);
+    @XmlPath(XMLPATH_APPLICATION_WINDOW + "splitPosition" + XMLPATH_ENDING)
+    private final DoubleProperty applicationWindowSplitPosition = new SimpleDoubleProperty(0.0);
 
     @XmlPath(XMLPATH_MUSICPLAYER + "volume" + XMLPATH_ENDING)
     private final DoubleProperty musicPlayerVolume = new SimpleDoubleProperty(100.0);
@@ -277,6 +279,18 @@ public class Settings {
 
     public StringProperty playlistFilePathProperty() {
         return playlistFilePath;
+    }
+
+    public Double getApplicationWindowSplitPosition() {
+        return applicationWindowSplitPosition.get();
+    }
+
+    public void setApplicationWindowSplitPosition(final Double applicationWindowSplitPosition) {
+        this.applicationWindowSplitPosition.set(applicationWindowSplitPosition);
+    }
+
+    public DoubleProperty applicationWindowSplitPositionProperty() {
+        return applicationWindowSplitPosition;
     }
 
 }

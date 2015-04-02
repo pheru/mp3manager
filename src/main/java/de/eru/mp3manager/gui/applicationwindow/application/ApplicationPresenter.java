@@ -17,6 +17,7 @@ import de.eru.mp3manager.gui.applicationwindow.musicplayer.MusicPlayerView;
 import de.eru.mp3manager.gui.applicationwindow.playlist.PlaylistPresenter;
 import de.eru.mp3manager.gui.applicationwindow.playlist.PlaylistView;
 import de.eru.mp3manager.player.MusicPlayer;
+import javafx.application.Platform;
 import javafx.beans.value.ObservableValue;
 import javafx.scene.control.CheckMenuItem;
 import javafx.scene.control.SplitPane;
@@ -98,6 +99,9 @@ public class ApplicationPresenter implements Initializable {
         tabPane.getSelectionModel().selectedItemProperty().addListener((ObservableValue<? extends Tab> observable, Tab oldValue, Tab newValue) -> {
             Region newContent = (Region) newValue.getContent();
             tabPane.setMinWidth(newContent.getMinWidth());
+        });
+        Platform.runLater(() -> { //Wird benötigt, weil die Divider intern angepasst werden und damit den Wert überschreiben würden
+            splitPane.getDividers().get(0).positionProperty().bindBidirectional(settings.applicationWindowSplitPositionProperty());
         });
     }
 
