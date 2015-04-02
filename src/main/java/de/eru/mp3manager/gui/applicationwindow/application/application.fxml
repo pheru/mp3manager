@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?> 
+<?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.*?>
 <?import javafx.scene.text.*?>
@@ -23,24 +23,24 @@
             <menus>
                 <Menu mnemonicParsing="false" text="Datei">
                     <items>
-                        <MenuItem mnemonicParsing="false" text="Verzeichnis wechseln..." onAction="#changeDirectory" />
+                        <MenuItem mnemonicParsing="false" onAction="#changeDirectory" text="Verzeichnis wechseln..." />
                         <SeparatorMenuItem />
-                        <MenuItem mnemonicParsing="false" text="Beenden" onAction="#exit"/>
+                        <MenuItem mnemonicParsing="false" onAction="#exit" text="Beenden" />
                     </items>
                 </Menu>
                 <Menu mnemonicParsing="false" text="Bearbeiten">
                     <items>
-                        <MenuItem mnemonicParsing="false" text="Änderungen speichern" onAction="#saveChanges"/>
-                        <MenuItem mnemonicParsing="false" text="Änderungen verwerfen" onAction="#discardChanges"/>
-                        <MenuItem mnemonicParsing="false" text="Löschen..." onAction="#delete"/>
+                        <MenuItem mnemonicParsing="false" onAction="#saveChanges" text="Änderungen speichern" />
+                        <MenuItem mnemonicParsing="false" onAction="#discardChanges" text="Änderungen verwerfen" />
+                        <MenuItem mnemonicParsing="false" onAction="#delete" text="Löschen..." />
                     </items>
                 </Menu>
                 <Menu mnemonicParsing="false" text="Wiedergabe">
                     <items>
-                        <MenuItem mnemonicParsing="false" text="Wiedergabe / Anhalten" onAction="#playPause"/>
-                        <MenuItem mnemonicParsing="false" text="Stopp" onAction="#stop"/>
-                        <MenuItem mnemonicParsing="false" text="Weiter" onAction="#next"/>
-                        <MenuItem mnemonicParsing="false" text="Zurück" onAction="#previous"/>
+                        <MenuItem mnemonicParsing="false" onAction="#playPause" text="Wiedergabe / Anhalten" />
+                        <MenuItem mnemonicParsing="false" onAction="#stop" text="Stopp" />
+                        <MenuItem mnemonicParsing="false" onAction="#next" text="Weiter" />
+                        <MenuItem mnemonicParsing="false" onAction="#previous" text="Zurück" />
                         <SeparatorMenuItem />
                         <CheckMenuItem fx:id="randomMenuItem" mnemonicParsing="false" text="Zufällige Wiedergabe" />
                         <CheckMenuItem fx:id="repeatMenuItem" mnemonicParsing="false" text="Wiederholung" />
@@ -48,17 +48,17 @@
                 </Menu>
                 <Menu mnemonicParsing="false" text="Hilfe">
                     <items>
-                        <MenuItem mnemonicParsing="false" text="Info" onAction="#about"/>
+                        <MenuItem mnemonicParsing="false" onAction="#about" text="Info" />
                     </items>
                 </Menu>
             </menus>
         </MenuBar>
         <SplitPane fx:id="splitPane" GridPane.hgrow="ALWAYS" GridPane.rowIndex="2" GridPane.vgrow="ALWAYS">
             <items>
-                <TabPane tabClosingPolicy="UNAVAILABLE" SplitPane.resizableWithParent="false">
+                <TabPane tabClosingPolicy="UNAVAILABLE" tabMinWidth="115.0" SplitPane.resizableWithParent="false">
                     <tabs>
-                        <Tab fx:id="playlistTab" text="Aktuelle Wiedergabe" />
-                        <Tab fx:id="editFileTab" text="MP3-Editor" />
+                        <Tab fx:id="playlistTab" text="Wiedergabe" />
+                        <Tab fx:id="editFileTab" text="Editor" />
                     </tabs>
                 </TabPane>
             </items>

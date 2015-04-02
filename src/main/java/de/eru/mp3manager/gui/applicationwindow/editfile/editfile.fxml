@@ -7,7 +7,7 @@
 <?import java.lang.*?>
 <?import javafx.scene.layout.*?>
 
-<GridPane fx:id="root" scaleShape="false" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="de.eru.mp3manager.gui.applicationwindow.editfile.EditFilePresenter">
+<GridPane fx:id="root" minWidth="400.0" prefWidth="0.0" scaleShape="false" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="de.eru.mp3manager.gui.applicationwindow.editfile.EditFilePresenter">
    <children>
       <HBox alignment="CENTER_LEFT" GridPane.columnSpan="2147483647" GridPane.rowIndex="1">
          <children>
@@ -22,19 +22,19 @@
             <Insets bottom="5.0" />
          </VBox.margin>
       </HBox>
-      <Label text="Titel" GridPane.rowIndex="2" />
+      <Label minWidth="-Infinity" text="Titel" GridPane.rowIndex="2" />
       <ComboBox fx:id="titleField" editable="true" maxWidth="1.7976931348623157E308" GridPane.columnSpan="2147483647" GridPane.rowIndex="3">
          <VBox.margin>
             <Insets bottom="5.0" />
          </VBox.margin>
       </ComboBox>
-      <Label text="Album" GridPane.rowIndex="4" />
+      <Label minWidth="-Infinity" text="Album" GridPane.rowIndex="4" />
       <ComboBox fx:id="albumField" editable="true" maxWidth="1.7976931348623157E308" GridPane.columnSpan="2147483647" GridPane.rowIndex="5">
          <VBox.margin>
             <Insets bottom="5.0" />
          </VBox.margin>
       </ComboBox>
-      <Label text="Interpret" GridPane.rowIndex="6" />
+      <Label minWidth="-Infinity" text="Interpret" GridPane.rowIndex="6" />
       <ComboBox fx:id="artistField" editable="true" maxWidth="1.7976931348623157E308" GridPane.columnSpan="2147483647" GridPane.rowIndex="7">
          <VBox.margin>
             <Insets bottom="5.0" />
@@ -42,17 +42,20 @@
       </ComboBox>
       <GridPane hgap="5.0" GridPane.columnSpan="2147483647" GridPane.rowIndex="8">
          <children>
-            <Label text="Titelnummer" />
-            <Label text="Jahr" GridPane.columnIndex="1" />
-            <Label text="Genre" GridPane.columnIndex="2" />
-            <ComboBox fx:id="trackField" editable="true" maxWidth="1.7976931348623157E308" GridPane.rowIndex="1" />
-            <ComboBox fx:id="yearField" editable="true" maxWidth="1.7976931348623157E308" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-            <ComboBox fx:id="genreField" editable="true" maxWidth="1.7976931348623157E308" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+            <Label minWidth="-Infinity" text="Titelnr.">
+               <GridPane.margin>
+                  <Insets />
+               </GridPane.margin></Label>
+            <Label minWidth="-Infinity" text="Jahr" GridPane.columnIndex="1" />
+            <Label minWidth="-Infinity" text="Genre" GridPane.columnIndex="2" />
+            <ComboBox fx:id="trackField" editable="true" maxWidth="1.7976931348623157E308" minWidth="80.0" GridPane.rowIndex="1" />
+            <ComboBox fx:id="yearField" editable="true" maxWidth="1.7976931348623157E308" minWidth="100.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+            <ComboBox fx:id="genreField" editable="true" maxWidth="1.7976931348623157E308" minWidth="200.0" GridPane.columnIndex="2" GridPane.rowIndex="1" />
          </children>
          <columnConstraints>
-            <ColumnConstraints hgrow="SOMETIMES" percentWidth="25.0" />
-            <ColumnConstraints hgrow="SOMETIMES" percentWidth="25.0" />
-            <ColumnConstraints hgrow="ALWAYS" percentWidth="50.0" />
+            <ColumnConstraints hgrow="SOMETIMES" />
+            <ColumnConstraints hgrow="SOMETIMES" />
+            <ColumnConstraints hgrow="ALWAYS" />
          </columnConstraints>
          <rowConstraints>
             <RowConstraints vgrow="SOMETIMES" />
@@ -62,7 +65,7 @@
             <Insets bottom="5.0" />
          </VBox.margin>
       </GridPane>
-      <Label text="Dateiname" />
+      <Label minWidth="-Infinity" text="Dateiname" />
       <Pane fx:id="coverPane" GridPane.columnSpan="2147483647" GridPane.hgrow="ALWAYS" GridPane.rowIndex="11" GridPane.vgrow="ALWAYS" VBox.vgrow="ALWAYS">
          <children>
             <ImageView fx:id="coverView" pickOnBounds="true" VBox.vgrow="NEVER">
@@ -74,8 +77,8 @@
       </Pane>
       <HBox GridPane.columnSpan="2147483647" GridPane.rowIndex="9">
          <children>
-            <Label text="Albumcover" GridPane.rowIndex="9" />
-            <Button maxHeight="27.0" minHeight="27.0" mnemonicParsing="false" onMouseClicked="#chooseCover" text="Ändern...">
+            <Label minWidth="-Infinity" text="Albumcover" GridPane.rowIndex="9" />
+            <Button maxHeight="27.0" minHeight="27.0" minWidth="-Infinity" mnemonicParsing="false" onMouseClicked="#chooseCover" text="Ändern...">
                <HBox.margin>
                   <Insets left="10.0" />
                </HBox.margin>
@@ -89,10 +92,10 @@
          </GridPane.margin>
       </HBox>
       <Button fx:id="saveButton" mnemonicParsing="false" onAction="#save" text="Speichern" GridPane.columnSpan="2147483647" GridPane.halignment="CENTER" GridPane.rowIndex="13" />
-      <CheckBox fx:id="synchronizeTitleBox" mnemonicParsing="false" text="Titel übernehmen" GridPane.columnIndex="1" />
-      <CheckBox fx:id="sortTitleBox" mnemonicParsing="false" text="Alphabetisch sortieren" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-      <CheckBox fx:id="sortAlbumBox" mnemonicParsing="false" text="Alphabetisch sortieren" GridPane.columnIndex="1" GridPane.rowIndex="4" />
-      <CheckBox fx:id="sortArtistBox" mnemonicParsing="false" text="Alphabetisch sortieren" GridPane.columnIndex="1" GridPane.rowIndex="6" />
+      <CheckBox fx:id="synchronizeTitleBox" minWidth="-Infinity" mnemonicParsing="false" text="Titel übernehmen" GridPane.columnIndex="1" />
+      <CheckBox fx:id="sortTitleBox" minWidth="-Infinity" mnemonicParsing="false" text="Alphabetisch sortieren" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+      <CheckBox fx:id="sortAlbumBox" minWidth="-Infinity" mnemonicParsing="false" text="Alphabetisch sortieren" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+      <CheckBox fx:id="sortArtistBox" minWidth="-Infinity" mnemonicParsing="false" text="Alphabetisch sortieren" GridPane.columnIndex="1" GridPane.rowIndex="6" />
       <Separator GridPane.columnSpan="2147483647" GridPane.hgrow="ALWAYS" GridPane.rowIndex="12">
          <padding>
             <Insets top="2.0" />

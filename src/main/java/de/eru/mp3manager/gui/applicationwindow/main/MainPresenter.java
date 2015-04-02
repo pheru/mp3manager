@@ -32,11 +32,13 @@ import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressIndicator;
 import javafx.scene.control.SelectionMode;
 import javafx.scene.control.SortEvent;
+import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
@@ -45,6 +47,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
 import javafx.stage.DirectoryChooser;
+import javafx.util.Callback;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
@@ -127,13 +130,13 @@ public class MainPresenter implements Initializable {
         tableRowFactory = new CssRowFactory<>("played", (TableView<Mp3FileData> param) -> {
             TableRow<Mp3FileData> row = new TableRow<>();
             row.setOnMouseClicked((MouseEvent event) -> {
-                if(event.getClickCount() == 2 && !row.isEmpty()){
+                if (event.getClickCount() == 2 && !row.isEmpty()) {
                     play();
                 }
             });
             return row;
         });
-                
+
         table.setRowFactory(tableRowFactory);
 //        playlist.currentTitleIndexProperty().addListener((ObservableValue<? extends Number> observable, Number oldValue, Number newValue) -> {
 //            updateStyledIndex(newValue.intValue());
@@ -199,7 +202,7 @@ public class MainPresenter implements Initializable {
         });
         filterTextField.focusedProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
             Platform.runLater(() -> {
-                if(newValue){
+                if (newValue) {
                     filterTextField.selectAll();
                 }
             });
@@ -212,6 +215,27 @@ public class MainPresenter implements Initializable {
     private void initColumns() {
         for (MainColumn column : MainColumn.values()) {
             TableColumn<Mp3FileData, String> tableColumn = new TableColumn<>(column.getColumnName());
+            if (column.isAlignRight()) {
+                tableColumn.setCellFactory((TableColumn<Mp3FileData, String> param) -> {
+                    TableCell<Mp3FileData, String> cell = new TableCell<Mp3FileData, String>() {
+
+                        @Override
+                        protected void updateItem(String item, boolean empty) {
+                            super.updateItem(item, empty);
+                            
+                            if (empty || item == null) {
+                                setText(null);
+                                setGraphic(null);
+                            } else {
+                                setText(item);
+                            }
+                        }
+
+                    };
+                    cell.setAlignment(Pos.CENTER_RIGHT);
+                    return cell;
+                });
+            }
             tableColumn.prefWidthProperty().bind(settings.getMainColumnSettings(column).widthProperty());
             settings.getMainColumnSettings(column).widthProperty().bind(tableColumn.widthProperty());
             tableColumn.visibleProperty().bindBidirectional(settings.getMainColumnSettings(column).visibleProperty());
@@ -315,7 +339,7 @@ public class MainPresenter implements Initializable {
         if (directory != null && !directory.isEmpty()) {
             Task<Void> readDirectoryTask = TaskFactory.createReadDirectoryTask(directory, masterData, table.placeholderProperty(), playlist.getTitles());
             readDirectoryTask.runningProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
-                if(oldValue && !newValue){
+                if (oldValue && !newValue) {
                     updateStyledIndex(playlist.getCurrentTitleIndex());
                 }
             });

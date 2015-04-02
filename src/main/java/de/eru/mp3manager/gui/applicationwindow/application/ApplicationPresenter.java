@@ -17,8 +17,11 @@ import de.eru.mp3manager.gui.applicationwindow.musicplayer.MusicPlayerView;
 import de.eru.mp3manager.gui.applicationwindow.playlist.PlaylistPresenter;
 import de.eru.mp3manager.gui.applicationwindow.playlist.PlaylistView;
 import de.eru.mp3manager.player.MusicPlayer;
+import javafx.beans.value.ObservableValue;
 import javafx.scene.control.CheckMenuItem;
 import javafx.scene.control.SplitPane;
+import javafx.scene.control.TabPane;
+import javafx.scene.layout.Region;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
@@ -89,6 +92,13 @@ public class ApplicationPresenter implements Initializable {
     private void bindUI() {
         randomMenuItem.selectedProperty().bindBidirectional(settings.musicPlayerRandomProperty());
         repeatMenuItem.selectedProperty().bindBidirectional(settings.musicPlayerRepeatProperty());
+        final TabPane tabPane = editFileTab.getTabPane();
+        Region content = (Region) tabPane.getSelectionModel().getSelectedItem().getContent();
+        tabPane.setMinWidth(content.getMinWidth());
+        tabPane.getSelectionModel().selectedItemProperty().addListener((ObservableValue<? extends Tab> observable, Tab oldValue, Tab newValue) -> {
+            Region newContent = (Region) newValue.getContent();
+            tabPane.setMinWidth(newContent.getMinWidth());
+        });
     }
 
     @FXML
