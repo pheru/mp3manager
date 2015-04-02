@@ -10,9 +10,9 @@
     <children>
         <HBox alignment="CENTER_LEFT" VBox.vgrow="NEVER">
             <children>
-                <Label fx:id="playlistNameLabel" minWidth="-Infinity" text="Wiedergabeliste" />
+                <Label fx:id="playlistNameLabel" minWidth="-Infinity" text="&lt;Neue Wiedergabeliste&gt;" />
                 <Pane HBox.hgrow="ALWAYS" />
-                <Label fx:id="titlesSize" text="11" />
+                <Label fx:id="titlesSize" text="0" />
                 <Label text=" Titel" />
             </children>
         </HBox>
@@ -31,7 +31,7 @@
                     </items>
                 </MenuButton>
                 <Pane HBox.hgrow="ALWAYS" />
-                <Label fx:id="totalDurationLabel" text="00:05:38" />
+                <Label fx:id="totalDurationLabel" text="00:00:00" />
             </children>
         </HBox>
         <TableView fx:id="table" onKeyReleased="#tableKeyReleased" VBox.vgrow="ALWAYS">

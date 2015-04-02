@@ -27,7 +27,7 @@ import org.jaudiotagger.tag.TagException;
 public class Mp3FileData extends FileBasedData {
 
     public static final String NOT_LOADED = "<Nicht geladen>";
-    public static final Mp3FileData MUSICPLAYER_PLACEHOLDER_DATA = new Mp3FileData("Titel", "Album", "Interpret", 0.0);
+    public static final Mp3FileData MUSICPLAYER_PLACEHOLDER_DATA = new Mp3FileData("<Titel>", "<Album>", "<Interpret>", 0.0);
     public static final Mp3FileData EMPTY_PLAYLIST_DATA = createEmptyData();
     public static final String UNIT_SIZE = " MB";
     public static final String UNIT_BITRATE = " kBit/s";

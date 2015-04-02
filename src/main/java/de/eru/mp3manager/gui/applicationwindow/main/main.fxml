@@ -9,11 +9,11 @@
 <?import java.lang.*?>
 <?import javafx.scene.layout.*?>
 
-<VBox fx:id="root" prefHeight="200.0" prefWidth="100.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="de.eru.mp3manager.gui.applicationwindow.main.MainPresenter">
+<VBox fx:id="root" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="de.eru.mp3manager.gui.applicationwindow.main.MainPresenter">
     <children>
         <HBox alignment="CENTER_LEFT" VBox.vgrow="NEVER">
             <children>
-                <Label fx:id="directoryLabel" onMouseClicked="#changeDirectory" text="Pfad">
+                <Label fx:id="directoryLabel" onMouseClicked="#changeDirectory" text="&lt;Pfad&gt;">
                     <cursor>
                         <Cursor fx:constant="HAND" />
                     </cursor>
@@ -39,7 +39,7 @@
         </TableView>
         <HBox VBox.vgrow="NEVER">
             <children>
-                <ProgressIndicator fx:id="taskProgress" maxHeight="54.0" maxWidth="46.0" minHeight="54.0" minWidth="46.0" prefHeight="54.0" prefWidth="46.0" progress="0.0" style="-fx-progress-color: dodgerblue;">
+                <ProgressIndicator fx:id="taskProgress" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="54.0" prefWidth="46.0" progress="0.0" style="-fx-progress-color: dodgerblue;">
                     <HBox.margin>
                         <Insets />
                     </HBox.margin>
@@ -52,12 +52,12 @@
                 <Separator orientation="VERTICAL" />
                 <VBox alignment="CENTER_LEFT">
                     <children>
-                        <Label fx:id="statusL1" text="Status - L">
+                        <Label fx:id="statusL1" text="&lt;Beschreibung&gt;">
                             <VBox.margin>
                                 <Insets />
                             </VBox.margin>
                         </Label>
-                        <Label fx:id="statusL2" text="Status - L2">
+                        <Label fx:id="statusL2" text="&lt;Details&gt;">
                             <VBox.margin>
                                 <Insets />
                             </VBox.margin>
@@ -65,10 +65,11 @@
                     </children>
                 </VBox>
                 <Pane HBox.hgrow="ALWAYS" />
+            <Separator orientation="VERTICAL" />
                 <VBox alignment="CENTER_RIGHT">
                     <children>
-                        <Label fx:id="statusR1" text="Status - R" HBox.hgrow="ALWAYS" />
-                        <Label fx:id="statusR2" text="Status - R2" />
+                        <Label fx:id="statusR1" minWidth="-Infinity" text="&lt;Ausgewählt&gt;" HBox.hgrow="ALWAYS" />
+                        <Label fx:id="statusR2" minWidth="-Infinity" text="&lt;Gesamt&gt;" />
                     </children>
                 </VBox>
             </children>

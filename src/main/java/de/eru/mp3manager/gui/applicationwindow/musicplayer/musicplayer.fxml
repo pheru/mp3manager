@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?> 
+<?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
@@ -89,9 +89,9 @@
                 </HBox>
                 <VBox alignment="CENTER_LEFT" maxWidth="200.0" minWidth="200.0" GridPane.rowIndex="1">
                     <children>
-                        <Label fx:id="titleLabel" text="Titel" />
-                        <Label fx:id="albumLabel" text="Album" />
-                        <Label fx:id="artistLabel" text="Interpret" />
+                        <Label fx:id="titleLabel" text="&lt;Titel&gt;" />
+                        <Label fx:id="albumLabel" text="&lt;Album&gt;" />
+                        <Label fx:id="artistLabel" text="&lt;Interpret&gt;" />
                     </children>
                     <padding>
                         <Insets left="15.0" />
