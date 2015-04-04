@@ -17,6 +17,7 @@ import javafx.beans.binding.StringBinding;
 import javafx.beans.property.DoubleProperty;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
@@ -56,6 +57,8 @@ public class MusicPlayerPresenter implements Initializable {
     private Label volumeLabel;
     @FXML
     private Button playButton;
+    @FXML
+    private ImageView playButtonImageView;
     @FXML
     private ToggleButton randomButton;
     @FXML
@@ -106,18 +109,18 @@ public class MusicPlayerPresenter implements Initializable {
                 return Double.valueOf(volumeSlider.valueProperty().get()).intValue() + "%";
             }
         });
-        playButton.textProperty().bind(new StringBinding() {
+        playButtonImageView.imageProperty().bind(new ObjectBinding<Image>() {
             {
                 bind(player.statusProperty());
             }
 
             @Override
-            protected String computeValue() {
-                if (player.getStatus() != MediaPlayer.Status.PLAYING) {
-                    return "Play";
-                } else {
-                    return "Pause";
+            protected Image computeValue() {
+                String button = "play";
+                if (player.getStatus() == MediaPlayer.Status.PLAYING) {
+                    button = "pause";
                 }
+                return new Image("img/musicPlayer/player_" + button + ".png");
             }
         });
         randomButton.selectedProperty().bindBidirectional(settings.musicPlayerRandomProperty());
@@ -171,7 +174,7 @@ public class MusicPlayerPresenter implements Initializable {
     private void next() {
         player.next();
     }
-    
+
     @FXML
     private void previous() {
         player.previous();

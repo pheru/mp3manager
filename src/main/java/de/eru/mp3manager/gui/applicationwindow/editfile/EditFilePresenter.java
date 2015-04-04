@@ -339,7 +339,7 @@ public class EditFilePresenter implements Initializable {
     private void setUpTitleSynchronization() {
         if (synchronizeTitleBox.isSelected()) {
             fileNameField.setDisable(true);
-            fileNameField.textProperty().bind(titleField.valueProperty());
+            fileNameField.textProperty().bind(titleField.getEditor().textProperty());
         } else {
             fileNameField.textProperty().unbind();
             fileNameField.setDisable(false);

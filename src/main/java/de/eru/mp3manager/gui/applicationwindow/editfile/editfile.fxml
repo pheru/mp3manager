@@ -7,7 +7,7 @@
 <?import java.lang.*?>
 <?import javafx.scene.layout.*?>
 
-<GridPane fx:id="root" minWidth="400.0" prefWidth="0.0" scaleShape="false" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="de.eru.mp3manager.gui.applicationwindow.editfile.EditFilePresenter">
+<GridPane fx:id="root" minWidth="350.0" prefWidth="0.0" scaleShape="false" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="de.eru.mp3manager.gui.applicationwindow.editfile.EditFilePresenter">
    <children>
       <HBox alignment="CENTER_LEFT" GridPane.columnSpan="2147483647" GridPane.rowIndex="1">
          <children>
@@ -65,7 +65,7 @@
             <Label minWidth="-Infinity" text="Genre" GridPane.columnIndex="2" />
             <ComboBox fx:id="trackField" editable="true" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="90.0" GridPane.rowIndex="1" />
             <ComboBox fx:id="yearField" editable="true" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="100.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-            <ComboBox fx:id="genreField" editable="true" maxWidth="1.7976931348623157E308" minWidth="200.0" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+            <ComboBox fx:id="genreField" editable="true" maxWidth="1.7976931348623157E308" minWidth="150.0" GridPane.columnIndex="2" GridPane.rowIndex="1" />
          </children>
          <columnConstraints>
             <ColumnConstraints hgrow="SOMETIMES" />
@@ -147,4 +147,7 @@
       <RowConstraints vgrow="NEVER" />
       <RowConstraints vgrow="NEVER" />
    </rowConstraints>
+   <padding>
+      <Insets bottom="5.0" />
+   </padding>
 </GridPane>
