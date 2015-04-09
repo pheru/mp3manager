@@ -94,6 +94,7 @@ public class EditFilePresenter implements Initializable {
         addAllFieldsToList();
         bindUI();
         setUpListeners();
+//        setUpValidation();
     }
 
     /**
@@ -167,6 +168,25 @@ public class EditFilePresenter implements Initializable {
         sortArtistBox.selectedProperty().addListener(sortListener);
     }
 
+    /*
+     private void setUpValidation() {
+     trackField.getEditor().textProperty().addListener(createNumberValidationChangeListener(trackField.getEditor()));
+     yearField.getEditor().textProperty().addListener(createNumberValidationChangeListener(yearField.getEditor()));
+     }
+    
+     private ChangeListener<String> createNumberValidationChangeListener(TextField textField){
+     return (ObservableValue<? extends String> observable, String oldValue, String newValue) -> {
+     if(newValue.isEmpty()){
+     return;
+     }
+     try {
+     Integer.valueOf(newValue);
+     } catch (NumberFormatException e) {
+     textField.setText(oldValue);
+     }
+     };
+     }
+     */
     private ChangeListener<Boolean> createSelectAllFocusListener(TextField target) {
         return (ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
             Platform.runLater(() -> {
@@ -350,7 +370,7 @@ public class EditFilePresenter implements Initializable {
         if (artworkData != null) {
             coverView.setImage(ByteFormatter.byteArrayToImage(artworkData.getBinaryData()));
             coverInfo.setText(artworkData.getMimeType() + " | " + artworkData.getHeight() + " x " + artworkData.getWidth()); //TODO Höhe x Breite oder Breite x Höhe?
-        } else{
+        } else {
             removeCover("<Kein Cover vorhanden>");
         }
     }

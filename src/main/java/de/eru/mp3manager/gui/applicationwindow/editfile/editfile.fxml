@@ -6,148 +6,158 @@
 <?import javafx.scene.control.*?>
 <?import java.lang.*?>
 <?import javafx.scene.layout.*?>
+<?import de.eru.mp3manager.gui.utils.*?>
 
-<GridPane fx:id="root" minWidth="350.0" prefWidth="0.0" scaleShape="false" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="de.eru.mp3manager.gui.applicationwindow.editfile.EditFilePresenter">
-   <children>
-      <HBox alignment="CENTER_LEFT" GridPane.columnSpan="2147483647" GridPane.rowIndex="1">
-         <children>
-            <TextField fx:id="fileNameField" HBox.hgrow="ALWAYS">
-               <VBox.margin>
-                  <Insets bottom="5.0" />
-               </VBox.margin>
-               <HBox.margin>
-                  <Insets />
-               </HBox.margin>
-            </TextField>
-            <Label text=".mp3" />
-         </children>
-         <VBox.margin>
-            <Insets bottom="5.0" />
-         </VBox.margin>
-      </HBox>
-      <Label minWidth="-Infinity" text="Titel" GridPane.rowIndex="2">
-         <GridPane.margin>
-            <Insets top="5.0" />
-         </GridPane.margin></Label>
-      <ComboBox fx:id="titleField" editable="true" maxWidth="1.7976931348623157E308" GridPane.columnSpan="2147483647" GridPane.rowIndex="3">
-         <VBox.margin>
-            <Insets bottom="5.0" />
-         </VBox.margin>
-      </ComboBox>
-      <Label minWidth="-Infinity" text="Album" GridPane.rowIndex="4">
-         <GridPane.margin>
-            <Insets top="5.0" />
-         </GridPane.margin></Label>
-      <ComboBox fx:id="albumField" editable="true" maxWidth="1.7976931348623157E308" GridPane.columnSpan="2147483647" GridPane.rowIndex="5">
-         <VBox.margin>
-            <Insets bottom="5.0" />
-         </VBox.margin>
-      </ComboBox>
-      <Label minWidth="-Infinity" text="Interpret" GridPane.rowIndex="6">
-         <GridPane.margin>
-            <Insets top="5.0" />
-         </GridPane.margin></Label>
-      <ComboBox fx:id="artistField" editable="true" maxWidth="1.7976931348623157E308" GridPane.columnSpan="2147483647" GridPane.rowIndex="7">
-         <VBox.margin>
-            <Insets bottom="5.0" />
-         </VBox.margin>
-         <GridPane.margin>
-            <Insets />
-         </GridPane.margin>
-      </ComboBox>
-      <GridPane hgap="5.0" GridPane.columnSpan="2147483647" GridPane.rowIndex="8">
-         <children>
-            <Label minWidth="-Infinity" text="Titelnr.">
-               <GridPane.margin>
-                  <Insets />
-               </GridPane.margin></Label>
-            <Label minWidth="-Infinity" text="Jahr" GridPane.columnIndex="1" />
-            <Label minWidth="-Infinity" text="Genre" GridPane.columnIndex="2" />
-            <ComboBox fx:id="trackField" editable="true" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="90.0" GridPane.rowIndex="1" />
-            <ComboBox fx:id="yearField" editable="true" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="100.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-            <ComboBox fx:id="genreField" editable="true" maxWidth="1.7976931348623157E308" minWidth="150.0" GridPane.columnIndex="2" GridPane.rowIndex="1" />
-         </children>
-         <columnConstraints>
-            <ColumnConstraints hgrow="SOMETIMES" />
-            <ColumnConstraints hgrow="SOMETIMES" />
-            <ColumnConstraints hgrow="ALWAYS" />
-         </columnConstraints>
-         <rowConstraints>
-            <RowConstraints vgrow="SOMETIMES" />
-            <RowConstraints vgrow="SOMETIMES" />
-         </rowConstraints>
-         <VBox.margin>
-            <Insets bottom="5.0" />
-         </VBox.margin>
-         <GridPane.margin>
-            <Insets top="5.0" />
-         </GridPane.margin>
-      </GridPane>
-      <Label minWidth="-Infinity" text="Dateiname" />
-      <Pane fx:id="coverPane" GridPane.columnSpan="2147483647" GridPane.hgrow="ALWAYS" GridPane.rowIndex="11" GridPane.vgrow="ALWAYS" VBox.vgrow="ALWAYS">
-         <children>
-            <ImageView fx:id="coverView" pickOnBounds="true" VBox.vgrow="NEVER">
-               <VBox.margin>
-                  <Insets />
-               </VBox.margin>
-            </ImageView>
-         </children>
-      </Pane>
-      <HBox GridPane.columnSpan="2147483647" GridPane.rowIndex="9">
-         <children>
-            <Label minWidth="-Infinity" text="Albumcover" GridPane.rowIndex="9" />
-            <Button maxHeight="27.0" minHeight="27.0" minWidth="-Infinity" mnemonicParsing="false" onMouseClicked="#chooseCover" text="Ändern...">
-               <HBox.margin>
-                  <Insets left="10.0" />
-               </HBox.margin>
-               <font>
-                  <Font size="15.0" />
-               </font>
-            </Button>
-         </children>
-         <GridPane.margin>
-            <Insets top="10.0" />
-         </GridPane.margin>
-      </HBox>
-      <Button fx:id="saveButton" mnemonicParsing="false" onAction="#save" text="Speichern" GridPane.columnSpan="2147483647" GridPane.halignment="CENTER" GridPane.rowIndex="13" />
-      <CheckBox fx:id="synchronizeTitleBox" minWidth="-Infinity" mnemonicParsing="false" text="Titel übernehmen" GridPane.columnIndex="1" GridPane.valignment="BOTTOM" />
-      <CheckBox fx:id="sortTitleBox" minWidth="-Infinity" mnemonicParsing="false" text="Alphabetisch sortieren" GridPane.columnIndex="1" GridPane.rowIndex="2" GridPane.valignment="BOTTOM" />
-      <CheckBox fx:id="sortAlbumBox" minWidth="-Infinity" mnemonicParsing="false" text="Alphabetisch sortieren" GridPane.columnIndex="1" GridPane.rowIndex="4" GridPane.valignment="BOTTOM" />
-      <CheckBox fx:id="sortArtistBox" minWidth="-Infinity" mnemonicParsing="false" text="Alphabetisch sortieren" GridPane.columnIndex="1" GridPane.rowIndex="6" GridPane.valignment="BOTTOM" />
-      <Separator GridPane.columnSpan="2147483647" GridPane.hgrow="ALWAYS" GridPane.rowIndex="12">
-         <padding>
-            <Insets top="2.0" />
-         </padding></Separator>
-      <Label fx:id="coverInfo" text="Coverinfo" GridPane.columnSpan="2147483647" GridPane.rowIndex="10">
-         <graphic>
-            <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
-               <image>
-                  <Image url="img/info_16.png" />
-               </image>
-            </ImageView>
-         </graphic></Label>
-   </children>
-   <columnConstraints>
-      <ColumnConstraints hgrow="SOMETIMES" />
-      <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" />
-   </columnConstraints>
-   <rowConstraints>
-      <RowConstraints vgrow="NEVER" />
-      <RowConstraints vgrow="NEVER" />
-      <RowConstraints vgrow="NEVER" />
-      <RowConstraints vgrow="NEVER" />
-      <RowConstraints vgrow="NEVER" />
-      <RowConstraints vgrow="NEVER" />
-      <RowConstraints vgrow="NEVER" />
-      <RowConstraints vgrow="NEVER" />
-      <RowConstraints vgrow="NEVER" />
-      <RowConstraints vgrow="NEVER" />
-      <RowConstraints vgrow="NEVER" />
-      <RowConstraints minHeight="0.0" vgrow="ALWAYS" />
-      <RowConstraints vgrow="NEVER" />
-      <RowConstraints vgrow="NEVER" />
-   </rowConstraints>
-   <padding>
-      <Insets bottom="5.0" />
-   </padding>
+<GridPane fx:id="root" minWidth="350.0" prefWidth="0.0" scaleShape="false" xmlns="http://javafx.com/javafx/8.0.40" xmlns:fx="http://javafx.com/fxml/1" fx:controller="de.eru.mp3manager.gui.applicationwindow.editfile.EditFilePresenter">
+    <fx:define>
+        <RootEm fx:id="rem" />
+    </fx:define>
+    <children>
+        <HBox alignment="CENTER_LEFT" GridPane.columnSpan="2147483647" GridPane.rowIndex="1">
+            <children>
+                <TextField fx:id="fileNameField" HBox.hgrow="ALWAYS">
+                    <VBox.margin>
+                        <Insets bottom="5.0" />
+                    </VBox.margin>
+                    <HBox.margin>
+                        <Insets />
+                    </HBox.margin>
+                </TextField>
+                <Label text=".mp3" />
+            </children>
+            <VBox.margin>
+                <Insets bottom="5.0" />
+            </VBox.margin>
+        </HBox>
+        <Label minWidth="-Infinity" text="Titel" GridPane.rowIndex="2">
+            <GridPane.margin>
+                <Insets top="5.0" />
+            </GridPane.margin>
+        </Label>
+        <ComboBox fx:id="titleField" editable="true" maxWidth="1.7976931348623157E308" GridPane.columnSpan="2147483647" GridPane.rowIndex="3">
+            <VBox.margin>
+                <Insets bottom="5.0" />
+            </VBox.margin>
+        </ComboBox>
+        <Label minWidth="-Infinity" text="Album" GridPane.rowIndex="4">
+            <GridPane.margin>
+                <Insets top="5.0" />
+            </GridPane.margin>
+        </Label>
+        <ComboBox fx:id="albumField" editable="true" maxWidth="1.7976931348623157E308" GridPane.columnSpan="2147483647" GridPane.rowIndex="5">
+            <VBox.margin>
+                <Insets bottom="5.0" />
+            </VBox.margin>
+        </ComboBox>
+        <Label minWidth="-Infinity" text="Interpret" GridPane.rowIndex="6">
+            <GridPane.margin>
+                <Insets top="5.0" />
+            </GridPane.margin>
+        </Label>
+        <ComboBox fx:id="artistField" editable="true" maxWidth="1.7976931348623157E308" GridPane.columnSpan="2147483647" GridPane.rowIndex="7">
+            <VBox.margin>
+                <Insets bottom="5.0" />
+            </VBox.margin>
+            <GridPane.margin>
+                <Insets />
+            </GridPane.margin>
+        </ComboBox>
+        <GridPane hgap="5.0" GridPane.columnSpan="2147483647" GridPane.rowIndex="8">
+            <children>
+                <Label minWidth="-Infinity" text="Titelnr.">
+                    <GridPane.margin>
+                        <Insets />
+                    </GridPane.margin>
+                </Label>
+                <Label minWidth="-Infinity" text="Jahr" GridPane.columnIndex="1" />
+                <Label minWidth="-Infinity" text="Genre" GridPane.columnIndex="2" />
+                <ComboBox fx:id="trackField" editable="true" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="${4*rem.value}" GridPane.rowIndex="1" />
+                <ComboBox fx:id="yearField" editable="true" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="100.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                <ComboBox fx:id="genreField" editable="true" maxWidth="1.7976931348623157E308" minWidth="150.0" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+            </children>
+            <columnConstraints>
+                <ColumnConstraints hgrow="SOMETIMES" />
+                <ColumnConstraints hgrow="SOMETIMES" />
+                <ColumnConstraints hgrow="ALWAYS" />
+            </columnConstraints>
+            <rowConstraints>
+                <RowConstraints vgrow="SOMETIMES" />
+                <RowConstraints vgrow="SOMETIMES" />
+            </rowConstraints>
+            <VBox.margin>
+                <Insets bottom="5.0" />
+            </VBox.margin>
+            <GridPane.margin>
+                <Insets top="5.0" />
+            </GridPane.margin>
+        </GridPane>
+        <Label minWidth="-Infinity" text="Dateiname" />
+        <Pane fx:id="coverPane" GridPane.columnSpan="2147483647" GridPane.hgrow="ALWAYS" GridPane.rowIndex="11" GridPane.vgrow="ALWAYS" VBox.vgrow="ALWAYS">
+            <children>
+                <ImageView fx:id="coverView" pickOnBounds="true" VBox.vgrow="NEVER">
+                    <VBox.margin>
+                        <Insets />
+                    </VBox.margin>
+                </ImageView>
+            </children>
+        </Pane>
+        <HBox GridPane.columnSpan="2147483647" GridPane.rowIndex="9">
+            <children>
+                <Label minWidth="-Infinity" text="Albumcover" GridPane.rowIndex="9" />
+                <Button maxHeight="27.0" minHeight="27.0" minWidth="-Infinity" mnemonicParsing="false" onMouseClicked="#chooseCover" text="Ändern...">
+                    <HBox.margin>
+                        <Insets left="10.0" />
+                    </HBox.margin>
+                    <font>
+                        <Font size="15.0" />
+                    </font>
+                </Button>
+            </children>
+            <GridPane.margin>
+                <Insets top="10.0" />
+            </GridPane.margin>
+        </HBox>
+        <Button fx:id="saveButton" mnemonicParsing="false" onAction="#save" text="Speichern" GridPane.columnSpan="2147483647" GridPane.halignment="CENTER" GridPane.rowIndex="13" />
+        <CheckBox fx:id="synchronizeTitleBox" minWidth="-Infinity" mnemonicParsing="false" text="Titel übernehmen" GridPane.columnIndex="1" GridPane.valignment="BOTTOM" />
+        <CheckBox fx:id="sortTitleBox" minWidth="-Infinity" mnemonicParsing="false" text="Alphabetisch sortieren" GridPane.columnIndex="1" GridPane.rowIndex="2" GridPane.valignment="BOTTOM" />
+        <CheckBox fx:id="sortAlbumBox" minWidth="-Infinity" mnemonicParsing="false" text="Alphabetisch sortieren" GridPane.columnIndex="1" GridPane.rowIndex="4" GridPane.valignment="BOTTOM" />
+        <CheckBox fx:id="sortArtistBox" minWidth="-Infinity" mnemonicParsing="false" text="Alphabetisch sortieren" GridPane.columnIndex="1" GridPane.rowIndex="6" GridPane.valignment="BOTTOM" />
+        <Separator GridPane.columnSpan="2147483647" GridPane.hgrow="ALWAYS" GridPane.rowIndex="12">
+            <padding>
+                <Insets top="2.0" />
+            </padding>
+        </Separator>
+        <Label fx:id="coverInfo" text="Coverinfo" GridPane.columnSpan="2147483647" GridPane.rowIndex="10">
+            <graphic>
+                <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
+                    <image>
+                        <Image url="img/info_16.png" />
+                    </image>
+                </ImageView>
+            </graphic>
+        </Label>
+    </children>
+    <columnConstraints>
+        <ColumnConstraints hgrow="SOMETIMES" />
+        <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" />
+    </columnConstraints>
+    <rowConstraints>
+        <RowConstraints vgrow="NEVER" />
+        <RowConstraints vgrow="NEVER" />
+        <RowConstraints vgrow="NEVER" />
+        <RowConstraints vgrow="NEVER" />
+        <RowConstraints vgrow="NEVER" />
+        <RowConstraints vgrow="NEVER" />
+        <RowConstraints vgrow="NEVER" />
+        <RowConstraints vgrow="NEVER" />
+        <RowConstraints vgrow="NEVER" />
+        <RowConstraints vgrow="NEVER" />
+        <RowConstraints vgrow="NEVER" />
+        <RowConstraints minHeight="0.0" vgrow="ALWAYS" />
+        <RowConstraints vgrow="NEVER" />
+        <RowConstraints vgrow="NEVER" />
+    </rowConstraints>
+    <padding>
+        <Insets bottom="5.0" />
+    </padding>
 </GridPane>

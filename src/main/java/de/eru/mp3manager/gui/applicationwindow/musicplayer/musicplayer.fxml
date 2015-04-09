@@ -108,6 +108,11 @@
                      </graphic></ToggleButton>
                         <HBox alignment="CENTER">
                             <children>
+                        <ImageView fx:id="volumeImageView" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="img/musicPlayer/player_volume_3.png" />
+                           </image>
+                        </ImageView>
                                 <StackPane GridPane.columnIndex="1" GridPane.rowIndex="1">
                                     <children>
                                         <ProgressBar fx:id="volumeProgressBar" maxWidth="1.7976931348623157E308" progress="1.0" scaleY="0.4">
@@ -118,7 +123,7 @@
                                         <Slider fx:id="volumeSlider" blockIncrement="0.0" majorTickUnit="1.0" max="100.0" maxWidth="1.7976931348623157E308" minorTickCount="1" value="100.0" />
                                     </children>
                                 </StackPane>
-                                <Label fx:id="volumeLabel" alignment="CENTER_RIGHT" minWidth="35.0" text="100%">
+                                <Label fx:id="volumeLabel" alignment="CENTER_RIGHT" minWidth="50.0" text="100%">
                                     <HBox.margin>
                                         <Insets />
                                     </HBox.margin>

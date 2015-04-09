@@ -56,6 +56,8 @@ public class MusicPlayerPresenter implements Initializable {
     @FXML
     private Label volumeLabel;
     @FXML
+    private ImageView volumeImageView;
+    @FXML
     private Button playButton;
     @FXML
     private ImageView playButtonImageView;
@@ -109,6 +111,24 @@ public class MusicPlayerPresenter implements Initializable {
                 return Double.valueOf(volumeSlider.valueProperty().get()).intValue() + "%";
             }
         });
+        volumeImageView.imageProperty().bind(new ObjectBinding<Image>() {
+            {
+                bind(volumeProgressBar.progressProperty());
+            }
+
+            @Override
+            protected Image computeValue() {
+                String s = "0";
+                if (volumeProgressBar.getProgress() > 0.66) {
+                    s = "3";
+                } else if (volumeProgressBar.getProgress() > 0.33) {
+                    s = "2";
+                } else if (volumeProgressBar.getProgress() > 0.0) {
+                    s = "1";
+                }
+                return new Image("img/musicPlayer/player_volume_" + s + ".png");
+            }
+        });
         playButtonImageView.imageProperty().bind(new ObjectBinding<Image>() {
             {
                 bind(player.statusProperty());
@@ -130,7 +150,7 @@ public class MusicPlayerPresenter implements Initializable {
 //            updateCurrentTitleBinding(newValue.intValue());
 //        });
     }
-
+    
     private void currentTitleUpdated(@Observes @Updated CurrentTitleEvent event) {
         updateCurrentTitleBinding(event.getNewCurrentTitle());
     }
@@ -147,6 +167,9 @@ public class MusicPlayerPresenter implements Initializable {
 
             @Override
             protected Image computeValue() {
+                if(newTitle.getArtworkData() == null){
+                    return null;
+                }
                 return ByteFormatter.byteArrayToImage(newTitle.getArtworkData().getBinaryData());
             }
         });
