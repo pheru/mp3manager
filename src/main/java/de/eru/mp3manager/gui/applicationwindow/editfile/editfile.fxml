@@ -73,7 +73,7 @@
                 <Label minWidth="-Infinity" text="Jahr" GridPane.columnIndex="1" />
                 <Label minWidth="-Infinity" text="Genre" GridPane.columnIndex="2" />
                 <ComboBox fx:id="trackField" editable="true" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="${4*rem.value}" GridPane.rowIndex="1" />
-                <ComboBox fx:id="yearField" editable="true" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="${80.0 * scale.value}" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                <ComboBox fx:id="yearField" editable="true" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="${66.6 * scale.value}" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                 <ComboBox fx:id="genreField" editable="true" maxWidth="1.7976931348623157E308" minWidth="150.0" GridPane.columnIndex="2" GridPane.rowIndex="1" />
             </children>
             <columnConstraints>
