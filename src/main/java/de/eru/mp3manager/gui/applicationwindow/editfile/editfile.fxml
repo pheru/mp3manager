@@ -11,6 +11,7 @@
 <GridPane fx:id="root" minWidth="350.0" prefWidth="0.0" scaleShape="false" xmlns="http://javafx.com/javafx/8.0.40" xmlns:fx="http://javafx.com/fxml/1" fx:controller="de.eru.mp3manager.gui.applicationwindow.editfile.EditFilePresenter">
     <fx:define>
         <RootEm fx:id="rem" />
+        <Scale fx:id="scale" />
     </fx:define>
     <children>
         <HBox alignment="CENTER_LEFT" GridPane.columnSpan="2147483647" GridPane.rowIndex="1">
@@ -72,7 +73,7 @@
                 <Label minWidth="-Infinity" text="Jahr" GridPane.columnIndex="1" />
                 <Label minWidth="-Infinity" text="Genre" GridPane.columnIndex="2" />
                 <ComboBox fx:id="trackField" editable="true" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="${4*rem.value}" GridPane.rowIndex="1" />
-                <ComboBox fx:id="yearField" editable="true" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="100.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                <ComboBox fx:id="yearField" editable="true" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="${80.0 * scale.value}" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                 <ComboBox fx:id="genreField" editable="true" maxWidth="1.7976931348623157E308" minWidth="150.0" GridPane.columnIndex="2" GridPane.rowIndex="1" />
             </children>
             <columnConstraints>
