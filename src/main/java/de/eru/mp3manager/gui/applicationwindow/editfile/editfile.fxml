@@ -10,7 +10,6 @@
 
 <GridPane fx:id="root" minWidth="350.0" prefWidth="0.0" scaleShape="false" xmlns="http://javafx.com/javafx/8.0.40" xmlns:fx="http://javafx.com/fxml/1" fx:controller="de.eru.mp3manager.gui.applicationwindow.editfile.EditFilePresenter">
     <fx:define>
-        <RootEm fx:id="rem" />
         <Scale fx:id="scale" />
     </fx:define>
     <children>
@@ -72,7 +71,7 @@
                 </Label>
                 <Label minWidth="-Infinity" text="Jahr" GridPane.columnIndex="1" />
                 <Label minWidth="-Infinity" text="Genre" GridPane.columnIndex="2" />
-                <ComboBox fx:id="trackField" editable="true" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="${4*rem.value}" GridPane.rowIndex="1" />
+                <ComboBox fx:id="trackField" editable="true" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="${60.0 * scale.value}" GridPane.rowIndex="1" />
                 <ComboBox fx:id="yearField" editable="true" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="${66.6 * scale.value}" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                 <ComboBox fx:id="genreField" editable="true" maxWidth="1.7976931348623157E308" minWidth="150.0" GridPane.columnIndex="2" GridPane.rowIndex="1" />
             </children>
@@ -105,12 +104,12 @@
         <HBox GridPane.columnSpan="2147483647" GridPane.rowIndex="9">
             <children>
                 <Label minWidth="-Infinity" text="Albumcover" GridPane.rowIndex="9" />
-                <Button maxHeight="27.0" minHeight="27.0" minWidth="-Infinity" mnemonicParsing="false" onMouseClicked="#chooseCover" text="Ändern...">
+                <Button maxHeight="${20.0 * scale.value}" minHeight="${20.0 * scale.value}" minWidth="-Infinity" mnemonicParsing="false" onMouseClicked="#chooseCover" text="Ändern...">
                     <HBox.margin>
                         <Insets left="10.0" />
                     </HBox.margin>
                     <font>
-                        <Font size="15.0" />
+                        <Font size="10.0" />
                     </font>
                 </Button>
             </children>
@@ -119,10 +118,26 @@
             </GridPane.margin>
         </HBox>
         <Button fx:id="saveButton" mnemonicParsing="false" onAction="#save" text="Speichern" GridPane.columnSpan="2147483647" GridPane.halignment="CENTER" GridPane.rowIndex="13" />
-        <CheckBox fx:id="synchronizeTitleBox" minWidth="-Infinity" mnemonicParsing="false" text="Titel übernehmen" GridPane.columnIndex="1" GridPane.valignment="BOTTOM" />
-        <CheckBox fx:id="sortTitleBox" minWidth="-Infinity" mnemonicParsing="false" text="Alphabetisch sortieren" GridPane.columnIndex="1" GridPane.rowIndex="2" GridPane.valignment="BOTTOM" />
-        <CheckBox fx:id="sortAlbumBox" minWidth="-Infinity" mnemonicParsing="false" text="Alphabetisch sortieren" GridPane.columnIndex="1" GridPane.rowIndex="4" GridPane.valignment="BOTTOM" />
-        <CheckBox fx:id="sortArtistBox" minWidth="-Infinity" mnemonicParsing="false" text="Alphabetisch sortieren" GridPane.columnIndex="1" GridPane.rowIndex="6" GridPane.valignment="BOTTOM" />
+        <CheckBox fx:id="synchronizeTitleBox" minWidth="-Infinity" mnemonicParsing="false" text="Titel übernehmen" GridPane.columnIndex="1" GridPane.valignment="BOTTOM">
+            <GridPane.margin>
+                <Insets bottom="1.0" />
+            </GridPane.margin>
+        </CheckBox>
+        <CheckBox fx:id="sortTitleBox" minWidth="-Infinity" mnemonicParsing="false" text="Alphabetisch sortieren" GridPane.columnIndex="1" GridPane.rowIndex="2" GridPane.valignment="BOTTOM">
+            <GridPane.margin>
+                <Insets bottom="1.0" />
+            </GridPane.margin>
+        </CheckBox>
+        <CheckBox fx:id="sortAlbumBox" minWidth="-Infinity" mnemonicParsing="false" text="Alphabetisch sortieren" GridPane.columnIndex="1" GridPane.rowIndex="4" GridPane.valignment="BOTTOM">
+            <GridPane.margin>
+                <Insets bottom="1.0" />
+            </GridPane.margin>
+        </CheckBox>
+        <CheckBox fx:id="sortArtistBox" minWidth="-Infinity" mnemonicParsing="false" text="Alphabetisch sortieren" GridPane.columnIndex="1" GridPane.rowIndex="6" GridPane.valignment="BOTTOM">
+            <GridPane.margin>
+                <Insets bottom="1.0" />
+            </GridPane.margin>
+        </CheckBox>
         <Separator GridPane.columnSpan="2147483647" GridPane.hgrow="ALWAYS" GridPane.rowIndex="12">
             <padding>
                 <Insets top="2.0" />
