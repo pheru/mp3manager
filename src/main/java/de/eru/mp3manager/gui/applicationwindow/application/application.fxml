@@ -55,7 +55,7 @@
         </MenuBar>
         <SplitPane fx:id="splitPane" GridPane.hgrow="ALWAYS" GridPane.rowIndex="2" GridPane.vgrow="ALWAYS">
             <items>
-                <TabPane tabClosingPolicy="UNAVAILABLE" tabMinWidth="115.0" SplitPane.resizableWithParent="false">
+                <TabPane fx:id="tabPane" tabClosingPolicy="UNAVAILABLE" tabMinWidth="${tabPane.width / 2 - 20}" tabMaxWidth="${tabPane.width / 2 - 20}" SplitPane.resizableWithParent="false">
                     <tabs>
                         <Tab fx:id="playlistTab" text="Wiedergabe" />
                         <Tab fx:id="editFileTab" text="Editor" />
