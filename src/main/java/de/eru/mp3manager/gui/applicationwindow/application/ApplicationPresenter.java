@@ -17,12 +17,15 @@ import de.eru.mp3manager.gui.applicationwindow.musicplayer.MusicPlayerView;
 import de.eru.mp3manager.gui.applicationwindow.playlist.PlaylistPresenter;
 import de.eru.mp3manager.gui.applicationwindow.playlist.PlaylistView;
 import de.eru.mp3manager.player.MusicPlayer;
+import de.eru.pherufx.focus.FocusTraversal;
+import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.beans.value.ObservableValue;
 import javafx.scene.control.CheckMenuItem;
 import javafx.scene.control.SplitPane;
 import javafx.scene.control.TabPane;
 import javafx.scene.layout.Region;
+import javafx.stage.Stage;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
@@ -31,6 +34,8 @@ public class ApplicationPresenter implements Initializable {
 
     @FXML
     private SplitPane splitPane;
+    @FXML
+    private TabPane tabPane;
     @FXML
     private Tab editFileTab;
     @FXML
@@ -65,6 +70,21 @@ public class ApplicationPresenter implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         initViewsAndPresenters();
         bindUI();
+        FocusTraversal.setTabKeyEventHandlerForNode(tabPane, () -> {
+            int tabIndex = tabPane.getSelectionModel().getSelectedIndex();
+            tabIndex++;
+            if (tabIndex >= tabPane.getTabs().size()) {
+                tabIndex = 0;
+            }
+            tabPane.getSelectionModel().select(tabIndex);
+        }, () -> {
+            int tabIndex = tabPane.getSelectionModel().getSelectedIndex();
+            tabIndex--;
+            if (tabIndex < 0) {
+                tabIndex = tabPane.getTabs().size() - 1;
+            }
+            tabPane.getSelectionModel().select(tabIndex);
+        });
         mainPresenter.readDirectory();
     }
 
@@ -93,7 +113,6 @@ public class ApplicationPresenter implements Initializable {
     private void bindUI() {
         randomMenuItem.selectedProperty().bindBidirectional(settings.musicPlayerRandomProperty());
         repeatMenuItem.selectedProperty().bindBidirectional(settings.musicPlayerRepeatProperty());
-        final TabPane tabPane = editFileTab.getTabPane();
         Region content = (Region) tabPane.getSelectionModel().getSelectedItem().getContent();
         tabPane.setMinWidth(content.getMinWidth());
         tabPane.getSelectionModel().selectedItemProperty().addListener((ObservableValue<? extends Tab> observable, Tab oldValue, Tab newValue) -> {

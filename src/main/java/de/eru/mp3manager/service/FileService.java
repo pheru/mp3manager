@@ -3,6 +3,7 @@ package de.eru.mp3manager.service;
 import de.eru.mp3manager.data.Mp3FileData;
 import de.eru.mp3manager.data.Playlist;
 import de.eru.mp3manager.gui.applicationwindow.editfile.EditFilePresenter;
+import de.eru.mp3manager.gui.applicationwindow.editfile.EditFileView;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -43,9 +44,19 @@ public final class FileService {
      * @param dataToSave Die zu überschreibende Datei.
      * @param changeData Die zu speichernden MP3-Informationen.
      */
-    public static void saveMp3File(Mp3FileData dataToSave, Mp3FileData changeData) throws KeyNotFoundException, FieldDataInvalidException, CannotReadException, IOException, TagException, ReadOnlyFileException, InvalidAudioFrameException, CannotWriteException {
-        MP3File file = (MP3File) AudioFileIO.read(new File(dataToSave.getAbsolutePath()));
-        AbstractID3v2Tag tag = file.getID3v2Tag();
+    public static void saveMp3File(Mp3FileData dataToSave, Mp3FileData changeData) throws KeyNotFoundException, FieldDataInvalidException, CannotReadException, IOException, TagException, ReadOnlyFileException, InvalidAudioFrameException, CannotWriteException, RenameFileException {
+        File file = new File(dataToSave.getAbsolutePath());
+        if (!changeData.getFileName().equals(EditFilePresenter.NOT_CHANGABLE + ".mp3") && !dataToSave.getFileName().equals(changeData.getFileName())) {
+            File newFile = new File(dataToSave.getFilePath() + "\\" + changeData.getFileName());
+            if (file.renameTo(newFile)) {
+                file = newFile;
+                dataToSave.setFileName(changeData.getFileName());
+            } else {
+                throw new RenameFileException("Could not rename file " + dataToSave.getFileName() + " to " + changeData.getFileName());
+            }
+        }
+        MP3File mp3File = (MP3File) AudioFileIO.read(file);
+        AbstractID3v2Tag tag = mp3File.getID3v2Tag();
         setTagField(tag, FieldKey.TITLE, changeData.getTitle());
         setTagField(tag, FieldKey.ARTIST, changeData.getArtist());
         setTagField(tag, FieldKey.ALBUM, changeData.getAlbum());
@@ -62,10 +73,7 @@ public final class FileService {
             tag.deleteArtworkField();
             tag.setField(newArtwork);
         }
-        file.commit();
-        if (!dataToSave.getFileName().equals(changeData.getFileName())) {
-            file.getFile().renameTo(new File(dataToSave.getFilePath() + "\\" + changeData.getFileName()));
-        }
+        mp3File.save();
     }
 
     private static void setTagField(AbstractID3v2Tag tag, FieldKey key, String value) throws KeyNotFoundException, FieldDataInvalidException {

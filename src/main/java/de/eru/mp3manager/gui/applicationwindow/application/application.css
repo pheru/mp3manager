@@ -10,21 +10,11 @@
 }
 
 .tab-down-button {
-    -fx-background-color: green;
     -fx-padding: 0;
 }
 
 .tab-down-button .arrow {
     -fx-background-insets: 0;
-    -fx-background:black;
-    -fx-width:0;
-    -fx-padding: 0;
-    -fx-shape: " ";
-}
-
-.arrow {
-    -fx-background-insets: 0;
-    -fx-background:black;
     -fx-width:0;
     -fx-padding: 0;
     -fx-shape: " ";

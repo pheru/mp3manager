@@ -114,7 +114,8 @@ public class Settings {
             });
             return (Settings) unmarshaller.unmarshal(new File(FILE_PATH));
         } catch (JAXBException ex) {
-            ExceptionHandler.handle(ex, "XML fehlerhaft oder nicht vorhanden!");
+//            ExceptionHandler.handle(ex, "XML fehlerhaft oder nicht vorhanden!");
+            System.out.println("Settings nicht da"); //TODO Exception verarbeiten
             Settings defaultSettings = new Settings();
             defaultSettings.initDefaultMainColumnSettings();
 //            if (defaultSettings.save()) {

@@ -5,8 +5,9 @@
 <?import javafx.scene.control.cell.*?>
 <?import java.lang.*?>
 <?import javafx.scene.layout.*?>
+<?import de.eru.pherufx.focus.*?>
 
-<VBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minWidth="300.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="de.eru.mp3manager.gui.applicationwindow.playlist.PlaylistPresenter">
+<VBox xmlns:fx="http://javafx.com/fxml/1" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minWidth="300.0" xmlns="http://javafx.com/javafx/8" fx:controller="de.eru.mp3manager.gui.applicationwindow.playlist.PlaylistPresenter">
     <children>
         <HBox alignment="CENTER_LEFT" VBox.vgrow="NEVER">
             <children>
@@ -18,15 +19,15 @@
         </HBox>
         <HBox alignment="CENTER_LEFT" VBox.vgrow="NEVER">
             <children>
-                <MenuButton mnemonicParsing="false" text="Aktionen...">
+                <MenuButton fx:id="actionsMenuButton" mnemonicParsing="false" text="Aktionen...">
                     <items>
                         <MenuItem mnemonicParsing="false" onAction="#loadPlaylist" text="Laden..." />
-                  <Menu fx:id="saveMenu" mnemonicParsing="false" text="Speichern...">
-                     <items>
-                              <MenuItem fx:id="saveMenuItem" mnemonicParsing="false" onAction="#savePlaylist" text="Speichern" />
-                        <MenuItem mnemonicParsing="false" onAction="#savePlaylistAs" text="Speichern unter..." />
-                     </items>
-                  </Menu>
+                        <Menu fx:id="saveMenu" mnemonicParsing="false" text="Speichern...">
+                            <items>
+                                <MenuItem fx:id="saveMenuItem" mnemonicParsing="false" onAction="#savePlaylist" text="Speichern" />
+                                <MenuItem mnemonicParsing="false" onAction="#savePlaylistAs" text="Speichern unter..." />
+                            </items>
+                        </Menu>
                         <MenuItem fx:id="deleteMenuItem" mnemonicParsing="false" onAction="#deletePlaylist" text="Löschen..." />
                     </items>
                 </MenuButton>
@@ -63,4 +64,12 @@
             </contextMenu>
         </TableView>
     </children>
+    <fx:define>
+        <FocusTraversalGroup fx:id="playlistGroup">
+            <nodes>
+                <fx:reference source="actionsMenuButton"/>
+                <fx:reference source="table"/>
+            </nodes>
+        </FocusTraversalGroup>
+    </fx:define>
 </VBox>

@@ -13,6 +13,7 @@ import de.eru.mp3manager.gui.utils.TablePlaceholders;
 import de.eru.mp3manager.settings.ColumnSettings;
 import de.eru.mp3manager.utils.TaskPool;
 import de.eru.mp3manager.utils.factories.TaskFactory;
+import de.eru.pherufx.focus.FocusTraversal;
 import de.eru.pherufx.mvp.InjectableList;
 import java.io.File;
 import java.net.URL;
@@ -102,6 +103,8 @@ public class MainPresenter implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         initTable();
         bindUI();
+        FocusTraversal.createFocusTraversalGroup("mainGroup", table, TablePlaceholders.getEmptyDirectoryButton(), 
+                TablePlaceholders.getNoDirectoryButton(), filterTextField);
         //TODO Ansatz für Issue #7
 //        table.addEventFilter(KeyEvent.KEY_PRESSED, (KeyEvent event) -> {
 //            if (event.getCode() == KeyCode.TAB) {
@@ -221,7 +224,7 @@ public class MainPresenter implements Initializable {
                         @Override
                         protected void updateItem(String item, boolean empty) {
                             super.updateItem(item, empty);
-                            
+
                             if (empty || item == null) {
                                 setText(null);
                                 setGraphic(null);
@@ -283,7 +286,8 @@ public class MainPresenter implements Initializable {
      */
     private void bindUI() {
         clearFilterButton.visibleProperty().bind(filterTextField.textProperty().isEmpty().not());
-        taskCancelButton.disableProperty().bind(taskPool.cancellingProperty().or(taskPool.runningProperty().not()));
+//        taskCancelButton.disableProperty().bind(taskPool.cancellingProperty().or(taskPool.runningProperty().not()));
+        taskCancelButton.disableProperty().bind(taskPool.statusProperty().isNotEqualTo(TaskPool.Status.RUNNING));
         taskProgress.styleProperty().bind(new StringBinding() {
             {
                 bind(taskPool.statusProperty());

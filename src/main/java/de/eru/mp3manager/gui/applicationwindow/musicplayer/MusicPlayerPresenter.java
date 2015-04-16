@@ -25,6 +25,8 @@ import javafx.scene.control.Slider;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.media.MediaPlayer;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
@@ -123,7 +125,7 @@ public class MusicPlayerPresenter implements Initializable {
                     s = "3";
                 } else if (volumeProgressBar.getProgress() > 0.33) {
                     s = "2";
-                } else if (volumeProgressBar.getProgress() > 0.0) {
+                } else if (volumeProgressBar.getProgress() >= 0.01) {
                     s = "1";
                 }
                 return new Image("img/musicPlayer/player_volume_" + s + ".png");
@@ -150,7 +152,7 @@ public class MusicPlayerPresenter implements Initializable {
 //            updateCurrentTitleBinding(newValue.intValue());
 //        });
     }
-    
+
     private void currentTitleUpdated(@Observes @Updated CurrentTitleEvent event) {
         updateCurrentTitleBinding(event.getNewCurrentTitle());
     }
@@ -167,7 +169,7 @@ public class MusicPlayerPresenter implements Initializable {
 
             @Override
             protected Image computeValue() {
-                if(newTitle.getArtworkData() == null){
+                if (newTitle.getArtworkData() == null) {
                     return null;
                 }
                 return ByteFormatter.byteArrayToImage(newTitle.getArtworkData().getBinaryData());
@@ -209,13 +211,25 @@ public class MusicPlayerPresenter implements Initializable {
     }
 
     @FXML
-    private void sliderPressed() {
+    private void durationSliderMousePressed() {
         durationSlider.valueProperty().unbind();
     }
 
     @FXML
-    private void sliderReleased() {
+    private void durationSliderMouseReleased() {
         player.seek(durationSlider.getValue() * player.getTotalTime());
         durationSlider.valueProperty().bind(durationSliderBinding);
+    }
+
+    @FXML
+    private void volumeSliderKeyPressed(KeyEvent event) {
+        double volume = settings.getMusicPlayerVolume();
+        if ((event.getCode() == KeyCode.RIGHT || event.getCode() == KeyCode.UP) && volume <= 99.0) {
+            settings.setMusicPlayerVolume(volume + 1.0);
+            event.consume();
+        } else if ((event.getCode() == KeyCode.LEFT || event.getCode() == KeyCode.DOWN) && volume >= 1.0) {
+            settings.setMusicPlayerVolume(volume - 1.0);
+            event.consume();
+        }
     }
 }

@@ -34,11 +34,9 @@ public class TaskPool {
     private final StringProperty title = new SimpleStringProperty();
     private final DoubleProperty progress = new SimpleDoubleProperty();
 
-    private final BooleanProperty running = new SimpleBooleanProperty(false);
-    private final BooleanProperty cancelling = new SimpleBooleanProperty(false);
     private final BooleanProperty stopping = new SimpleBooleanProperty(false);
 
-    private final ObjectProperty<TaskStatus> status = new SimpleObjectProperty<>(TaskStatus.READY);
+    private final ObjectProperty<Status> status = new SimpleObjectProperty<>(Status.READY);
 
     /**
      * Fügt dem Taskpool einen Task hinzu und startet den TaskPool, falls dieser
@@ -79,7 +77,6 @@ public class TaskPool {
      * Bricht den aktuellen Task ab.
      */
     public void cancelCurrentTask() {
-        cancelling.set(true);
         currentTask.cancel(false);
     }
 
@@ -100,12 +97,11 @@ public class TaskPool {
      * Startet den nächsten Task, sofern kein anderer zu diesem Zeitpunkt läuft.
      */
     public void start() {
-        if (!running.get() && !stopping.get() && tasks.size() > 0) {
-            running.set(true);
-            status.set(TaskStatus.RUNNING);
+        if (!status.get().equals(Status.RUNNING) && !stopping.get() && !tasks.isEmpty()) {
+            status.set(Status.RUNNING);
             currentTask = tasks.get(0);
             tasks.remove(currentTask);
-            currentTask.runningProperty().addListener(createTaskRunningListener());
+            currentTask.runningProperty().addListener(createTaskRunningListener(currentTask));
             message.bind(currentTask.messageProperty());
             title.bind(currentTask.titleProperty());
             progress.bind(currentTask.progressProperty());
@@ -125,16 +121,14 @@ public class TaskPool {
      *
      * @return Ein ChangeListener für das RunningProperty eines Tasks.
      */
-    private ChangeListener<Boolean> createTaskRunningListener() {
+    private ChangeListener<Boolean> createTaskRunningListener(Task task) {
         return (ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
             if (!newValue) {
-                if (!cancelling.get()) {
-                    status.set(TaskStatus.SUCCESSFUL);
+                if (task.isCancelled()) {
+                    status.set(Status.CANCELLED);
                 } else {
-                    status.set(TaskStatus.CANCELLED);
-                    cancelling.set(false);
+                    status.set(Status.SUCCESSFUL);
                 }
-                running.set(false);
                 if (!stopping.get()) {
                     start();
                 } else {
@@ -156,15 +150,42 @@ public class TaskPool {
         return progress;
     }
 
-    public BooleanProperty runningProperty() {
-        return running;
-    }
-
-    public BooleanProperty cancellingProperty() {
-        return cancelling;
-    }
-
-    public ObjectProperty<TaskStatus> statusProperty() {
+    public ObjectProperty<Status> statusProperty() {
         return status;
     }
+
+    public Status getStatus() {
+        return status.get();
+    }
+
+    public String getMessage() {
+        return message.get();
+    }
+
+    public String getTitle() {
+        return title.get();
+    }
+
+    public double getProgress() {
+        return progress.get();
+    }
+
+    public enum Status {
+
+        READY("dodgerblue"),
+        RUNNING("dodgerblue"),
+        CANCELLED("red"),
+        SUCCESSFUL("limegreen");
+
+        private final String color;
+
+        private Status(String color) {
+            this.color = color;
+        }
+
+        public String getColor() {
+            return color;
+        }
+    }
+
 }

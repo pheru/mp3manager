@@ -5,6 +5,7 @@
 <?import javafx.scene.image.*?>
 <?import java.lang.*?>
 <?import javafx.scene.layout.*?>
+<?import de.eru.pherufx.focus.*?>
 
 <HBox alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="de.eru.mp3manager.gui.applicationwindow.musicplayer.MusicPlayerPresenter">
     <children>
@@ -32,7 +33,7 @@
                                         <Insets left="7.0" right="7.0" />
                                     </padding>
                                 </ProgressBar>
-                                <Slider fx:id="durationSlider" blockIncrement="0.0" max="1.0" maxWidth="1.7976931348623157E308" onMousePressed="#sliderPressed" onMouseReleased="#sliderReleased" value="1.0" />
+                                <Slider fx:id="durationSlider" blockIncrement="0.0" max="1.0" maxWidth="1.7976931348623157E308" onMousePressed="#durationSliderMousePressed" onMouseReleased="#durationSliderMouseReleased" value="1.0" />
                             </children>
                         </StackPane>
                         <Label fx:id="currentTimeLabel" text="00:00">
@@ -50,7 +51,7 @@
                 </HBox>
                 <HBox alignment="CENTER" GridPane.columnIndex="1" GridPane.rowIndex="1">
                     <children>
-                        <Button maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#previous">
+                        <Button fx:id="previousButton" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#previous">
                             <graphic>
                                 <ImageView fitHeight="30.0" pickOnBounds="true" preserveRatio="true">
                                     <image>
@@ -59,7 +60,7 @@
                                 </ImageView>
                             </graphic>
                         </Button>
-                        <Button maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#stop">
+                        <Button fx:id="stopButton" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#stop">
                             <graphic>
                                 <ImageView fitHeight="30.0" pickOnBounds="true" preserveRatio="true">
                                     <image>
@@ -77,7 +78,7 @@
                                 </ImageView>
                             </graphic>
                         </Button>
-                        <Button maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#next">
+                        <Button fx:id="nextButton" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#next">
                             <graphic>
                                 <ImageView fitHeight="30.0" pickOnBounds="true" preserveRatio="true">
                                     <image>
@@ -90,29 +91,30 @@
                             <HBox.margin>
                                 <Insets left="20.0" />
                             </HBox.margin>
-                     <graphic>
-                        <ImageView fitHeight="30.0" pickOnBounds="true" preserveRatio="true">
-                           <image>
-                              <Image url="img/musicPlayer/player_random.png" />
-                           </image>
-                        </ImageView>
-                     </graphic>
+                            <graphic>
+                                <ImageView fitHeight="30.0" pickOnBounds="true" preserveRatio="true">
+                                    <image>
+                                        <Image url="img/musicPlayer/player_random.png" />
+                                    </image>
+                                </ImageView>
+                            </graphic>
                         </ToggleButton>
                         <ToggleButton fx:id="repeatButton" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false">
-                     <graphic>
-                        <ImageView fitHeight="30.0" pickOnBounds="true" preserveRatio="true">
-                           <image>
-                              <Image url="img/musicPlayer/player_repeat.png" />
-                           </image>
-                        </ImageView>
-                     </graphic></ToggleButton>
+                            <graphic>
+                                <ImageView fitHeight="30.0" pickOnBounds="true" preserveRatio="true">
+                                    <image>
+                                        <Image url="img/musicPlayer/player_repeat.png" />
+                                    </image>
+                                </ImageView>
+                            </graphic>
+                        </ToggleButton>
                         <HBox alignment="CENTER">
                             <children>
-                        <ImageView fx:id="volumeImageView" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
-                           <image>
-                              <Image url="img/musicPlayer/player_volume_3.png" />
-                           </image>
-                        </ImageView>
+                                <ImageView fx:id="volumeImageView" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
+                                    <image>
+                                        <Image url="img/musicPlayer/player_volume_3.png" />
+                                    </image>
+                                </ImageView>
                                 <StackPane GridPane.columnIndex="1" GridPane.rowIndex="1">
                                     <children>
                                         <ProgressBar fx:id="volumeProgressBar" maxWidth="1.7976931348623157E308" progress="1.0" scaleY="0.4">
@@ -120,7 +122,7 @@
                                                 <Insets left="7.0" right="7.0" />
                                             </padding>
                                         </ProgressBar>
-                                        <Slider fx:id="volumeSlider" blockIncrement="0.0" majorTickUnit="1.0" max="100.0" maxWidth="1.7976931348623157E308" minorTickCount="1" value="100.0" />
+                                        <Slider fx:id="volumeSlider" blockIncrement="0.0" majorTickUnit="1.0" max="100.0" maxWidth="1.7976931348623157E308" minorTickCount="1" value="100.0" onKeyPressed="#volumeSliderKeyPressed" />
                                     </children>
                                 </StackPane>
                                 <Label fx:id="volumeLabel" alignment="CENTER_RIGHT" minWidth="50.0" text="100%">
@@ -146,12 +148,25 @@
                     </padding>
                 </VBox>
             </children>
-         <HBox.margin>
-            <Insets />
-         </HBox.margin>
-         <padding>
-            <Insets bottom="5.0" top="5.0" />
-         </padding>
+            <HBox.margin>
+                <Insets />
+            </HBox.margin>
+            <padding>
+                <Insets bottom="5.0" top="5.0" />
+            </padding>
         </GridPane>
     </children>
+    <fx:define>
+        <FocusTraversalGroup fx:id="musicPlayerButtonsGroup">
+            <nodes>
+                <fx:reference source="previousButton"/>
+                <fx:reference source="stopButton"/>
+                <fx:reference source="playButton"/>
+                <fx:reference source="nextButton"/>
+                <fx:reference source="randomButton"/>
+                <fx:reference source="repeatButton"/>
+                <fx:reference source="volumeSlider"/>
+            </nodes>
+        </FocusTraversalGroup>
+    </fx:define>
 </HBox>

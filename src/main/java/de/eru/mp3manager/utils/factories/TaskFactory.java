@@ -5,6 +5,7 @@ import de.eru.mp3manager.data.Mp3FileData;
 import de.eru.mp3manager.data.Playlist;
 import de.eru.mp3manager.gui.utils.TablePlaceholders;
 import de.eru.mp3manager.service.FileService;
+import de.eru.mp3manager.service.RenameFileException;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
@@ -14,6 +15,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
 import javafx.scene.Node;
+import javafx.scene.control.Alert;
 
 /**
  * Klasse zum erzeugen von Tasks.
@@ -109,10 +111,27 @@ public final class TaskFactory {
                     }
                     updateTitle("Speichere Datei " + (i + 1) + " von " + dataToSave.size() + "...");
                     updateMessage(dataToSave.get(i).getAbsolutePath());
-                    FileService.saveMp3File(dataToSave.get(i), changeData);
+                    try {
+                        FileService.saveMp3File(dataToSave.get(i), changeData);
+                    } catch (RenameFileException e) {
+                        Platform.runLater(() -> {
+                            Alert alert = new Alert(Alert.AlertType.WARNING);
+                            alert.setHeaderText("Speichern fehlgeschlagen!");
+                            alert.setContentText("Dateiname konnte nicht geändert werden!\n\nMöglicherweise enthält der Dateiname ungültige Zeichen oder eine Datei mit diesem Namen existiert bereits.");
+                            //TODO DPI-Scaling nötig?
+                            alert.getDialogPane().setPrefWidth(500.0);
+                            alert.showAndWait();
+                        });
+                        updateTitle("Speichern der Dateien fehlgeschlagen!");
+                        updateMessage(i + " von " + dataToSave.size() + " Dateien wurden erfolgreich gespeichert.");
+                        updateProgress(1, 1);
+                        cancel();
+                        return null;
+                    }
                     Platform.runLater(dataToSave.get(i)::reload);
                     updateProgress(i + 1, dataToSave.size());
                 }
+                
                 updateTitle("Speichern der Dateien abgeschlossen.");
                 updateMessage(dataToSave.size() + " von " + dataToSave.size() + " Dateien wurden erfolgreich gespeichert.");
                 return null;

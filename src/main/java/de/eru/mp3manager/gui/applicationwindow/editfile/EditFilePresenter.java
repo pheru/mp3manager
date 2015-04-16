@@ -3,11 +3,14 @@ package de.eru.mp3manager.gui.applicationwindow.editfile;
 import de.eru.mp3manager.data.Mp3FileData;
 import de.eru.mp3manager.cdi.TableData;
 import de.eru.mp3manager.cdi.TableDataSource;
+import de.eru.mp3manager.cdi.XMLSettings;
 import de.eru.mp3manager.data.ArtworkData;
+import de.eru.mp3manager.settings.Settings;
 import de.eru.mp3manager.utils.Comparators;
 import de.eru.mp3manager.utils.TaskPool;
 import de.eru.mp3manager.utils.formatter.ByteFormatter;
 import de.eru.mp3manager.utils.factories.TaskFactory;
+import de.eru.pherufx.focus.FocusTraversal;
 import de.eru.pherufx.mvp.InjectableList;
 import java.io.File;
 import java.net.URL;
@@ -42,7 +45,6 @@ public class EditFilePresenter implements Initializable {
 
     public static final String DIFF_VALUES = "<Verschiedene Werte>";
     public static final String NOT_CHANGABLE = "<Bei Mehrfachauswahl nicht editierbar>";
-    private static final Image MULTIPLE_COVERS_IMAGE = new Image("img/noImage.png");
 
     @FXML
     private GridPane root;
@@ -75,6 +77,10 @@ public class EditFilePresenter implements Initializable {
     @FXML
     private Label coverInfo;
 
+    @Inject
+    @XMLSettings
+    private Settings settings;
+    
     private final ChangeListener<Boolean> sortListener = (ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
         updateFields(); //Es wird ein komplettes Update durchgeführt, um auch die ursprüngliche Reihenfolge wiederherzustellen
     };
@@ -94,6 +100,8 @@ public class EditFilePresenter implements Initializable {
         addAllFieldsToList();
         bindUI();
         setUpListeners();
+        FocusTraversal.createFocusTraversalGroup("editFileFields", fileNameField, titleField.getEditor(), albumField.getEditor(), 
+                artistField.getEditor(), trackField.getEditor(), yearField.getEditor(), genreField.getEditor());
 //        setUpValidation();
     }
 
@@ -113,6 +121,13 @@ public class EditFilePresenter implements Initializable {
      * Bindet die UI-Elemente untereinander.
      */
     private void bindUI() {
+        changeData.fileNameProperty().bind(fileNameField.textProperty().concat(".mp3"));
+        changeData.titleProperty().bind(titleField.valueProperty());
+        changeData.albumProperty().bind(albumField.valueProperty());
+        changeData.artistProperty().bind(artistField.valueProperty());
+        changeData.genreProperty().bind(genreField.valueProperty());
+        changeData.yearProperty().bind(yearField.valueProperty());
+        changeData.trackProperty().bind(trackField.valueProperty());
         coverView.fitHeightProperty().bind(coverView.fitWidthProperty());
         coverView.fitWidthProperty().bind(new DoubleBinding() {
             {
@@ -130,13 +145,10 @@ public class EditFilePresenter implements Initializable {
                 }
             }
         });
-        changeData.fileNameProperty().bind(fileNameField.textProperty().concat(".mp3"));
-        changeData.titleProperty().bind(titleField.valueProperty());
-        changeData.albumProperty().bind(albumField.valueProperty());
-        changeData.artistProperty().bind(artistField.valueProperty());
-        changeData.genreProperty().bind(genreField.valueProperty());
-        changeData.yearProperty().bind(yearField.valueProperty());
-        changeData.trackProperty().bind(trackField.valueProperty());
+        synchronizeTitleBox.selectedProperty().bindBidirectional(settings.editFileSynchronizeTitleProperty());
+        sortTitleBox.selectedProperty().bindBidirectional(settings.editFileSortTitleProperty());
+        sortAlbumBox.selectedProperty().bindBidirectional(settings.editFileSortAlbumProperty());
+        sortArtistBox.selectedProperty().bindBidirectional(settings.editFileSortArtistProperty());
     }
 
     /**
