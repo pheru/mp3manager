@@ -125,7 +125,7 @@ public class MusicPlayerPresenter implements Initializable {
             protected Image computeValue() {
                 String s = "0";
                 if (settings.isMusicPlayerMuted()) {
-                    s = "XX";
+                    s = "x";
                     volumeProgressBar.setStyle("-fx-accent: grey;");
                 } else {
                     volumeProgressBar.setStyle(null);
