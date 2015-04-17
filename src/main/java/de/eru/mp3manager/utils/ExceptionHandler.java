@@ -9,6 +9,7 @@ import java.io.StringWriter;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import javafx.scene.control.Alert;
 
 /**
  * Klasse zum schreiben von Logfiles.
@@ -22,10 +23,10 @@ public final class ExceptionHandler {
     }
 
     public static void handle(Throwable t, String dialogTitle, String dialogText, String logfileMessage) {
-//        Alert alert = new Alert(Alert.AlertType.ERROR);
-//        alert.setTitle(dialogTitle);
-//        alert.setContentText(dialogText);
-//        alert.show();
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle(dialogTitle);
+        alert.setContentText(dialogText);
+        alert.show();
         writeLogfile(t, logfileMessage.isEmpty() ? "Unexpected Exception" : logfileMessage);
         t.printStackTrace();
     }

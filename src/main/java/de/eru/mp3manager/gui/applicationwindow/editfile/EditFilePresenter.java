@@ -5,6 +5,7 @@ import de.eru.mp3manager.cdi.TableData;
 import de.eru.mp3manager.cdi.TableDataSource;
 import de.eru.mp3manager.cdi.XMLSettings;
 import de.eru.mp3manager.data.ArtworkData;
+import de.eru.mp3manager.gui.utils.NumberComboBox;
 import de.eru.mp3manager.settings.Settings;
 import de.eru.mp3manager.utils.Comparators;
 import de.eru.mp3manager.utils.TaskPool;
@@ -65,9 +66,9 @@ public class EditFilePresenter implements Initializable {
     @FXML
     private CheckBox sortArtistBox;
     @FXML
-    private ComboBox<String> yearField;
+    private NumberComboBox<String> yearField;
     @FXML
-    private ComboBox<String> trackField;
+    private NumberComboBox<String> trackField;
     @FXML
     private ComboBox<String> genreField;
     @FXML
