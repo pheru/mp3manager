@@ -110,7 +110,7 @@
                         </ToggleButton>
                         <HBox alignment="CENTER">
                             <children>
-                                <ImageView fx:id="volumeImageView" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
+                                <ImageView fx:id="volumeImageView" fitWidth="30.0" pickOnBounds="true" preserveRatio="true" onMouseClicked="#volumeImageClicked" >
                                     <image>
                                         <Image url="img/musicPlayer/player_volume_3.png" />
                                     </image>

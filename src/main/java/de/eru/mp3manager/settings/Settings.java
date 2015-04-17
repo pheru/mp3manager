@@ -60,6 +60,8 @@ public class Settings {
 
     @XmlPath(XMLPATH_MUSICPLAYER + "volume" + XMLPATH_ENDING)
     private final DoubleProperty musicPlayerVolume = new SimpleDoubleProperty(100.0);
+    @XmlPath(XMLPATH_MUSICPLAYER + "muted" + XMLPATH_ENDING)
+    private final BooleanProperty musicPlayerMuted = new SimpleBooleanProperty(false);
     @XmlPath(XMLPATH_MUSICPLAYER + "repeat" + XMLPATH_ENDING)
     private final BooleanProperty musicPlayerRepeat = new SimpleBooleanProperty(false);
     @XmlPath(XMLPATH_MUSICPLAYER + "random" + XMLPATH_ENDING)
@@ -150,11 +152,11 @@ public class Settings {
         return musicDirectory;
     }
 
-    public Double getApplicationWindowWidth() {
+    public double getApplicationWindowWidth() {
         return applicationWindowWidth.get();
     }
 
-    public void setApplicationWindowWidth(final Double applicationWindowWidth) {
+    public void setApplicationWindowWidth(final double applicationWindowWidth) {
         this.applicationWindowWidth.set(applicationWindowWidth);
     }
 
@@ -162,11 +164,11 @@ public class Settings {
         return applicationWindowWidth;
     }
 
-    public Double getApplicationWindowHeight() {
+    public double getApplicationWindowHeight() {
         return applicationWindowHeight.get();
     }
 
-    public void setApplicationWindowHeight(final Double applicationWindowHeight) {
+    public void setApplicationWindowHeight(final double applicationWindowHeight) {
         this.applicationWindowHeight.set(applicationWindowHeight);
     }
 
@@ -174,11 +176,11 @@ public class Settings {
         return applicationWindowHeight;
     }
 
-    public Double getMusicPlayerVolume() {
+    public double getMusicPlayerVolume() {
         return musicPlayerVolume.get();
     }
 
-    public void setMusicPlayerVolume(final Double musicPlayerVolume) {
+    public void setMusicPlayerVolume(final double musicPlayerVolume) {
         this.musicPlayerVolume.set(musicPlayerVolume);
     }
 
@@ -186,11 +188,11 @@ public class Settings {
         return musicPlayerVolume;
     }
 
-    public Boolean isMusicPlayerRepeat() {
+    public boolean isMusicPlayerRepeat() {
         return musicPlayerRepeat.get();
     }
 
-    public void setMusicPlayerRepeat(final Boolean musicPlayerRepeat) {
+    public void setMusicPlayerRepeat(final boolean musicPlayerRepeat) {
         this.musicPlayerRepeat.set(musicPlayerRepeat);
     }
 
@@ -198,11 +200,11 @@ public class Settings {
         return musicPlayerRepeat;
     }
 
-    public Boolean isMusicPlayerRandom() {
+    public boolean isMusicPlayerRandom() {
         return musicPlayerRandom.get();
     }
 
-    public void setMusicPlayerRandom(final Boolean musicPlayerRandom) {
+    public void setMusicPlayerRandom(final boolean musicPlayerRandom) {
         this.musicPlayerRandom.set(musicPlayerRandom);
     }
 
@@ -210,11 +212,11 @@ public class Settings {
         return musicPlayerRandom;
     }
 
-    public Boolean isApplicationWindowMaximized() {
+    public boolean isApplicationWindowMaximized() {
         return applicationWindowMaximized.get();
     }
 
-    public void setApplicationWindowMaximized(final Boolean applicationWindowMaximized) {
+    public void setApplicationWindowMaximized(final boolean applicationWindowMaximized) {
         this.applicationWindowMaximized.set(applicationWindowMaximized);
     }
 
@@ -222,11 +224,11 @@ public class Settings {
         return applicationWindowMaximized;
     }
 
-    public Boolean isEditFileSortTitle() {
+    public boolean isEditFileSortTitle() {
         return editFileSortTitle.get();
     }
 
-    public void setEditFileSortTitle(final Boolean editFileSortTitle) {
+    public void setEditFileSortTitle(final boolean editFileSortTitle) {
         this.editFileSortTitle.set(editFileSortTitle);
     }
 
@@ -234,11 +236,11 @@ public class Settings {
         return editFileSortTitle;
     }
 
-    public Boolean isEditFileSortAlbum() {
+    public boolean isEditFileSortAlbum() {
         return editFileSortAlbum.get();
     }
 
-    public void setEditFileSortAlbum(final Boolean editFileSortAlbum) {
+    public void setEditFileSortAlbum(final boolean editFileSortAlbum) {
         this.editFileSortAlbum.set(editFileSortAlbum);
     }
 
@@ -246,11 +248,11 @@ public class Settings {
         return editFileSortAlbum;
     }
 
-    public Boolean isEditFileSortArtist() {
+    public boolean isEditFileSortArtist() {
         return editFileSortArtist.get();
     }
 
-    public void setEditFileSortArtist(final Boolean editFileSortArtist) {
+    public void setEditFileSortArtist(final boolean editFileSortArtist) {
         this.editFileSortArtist.set(editFileSortArtist);
     }
 
@@ -258,11 +260,11 @@ public class Settings {
         return editFileSortArtist;
     }
 
-    public Boolean isEditFileSynchronizeTitle() {
+    public boolean isEditFileSynchronizeTitle() {
         return editFileSynchronizeTitle.get();
     }
 
-    public void setEditFileSynchronizeTitle(final Boolean editFileSynchronizeTitle) {
+    public void setEditFileSynchronizeTitle(final boolean editFileSynchronizeTitle) {
         this.editFileSynchronizeTitle.set(editFileSynchronizeTitle);
     }
 
@@ -282,16 +284,28 @@ public class Settings {
         return playlistFilePath;
     }
 
-    public Double getApplicationWindowSplitPosition() {
+    public double getApplicationWindowSplitPosition() {
         return applicationWindowSplitPosition.get();
     }
 
-    public void setApplicationWindowSplitPosition(final Double applicationWindowSplitPosition) {
+    public void setApplicationWindowSplitPosition(final double applicationWindowSplitPosition) {
         this.applicationWindowSplitPosition.set(applicationWindowSplitPosition);
     }
 
     public DoubleProperty applicationWindowSplitPositionProperty() {
         return applicationWindowSplitPosition;
+    }
+
+    public boolean isMusicPlayerMuted() {
+        return musicPlayerMuted.get();
+    }
+
+    public void setMusicPlayerMuted(final boolean musicPlayerMuted) {
+        this.musicPlayerMuted.set(musicPlayerMuted);
+    }
+
+    public BooleanProperty musicPlayerMutedProperty() {
+        return musicPlayerMuted;
     }
 
 }

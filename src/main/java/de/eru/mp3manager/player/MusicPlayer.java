@@ -4,6 +4,7 @@ import de.eru.mp3manager.settings.Settings;
 import de.eru.mp3manager.cdi.XMLSettings;
 import de.eru.mp3manager.data.Mp3FileData;
 import de.eru.mp3manager.data.Playlist;
+import de.eru.mp3manager.utils.ExceptionHandler;
 import java.io.File;
 import java.net.MalformedURLException;
 import javafx.beans.binding.DoubleBinding;
@@ -13,6 +14,8 @@ import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.util.Duration;
@@ -30,9 +33,11 @@ public class MusicPlayer {
 
     private final DoubleProperty currentTime = new SimpleDoubleProperty(0.0);
     private final DoubleProperty totalTime = new SimpleDoubleProperty(0.0);
+    //TODO Redundanz (werden 1:1 an settings-Properties gebunden)?
     private final DoubleProperty volume = new SimpleDoubleProperty(100.0);
     private final BooleanProperty repeat = new SimpleBooleanProperty(false);
     private final BooleanProperty random = new SimpleBooleanProperty(false);
+    private final BooleanProperty muted = new SimpleBooleanProperty(false);
     private final ObjectProperty<MediaPlayer.Status> status = new SimpleObjectProperty<>(MediaPlayer.Status.UNKNOWN);
 
     @Inject
@@ -48,6 +53,10 @@ public class MusicPlayer {
         repeat.bindBidirectional(settings.musicPlayerRepeatProperty());
         random.bindBidirectional(settings.musicPlayerRandomProperty());
         volume.bindBidirectional(settings.musicPlayerVolumeProperty());
+        volume.addListener((ObservableValue<? extends Number> observable, Number oldValue, Number newValue) -> {
+            muted.set(false);
+        });
+        muted.bindBidirectional(settings.musicPlayerMutedProperty());
     }
 
     public void playPause() {
@@ -89,9 +98,20 @@ public class MusicPlayer {
                     return player.getCurrentTime().toSeconds();
                 }
             });
-            player.volumeProperty().bind(volume.divide(100.0));
+            player.volumeProperty().bind(new DoubleBinding() {
+                {
+                    bind(volume, muted);
+                }
+                @Override
+                protected double computeValue() {
+                    if(muted.get()){
+                        return 0.0;
+                    }
+                    return volume.get() / 100.0;
+                }
+            });
         } catch (MalformedURLException ex) {
-            ex.printStackTrace();
+            ExceptionHandler.handle(ex);
         }
     }
 
@@ -189,5 +209,17 @@ public class MusicPlayer {
 
     public DoubleProperty totalTimeProperty() {
         return totalTime;
+    }
+
+    public Boolean isMuted() {
+        return muted.get();
+    }
+
+    public void setMuted(final Boolean muted) {
+        this.muted.set(muted);
+    }
+
+    public BooleanProperty mutedProperty() {
+        return muted;
     }
 }

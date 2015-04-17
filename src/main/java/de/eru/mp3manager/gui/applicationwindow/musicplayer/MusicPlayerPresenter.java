@@ -17,7 +17,6 @@ import javafx.beans.binding.StringBinding;
 import javafx.beans.property.DoubleProperty;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
@@ -102,6 +101,10 @@ public class MusicPlayerPresenter implements Initializable {
         durationProgressBar.progressProperty().bind(durationSlider.valueProperty().add(0.005)); //add() damit der Slider die Progressbar komplett überdeckt
         currentTimeLabel.textProperty().bind(createTimeBinding(player.currentTimeProperty()));
 
+        randomButton.selectedProperty().bindBidirectional(settings.musicPlayerRandomProperty());
+        repeatButton.selectedProperty().bindBidirectional(settings.musicPlayerRepeatProperty());
+
+        volumeSlider.valueProperty().bindBidirectional(settings.musicPlayerVolumeProperty());
         volumeProgressBar.progressProperty().bind(volumeSlider.valueProperty().divide(100.0));
         volumeLabel.textProperty().bind(new StringBinding() {
             {
@@ -115,18 +118,24 @@ public class MusicPlayerPresenter implements Initializable {
         });
         volumeImageView.imageProperty().bind(new ObjectBinding<Image>() {
             {
-                bind(volumeProgressBar.progressProperty());
+                bind(volumeProgressBar.progressProperty(), settings.musicPlayerMutedProperty());
             }
 
             @Override
             protected Image computeValue() {
                 String s = "0";
-                if (volumeProgressBar.getProgress() > 0.66) {
-                    s = "3";
-                } else if (volumeProgressBar.getProgress() > 0.33) {
-                    s = "2";
-                } else if (volumeProgressBar.getProgress() >= 0.01) {
-                    s = "1";
+                if (settings.isMusicPlayerMuted()) {
+                    s = "XX";
+                    volumeProgressBar.setStyle("-fx-accent: grey;");
+                } else {
+                    volumeProgressBar.setStyle(null);
+                    if (volumeProgressBar.getProgress() > 0.66) {
+                        s = "3";
+                    } else if (volumeProgressBar.getProgress() > 0.33) {
+                        s = "2";
+                    } else if (volumeProgressBar.getProgress() >= 0.01) {
+                        s = "1";
+                    }
                 }
                 return new Image("img/musicPlayer/player_volume_" + s + ".png");
             }
@@ -145,9 +154,6 @@ public class MusicPlayerPresenter implements Initializable {
                 return new Image("img/musicPlayer/player_" + button + ".png");
             }
         });
-        randomButton.selectedProperty().bindBidirectional(settings.musicPlayerRandomProperty());
-        repeatButton.selectedProperty().bindBidirectional(settings.musicPlayerRepeatProperty());
-        volumeSlider.valueProperty().bindBidirectional(settings.musicPlayerVolumeProperty());
 //        playlist.currentTitleIndexProperty().addListener((ObservableValue<? extends Number> observable, Number oldValue, Number newValue) -> {
 //            updateCurrentTitleBinding(newValue.intValue());
 //        });
@@ -224,12 +230,25 @@ public class MusicPlayerPresenter implements Initializable {
     @FXML
     private void volumeSliderKeyPressed(KeyEvent event) {
         double volume = settings.getMusicPlayerVolume();
-        if ((event.getCode() == KeyCode.RIGHT || event.getCode() == KeyCode.UP) && volume <= 99.0) {
-            settings.setMusicPlayerVolume(volume + 1.0);
+        if (event.getCode() == KeyCode.RIGHT || event.getCode() == KeyCode.UP) {
+            if (volume <= 99.0) {
+                settings.setMusicPlayerVolume(volume + 1.0);
+            } else {
+                settings.setMusicPlayerVolume(100.0);
+            }
             event.consume();
-        } else if ((event.getCode() == KeyCode.LEFT || event.getCode() == KeyCode.DOWN) && volume >= 1.0) {
-            settings.setMusicPlayerVolume(volume - 1.0);
+        } else if (event.getCode() == KeyCode.LEFT || event.getCode() == KeyCode.DOWN) {
+            if (volume >= 1.0) {
+                settings.setMusicPlayerVolume(volume - 1.0);
+            } else {
+                settings.setMusicPlayerVolume(0.0);
+            }
             event.consume();
         }
+    }
+
+    @FXML
+    private void volumeImageClicked() {
+        settings.setMusicPlayerMuted(!settings.isMusicPlayerMuted());
     }
 }
