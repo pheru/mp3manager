@@ -3,6 +3,7 @@ package de.eru.mp3manager.utils.factories;
 import de.eru.mp3manager.data.utils.Mp3Mapper;
 import de.eru.mp3manager.data.Mp3FileData;
 import de.eru.mp3manager.data.Playlist;
+import de.eru.mp3manager.gui.applicationwindow.main.MainPresenter;
 import de.eru.mp3manager.gui.utils.TablePlaceholders;
 import de.eru.mp3manager.service.FileService;
 import de.eru.mp3manager.service.RenameFileException;
@@ -87,6 +88,7 @@ public final class TaskFactory {
                 Platform.runLater(() -> {
                     if (!loadedData.isEmpty()) {
                         masterData.addAll(loadedData);
+                        placeholderProperty.set(MainPresenter.DEFAULT_TABLE_PLACEHOLDER);
                     } else {
                         placeholderProperty.set(TablePlaceholders.EMPTY_DIRECTORY);
                         updateProgress(1, 1);

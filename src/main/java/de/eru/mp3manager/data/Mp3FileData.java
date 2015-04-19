@@ -6,10 +6,8 @@ import de.eru.mp3manager.utils.formatter.TimeFormatter;
 import java.io.File;
 import java.io.IOException;
 import javafx.beans.binding.StringBinding;
-import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -26,25 +24,23 @@ import org.jaudiotagger.tag.TagException;
  */
 public class Mp3FileData extends FileBasedData {
 
-    public static final String NOT_LOADED = "<Nicht geladen>";
     public static final Mp3FileData MUSICPLAYER_PLACEHOLDER_DATA = new Mp3FileData("<Titel>", "<Album>", "<Interpret>", 0.0);
     public static final Mp3FileData EMPTY_PLAYLIST_DATA = createEmptyData();
     public static final String UNIT_SIZE = " MB";
     public static final String UNIT_BITRATE = " kBit/s";
 
-    private final StringProperty title = new SimpleStringProperty(NOT_LOADED);
-    private final StringProperty album = new SimpleStringProperty(NOT_LOADED);
-    private final StringProperty artist = new SimpleStringProperty(NOT_LOADED);
-    private final StringProperty genre = new SimpleStringProperty(NOT_LOADED);
-    private final StringProperty track = new SimpleStringProperty(NOT_LOADED);
-    private final StringProperty year = new SimpleStringProperty(NOT_LOADED);
-    private final StringProperty size = new SimpleStringProperty(NOT_LOADED);
-    private final StringProperty lastModified = new SimpleStringProperty(NOT_LOADED);
-    private final StringProperty bitrate = new SimpleStringProperty(NOT_LOADED);
+    private final StringProperty title = new SimpleStringProperty("");
+    private final StringProperty album = new SimpleStringProperty("");
+    private final StringProperty artist = new SimpleStringProperty("");
+    private final StringProperty genre = new SimpleStringProperty("");
+    private final StringProperty track = new SimpleStringProperty("");
+    private final StringProperty year = new SimpleStringProperty("");
+    private final StringProperty size = new SimpleStringProperty("");
+    private final StringProperty lastModified = new SimpleStringProperty("");
+    private final StringProperty bitrate = new SimpleStringProperty("");
     private final ObjectProperty<ArtworkData> artworkData = new SimpleObjectProperty<>();
     private final DoubleProperty duration = new SimpleDoubleProperty(0);
-    private final StringProperty formattedDuration = new SimpleStringProperty(NOT_LOADED);
-    private final BooleanProperty loaded = new SimpleBooleanProperty(false);
+    private final StringProperty formattedDuration = new SimpleStringProperty("");
 
     /**
      * Erstellt ein leeres Mp3FileData-Objekt.
@@ -233,18 +229,6 @@ public class Mp3FileData extends FileBasedData {
 
     public StringProperty formattedDurationProperty() {
         return formattedDuration;
-    }
-
-    public boolean isLoaded() {
-        return loaded.get();
-    }
-
-    public void setLoaded(boolean playing) {
-        this.loaded.set(playing);
-    }
-
-    public BooleanProperty loadedProperty() {
-        return loaded;
     }
 
     public String getBitrate() {

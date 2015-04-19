@@ -34,6 +34,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressIndicator;
@@ -81,6 +82,8 @@ public class MainPresenter implements Initializable {
     private TableView<Mp3FileData> table;
     private CssRowFactory<Mp3FileData> tableRowFactory; //TODO Liste der Indizes würde reichen
 
+    public static final Node DEFAULT_TABLE_PLACEHOLDER = TablePlaceholders.NO_FILTER_RESULT;
+
     @Inject
     private TaskPool taskPool;
     @Inject
@@ -103,7 +106,7 @@ public class MainPresenter implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         initTable();
         bindUI();
-        FocusTraversal.createFocusTraversalGroup("mainGroup", table, TablePlaceholders.getEmptyDirectoryButton(), 
+        FocusTraversal.createFocusTraversalGroup("mainGroup", table, TablePlaceholders.getEmptyDirectoryButton(),
                 TablePlaceholders.getNoDirectoryButton(), filterTextField);
         //TODO Ansatz für Issue #7
 //        table.addEventFilter(KeyEvent.KEY_PRESSED, (KeyEvent event) -> {
@@ -143,7 +146,11 @@ public class MainPresenter implements Initializable {
 //        playlist.currentTitleIndexProperty().addListener((ObservableValue<? extends Number> observable, Number oldValue, Number newValue) -> {
 //            updateStyledIndex(newValue.intValue());
 //        });
-        table.setPlaceholder(TablePlaceholders.NO_DIRECTORY);
+        if (!settings.getMusicDirectory().isEmpty()) {
+            table.setPlaceholder(DEFAULT_TABLE_PLACEHOLDER);
+        } else {
+            table.setPlaceholder(TablePlaceholders.NO_DIRECTORY);
+        }
         table.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
         table.setItems(setUpTableFilter());
         selectedData.set(table.getSelectionModel().getSelectedItems());
@@ -285,6 +292,7 @@ public class MainPresenter implements Initializable {
      * Bindet die UI-Elemente untereinander.
      */
     private void bindUI() {
+        TablePlaceholders.noFilterResultFilterProperty().bind(filterTextField.textProperty());
         clearFilterButton.visibleProperty().bind(filterTextField.textProperty().isEmpty().not());
 //        taskCancelButton.disableProperty().bind(taskPool.cancellingProperty().or(taskPool.runningProperty().not()));
         taskCancelButton.disableProperty().bind(taskPool.statusProperty().isNotEqualTo(TaskPool.Status.RUNNING));

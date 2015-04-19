@@ -143,6 +143,6 @@ public class Comparators {
     }
 
     private static boolean isComparable(String s) {
-        return (s != null && !s.isEmpty() && !s.equals(Mp3FileData.NOT_LOADED));
+        return (s != null && !s.isEmpty());
     }
 }

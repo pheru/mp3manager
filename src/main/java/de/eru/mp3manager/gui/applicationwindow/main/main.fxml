@@ -9,7 +9,7 @@
 <?import java.lang.*?>
 <?import javafx.scene.layout.*?>
 
-<VBox fx:id="root" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="de.eru.mp3manager.gui.applicationwindow.main.MainPresenter">
+<VBox fx:id="root" xmlns="http://javafx.com/javafx/8.0.40" xmlns:fx="http://javafx.com/fxml/1" fx:controller="de.eru.mp3manager.gui.applicationwindow.main.MainPresenter">
     <children>
         <HBox alignment="CENTER_LEFT" VBox.vgrow="NEVER">
             <children>
@@ -21,7 +21,11 @@
                 <Pane HBox.hgrow="ALWAYS" />
                 <StackPane HBox.hgrow="NEVER">
                     <children>
-                        <TextField fx:id="filterTextField" minWidth="250.0" promptText="Filter" />
+                        <TextField fx:id="filterTextField" minWidth="250.0" promptText="Filter">
+                            <padding>
+                                <Insets bottom="5.0" left="5.0" right="45.0" top="5.0" />
+                            </padding>
+                        </TextField>
                         <Button fx:id="clearFilterButton" mnemonicParsing="false" onAction="#clearFilter" scaleX="0.7" scaleY="0.7" style="-fx-background-radius: 30;" text="X" StackPane.alignment="CENTER_RIGHT" />
                     </children>
                 </StackPane>
@@ -65,7 +69,7 @@
                     </children>
                 </VBox>
                 <Pane HBox.hgrow="ALWAYS" />
-            <Separator orientation="VERTICAL" />
+                <Separator orientation="VERTICAL" />
                 <VBox alignment="CENTER_RIGHT">
                     <children>
                         <Label fx:id="statusR1" minWidth="-Infinity" text="&lt;Ausgewählt&gt;" HBox.hgrow="ALWAYS" />
