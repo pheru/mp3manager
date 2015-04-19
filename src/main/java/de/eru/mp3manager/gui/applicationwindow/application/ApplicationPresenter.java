@@ -1,5 +1,7 @@
 package de.eru.mp3manager.gui.applicationwindow.application;
 
+import com.melloware.jintellitype.JIntellitype;
+import de.eru.mp3manager.Mp3Manager;
 import de.eru.mp3manager.cdi.XMLSettings;
 import de.eru.mp3manager.settings.Settings;
 import java.net.URL;
@@ -18,14 +20,12 @@ import de.eru.mp3manager.gui.applicationwindow.playlist.PlaylistPresenter;
 import de.eru.mp3manager.gui.applicationwindow.playlist.PlaylistView;
 import de.eru.mp3manager.player.MusicPlayer;
 import de.eru.pherufx.focus.FocusTraversal;
-import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.beans.value.ObservableValue;
 import javafx.scene.control.CheckMenuItem;
 import javafx.scene.control.SplitPane;
 import javafx.scene.control.TabPane;
 import javafx.scene.layout.Region;
-import javafx.stage.Stage;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
@@ -85,6 +85,7 @@ public class ApplicationPresenter implements Initializable {
             }
             tabPane.getSelectionModel().select(tabIndex);
         });
+        setUpJIntelliType();
         mainPresenter.readDirectory();
     }
 
@@ -124,6 +125,33 @@ public class ApplicationPresenter implements Initializable {
         });
     }
 
+    private void setUpJIntelliType() {
+        //TODO auch für 32 bit
+        JIntellitype.setLibraryLocation(Mp3Manager.DLL_PATH + "JIntellitype64.dll");
+
+//        JIntellitype.getInstance().registerHotKey(1, 0, (int) 'A');
+//        JIntellitype.getInstance().addHotKeyListener((int identifier) -> {
+//            System.out.println(identifier);
+//        });
+        
+        JIntellitype.getInstance().addIntellitypeListener((int command) -> {
+            switch (command) {
+                case JIntellitype.APPCOMMAND_MEDIA_PLAY_PAUSE:
+                    musicPlayer.playPause();
+                    break;
+                case JIntellitype.APPCOMMAND_MEDIA_PREVIOUSTRACK:
+                    musicPlayer.previous();
+                    break;
+                case JIntellitype.APPCOMMAND_MEDIA_NEXTTRACK:
+                    musicPlayer.next();
+                    break;
+                case JIntellitype.APPCOMMAND_MEDIA_STOP:
+                    musicPlayer.stop();
+                    break;
+            }
+        });
+    }
+
     @FXML
     private void changeDirectory() {
         mainPresenter.changeDirectory();
@@ -131,6 +159,7 @@ public class ApplicationPresenter implements Initializable {
 
     @FXML
     private void exit() {
+        Platform.exit();
         System.exit(0);
     }
 

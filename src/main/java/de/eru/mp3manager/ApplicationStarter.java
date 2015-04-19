@@ -1,5 +1,6 @@
 package de.eru.mp3manager;
 
+import com.melloware.jintellitype.JIntellitype;
 import de.eru.mp3manager.cdi.XMLSettings;
 import de.eru.mp3manager.settings.Settings;
 import de.eru.mp3manager.gui.applicationwindow.application.ApplicationView;
@@ -32,6 +33,7 @@ public class ApplicationStarter {
         Runtime.getRuntime().addShutdownHook(new Thread() {
             @Override
             public void run() {
+                JIntellitype.getInstance().cleanUp();
                 settings.save();
             }
         });
@@ -88,6 +90,7 @@ public class ApplicationStarter {
                 });
             });
             systemTrayIcon.addPopUpMenuItem("Beenden", (ActionEvent e) -> {
+                Platform.exit();
                 System.exit(0);
             });
         }

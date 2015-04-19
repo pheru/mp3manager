@@ -16,10 +16,14 @@ import org.jgroups.JChannel;
  */
 public class Mp3Manager extends PheruFXApplication {
 
-    private static final String JAR_PATH = Mp3Manager.class.getProtectionDomain().getCodeSource().getLocation().getPath();
-    //TODO Geht das auch in schön?
-    public static final String APPLICATION_PATH = JAR_PATH.substring(0,
-            JAR_PATH.lastIndexOf("/app") >= 0 ? JAR_PATH.lastIndexOf("/app") : JAR_PATH.length());
+    private static final String CODE_SOURCE_LOCATION = Mp3Manager.class.getProtectionDomain().getCodeSource().getLocation().getPath();
+    
+    private static final boolean PRODUCTION_MODE = !CODE_SOURCE_LOCATION.endsWith("target/classes/");
+    
+    //TODO sollte immer auf / enden
+    public static final String APPLICATION_PATH = PRODUCTION_MODE ? 
+            CODE_SOURCE_LOCATION.substring(0,CODE_SOURCE_LOCATION.lastIndexOf("/app")) : CODE_SOURCE_LOCATION;
+    public static final String DLL_PATH = PRODUCTION_MODE ? APPLICATION_PATH : CODE_SOURCE_LOCATION.replace("target/classes/", "");
 
     private static final Logger JAUDIOTAGGER_LOGGER = Logger.getLogger("org.jaudiotagger");
 
