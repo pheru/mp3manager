@@ -1,6 +1,5 @@
 package de.eru.mp3manager;
 
-import com.melloware.jintellitype.JIntellitype;
 import de.eru.mp3manager.cdi.XMLSettings;
 import de.eru.mp3manager.settings.Settings;
 import de.eru.mp3manager.gui.applicationwindow.application.ApplicationView;
@@ -33,21 +32,25 @@ public class ApplicationStarter {
         Runtime.getRuntime().addShutdownHook(new Thread() {
             @Override
             public void run() {
-                JIntellitype.getInstance().cleanUp();
-                settings.save();
+                Mp3Manager.cleanUp();
             }
         });
         Thread.setDefaultUncaughtExceptionHandler((Thread t, Throwable e) -> {
             ExceptionHandler.handle(e);
         });
-        initPrimaryStage(primaryStage);
-        initSystemTrayIcon(primaryStage);
-        primaryStage.show();
+        try {
+            initPrimaryStage(primaryStage);
+            initSystemTrayIcon(primaryStage);
+            primaryStage.show();
+        } catch (Throwable t) {
+            ExceptionHandler.handle(t, "", "Fehler beim Starten der Anwendung!", "Exception running \"ApplicationStarter.launchJavaFXApplication\"");
+            Platform.exit();
+        }
     }
 
     private void initPrimaryStage(Stage primaryStage) {
         Scene scene = new Scene(applicationView.getView());
-        primaryStage.setTitle("MP3-Manager");
+        primaryStage.setTitle(Mp3Manager.APPLICATION_NAME);
         primaryStage.setWidth(settings.getApplicationWindowWidth());
         primaryStage.setHeight(settings.getApplicationWindowHeight());
         primaryStage.setMaximized(settings.isApplicationWindowMaximized());
@@ -91,9 +94,7 @@ public class ApplicationStarter {
             });
             systemTrayIcon.addPopUpMenuItem("Beenden", (ActionEvent e) -> {
                 Platform.exit();
-                System.exit(0);
             });
         }
     }
-
 }

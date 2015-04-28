@@ -1,7 +1,6 @@
 package de.eru.mp3manager.gui.applicationwindow.application;
 
 import com.melloware.jintellitype.JIntellitype;
-import de.eru.mp3manager.Mp3Manager;
 import de.eru.mp3manager.cdi.XMLSettings;
 import de.eru.mp3manager.settings.Settings;
 import java.net.URL;
@@ -31,7 +30,7 @@ import javax.inject.Inject;
 
 @ApplicationScoped
 public class ApplicationPresenter implements Initializable {
-
+    
     @FXML
     private SplitPane splitPane;
     @FXML
@@ -126,9 +125,6 @@ public class ApplicationPresenter implements Initializable {
     }
 
     private void setUpJIntelliType() {
-        //TODO auch für 32 bit
-        JIntellitype.setLibraryLocation(Mp3Manager.DLL_PATH + "JIntellitype64.dll");
-
 //        JIntellitype.getInstance().registerHotKey(1, 0, (int) 'A');
 //        JIntellitype.getInstance().addHotKeyListener((int identifier) -> {
 //            System.out.println(identifier);
@@ -160,7 +156,6 @@ public class ApplicationPresenter implements Initializable {
     @FXML
     private void exit() {
         Platform.exit();
-        System.exit(0);
     }
 
     @FXML

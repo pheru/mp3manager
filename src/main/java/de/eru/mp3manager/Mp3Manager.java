@@ -1,5 +1,8 @@
 package de.eru.mp3manager;
 
+import com.melloware.jintellitype.JIntellitype;
+import de.eru.mp3manager.cdi.XMLSettings;
+import de.eru.mp3manager.settings.Settings;
 import de.eru.pherufx.mvp.StartEvent;
 import de.eru.pherufx.mvp.PheruFXApplication;
 import java.util.logging.Level;
@@ -7,7 +10,7 @@ import java.util.logging.Logger;
 import static javafx.application.Application.launch;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
-import org.jgroups.JChannel;
+import javax.enterprise.util.AnnotationLiteral;
 
 /**
  * Application-Klasse als Startpunkt für die JavaFX-Anwendung.
@@ -17,44 +20,50 @@ import org.jgroups.JChannel;
 public class Mp3Manager extends PheruFXApplication {
 
     private static final String CODE_SOURCE_LOCATION = Mp3Manager.class.getProtectionDomain().getCodeSource().getLocation().getPath();
-    
+
     private static final boolean PRODUCTION_MODE = !CODE_SOURCE_LOCATION.endsWith("target/classes/");
-    
-    //TODO sollte immer auf / enden
-    public static final String APPLICATION_PATH = PRODUCTION_MODE ? 
-            CODE_SOURCE_LOCATION.substring(0,CODE_SOURCE_LOCATION.lastIndexOf("/app")) : CODE_SOURCE_LOCATION;
+
+    //TODO sollte einheitlich sein, was das "/" am ende betrifft
+    public static final String APPLICATION_PATH = PRODUCTION_MODE
+            ? CODE_SOURCE_LOCATION.substring(0, CODE_SOURCE_LOCATION.lastIndexOf("/app")) : CODE_SOURCE_LOCATION;
     public static final String DLL_PATH = PRODUCTION_MODE ? APPLICATION_PATH : CODE_SOURCE_LOCATION.replace("target/classes/", "");
 
     private static final Logger JAUDIOTAGGER_LOGGER = Logger.getLogger("org.jaudiotagger");
 
-    public static JChannel channel;
+    public static final String APPLICATION_NAME = "Mp3Manager";
+
     private static Alert startAlert;
 
+    private static boolean cleanedUp = false;
+
     public static void main(String[] args) {
-        //TODO Channel
-//        try {
-//            channel = new JChannel();
-//            channel.connect("mp3manager");
-//            if(channel.getView().getMembers().size() > 1){
-//                channel.send(new Message(null, args));
-//                channel.close();
-//                System.exit(0);
-//            }
-//        } catch (Exception ex) {
-//            ex.printStackTrace();
-//        }
+        JAUDIOTAGGER_LOGGER.setLevel(Level.WARNING);
+        //TODO auch für 32 bit
+        JIntellitype.setLibraryLocation(Mp3Manager.DLL_PATH + "/JIntellitype64.dll");
+        
         setOnStarting((StartEvent event) -> {
             startAlert = new Alert(Alert.AlertType.NONE);
             startAlert.setResult(ButtonType.CLOSE);
-            startAlert.setTitle("Mp3Manager");
-            startAlert.setContentText("Starte Mp3Manager...");
+            startAlert.setTitle(APPLICATION_NAME);
+            startAlert.setContentText("Starte " + APPLICATION_NAME + "...");
 //            startAlert.setGraphic(new ImageView("img/clock_48.png"));
             startAlert.show();
         });
         setOnStartFinished((StartEvent event) -> {
             startAlert.hide();
         });
-        JAUDIOTAGGER_LOGGER.setLevel(Level.WARNING);
         launch(args);
+
+        cleanUp();
+    }
+
+    public static void cleanUp() {
+        if (!cleanedUp) {
+            JIntellitype.getInstance().cleanUp();
+            getWeldContainer().instance().select(Settings.class, new AnnotationLiteral<XMLSettings>() {
+            }).get().save();
+            getWeldContainer().instance().select(Mp3SystemTrayIcon.class).get().shutdown();
+            cleanedUp = true;
+        }
     }
 }

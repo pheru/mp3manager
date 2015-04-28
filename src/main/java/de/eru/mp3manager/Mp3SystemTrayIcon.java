@@ -21,12 +21,13 @@ import javax.enterprise.context.ApplicationScoped;
 @ApplicationScoped
 public class Mp3SystemTrayIcon {
 
+    private SystemTray systemTray;
     private TrayIcon trayIcon;
 
     @PostConstruct
     private void init() {
         if (SystemTray.isSupported()) {
-            SystemTray systemTray = SystemTray.getSystemTray();
+            systemTray = SystemTray.getSystemTray();
             Image image = Toolkit.getDefaultToolkit().getImage(this.getClass().getClassLoader().getResource("img/trayIcon.png"));
             trayIcon = new TrayIcon(image, "Mp3Manager", new PopupMenu());
             trayIcon.setImageAutoSize(true);
@@ -37,6 +38,10 @@ public class Mp3SystemTrayIcon {
                 ex.printStackTrace();
             }
         }
+    }
+
+    public void shutdown() {
+        systemTray.remove(trayIcon);
     }
 
     public void addPopUpMenuItem(String label, ActionListener actionListener) {

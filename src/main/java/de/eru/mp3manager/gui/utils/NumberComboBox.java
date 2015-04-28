@@ -1,5 +1,6 @@
 package de.eru.mp3manager.gui.utils;
 
+import de.eru.mp3manager.gui.applicationwindow.editfile.EditFilePresenter;
 import javafx.collections.ObservableList;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextFormatter;
@@ -21,7 +22,7 @@ public class NumberComboBox<T> extends ComboBox<T> {
 
     private void addNumberFilter() {
         getEditor().setTextFormatter(new TextFormatter<>((TextFormatter.Change t) -> {
-            if (!t.getText().matches("[0-9]")) {
+            if (!t.getText().matches("[0-9]*") && !t.getText().equals(EditFilePresenter.DIFF_VALUES)) {
                 t.setText("");
             }
             return t;
