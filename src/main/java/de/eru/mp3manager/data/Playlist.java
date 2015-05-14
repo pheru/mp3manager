@@ -5,7 +5,6 @@ import de.eru.mp3manager.cdi.CurrentTitleEvent;
 import de.eru.mp3manager.cdi.Updated;
 import de.eru.mp3manager.cdi.XMLSettings;
 import de.eru.mp3manager.service.FileService;
-import de.eru.mp3manager.utils.ExceptionHandler;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -18,6 +17,7 @@ import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.scene.control.Alert;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
@@ -49,6 +49,14 @@ public class Playlist extends FileBasedData {
 
     @PostConstruct
     private void init() {
+        currentTitleIndex.addListener((ObservableValue<? extends Number> observable, Number oldValue, Number newValue) -> {
+            int newValueInt = newValue.intValue();
+            if (newValueInt != UNDEFINED_CURRENT_INDEX) {
+                currentTitleUpdateEvent.fire(new CurrentTitleEvent(titles.get(newValueInt), newValueInt));
+            } else {
+                currentTitleUpdateEvent.fire(new CurrentTitleEvent(Mp3FileData.MUSICPLAYER_PLACEHOLDER_DATA, newValueInt));
+            }
+        });
         settings.musicPlayerRandomProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
             if (newValue) {
                 initRandomIndicesToPlay();
@@ -137,7 +145,9 @@ public class Playlist extends FileBasedData {
                 }
             }
         } catch (IOException ex) {
-            ExceptionHandler.handle(ex);
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            //TODO Meldung + Möglichkeit Playlist wiederherzustellen
+            alert.showAndWait();
         }
         return false;
     }
@@ -228,12 +238,6 @@ public class Playlist extends FileBasedData {
 
     public void setCurrentTitleIndex(final Integer currentTitleIndex) {
         this.currentTitleIndex.set(currentTitleIndex);
-        //TODO Code in setter?
-        if (currentTitleIndex != UNDEFINED_CURRENT_INDEX) {
-            currentTitleUpdateEvent.fire(new CurrentTitleEvent(titles.get(this.currentTitleIndex.get()), this.currentTitleIndex.get()));
-        } else {
-            currentTitleUpdateEvent.fire(new CurrentTitleEvent(Mp3FileData.MUSICPLAYER_PLACEHOLDER_DATA, this.currentTitleIndex.get()));
-        }
     }
 
     public IntegerProperty currentTitleIndexProperty() {

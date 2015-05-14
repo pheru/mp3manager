@@ -36,14 +36,14 @@ public class ApplicationStarter {
             }
         });
         Thread.setDefaultUncaughtExceptionHandler((Thread t, Throwable e) -> {
-            ExceptionHandler.handle(e);
+            ExceptionHandler.handle(e, "Unexpected Exception");
         });
         try {
             initPrimaryStage(primaryStage);
             initSystemTrayIcon(primaryStage);
             primaryStage.show();
-        } catch (Throwable t) {
-            ExceptionHandler.handle(t, "", "Fehler beim Starten der Anwendung!", "Exception running \"ApplicationStarter.launchJavaFXApplication\"");
+        } catch (Exception e) {
+            ExceptionHandler.handle(e, "Fehler beim Starten der Anwendung!", "Exception initializing Application");
             Platform.exit();
         }
     }

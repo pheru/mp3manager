@@ -94,14 +94,15 @@ public class Settings {
             JAXBContext context = JAXBContext.newInstance(Settings.class);
             Marshaller marshaller = context.createMarshaller();
             marshaller.setEventHandler((ValidationEvent event) -> {
-                ExceptionHandler.handle(new ValidationException("XML ist fehlerhaft"));
+                ExceptionHandler.handle(new ValidationException("XML ist fehlerhaft"), "Fehler beim speichern der Einstellungen!",
+                        "Exception validating settings.xml-file");
                 return false;
             });
             marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
             marshaller.marshal(this, new File(FILE_PATH));
             return true;
         } catch (JAXBException ex) {
-            ExceptionHandler.handle(ex);
+            ExceptionHandler.handle(ex, "Fehler beim speichern der Einstellungen!", "Exception parsing settings.xml-file");
             return false;
         }
     }
@@ -114,17 +115,22 @@ public class Settings {
                 ExceptionHandler.handle(new ValidationException("XML ist fehlerhaft"), "XML ist nicht valide!");
                 return false;
             });
+            if (!new File(FILE_PATH).exists()) {
+                System.out.println("Settings nicht da"); //TODO Notification
+                return createDefaultSettings();
+            }
             return (Settings) unmarshaller.unmarshal(new File(FILE_PATH));
         } catch (JAXBException ex) {
-//            ExceptionHandler.handle(ex, "XML fehlerhaft oder nicht vorhanden!");
-            System.out.println("Settings nicht da"); //TODO Exception verarbeiten
-            Settings defaultSettings = new Settings();
-            defaultSettings.initDefaultMainColumnSettings();
-//            if (defaultSettings.save()) {
-//                return load();
-//            }
-            return defaultSettings;
+            //TODO Text anpassen
+            ExceptionHandler.handle(ex, "Einstellungen konnten nicht geladen werden!", "Exception parsing settings.xml-file!");
+            return createDefaultSettings();
         }
+    }
+
+    private static Settings createDefaultSettings() {
+        Settings defaultSettings = new Settings();
+        defaultSettings.initDefaultMainColumnSettings();
+        return defaultSettings;
     }
 
     public ObservableList<ColumnSettings> getAllMainColumnSettings() {
@@ -137,7 +143,7 @@ public class Settings {
                 return mainColumnSetting;
             }
         }
-        return null; //TODO sollte kein null zurückgeben
+        return null;
     }
 
     public String getMusicDirectory() {

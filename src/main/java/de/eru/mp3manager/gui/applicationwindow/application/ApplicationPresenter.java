@@ -139,10 +139,10 @@ public class ApplicationPresenter implements Initializable {
                     musicPlayer.previous();
                     break;
                 case JIntellitype.APPCOMMAND_MEDIA_NEXTTRACK:
-                    musicPlayer.next();
+                    musicPlayer.next(); //TODO Platform.runlater ?
                     break;
                 case JIntellitype.APPCOMMAND_MEDIA_STOP:
-                    musicPlayer.stop();
+                    musicPlayer.stop(); //TODO Platform.runlater ?
                     break;
             }
         });

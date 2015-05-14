@@ -106,7 +106,7 @@ public class TaskPool {
             title.bind(currentTask.titleProperty());
             progress.bind(currentTask.progressProperty());
             currentTask.exceptionProperty().addListener((ObservableValue observable, Object oldValue, Object newValue) -> {
-                ExceptionHandler.handle((Throwable) newValue);
+                ExceptionHandler.handle((Throwable) newValue, "Unexpected Exception");
             });
             Thread thread = new Thread(currentTask);
             thread.setDaemon(true);

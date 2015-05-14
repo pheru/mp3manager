@@ -1,6 +1,5 @@
 package de.eru.mp3manager.data;
 
-import de.eru.mp3manager.utils.ExceptionHandler;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -20,8 +19,8 @@ import javax.imageio.stream.ImageInputStream;
 public class ArtworkData {
 
     private final ObjectProperty<byte[]> binaryData = new SimpleObjectProperty<>();
-    private final IntegerProperty width = new SimpleIntegerProperty();
-    private final IntegerProperty height = new SimpleIntegerProperty();
+    private final IntegerProperty width = new SimpleIntegerProperty(0);
+    private final IntegerProperty height = new SimpleIntegerProperty(0);
     private final StringProperty mimeType = new SimpleStringProperty();
 
     public ArtworkData(byte[] binaryData, int width, int height, String mimeType) {
@@ -49,7 +48,7 @@ public class ArtworkData {
     }
 
     public Integer getWidth() {
-        if(width.get() <= 0.0){
+        if(width.get() == 0){
             loadDimensions();
         }
         return width.get();
@@ -64,7 +63,7 @@ public class ArtworkData {
     }
 
     public Integer getHeight() {
-        if(height.get() <= 0.0){
+        if(height.get() == 0){
             loadDimensions();
         }
         return height.get();
@@ -98,7 +97,8 @@ public class ArtworkData {
             width.set(bi.getWidth());
             height.set(bi.getHeight());
         } catch (IOException ex) {
-            ExceptionHandler.handle(ex);
+            width.set(-1);
+            height.set(-1);
         }
     }
 

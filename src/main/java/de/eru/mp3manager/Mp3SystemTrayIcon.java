@@ -1,5 +1,6 @@
 package de.eru.mp3manager;
 
+import de.eru.mp3manager.utils.ExceptionHandler;
 import java.awt.AWTException;
 import java.awt.Font;
 import java.awt.Image;
@@ -34,8 +35,10 @@ public class Mp3SystemTrayIcon {
             trayIcon.getPopupMenu().setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
             try {
                 systemTray.add(trayIcon);
-            } catch (AWTException ex) {
-                ex.printStackTrace();
+            } catch (AWTException e) {
+                ExceptionHandler.handle(e, "TrayIcon konnte nicht initialisert werden! Die Anwendung kann nicht versteckt werden.",
+                        "Exception initializing SystemTrayIcon");
+                //TODO Anwendung darf nicht versteckt werden
             }
         }
     }

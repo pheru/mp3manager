@@ -9,6 +9,7 @@ import java.io.StringWriter;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import javafx.application.Platform;
 import javafx.scene.control.Alert;
 import javafx.scene.control.TextArea;
 
@@ -23,38 +24,36 @@ public final class ExceptionHandler {
         //Utility-Klasse
     }
 
-    public static void handle(Throwable t, String header, String text, boolean dialogWait, String logfileMessage) {
-        Alert alert = new Alert(Alert.AlertType.ERROR);
-        alert.setHeaderText(!header.isEmpty() ? header : t.getClass().getSimpleName());
-        alert.setContentText(!text.isEmpty() ? text : "Ein unerwarteter Fehler ist aufgetreten!");
-        alert.getDialogPane().setPrefWidth(500.0);
-        if (dialogWait) {
-            alert.showAndWait();
-        } else {
-            alert.show();
+    public static void handle(Throwable t, String dialogText, String dialogHeader, boolean dialogWait, String logfileMessage) {
+        if (Platform.isFxApplicationThread() && !dialogText.isEmpty()) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setHeaderText(dialogHeader);
+            alert.setContentText(dialogText);
+            alert.getDialogPane().setPrefWidth(500.0);
+            if (dialogWait) {
+                alert.showAndWait();
+            } else {
+                alert.show();
+            }
         }
-        writeLogfile(t, logfileMessage.isEmpty() ? "Unexpected Exception" : logfileMessage);
+        writeLogfile(t, logfileMessage);
         t.printStackTrace();
-    }
-
-    public static void handle(Throwable t) {
-        ExceptionHandler.handle(t, "", "", true, "");
-    }
-
-    public static void handle(Throwable t, String header, String text) {
-        ExceptionHandler.handle(t, header, text, true, "");
-    }
-
-    public static void handle(Throwable t, String header, String text, String logfileMessage) {
-        ExceptionHandler.handle(t, header, text, true, logfileMessage);
-    }
-
-    public static void handle(Throwable t, String header, String text, boolean dialogWait) {
-        ExceptionHandler.handle(t, header, text, dialogWait, "");
     }
 
     public static void handle(Throwable t, String logfileMessage) {
         ExceptionHandler.handle(t, "", "", true, logfileMessage);
+    }
+
+    public static void handle(Throwable t, String dialogText, String logfileMessage) {
+        ExceptionHandler.handle(t, dialogText, "", true, logfileMessage);
+    }
+
+    public static void handle(Throwable t, String dialogText, boolean dialogWait, String logfileMessage) {
+        ExceptionHandler.handle(t, dialogText, "", dialogWait, logfileMessage);
+    }
+    
+    public static void handle(Throwable t, String dialogText, String dialogHeader, String logfileMessage) {
+        ExceptionHandler.handle(t, dialogText, dialogHeader, true, logfileMessage);
     }
 
     /**
@@ -96,10 +95,13 @@ public final class ExceptionHandler {
     }
 
     private static void createLogfileErrorDialog(String text, String stacktrace) {
+        if (!Platform.isFxApplicationThread()) {
+            return;
+        }
         Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.setHeaderText("Fehler beim Erstellen des Logfiles!");
         alert.setContentText(text + "\nKopieren Sie sich den folgenden Inhalt bitte manuell:");
-        alert.getDialogPane().setPrefWidth(11000.0);
+        alert.getDialogPane().setPrefWidth(1100.0);
         TextArea textArea = new TextArea(stacktrace);
         textArea.setWrapText(true);
         textArea.setEditable(false);

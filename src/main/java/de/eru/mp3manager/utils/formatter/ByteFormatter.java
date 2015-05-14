@@ -43,7 +43,7 @@ public final class ByteFormatter {
         } catch (IOException ex) {
             ex.printStackTrace();
         }
-        return null;
+        return new byte[0];
     }
 
     /**

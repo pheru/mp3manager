@@ -81,7 +81,7 @@ public class EditFilePresenter implements Initializable {
     @Inject
     @XMLSettings
     private Settings settings;
-    
+
     private final ChangeListener<Boolean> sortListener = (ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
         updateFields(); //Es wird ein komplettes Update durchgeführt, um auch die ursprüngliche Reihenfolge wiederherzustellen
     };
@@ -101,7 +101,7 @@ public class EditFilePresenter implements Initializable {
         addAllFieldsToList();
         bindUI();
         setUpListeners();
-        FocusTraversal.createFocusTraversalGroup("editFileFields", fileNameField, titleField.getEditor(), albumField.getEditor(), 
+        FocusTraversal.createFocusTraversalGroup("editFileFields", fileNameField, titleField.getEditor(), albumField.getEditor(),
                 artistField.getEditor(), trackField.getEditor(), yearField.getEditor(), genreField.getEditor());
 //        setUpValidation();
     }
@@ -162,13 +162,6 @@ public class EditFilePresenter implements Initializable {
         synchronizeTitleBox.selectedProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
             setUpTitleSynchronization();
         });
-        //TODO Ansatz für Issue #7
-//        sortArtistBox.addEventFilter(KeyEvent.KEY_PRESSED, (KeyEvent event) -> {
-//            if (event.getCode() == KeyCode.TAB) {
-//                fileNameField.requestFocus();
-//                event.consume();
-//            }
-//        });
         fileNameField.focusedProperty().addListener(createSelectAllFocusListener(fileNameField));
         titleField.focusedProperty().addListener(createSelectAllFocusListener(titleField.getEditor()));
         albumField.focusedProperty().addListener(createSelectAllFocusListener(albumField.getEditor()));
@@ -181,25 +174,6 @@ public class EditFilePresenter implements Initializable {
         sortArtistBox.selectedProperty().addListener(sortListener);
     }
 
-    /*
-     private void setUpValidation() {
-     trackField.getEditor().textProperty().addListener(createNumberValidationChangeListener(trackField.getEditor()));
-     yearField.getEditor().textProperty().addListener(createNumberValidationChangeListener(yearField.getEditor()));
-     }
-    
-     private ChangeListener<String> createNumberValidationChangeListener(TextField textField){
-     return (ObservableValue<? extends String> observable, String oldValue, String newValue) -> {
-     if(newValue.isEmpty()){
-     return;
-     }
-     try {
-     Integer.valueOf(newValue);
-     } catch (NumberFormatException e) {
-     textField.setText(oldValue);
-     }
-     };
-     }
-     */
     private ChangeListener<Boolean> createSelectAllFocusListener(TextField target) {
         return (ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
             Platform.runLater(() -> {

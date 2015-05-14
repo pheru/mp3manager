@@ -2,6 +2,7 @@ package de.eru.mp3manager.gui.utils;
 
 import com.sun.javafx.scene.control.skin.TableViewSkin;
 import com.sun.javafx.scene.control.skin.VirtualFlow;
+import de.eru.mp3manager.utils.ExceptionHandler;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -21,7 +22,10 @@ import javafx.util.Pair;
  *
  * @author Philipp Bruckner
  */
+//TODO table.getItems sollte nicht gemacht werden
 public class DragAndDropRowFactory<T> implements Callback<TableView<T>, TableRow<T>> {
+
+    private static final String DRAG_OVER_STYLECLASS = "drag-over";
 
     //TODO com.sun. package Siehe: https://javafx-jira.kenai.com/browse/RT-39294
     private final Callback<TableView<T>, TableRow<T>> baseFactory;
@@ -74,8 +78,8 @@ public class DragAndDropRowFactory<T> implements Callback<TableView<T>, TableRow
     private EventHandler<DragEvent> createDragOverHandler(TableRow<T> row) {
         return (DragEvent event) -> {
             if (event.getDragboard().hasString() && row.getItem() != null) {
-                if (!row.getStyleClass().contains("drag-over")) {
-                    row.getStyleClass().add("drag-over");
+                if (!row.getStyleClass().contains(DRAG_OVER_STYLECLASS)) {
+                    row.getStyleClass().add(DRAG_OVER_STYLECLASS);
                 }
                 if (row.getIndex() <= virtualFlow.getFirstVisibleCell().getIndex() + 1) {
                     virtualFlow.adjustPixels(-5);
@@ -90,7 +94,7 @@ public class DragAndDropRowFactory<T> implements Callback<TableView<T>, TableRow
 
     private EventHandler<DragEvent> createDragExitedHandler(TableRow<T> row) {
         return (DragEvent event) -> {
-            row.getStyleClass().remove("drag-over");
+            row.getStyleClass().remove(DRAG_OVER_STYLECLASS);
         };
     }
 
@@ -140,7 +144,7 @@ public class DragAndDropRowFactory<T> implements Callback<TableView<T>, TableRow
                  TODO Exception vermutlich nicht korrekt verarbeitet.
                  Siehe RT-38641: https://javafx-jira.kenai.com/browse/RT-38641
                  */
-                e.printStackTrace();
+                ExceptionHandler.handle(e, "Unerwarteter interner Fehler!", "Excpetion while dropping");
             }
         };
     }

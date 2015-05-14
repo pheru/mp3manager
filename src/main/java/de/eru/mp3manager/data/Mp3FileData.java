@@ -1,6 +1,7 @@
 package de.eru.mp3manager.data;
 
 import de.eru.mp3manager.data.utils.Mp3Mapper;
+import de.eru.mp3manager.utils.ExceptionHandler;
 import de.eru.mp3manager.utils.formatter.ByteFormatter;
 import de.eru.mp3manager.utils.formatter.TimeFormatter;
 import java.io.File;
@@ -95,11 +96,12 @@ public class Mp3FileData extends FileBasedData {
         this.duration.set(duration);
     }
 
-    public void reload() {
+    public void reload() { //TODO wirklich nötig?
         try {
             Mp3Mapper.fileToMp3FileData(new File(absolutePath.get()), this);
         } catch (CannotReadException | IOException | TagException | ReadOnlyFileException | InvalidAudioFrameException ex) {
-            ex.printStackTrace();
+            ExceptionHandler.handle(ex, "Fehler beim neuladen der Datei " + absolutePath.get() + "!", 
+                    "Exception reloading Mp3FileData");
         }
     }
 

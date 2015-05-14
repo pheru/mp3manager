@@ -2,6 +2,7 @@ package de.eru.mp3manager.data.utils;
 
 import de.eru.mp3manager.data.ArtworkData;
 import de.eru.mp3manager.data.Mp3FileData;
+import de.eru.mp3manager.utils.ExceptionHandler;
 import java.io.File;
 import java.io.IOException;
 import org.jaudiotagger.audio.AudioFileIO;
@@ -37,7 +38,8 @@ public final class Mp3Mapper {
         try {
             fileToMp3FileData(file, mp3FileData);
         } catch (CannotReadException | TagException | ReadOnlyFileException | InvalidAudioFrameException ex) {
-            ex.printStackTrace();
+            ExceptionHandler.handle(ex, "Fehler beim Laden der Mp3-Informationen aus der Datei\n" + file.getAbsolutePath() + "!",
+                    "Exception reading mp3-data from file " + file.getAbsolutePath());
         }
         return mp3FileData;
     }

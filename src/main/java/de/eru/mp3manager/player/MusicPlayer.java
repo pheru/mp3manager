@@ -14,7 +14,6 @@ import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleObjectProperty;
-import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
@@ -70,7 +69,9 @@ public class MusicPlayer {
         //TODO Meldung ausgeben, wenn player == null und playlist leer?
     }
 
-    private void play(Mp3FileData mp3) {
+    //TODO wenn bereits gespielt neu starten ode rnichts tun?
+    //TODO index wird nicht aktualisiert, wenn direkt aufgerufen
+    public void play(Mp3FileData mp3) {
         if (player != null) {
             player.stop();
         }
@@ -78,7 +79,7 @@ public class MusicPlayer {
         try {
             Media media = new Media(file.toURI().toURL().toExternalForm());
             player = new MediaPlayer(media);
-            player.setOnEndOfMedia(() -> { //TODO überprüfen
+            player.setOnEndOfMedia(() -> {
                 if (!playlist.next() || repeat.get()) {
                     play(playlist.getCurrentTitle());
                 } else {
@@ -102,16 +103,18 @@ public class MusicPlayer {
                 {
                     bind(volume, muted);
                 }
+
                 @Override
                 protected double computeValue() {
-                    if(muted.get()){
+                    if (muted.get()) {
                         return 0.0;
                     }
                     return volume.get() / 100.0;
                 }
             });
         } catch (MalformedURLException ex) {
-            ExceptionHandler.handle(ex);
+            ExceptionHandler.handle(ex, "Fehler beim Abspielen der Datei\n" + file.getAbsolutePath() + "\naufgrund eines fehlerhaften Dateipfads!",
+                    "Exception creating URL from filePath " + file.getAbsolutePath());
         }
     }
 

@@ -13,6 +13,7 @@ import de.eru.mp3manager.gui.utils.DropCompletedEvent;
 import de.eru.mp3manager.player.MusicPlayer;
 import de.eru.mp3manager.service.FileService;
 import de.eru.mp3manager.settings.Settings;
+import de.eru.mp3manager.utils.ExceptionHandler;
 import de.eru.mp3manager.utils.TaskPool;
 import de.eru.mp3manager.utils.factories.TaskFactory;
 import de.eru.mp3manager.utils.formatter.TimeFormatter;
@@ -188,16 +189,18 @@ public class PlaylistPresenter implements Initializable {
 
     @FXML
     private void savePlaylist() {
+        //TODO Statusbar-Meldung
         try {
             FileService.savePlaylist(new File(playlist.getAbsolutePath()), playlist.getTitles());
             playlist.setDirty(false);
         } catch (IOException ex) {
-            ex.printStackTrace();
+            ExceptionHandler.handle(ex, "Fehler beim Speichern der Wiedergabeliste", "Exception saving playlist");
         }
     }
 
     @FXML
     private void savePlaylistAs() {
+        //TODO Statusbar-Meldung
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Wiedergabeliste speichern");
         if (!settings.getPlaylistFilePath().isEmpty()) {
@@ -251,6 +254,7 @@ public class PlaylistPresenter implements Initializable {
 
     @FXML
     private void deletePlaylist() {
+        //TODO Statusbar-Meldung
         //TODO Bestätigungsdialog mit Option die Titel aus der aktuellen Wiedergabe zu entfernen
         if (FileService.deleteFile(playlist.getAbsolutePath())) {
             playlist.setFilePath("");
@@ -260,8 +264,10 @@ public class PlaylistPresenter implements Initializable {
 
     @FXML
     private void play() {
-        System.out.println("TODO: Play!");
-        //TODO implementieren
+        //TODO Index und damit Musicplayer-Binding (titel, album, interpret) werden nicht aktualisiert
+        if (!selectedTitles.isEmpty()) {
+            musicPlayer.play(selectedTitles.get(0)); // TODO Bei Mehrfachauswahl die nicht selektierten entfernen?
+        }
     }
 
     @FXML
@@ -275,6 +281,9 @@ public class PlaylistPresenter implements Initializable {
     @FXML
     private void tableKeyReleased(KeyEvent event) {
         switch (event.getCode()) {
+            case ENTER:
+                play();
+                break;
             case DELETE:
                 remove();
                 break;

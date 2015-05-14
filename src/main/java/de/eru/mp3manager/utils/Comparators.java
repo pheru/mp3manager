@@ -2,6 +2,7 @@ package de.eru.mp3manager.utils;
 
 import de.eru.mp3manager.data.Mp3FileData;
 import de.eru.mp3manager.utils.formatter.TimeFormatter;
+import java.io.Serializable;
 import java.text.ParseException;
 import java.util.Comparator;
 import java.util.Date;
@@ -10,7 +11,7 @@ import java.util.Date;
  *
  * @author Philipp Bruckner
  */
-public class Comparators {
+public class Comparators implements Serializable{
 
     public static final Comparator<String> NUMBER_COMPARATOR = createNumberComparator();
     public static final Comparator<String> DATE_COMPARATOR = createDateComparator();
@@ -143,6 +144,6 @@ public class Comparators {
     }
 
     private static boolean isComparable(String s) {
-        return (s != null && !s.isEmpty());
+        return s != null && !s.isEmpty();
     }
 }

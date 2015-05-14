@@ -3,7 +3,6 @@ package de.eru.mp3manager.service;
 import de.eru.mp3manager.data.Mp3FileData;
 import de.eru.mp3manager.data.Playlist;
 import de.eru.mp3manager.gui.applicationwindow.editfile.EditFilePresenter;
-import de.eru.mp3manager.gui.applicationwindow.editfile.EditFileView;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -44,7 +43,7 @@ public final class FileService {
      * @param dataToSave Die zu überschreibende Datei.
      * @param changeData Die zu speichernden MP3-Informationen.
      */
-    public static void saveMp3File(Mp3FileData dataToSave, Mp3FileData changeData) throws KeyNotFoundException, FieldDataInvalidException, CannotReadException, IOException, TagException, ReadOnlyFileException, InvalidAudioFrameException, CannotWriteException, RenameFileException {
+    public static void saveMp3File(Mp3FileData dataToSave, Mp3FileData changeData) throws CannotReadException, IOException, TagException, ReadOnlyFileException, InvalidAudioFrameException, CannotWriteException, RenameFileException {
         File file = new File(dataToSave.getAbsolutePath());
         if (!changeData.getFileName().equals(EditFilePresenter.NOT_CHANGABLE + ".mp3") && !dataToSave.getFileName().equals(changeData.getFileName())) {
             File newFile = new File(dataToSave.getFilePath() + "\\" + changeData.getFileName());
@@ -82,7 +81,7 @@ public final class FileService {
         }
     }
 
-    public static List<String> loadPlaylist(File playlistFile) throws IOException {
+    public static List<String> loadPlaylist(File playlistFile) throws IOException { //TODO Fehlerhafte Playlists verarbeiten
         List<String> playlistTitles = new ArrayList<>();
         try (Stream<String> lines = Files.lines(playlistFile.toPath())) {
             lines.filter(s -> !s.isEmpty())
@@ -150,8 +149,6 @@ public final class FileService {
                     fileList.add(file);
                 }
             }
-        } else {
-            //TODO Verzeichnis existiert nicht
         }
     }
 }

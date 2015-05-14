@@ -56,8 +56,6 @@ import javax.inject.Inject;
 @ApplicationScoped
 public class MainPresenter implements Initializable {
 
-    private static final String PLACEHOLDER_TEXT_NO_DIRECTORY_CHOSEN = "Es wurde kein Verzeichnis ausgewählt";
-
     @FXML
     private VBox root;
     @FXML
@@ -108,24 +106,6 @@ public class MainPresenter implements Initializable {
         bindUI();
         FocusTraversal.createFocusTraversalGroup("mainGroup", table, TablePlaceholders.getEmptyDirectoryButton(),
                 TablePlaceholders.getNoDirectoryButton(), filterTextField);
-        //TODO Ansatz für Issue #7
-//        table.addEventFilter(KeyEvent.KEY_PRESSED, (KeyEvent event) -> {
-//            if (event.getCode() == KeyCode.TAB) {
-//                filterTextField.requestFocus();
-//                event.consume();
-//            }
-//        });
-        //TODO Channel
-//        Mp3Manager.CHANNEL.setReceiver(new ReceiverAdapter(){
-//
-//            @Override
-//            public void receive(Message msg) {
-//                String[] args = (String[]) msg.getObject();
-//                for (String arg : args) {
-//                }
-//            }
-//            
-//        });
     }
 
     /**
@@ -193,19 +173,11 @@ public class MainPresenter implements Initializable {
                     return true;
                 }
                 String filter = newValue.toLowerCase();
-                //TODO null überhaupt möglich?
-                if (mp3FileData.getAlbum() != null && mp3FileData.getAlbum().toLowerCase().contains(filter)) {
-                    return true;
-                } else if (mp3FileData.getArtist() != null && mp3FileData.getArtist().toLowerCase().contains(filter)) {
-                    return true;
-                } else if (mp3FileData.getTitle() != null && mp3FileData.getTitle().toLowerCase().contains(filter)) {
-                    return true;
-                } else if (mp3FileData.getGenre() != null && mp3FileData.getGenre().toLowerCase().contains(filter)) {
-                    return true;
-                } else if (mp3FileData.getFileName() != null && mp3FileData.getFileName().toLowerCase().contains(filter)) {
-                    return true;
-                }
-                return false;
+                return mp3FileData.getArtist().toLowerCase().contains(filter)
+                        || mp3FileData.getAlbum().toLowerCase().contains(filter)
+                        || mp3FileData.getTitle().toLowerCase().contains(filter)
+                        || mp3FileData.getGenre().toLowerCase().contains(filter)
+                        || mp3FileData.getFileName().toLowerCase().contains(filter);
             });
             updateStyledIndex(playlist.getCurrentTitleIndex());
         });
@@ -370,7 +342,9 @@ public class MainPresenter implements Initializable {
      */
     @FXML
     private void play() {
-        System.out.println("TODO - play()");
+        if(!selectedData.isEmpty()){
+            //TODO implementieren
+        }
     }
 
     /**
