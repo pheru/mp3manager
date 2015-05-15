@@ -133,16 +133,16 @@ public class ApplicationPresenter implements Initializable {
         JIntellitype.getInstance().addIntellitypeListener((int command) -> {
             switch (command) {
                 case JIntellitype.APPCOMMAND_MEDIA_PLAY_PAUSE:
-                    musicPlayer.playPause();
+                    Platform.runLater(musicPlayer::playPause);
                     break;
                 case JIntellitype.APPCOMMAND_MEDIA_PREVIOUSTRACK:
-                    musicPlayer.previous();
+                    Platform.runLater(musicPlayer::previous);
                     break;
                 case JIntellitype.APPCOMMAND_MEDIA_NEXTTRACK:
-                    musicPlayer.next(); //TODO Platform.runlater ?
+                    Platform.runLater(musicPlayer::next);
                     break;
                 case JIntellitype.APPCOMMAND_MEDIA_STOP:
-                    musicPlayer.stop(); //TODO Platform.runlater ?
+                    Platform.runLater(musicPlayer::stop);
                     break;
             }
         });

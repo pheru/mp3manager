@@ -326,17 +326,16 @@ public class EditFilePresenter implements Initializable {
     }
 
     private void setCoverImageForMultipleData() {
-        ArtworkData selectedArtworkData = selectedData.get(0).getArtworkData();
-        for (Mp3FileData data : selectedData) {
+        for (int i = 0; i < selectedData.size() - 1; i++) {
             //TODO genauerer Image-Vergleich
-            if (!Arrays.equals(data.getArtworkData().getBinaryData(), selectedArtworkData.getBinaryData())) {
+            if (!ArtworkData.equals(selectedData.get(i).getArtworkData(), selectedData.get(i + 1).getArtworkData())) {
                 removeCover("<Verschiedene Cover vorhanden>");
                 changeData.setArtworkData(null);
                 return;
             }
         }
-        setCover(selectedArtworkData);
-        changeData.setArtworkData(selectedArtworkData);
+        setCover(selectedData.get(0).getArtworkData());
+        changeData.setArtworkData(selectedData.get(0).getArtworkData());
     }
 
     /**

@@ -3,6 +3,8 @@ package de.eru.mp3manager.data;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.Objects;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleIntegerProperty;
@@ -29,7 +31,7 @@ public class ArtworkData {
         this.height.set(height);
         this.mimeType.set(mimeType);
     }
-    
+
     public ArtworkData(byte[] binaryData, String mimeType) {
         this.binaryData.set(binaryData);
         this.mimeType.set(mimeType);
@@ -48,7 +50,7 @@ public class ArtworkData {
     }
 
     public Integer getWidth() {
-        if(width.get() == 0){
+        if (width.get() == 0) {
             loadDimensions();
         }
         return width.get();
@@ -63,7 +65,7 @@ public class ArtworkData {
     }
 
     public Integer getHeight() {
-        if(height.get() == 0){
+        if (height.get() == 0) {
             loadDimensions();
         }
         return height.get();
@@ -100,6 +102,17 @@ public class ArtworkData {
             width.set(-1);
             height.set(-1);
         }
+    }
+
+    public static boolean equals(ArtworkData a1, ArtworkData a2) {
+        if ((a1 == null && a2 != null)
+                || (a2 == null && a1 != null)) {
+            return false;
+        }
+        if (a1 == null && a2 == null) {
+            return true;
+        }
+        return Arrays.equals(a1.getBinaryData(), a2.getBinaryData());
     }
 
 }
