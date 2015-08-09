@@ -7,7 +7,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import javafx.application.Platform;
+import javafx.event.Event;
 import javafx.event.EventHandler;
+import javafx.event.EventType;
 import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.input.ClipboardContent;
@@ -154,4 +156,27 @@ public class DragAndDropRowFactory<T> implements Callback<TableView<T>, TableRow
         this.dropCompletedHandler = value;
     }
 
+    public static class DropCompletedEvent extends Event {
+
+        public static final EventType<DropCompletedEvent> TYPE = new EventType<>("DnDCompleted");
+
+        private final List<Pair<Integer, Integer>> movedIndices = new ArrayList<>();
+        private int targetIndex;
+
+        public DropCompletedEvent() {
+            super(TYPE);
+        }
+
+        public List<Pair<Integer, Integer>> getMovedIndices() {
+            return movedIndices;
+        }
+
+        public int getTargetIndex() {
+            return targetIndex;
+        }
+
+        public void setTargetIndex(int targetIndex) {
+            this.targetIndex = targetIndex;
+        }
+    }
 }

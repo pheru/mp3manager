@@ -14,7 +14,6 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.TextArea;
 
 /**
- * Klasse zum schreiben von Logfiles.
  *
  * @author Philipp Bruckner
  */

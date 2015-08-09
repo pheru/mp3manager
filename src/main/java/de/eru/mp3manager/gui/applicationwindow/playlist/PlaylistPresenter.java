@@ -9,7 +9,6 @@ import de.eru.mp3manager.data.Mp3FileData;
 import de.eru.mp3manager.data.Playlist;
 import de.eru.mp3manager.gui.utils.CssRowFactory;
 import de.eru.mp3manager.gui.utils.DragAndDropRowFactory;
-import de.eru.mp3manager.gui.utils.DropCompletedEvent;
 import de.eru.mp3manager.player.MusicPlayer;
 import de.eru.mp3manager.service.FileService;
 import de.eru.mp3manager.settings.Settings;
@@ -111,7 +110,7 @@ public class PlaylistPresenter implements Initializable {
             });
             return row;
         });
-        dndRowFactory.setOnDropCompleted((DropCompletedEvent event) -> {
+        dndRowFactory.setOnDropCompleted((DragAndDropRowFactory.DropCompletedEvent event) -> {
             Integer newCurrentIndex = playlist.getCurrentTitleIndex();
             for (Pair<Integer, Integer> p : event.getMovedIndices()) {
                 if (p.getKey().equals(playlist.getCurrentTitleIndex())) {

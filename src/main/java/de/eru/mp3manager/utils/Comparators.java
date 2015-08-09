@@ -11,7 +11,7 @@ import java.util.Date;
  *
  * @author Philipp Bruckner
  */
-public class Comparators implements Serializable{
+public final class Comparators implements Serializable{
 
     public static final Comparator<String> NUMBER_COMPARATOR = createNumberComparator();
     public static final Comparator<String> DATE_COMPARATOR = createDateComparator();
