@@ -264,9 +264,8 @@ public class PlaylistPresenter implements Initializable {
 
     @FXML
     private void play() {
-        //TODO Index und damit Musicplayer-Binding (titel, album, interpret) werden nicht aktualisiert
         if (!selectedTitles.isEmpty()) {
-            musicPlayer.play(selectedTitles.get(0)); // TODO Bei Mehrfachauswahl die nicht selektierten entfernen?
+            musicPlayer.play(table.getSelectionModel().getSelectedIndices().get(0)); // TODO Bei Mehrfachauswahl die nicht selektierten entfernen?
         }
     }
 

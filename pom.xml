@@ -55,8 +55,8 @@
                 <configuration>
                     <mainClass>de.eru.mp3manager.Mp3Manager</mainClass>
                     <jvmArgs>
-                        <jvmArg>-Xms64m</jvmArg>
-                        <jvmArg>-Xmx256m</jvmArg>
+                        <jvmArg>-Xms128m</jvmArg>
+                        <jvmArg>-Xmx1024m</jvmArg>
                         <jvmArg>-Dsun.java2d.opengl=True</jvmArg>
                         <jvmArg>-Dfile.encoding=UTF-8</jvmArg>
                     </jvmArgs>

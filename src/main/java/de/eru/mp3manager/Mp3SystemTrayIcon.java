@@ -36,7 +36,8 @@ public class Mp3SystemTrayIcon {
             try {
                 systemTray.add(trayIcon);
             } catch (AWTException e) {
-                ExceptionHandler.handle(e, "TrayIcon konnte nicht initialisert werden! Die Anwendung kann nicht versteckt werden.",
+                //TODO Stattdessen direkt eine Runtime-Exception werfen?
+                ExceptionHandler.handle(e, "TrayIcon konnte nicht initialisert werden! Die Anwendung kann nicht im SystemTray versteckt werden.",
                         "Exception initializing SystemTrayIcon");
                 //TODO Anwendung darf nicht versteckt werden
             }

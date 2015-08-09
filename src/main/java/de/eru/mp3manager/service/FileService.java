@@ -51,6 +51,7 @@ public final class FileService {
                 file = newFile;
                 dataToSave.setFileName(changeData.getFileName());
             } else {
+                //TODO durch IOException ersetzen?
                 throw new RenameFileException("Could not rename file " + dataToSave.getFileName() + " to " + changeData.getFileName());
             }
         }
@@ -93,7 +94,7 @@ public final class FileService {
     /**
      * Speichert eine Wiedergabeliste.
      *
-     * @param playlistFile Das File, in welche die Wiedergabeliste gespeichert
+     * @param playlistFile Das File, in welches die Wiedergabeliste gespeichert
      * werden soll.
      * @return true, wenn das Speichern erfolgreich war.
      */

@@ -69,9 +69,13 @@ public class MusicPlayer {
         //TODO Meldung ausgeben, wenn player == null und playlist leer?
     }
 
+    public void play(Integer index){
+        playlist.setCurrentTitleIndex(index);
+        play(playlist.getTitles().get(index));
+    }
+    
     //TODO wenn bereits gespielt neu starten ode rnichts tun?
-    //TODO index wird nicht aktualisiert, wenn direkt aufgerufen
-    public void play(Mp3FileData mp3) {
+    private void play(Mp3FileData mp3) {
         if (player != null) {
             player.stop();
         }

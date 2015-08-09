@@ -16,6 +16,7 @@ import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
+import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.scene.control.Alert;
 import javax.annotation.PostConstruct;
@@ -64,6 +65,10 @@ public class Playlist extends FileBasedData {
         });
     }
 
+    /**
+     * @deprecated Zugriff sollte direkt auf die Liste geschehen (Listener um
+     * Indizes zu aktualisieren nötig)
+     */
     public void add(List<Mp3FileData> dataToAdd) {
         titles.addAll(dataToAdd);
         if (dataToAdd.size() == titles.size()) {
@@ -79,25 +84,35 @@ public class Playlist extends FileBasedData {
     }
 
     //TODO kann etwas refactored werden (event wird mit jedem schleifendurchlauf gefeuert)
+    /**
+     * @deprecated Zugriff sollte direkt auf die Liste geschehen (Listener um Indizes zu aktualisieren nötig)
+     */
     public void remove(List<Integer> selectedIndices) {
         List<Integer> indicesToRemove = new ArrayList<>(selectedIndices);
-        if (titles.size() == selectedIndices.size()) {
+        if (titles.size() == indicesToRemove.size()) {
             titles.clear();
             randomIndicesToPlay.clear();
             setCurrentTitleIndex(UNDEFINED_CURRENT_INDEX);
         } else {
             for (int i = indicesToRemove.size() - 1; i >= 0; i--) {
+                //Titel entfernen
                 titles.remove(indicesToRemove.get(i).intValue());
+                
+                // Aktuellen zufälligen Index anpassen
                 int currentRandomIndex = randomIndicesToPlay.indexOf(currentTitleIndex.get());
                 if (randomIndicesToPlay.indexOf(indicesToRemove.get(i)) < currentRandomIndex) {
                     currentRandomIndex--;
                 }
+                
+                //Index entfernen und folgende Indizes anpassen
                 randomIndicesToPlay.remove(indicesToRemove.get(i));
                 for (int j = 0; j < randomIndicesToPlay.size(); j++) {
                     if (randomIndicesToPlay.get(j) > indicesToRemove.get(i)) {
                         randomIndicesToPlay.set(j, randomIndicesToPlay.get(j) - 1);
                     }
                 }
+                
+                //Aktuellen Index anpassen
                 if (settings.isMusicPlayerRandom()) {
                     if (currentRandomIndex >= randomIndicesToPlay.size()) {
                         resetRandomIndicesToPlay();
@@ -124,6 +139,17 @@ public class Playlist extends FileBasedData {
 //            System.out.print(randomIndicesToPlay.get(j));
 //            System.out.println(" - " + titles.get(randomIndicesToPlay.get(j)).getTitle());
 //        }
+    }
+    
+    /**
+     * @deprecated Zugriff sollte direkt auf die Liste geschehen (Listener um Indizes zu aktualisieren nötig)
+     */
+    public void clear(){ 
+        List<Integer> indicesToRemove = new ArrayList();
+        for(int i = 0; i < titles.size(); i++){
+            indicesToRemove.add(i);
+        }
+        remove(indicesToRemove);
     }
 
     /**

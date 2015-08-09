@@ -171,9 +171,8 @@ public final class TaskFactory {
                     Platform.runLater(() -> {
                         playlist.setFilePath(playlistFile.getParent());
                         playlist.setFileName(playlistFile.getName());
-                        //TODO Titel sollten nicht direkt geändert werden
-                        playlist.getTitles().clear();
-                        playlist.getTitles().addAll(loadedData);
+                        playlist.clear();
+                        playlist.add(loadedData);
                         playlist.setCurrentTitleIndex(0);
                     });
                 } else {

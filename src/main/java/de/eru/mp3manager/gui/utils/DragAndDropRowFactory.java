@@ -65,6 +65,7 @@ public class DragAndDropRowFactory<T> implements Callback<TableView<T>, TableRow
     private EventHandler<MouseEvent> createDragDetectedHandler(TableRow<T> row, TableView<T> table) {
         return (MouseEvent event) -> {
             Dragboard db = row.startDragAndDrop(TransferMode.ANY);
+            db.setDragView(row.snapshot(null, null)); //TODO Snapshot
             ClipboardContent content = new ClipboardContent();
             String indicesAsString = table.getSelectionModel().getSelectedIndices().stream()
                     .map((Integer t) -> t.toString())
