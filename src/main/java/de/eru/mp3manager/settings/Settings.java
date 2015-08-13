@@ -101,15 +101,14 @@ public class Settings {
             JAXBContext context = JAXBContext.newInstance(Settings.class);
             Marshaller marshaller = context.createMarshaller();
             marshaller.setEventHandler((ValidationEvent event) -> {
-                ExceptionHandler.handle(new ValidationException("XML ist fehlerhaft"), "Fehler beim speichern der Einstellungen!",
-                        "Exception validating settings.xml-file");
+                ExceptionHandler.handle(event.getLinkedException(), "Exception validating settings.xml-file");
                 return false;
             });
             marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
             marshaller.marshal(this, new File(FILE_PATH));
             return true;
-        } catch (JAXBException ex) {
-            ExceptionHandler.handle(ex, "Fehler beim speichern der Einstellungen!", "Exception parsing settings.xml-file");
+        } catch (Exception ex) {
+            ExceptionHandler.handle(ex, "Einstellungen konnten nicht gespeichert werden!", "Exception parsing settings.xml-file");
             return false;
         }
     }
@@ -123,13 +122,13 @@ public class Settings {
             JAXBContext context = JAXBContext.newInstance(Settings.class);
             Unmarshaller unmarshaller = context.createUnmarshaller();
             unmarshaller.setEventHandler((ValidationEvent event) -> {
-                ExceptionHandler.handle(new ValidationException("XML ist fehlerhaft"), "XML ist nicht valide!");
+                ExceptionHandler.handle(event.getLinkedException(), "Invalid settings.xml!");
                 return false;
             });
             return (Settings) unmarshaller.unmarshal(new File(FILE_PATH));
-        } catch (JAXBException ex) {
-            //TODO Text anpassen
-            ExceptionHandler.handle(ex, "Einstellungen konnten nicht geladen werden!", "Exception parsing settings.xml-file!");
+        } catch (Exception ex) {
+            ExceptionHandler.handle(ex, "Es werden neue Einstellungen angelegt.", "Einstellungen konnten nicht geladen werden!",
+                    "Exception parsing settings.xml-file!");
             return createDefaultSettings();
         }
     }
