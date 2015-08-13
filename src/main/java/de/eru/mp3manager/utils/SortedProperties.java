@@ -9,7 +9,7 @@ import java.util.TreeSet;
  *
  * @author Philipp Bruckner
  */
-public class SortedProperties extends Properties {
+public class SortedProperties extends Properties { //TODO Benötigt?
 
     @Override
     public synchronized Enumeration<Object> keys() {

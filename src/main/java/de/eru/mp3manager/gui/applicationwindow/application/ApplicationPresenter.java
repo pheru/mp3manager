@@ -30,7 +30,7 @@ import javax.inject.Inject;
 
 @ApplicationScoped
 public class ApplicationPresenter implements Initializable {
-    
+
     @FXML
     private SplitPane splitPane;
     @FXML
@@ -84,7 +84,9 @@ public class ApplicationPresenter implements Initializable {
             }
             tabPane.getSelectionModel().select(tabIndex);
         });
-        setUpJIntelliType();
+        if (settings.isJIntelliTypeEnabled()) {
+            setUpJIntelliType();
+        }
         mainPresenter.readDirectory();
     }
 
@@ -129,7 +131,7 @@ public class ApplicationPresenter implements Initializable {
 //        JIntellitype.getInstance().addHotKeyListener((int identifier) -> {
 //            System.out.println(identifier);
 //        });
-        
+
         JIntellitype.getInstance().addIntellitypeListener((int command) -> {
             switch (command) {
                 case JIntellitype.APPCOMMAND_MEDIA_PLAY_PAUSE:

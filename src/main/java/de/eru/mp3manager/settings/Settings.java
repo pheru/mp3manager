@@ -39,11 +39,18 @@ public class Settings {
     public static final String FILE_PATH = Mp3Manager.APPLICATION_PATH + "/settings.xml";
 
     private static final String XMLPATH_ENDING = "/text()";
+    
+    private static final String XMLPATH_GENERAL = "general/";
     private static final String XMLPATH_DIRECTORIES = "directories/";
     private static final String XMLPATH_APPLICATION_WINDOW = "applicationWindow/";
     private static final String XMLPATH_EDITFILETAB = "editFileTab/";
     private static final String XMLPATH_MUSICPLAYER = "musicPlayer/";
 
+    //TODO Binding?
+    @XmlPath(XMLPATH_GENERAL + "jIntelliTypeEnabled" + XMLPATH_ENDING)
+    private final BooleanProperty jIntelliTypeEnabled = new SimpleBooleanProperty(true);
+    private final BooleanProperty jIntelliTypeProhibited = new SimpleBooleanProperty(false);
+    
     @XmlPath(XMLPATH_DIRECTORIES + "music" + XMLPATH_ENDING)
     private final StringProperty musicDirectory = new SimpleStringProperty("");
     @XmlPath(XMLPATH_DIRECTORIES + "playlists" + XMLPATH_ENDING)
@@ -109,16 +116,16 @@ public class Settings {
 
     public static Settings load() {
         try {
+            if (!new File(FILE_PATH).exists()) {
+                System.out.println("Settings nicht da"); //TODO Notification
+                return createDefaultSettings();
+            }
             JAXBContext context = JAXBContext.newInstance(Settings.class);
             Unmarshaller unmarshaller = context.createUnmarshaller();
             unmarshaller.setEventHandler((ValidationEvent event) -> {
                 ExceptionHandler.handle(new ValidationException("XML ist fehlerhaft"), "XML ist nicht valide!");
                 return false;
             });
-            if (!new File(FILE_PATH).exists()) {
-                System.out.println("Settings nicht da"); //TODO Notification
-                return createDefaultSettings();
-            }
             return (Settings) unmarshaller.unmarshal(new File(FILE_PATH));
         } catch (JAXBException ex) {
             //TODO Text anpassen
@@ -144,6 +151,30 @@ public class Settings {
             }
         }
         return null;
+    }
+
+    public boolean isJIntelliTypeEnabled() {
+        return jIntelliTypeEnabled.get();
+    }
+
+    public void setJIntelliTypeEnabled(final boolean jIntelliTypeEnabled) {
+        this.jIntelliTypeEnabled.set(jIntelliTypeEnabled);
+    }
+
+    public BooleanProperty jIntelliTypeEnabledProperty() {
+        return jIntelliTypeEnabled;
+    }
+    
+    public boolean isJIntelliTypeProhibited() {
+        return jIntelliTypeProhibited.get();
+    }
+
+    public void setJIntelliTypeProhibited(final boolean jIntelliTypeProhibited) {
+        this.jIntelliTypeProhibited.set(jIntelliTypeProhibited);
+    }
+
+    public BooleanProperty intelliTypeProhibitedProperty() {
+        return jIntelliTypeProhibited;
     }
 
     public String getMusicDirectory() {

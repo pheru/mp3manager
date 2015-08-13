@@ -1,8 +1,10 @@
 package de.eru.mp3manager;
 
 import com.melloware.jintellitype.JIntellitype;
+import com.melloware.jintellitype.JIntellitypeException;
 import de.eru.mp3manager.cdi.XMLSettings;
 import de.eru.mp3manager.settings.Settings;
+import de.eru.mp3manager.utils.ExceptionHandler;
 import de.eru.pherufx.mvp.StartEvent;
 import de.eru.pherufx.mvp.PheruFXApplication;
 import java.util.logging.Level;
@@ -19,10 +21,9 @@ import javax.enterprise.util.AnnotationLiteral;
  */
 public class Mp3Manager extends PheruFXApplication {
 
+    public static final String APPLICATION_NAME = "Mp3Manager";
     private static final String CODE_SOURCE_LOCATION = Mp3Manager.class.getProtectionDomain().getCodeSource().getLocation().getPath();
-
     private static final boolean PRODUCTION_MODE = !CODE_SOURCE_LOCATION.endsWith("target/classes/");
-
     //TODO sollte einheitlich sein, was das "/" am ende betrifft
     public static final String APPLICATION_PATH = PRODUCTION_MODE
             ? CODE_SOURCE_LOCATION.substring(0, CODE_SOURCE_LOCATION.lastIndexOf("/app")) : CODE_SOURCE_LOCATION;
@@ -30,17 +31,21 @@ public class Mp3Manager extends PheruFXApplication {
 
     private static final Logger JAUDIOTAGGER_LOGGER = Logger.getLogger("org.jaudiotagger");
 
-    public static final String APPLICATION_NAME = "Mp3Manager";
-
     private static Alert startAlert;
-
     private static boolean cleanedUp = false;
 
     public static void main(String[] args) {
+        Thread.setDefaultUncaughtExceptionHandler((Thread t, Throwable e) -> {
+            ExceptionHandler.handle(e, "Unexpected Exception on Thread: " + t.getName());
+        });
+        Runtime.getRuntime().addShutdownHook(new Thread() {
+            @Override
+            public void run() {
+                cleanUp();
+            }
+        });
         JAUDIOTAGGER_LOGGER.setLevel(Level.WARNING);
-        //TODO auch für 32 bit
-        JIntellitype.setLibraryLocation(Mp3Manager.DLL_PATH + "/JIntellitype64.dll");
-        
+
         setOnStarting((StartEvent event) -> {
             startAlert = new Alert(Alert.AlertType.NONE);
             startAlert.setResult(ButtonType.CLOSE);
@@ -54,14 +59,19 @@ public class Mp3Manager extends PheruFXApplication {
         });
         launch(args);
 
+        //CleanUp muss hier ausgeführt werden, da ansonsten bei normalem Beenden der Anwendung 
+        //das SystemTrayIcon nicht aufgeräumt wird und damit die Anwendung nicht stoppt.
         cleanUp();
     }
 
     public static void cleanUp() {
         if (!cleanedUp) {
-            JIntellitype.getInstance().cleanUp();
-            getWeldContainer().instance().select(Settings.class, new AnnotationLiteral<XMLSettings>() {
-            }).get().save();
+            Settings settings = getWeldContainer().instance().select(Settings.class, new AnnotationLiteral<XMLSettings>() {
+            }).get();
+            settings.save();
+            if (settings.isJIntelliTypeEnabled()) {
+                JIntellitype.getInstance().cleanUp();
+            }
             getWeldContainer().instance().select(Mp3SystemTrayIcon.class).get().shutdown();
             cleanedUp = true;
         }

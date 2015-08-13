@@ -1,5 +1,7 @@
 package de.eru.mp3manager;
 
+import com.melloware.jintellitype.JIntellitype;
+import com.melloware.jintellitype.JIntellitypeException;
 import de.eru.mp3manager.cdi.XMLSettings;
 import de.eru.mp3manager.settings.Settings;
 import de.eru.mp3manager.gui.applicationwindow.application.ApplicationView;
@@ -10,6 +12,7 @@ import java.awt.event.ActionEvent;
 import javafx.application.Platform;
 import javafx.beans.value.ObservableValue;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.stage.Stage;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
@@ -29,15 +32,7 @@ public class ApplicationStarter {
     private ApplicationView applicationView;
 
     private void launchJavaFXApplication(@Observes @StartApplication Stage primaryStage) {
-        Runtime.getRuntime().addShutdownHook(new Thread() {
-            @Override
-            public void run() {
-                Mp3Manager.cleanUp();
-            }
-        });
-        Thread.setDefaultUncaughtExceptionHandler((Thread t, Throwable e) -> {
-            ExceptionHandler.handle(e, "Unexpected Exception");
-        });
+        initJIntelliType();
         try {
             initPrimaryStage(primaryStage);
             initSystemTrayIcon(primaryStage);
@@ -46,6 +41,32 @@ public class ApplicationStarter {
             ExceptionHandler.handle(e, "Fehler beim Starten der Anwendung!", "Exception initializing Application");
             Platform.exit();
         }
+    }
+
+    private void initJIntelliType() {
+        String dll = is64BitOS() ? "/JIntellitype64.dll" : "/JIntellitype.dll";
+        JIntellitype.setLibraryLocation(Mp3Manager.DLL_PATH + dll);
+        try {
+            JIntellitype.getInstance();
+        } catch (JIntellitypeException e) {
+            if (settings.isJIntelliTypeEnabled()) {
+                Alert alert = new Alert(Alert.AlertType.WARNING);
+                alert.getDialogPane().setPrefWidth(650.0);
+                alert.setHeaderText("Initialisierung von JIntelliType fehlgeschlagen!");
+                alert.setContentText("Stellen Sie sicher, dass sich unter \n\"" + Mp3Manager.DLL_PATH
+                        + "\"\n die Dateien \"JIntellitype.dll\" und \"JIntellitype64.dll\" befindet.\n\n"
+                        + "Shortcuts wurden deaktiviert.");
+                alert.showAndWait();
+            }
+            settings.setJIntelliTypeProhibited(true);
+            settings.setJIntelliTypeEnabled(false);
+        }
+    }
+
+    private boolean is64BitOS() {
+        String arch = System.getenv("PROCESSOR_ARCHITECTURE");
+        String wow64Arch = System.getenv("PROCESSOR_ARCHITEW6432");
+        return arch.endsWith("64") || (wow64Arch != null && wow64Arch.endsWith("64"));
     }
 
     private void initPrimaryStage(Stage primaryStage) {
