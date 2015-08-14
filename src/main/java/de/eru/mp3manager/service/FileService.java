@@ -12,9 +12,10 @@ import java.util.List;
 import java.util.stream.Stream;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
 import org.jaudiotagger.audio.AudioFileIO;
 import org.jaudiotagger.audio.exceptions.CannotReadException;
-import org.jaudiotagger.audio.exceptions.CannotWriteException;
 import org.jaudiotagger.audio.exceptions.InvalidAudioFrameException;
 import org.jaudiotagger.audio.exceptions.ReadOnlyFileException;
 import org.jaudiotagger.audio.mp3.MP3File;
@@ -43,37 +44,42 @@ public final class FileService {
      * @param dataToSave Die zu überschreibende Datei.
      * @param changeData Die zu speichernden MP3-Informationen.
      */
-    public static void saveMp3File(Mp3FileData dataToSave, Mp3FileData changeData) throws CannotReadException, IOException, TagException, ReadOnlyFileException, InvalidAudioFrameException, CannotWriteException, RenameFileException {
+    public static void saveMp3File(Mp3FileData dataToSave, Mp3FileData changeData) throws RenameFailedException, SaveFailedException {
         File file = new File(dataToSave.getAbsolutePath());
-        if (!changeData.getFileName().equals(EditFilePresenter.NOT_CHANGABLE + ".mp3") && !dataToSave.getFileName().equals(changeData.getFileName())) {
+        if (!changeData.getFileName().equals(EditFilePresenter.NOT_EDITABLE + ".mp3") && !dataToSave.getFileName().equals(changeData.getFileName())) {
             File newFile = new File(dataToSave.getFilePath() + "\\" + changeData.getFileName());
             if (file.renameTo(newFile)) {
                 file = newFile;
                 dataToSave.setFileName(changeData.getFileName());
             } else {
-                //TODO durch IOException ersetzen?
-                throw new RenameFileException("Could not rename file " + dataToSave.getFileName() + " to " + changeData.getFileName());
+                throw new RenameFailedException("Could not rename file " + dataToSave.getFileName() + " to " + changeData.getFileName());
             }
         }
-        MP3File mp3File = (MP3File) AudioFileIO.read(file);
-        AbstractID3v2Tag tag = mp3File.getID3v2Tag();
-        setTagField(tag, FieldKey.TITLE, changeData.getTitle());
-        setTagField(tag, FieldKey.ARTIST, changeData.getArtist());
-        setTagField(tag, FieldKey.ALBUM, changeData.getAlbum());
-        setTagField(tag, FieldKey.GENRE, changeData.getGenre());
-        setTagField(tag, FieldKey.YEAR, changeData.getYear());
-        setTagField(tag, FieldKey.TRACK, changeData.getTrack());
 
-        if (changeData.getArtworkData() != null && changeData.getArtworkData().getBinaryData().length > 0) {
-            Artwork newArtwork = new Artwork();
-            newArtwork.setBinaryData(changeData.getArtworkData().getBinaryData());
-            newArtwork.setMimeType(changeData.getArtworkData().getMimeType());
-            newArtwork.setDescription("");
-            newArtwork.setPictureType(PictureTypes.DEFAULT_ID); //DEFAULT_ID == 3 == Cover (Front)
-            tag.deleteArtworkField();
-            tag.setField(newArtwork);
+        try {
+            MP3File mp3File = (MP3File) AudioFileIO.read(file);
+            AbstractID3v2Tag tag = mp3File.getID3v2Tag();
+            setTagField(tag, FieldKey.TITLE, changeData.getTitle());
+            setTagField(tag, FieldKey.ARTIST, changeData.getArtist());
+            setTagField(tag, FieldKey.ALBUM, changeData.getAlbum());
+            setTagField(tag, FieldKey.GENRE, changeData.getGenre());
+            setTagField(tag, FieldKey.YEAR, changeData.getYear());
+            setTagField(tag, FieldKey.TRACK, changeData.getTrack());
+
+            if (changeData.getArtworkData() != null && changeData.getArtworkData().getBinaryData().length > 0) {
+                Artwork newArtwork = new Artwork();
+                newArtwork.setBinaryData(changeData.getArtworkData().getBinaryData());
+                newArtwork.setMimeType(changeData.getArtworkData().getMimeType());
+                newArtwork.setDescription("");
+                newArtwork.setPictureType(PictureTypes.DEFAULT_ID); //DEFAULT_ID == 3 == Cover (Front)
+                tag.deleteArtworkField();
+                tag.setField(newArtwork);
+            }
+            mp3File.save();
+        } catch (CannotReadException | IOException | ReadOnlyFileException | TagException | InvalidAudioFrameException e) {
+            throw new SaveFailedException("Failed to save\n" + ToStringBuilder.reflectionToString(dataToSave, ToStringStyle.MULTI_LINE_STYLE, true)
+                    + "\nwith changeData: " + ToStringBuilder.reflectionToString(changeData, ToStringStyle.MULTI_LINE_STYLE, true), e);
         }
-        mp3File.save();
     }
 
     private static void setTagField(AbstractID3v2Tag tag, FieldKey key, String value) throws KeyNotFoundException, FieldDataInvalidException {

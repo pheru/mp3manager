@@ -14,7 +14,7 @@ import de.eru.mp3manager.service.FileService;
 import de.eru.mp3manager.settings.Settings;
 import de.eru.mp3manager.utils.ExceptionHandler;
 import de.eru.mp3manager.utils.TaskPool;
-import de.eru.mp3manager.utils.factories.TaskFactory;
+import de.eru.mp3manager.utils.task.TaskFactory;
 import de.eru.mp3manager.utils.formatter.TimeFormatter;
 import de.eru.pherufx.mvp.InjectableList;
 import java.io.File;

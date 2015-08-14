@@ -1,4 +1,4 @@
-package de.eru.mp3manager.utils.factories;
+package de.eru.mp3manager.utils.task;
 
 import de.eru.mp3manager.data.utils.Mp3Mapper;
 import de.eru.mp3manager.data.Mp3FileData;
@@ -6,7 +6,8 @@ import de.eru.mp3manager.data.Playlist;
 import de.eru.mp3manager.gui.applicationwindow.main.MainPresenter;
 import de.eru.mp3manager.gui.utils.TablePlaceholders;
 import de.eru.mp3manager.service.FileService;
-import de.eru.mp3manager.service.RenameFileException;
+import de.eru.mp3manager.service.RenameFailedException;
+import de.eru.mp3manager.service.SaveFailedException;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
@@ -115,12 +116,27 @@ public final class TaskFactory {
                     updateMessage(dataToSave.get(i).getAbsolutePath());
                     try {
                         FileService.saveMp3File(dataToSave.get(i), changeData);
-                    } catch (RenameFileException e) {
+                    } catch (RenameFailedException e) {
+                        //Es kann nur eine Datei gleichzeitig umbenannt werden,
+                        //daher ist es nicht nötig, die betroffene Datei anzugeben
+                        //und der Task kann gecancelt werden
                         Platform.runLater(() -> {
-                            Alert alert = new Alert(Alert.AlertType.WARNING);
+                            Alert alert = new Alert(Alert.AlertType.ERROR);
                             alert.setHeaderText("Speichern fehlgeschlagen!");
                             alert.setContentText("Dateiname konnte nicht geändert werden!\n\nMöglicherweise enthält der Dateiname ungültige Zeichen oder eine Datei mit diesem Namen existiert bereits.");
-                            //TODO DPI-Scaling nötig?
+                            alert.getDialogPane().setPrefWidth(500.0);
+                            alert.showAndWait();
+                        });
+                        updateTitle("Speichern der Dateien fehlgeschlagen!");
+                        updateMessage(i + " von " + dataToSave.size() + " Dateien wurden erfolgreich gespeichert.");
+                        updateProgress(1, 1);
+                        cancel();
+                        return null;
+                    } catch (SaveFailedException e) {
+                        Platform.runLater(() -> {
+                            Alert alert = new Alert(Alert.AlertType.ERROR);
+                            alert.setHeaderText("Speichern fehlgeschlagen!");
+//                            alert.setContentText("Fehler beim Speichern der Datei \"" + dataToSave.get(i).getFileName() + "!!\n\nMöglicherweise enthält der Dateiname ungültige Zeichen oder eine Datei mit diesem Namen existiert bereits.");
                             alert.getDialogPane().setPrefWidth(500.0);
                             alert.showAndWait();
                         });
@@ -133,14 +149,14 @@ public final class TaskFactory {
                     Platform.runLater(dataToSave.get(i)::reload);
                     updateProgress(i + 1, dataToSave.size());
                 }
-                
+
                 updateTitle("Speichern der Dateien abgeschlossen.");
                 updateMessage(dataToSave.size() + " von " + dataToSave.size() + " Dateien wurden erfolgreich gespeichert.");
                 return null;
             }
         };
     }
-
+    
     public static Task<Void> createLoadPlaylistTask(Playlist playlist, File playlistFile, List<Mp3FileData> masterData) {
         return new Task<Void>() {
             @Override

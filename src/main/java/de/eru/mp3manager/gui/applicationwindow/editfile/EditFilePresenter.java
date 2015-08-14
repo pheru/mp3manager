@@ -10,7 +10,7 @@ import de.eru.mp3manager.settings.Settings;
 import de.eru.mp3manager.utils.Comparators;
 import de.eru.mp3manager.utils.TaskPool;
 import de.eru.mp3manager.utils.formatter.ByteFormatter;
-import de.eru.mp3manager.utils.factories.TaskFactory;
+import de.eru.mp3manager.utils.task.TaskFactory;
 import de.eru.pherufx.focus.FocusTraversal;
 import de.eru.pherufx.mvp.InjectableList;
 import java.io.File;
@@ -45,7 +45,7 @@ import org.jaudiotagger.tag.id3.valuepair.ImageFormats;
 public class EditFilePresenter implements Initializable {
 
     public static final String DIFF_VALUES = "<Verschiedene Werte>";
-    public static final String NOT_CHANGABLE = "<Bei Mehrfachauswahl nicht editierbar>";
+    public static final String NOT_EDITABLE = "<Bei Mehrfachauswahl nicht editierbar>";
 
     @FXML
     private GridPane root;
@@ -297,7 +297,7 @@ public class EditFilePresenter implements Initializable {
      * Wert dieses Feldes auf DIFF_VALUES gesetzt.
      */
     private void setFieldValues() {
-        fileNameField.setText(NOT_CHANGABLE);
+        fileNameField.setText(NOT_EDITABLE);
         for (ComboBox<String> field : fields) {
             if (field.getItems().size() > 1) {
                 field.setValue(DIFF_VALUES);
