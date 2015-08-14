@@ -1,5 +1,6 @@
-package de.eru.mp3manager.utils;
+package de.eru.mp3manager.utils.task;
 
+import de.eru.mp3manager.utils.ExceptionHandler;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.ObjectProperty;
@@ -12,7 +13,6 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.concurrent.Task;
 import javax.enterprise.context.ApplicationScoped;
 
 /**
@@ -27,16 +27,15 @@ import javax.enterprise.context.ApplicationScoped;
 @ApplicationScoped
 public class TaskPool {
 
-    private final ObservableList<Task> tasks = FXCollections.observableArrayList();
-    private Task currentTask;
+    private final ObservableList<Mp3ManagerTask> tasks = FXCollections.observableArrayList();
+    private Mp3ManagerTask currentTask;
 
     private final StringProperty message = new SimpleStringProperty();
     private final StringProperty title = new SimpleStringProperty();
     private final DoubleProperty progress = new SimpleDoubleProperty();
+    private final ObjectProperty<Mp3ManagerTask.Status> status = new SimpleObjectProperty<>(Mp3ManagerTask.Status.READY);
 
     private final BooleanProperty stopping = new SimpleBooleanProperty(false);
-
-    private final ObjectProperty<Status> status = new SimpleObjectProperty<>(Status.READY);
 
     /**
      * Fügt dem Taskpool einen Task hinzu und startet den TaskPool, falls dieser
@@ -44,7 +43,7 @@ public class TaskPool {
      *
      * @param task Der hinzuzufügende Task.
      */
-    public void addTask(Task task) {
+    public void addTask(Mp3ManagerTask task) {
         tasks.add(task);
         start();
     }
@@ -55,7 +54,7 @@ public class TaskPool {
      *
      * @param task Der hinzuzufügende Task.
      */
-    public void addTaskAsNextTask(Task task) {
+    public void addTaskAsNextTask(Mp3ManagerTask task) {
         tasks.add(0, task);
         start();
     }
@@ -97,16 +96,18 @@ public class TaskPool {
      * Startet den nächsten Task, sofern kein anderer zu diesem Zeitpunkt läuft.
      */
     public void start() {
-        if (!status.get().equals(Status.RUNNING) && !stopping.get() && !tasks.isEmpty()) {
-            status.set(Status.RUNNING);
+        if (!status.get().equals(Mp3ManagerTask.Status.RUNNING) && !stopping.get() && !tasks.isEmpty()) {
             currentTask = tasks.get(0);
             tasks.remove(currentTask);
-            currentTask.runningProperty().addListener(createTaskRunningListener(currentTask));
+            currentTask.runningProperty().addListener(createTaskRunningListener());
             message.bind(currentTask.messageProperty());
             title.bind(currentTask.titleProperty());
             progress.bind(currentTask.progressProperty());
-            currentTask.exceptionProperty().addListener((ObservableValue observable, Object oldValue, Object newValue) -> {
-                ExceptionHandler.handle((Throwable) newValue, "Unexpected Exception");
+            status.bind(currentTask.statusProperty());
+            currentTask.exceptionProperty().addListener((ObservableValue<? extends Throwable> observable, Throwable oldValue, Throwable newValue) -> {
+                ExceptionHandler.handle((Throwable) newValue, "Unexpected Exception"); // TODO Dialog?
+                status.unbind();
+                status.set(Mp3ManagerTask.Status.FAILED);
             });
             Thread thread = new Thread(currentTask);
             thread.setDaemon(true);
@@ -121,14 +122,9 @@ public class TaskPool {
      *
      * @return Ein ChangeListener für das RunningProperty eines Tasks.
      */
-    private ChangeListener<Boolean> createTaskRunningListener(Task task) {
+    private ChangeListener<Boolean> createTaskRunningListener() {
         return (ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
             if (!newValue) {
-                if (task.isCancelled()) {
-                    status.set(Status.CANCELLED);
-                } else {
-                    status.set(Status.SUCCESSFUL);
-                }
                 if (!stopping.get()) {
                     start();
                 } else {
@@ -150,11 +146,11 @@ public class TaskPool {
         return progress;
     }
 
-    public ObjectProperty<Status> statusProperty() {
+    public ObjectProperty<Mp3ManagerTask.Status> statusProperty() {
         return status;
     }
 
-    public Status getStatus() {
+    public Mp3ManagerTask.Status getStatus() {
         return status.get();
     }
 
@@ -169,23 +165,4 @@ public class TaskPool {
     public double getProgress() {
         return progress.get();
     }
-
-    public enum Status {
-
-        READY("dodgerblue"),
-        RUNNING("dodgerblue"),
-        CANCELLED("red"),
-        SUCCESSFUL("limegreen");
-
-        private final String color;
-
-        private Status(String color) {
-            this.color = color;
-        }
-
-        public String getColor() {
-            return color;
-        }
-    }
-
 }

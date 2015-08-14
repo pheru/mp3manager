@@ -11,8 +11,9 @@ import de.eru.mp3manager.cdi.XMLSettings;
 import de.eru.mp3manager.gui.utils.CssRowFactory;
 import de.eru.mp3manager.gui.utils.TablePlaceholders;
 import de.eru.mp3manager.settings.ColumnSettings;
-import de.eru.mp3manager.utils.TaskPool;
-import de.eru.mp3manager.utils.task.TaskFactory;
+import de.eru.mp3manager.utils.task.Mp3ManagerTask;
+import de.eru.mp3manager.utils.task.TaskPool;
+import de.eru.mp3manager.utils.task.ReadDirectoryTask;
 import de.eru.pherufx.focus.FocusTraversal;
 import de.eru.pherufx.mvp.InjectableList;
 import java.io.File;
@@ -29,7 +30,6 @@ import javafx.beans.value.ObservableValue;
 import javafx.collections.ListChangeListener;
 import javafx.collections.transformation.FilteredList;
 import javafx.collections.transformation.SortedList;
-import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -267,7 +267,7 @@ public class MainPresenter implements Initializable {
         TablePlaceholders.noFilterResultFilterProperty().bind(filterTextField.textProperty());
         clearFilterButton.visibleProperty().bind(filterTextField.textProperty().isEmpty().not());
 //        taskCancelButton.disableProperty().bind(taskPool.cancellingProperty().or(taskPool.runningProperty().not()));
-        taskCancelButton.disableProperty().bind(taskPool.statusProperty().isNotEqualTo(TaskPool.Status.RUNNING));
+        taskCancelButton.disableProperty().bind(taskPool.statusProperty().isNotEqualTo(Mp3ManagerTask.Status.RUNNING));
         taskProgress.styleProperty().bind(new StringBinding() {
             {
                 bind(taskPool.statusProperty());
@@ -320,7 +320,7 @@ public class MainPresenter implements Initializable {
     public void readDirectory() {
         String directory = settings.getMusicDirectory();
         if (directory != null && !directory.isEmpty()) {
-            Task<Void> readDirectoryTask = TaskFactory.createReadDirectoryTask(directory, masterData, table.placeholderProperty(), playlist.getTitles());
+            Mp3ManagerTask readDirectoryTask = new ReadDirectoryTask(directory, masterData, table.placeholderProperty(), playlist.getTitles());
             readDirectoryTask.runningProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
                 if (oldValue && !newValue) {
                     updateStyledIndex(playlist.getCurrentTitleIndex());
@@ -342,7 +342,7 @@ public class MainPresenter implements Initializable {
      */
     @FXML
     private void play() {
-        if(!selectedData.isEmpty()){
+        if (!selectedData.isEmpty()) {
             //TODO implementieren
         }
     }

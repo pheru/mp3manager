@@ -8,14 +8,13 @@ import de.eru.mp3manager.data.ArtworkData;
 import de.eru.mp3manager.gui.utils.NumberComboBox;
 import de.eru.mp3manager.settings.Settings;
 import de.eru.mp3manager.utils.Comparators;
-import de.eru.mp3manager.utils.TaskPool;
+import de.eru.mp3manager.utils.task.TaskPool;
 import de.eru.mp3manager.utils.formatter.ByteFormatter;
-import de.eru.mp3manager.utils.task.TaskFactory;
+import de.eru.mp3manager.utils.task.SaveFilesTask;
 import de.eru.pherufx.focus.FocusTraversal;
 import de.eru.pherufx.mvp.InjectableList;
 import java.io.File;
 import java.net.URL;
-import java.util.Arrays;
 import java.util.ResourceBundle;
 import javafx.application.Platform;
 import javafx.beans.binding.DoubleBinding;
@@ -393,7 +392,7 @@ public class EditFilePresenter implements Initializable {
 
     @FXML
     public void save() {
-        taskPool.addTask(TaskFactory.createSaveFilesTask(FXCollections.observableArrayList(selectedData), new Mp3FileData(changeData)));
+        taskPool.addTask(new SaveFilesTask(FXCollections.observableArrayList(selectedData), new Mp3FileData(changeData)));
     }
 
     //@FXML

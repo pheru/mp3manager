@@ -13,9 +13,10 @@ import de.eru.mp3manager.player.MusicPlayer;
 import de.eru.mp3manager.service.FileService;
 import de.eru.mp3manager.settings.Settings;
 import de.eru.mp3manager.utils.ExceptionHandler;
-import de.eru.mp3manager.utils.TaskPool;
-import de.eru.mp3manager.utils.task.TaskFactory;
+import de.eru.mp3manager.utils.task.TaskPool;
 import de.eru.mp3manager.utils.formatter.TimeFormatter;
+import de.eru.mp3manager.utils.task.LoadPlaylistTask;
+import de.eru.mp3manager.utils.task.Mp3ManagerTask;
 import de.eru.pherufx.mvp.InjectableList;
 import java.io.File;
 import java.io.IOException;
@@ -25,7 +26,6 @@ import javafx.application.Application.Parameters;
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.StringBinding;
 import javafx.beans.value.ObservableValue;
-import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
@@ -86,7 +86,7 @@ public class PlaylistPresenter implements Initializable {
         initTable();
         bindUI();
         if (!params.getRaw().isEmpty()) {
-            Task<Void> loadPlaylistTask = TaskFactory.createLoadPlaylistTask(playlist, new File(params.getRaw().get(0)), mainTitles);
+            Mp3ManagerTask loadPlaylistTask = new LoadPlaylistTask(playlist, new File(params.getRaw().get(0)), mainTitles);
             loadPlaylistTask.runningProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
                 if (oldValue && !newValue) {
                     musicPlayer.playPause();
@@ -240,7 +240,7 @@ public class PlaylistPresenter implements Initializable {
         fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Wiedergabelisten", "*." + Playlist.FILE_EXTENSION));
         File playlistFile = fileChooser.showOpenDialog(table.getScene().getWindow());
         if (playlistFile != null) {
-            Task<Void> loadPlaylistTask = TaskFactory.createLoadPlaylistTask(playlist, playlistFile, mainTitles);
+            Mp3ManagerTask loadPlaylistTask = new LoadPlaylistTask(playlist, playlistFile, mainTitles);
             loadPlaylistTask.runningProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
                 if (oldValue && !newValue) {
                     musicPlayer.stop();
