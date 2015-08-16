@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="debug">
+    <Appenders>
+        <Console name="Console" target="SYSTEM_OUT">
+            <PatternLayout pattern="[%d{yyyy-MM-dd HH:mm:ss} | %-p | %c#%M:%L] %m%n"/>
+        </Console>
+        <Routing name="InfoRouting">
+            <Routes pattern="$${ctx:logfiles.path}">
+                <Route>
+                    <File name="InfoFile" fileName="${ctx:logfiles.path}/logs/info.log">
+                        <PatternLayout pattern="[%d{yyyy-MM-dd HH:mm:ss} | %-p | %c#%M:%L] %m%n"/>
+                        <filters>
+                            <ThresholdFilter level="info"/>
+                            <ThresholdFilter level="warn" onMatch="deny" onMismatch="neutral"/>
+                        </filters>
+                    </File>
+                </Route>
+            </Routes>
+        </Routing>
+        <Routing name="WarningRouting">
+            <Routes pattern="$${ctx:logfiles.path}">
+                <Route>
+                    <File name="WarningFile" fileName="${ctx:logfiles.path}/logs/warning.log">
+                        <PatternLayout pattern="[%d{yyyy-MM-dd HH:mm:ss} | %-p | %c#%M:%L] %m%n"/>
+                        <filters>
+                            <ThresholdFilter level="warn"/>
+                            <ThresholdFilter level="error" onMatch="deny" onMismatch="neutral"/>
+                        </filters>
+                    </File>
+                </Route>
+            </Routes>
+        </Routing>
+        <Routing name="ErrorRouting">
+            <Routes pattern="$${ctx:logfiles.path}">
+                <Route>
+                    <File name="ErrorFile" fileName="${ctx:logfiles.path}/logs/error.log">
+                        <PatternLayout pattern="[%d{yyyy-MM-dd HH:mm:ss} | %-p | %c#%M:%L] %m%n"/>
+                    </File>
+                </Route>
+            </Routes>
+        </Routing>
+    </Appenders>
+    
+    <Loggers>
+        <Root level="debug" additivity="false">
+            <AppenderRef ref="Console" level="debug"/>
+            <AppenderRef ref="InfoRouting" level="info"/>
+            <AppenderRef ref="WarningRouting" level="warn"/>
+            <AppenderRef ref="ErrorRouting" level="error"/>
+        </Root>
+    </Loggers>
+</Configuration>

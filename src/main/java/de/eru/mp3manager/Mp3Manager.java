@@ -1,18 +1,19 @@
 package de.eru.mp3manager;
 
 import com.melloware.jintellitype.JIntellitype;
-import com.melloware.jintellitype.JIntellitypeException;
 import de.eru.mp3manager.cdi.XMLSettings;
 import de.eru.mp3manager.settings.Settings;
 import de.eru.mp3manager.utils.ExceptionHandler;
 import de.eru.pherufx.mvp.StartEvent;
 import de.eru.pherufx.mvp.PheruFXApplication;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 import static javafx.application.Application.launch;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javax.enterprise.util.AnnotationLiteral;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.ThreadContext;
 
 /**
  * Application-Klasse als Startpunkt für die JavaFX-Anwendung.
@@ -29,12 +30,15 @@ public class Mp3Manager extends PheruFXApplication {
             ? CODE_SOURCE_LOCATION.substring(0, CODE_SOURCE_LOCATION.lastIndexOf("/app")) : CODE_SOURCE_LOCATION;
     public static final String DLL_PATH = PRODUCTION_MODE ? APPLICATION_PATH : CODE_SOURCE_LOCATION.replace("target/classes/", "");
 
-    private static final Logger JAUDIOTAGGER_LOGGER = Logger.getLogger("org.jaudiotagger");
+    private static final java.util.logging.Logger JAUDIOTAGGER_LOGGER = java.util.logging.Logger.getLogger("org.jaudiotagger");
+    private static final Logger LOGGER = LogManager.getLogger(Mp3Manager.class);
 
     private static Alert startAlert;
     private static boolean cleanedUp = false;
 
     public static void main(String[] args) {
+        ThreadContext.put("logfiles.path", APPLICATION_PATH);
+
         Thread.setDefaultUncaughtExceptionHandler((Thread t, Throwable e) -> {
             ExceptionHandler.handle(e, "Unexpected Exception on Thread: " + t.getName());
         });
