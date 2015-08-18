@@ -2,7 +2,6 @@ package de.eru.mp3manager.gui.utils;
 
 import com.sun.javafx.scene.control.skin.TableViewSkin;
 import com.sun.javafx.scene.control.skin.VirtualFlow;
-import de.eru.mp3manager.utils.ExceptionHandler;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -10,6 +9,7 @@ import javafx.application.Platform;
 import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.event.EventType;
+import javafx.scene.control.Alert;
 import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.input.ClipboardContent;
@@ -19,6 +19,8 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.input.TransferMode;
 import javafx.util.Callback;
 import javafx.util.Pair;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  *
@@ -26,6 +28,8 @@ import javafx.util.Pair;
  */
 //TODO table.getItems sollte nicht gemacht werden
 public class DragAndDropRowFactory<T> implements Callback<TableView<T>, TableRow<T>> {
+
+    private static final Logger LOGGER = LogManager.getLogger(DragAndDropRowFactory.class);
 
     private static final String DRAG_OVER_STYLECLASS = "drag-over";
 
@@ -148,7 +152,10 @@ public class DragAndDropRowFactory<T> implements Callback<TableView<T>, TableRow
                  TODO Exception vermutlich nicht korrekt verarbeitet.
                  Siehe RT-38641: https://javafx-jira.kenai.com/browse/RT-38641
                  */
-                ExceptionHandler.handle(e, "Unerwarteter interner Fehler!", "Excpetion while dropping");
+                LOGGER.error("Exception while Drag&Drop!", e);
+                //TODO Thread
+                Alert alert = new Alert(Alert.AlertType.ERROR, "Fehler beim Ausführen des Drag&Drop!");
+                alert.showAndWait();
             }
         };
     }

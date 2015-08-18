@@ -1,6 +1,6 @@
 package de.eru.mp3manager;
 
-import de.eru.mp3manager.utils.ExceptionHandler;
+import de.eru.mp3manager.exceptions.Mp3ManagerRuntimeException;
 import java.awt.AWTException;
 import java.awt.Font;
 import java.awt.Image;
@@ -36,10 +36,7 @@ public class Mp3SystemTrayIcon {
             try {
                 systemTray.add(trayIcon);
             } catch (AWTException e) {
-                //TODO Stattdessen direkt eine Runtime-Exception werfen?
-                ExceptionHandler.handle(e, "TrayIcon konnte nicht initialisert werden! Die Anwendung kann nicht im SystemTray versteckt werden.",
-                        "Exception initializing SystemTrayIcon");
-                //TODO Anwendung darf nicht versteckt werden
+                throw new Mp3ManagerRuntimeException("Exception initializing Mp3SystemTrayIcon!", e);
             }
         }
     }

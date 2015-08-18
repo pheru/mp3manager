@@ -5,8 +5,8 @@ import com.melloware.jintellitype.JIntellitypeException;
 import de.eru.mp3manager.cdi.XMLSettings;
 import de.eru.mp3manager.settings.Settings;
 import de.eru.mp3manager.gui.applicationwindow.application.ApplicationView;
-import de.eru.mp3manager.utils.ExceptionHandler;
 import de.eru.pherufx.mvp.StartApplication;
+import de.eru.pherufx.notifications.Notifications;
 import java.awt.SystemTray;
 import java.awt.event.ActionEvent;
 import javafx.application.Platform;
@@ -16,12 +16,16 @@ import javafx.scene.control.Alert;
 import javafx.stage.Stage;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  *
  * @author Philipp Bruckner
  */
 public class ApplicationStarter {
+
+    private static final Logger LOGGER = LogManager.getLogger(ApplicationStarter.class);
 
     @Inject
     @XMLSettings
@@ -32,15 +36,23 @@ public class ApplicationStarter {
     private ApplicationView applicationView;
 
     private void launchJavaFXApplication(@Observes @StartApplication Stage primaryStage) {
-        initJIntelliType();
         try {
+            initNotifications();
+            initJIntelliType();
             initPrimaryStage(primaryStage);
             initSystemTrayIcon(primaryStage);
             primaryStage.show();
         } catch (Exception e) {
-            ExceptionHandler.handle(e, "Fehler beim Starten der Anwendung!", "Exception initializing Application");
+            LOGGER.fatal("Exception initializing Application!", e);
+            Alert alert = new Alert(Alert.AlertType.ERROR, "Fehler beim Starten der Anwendung!");
+            alert.showAndWait();
             Platform.exit();
         }
+    }
+
+    private void initNotifications() {
+        Notifications.alignmentProperty().bind(settings.notificationsAlignmentProperty());
+        Notifications.defaultTimerProperty().bind(settings.notificationsTimerProperty());
     }
 
     private void initJIntelliType() {
@@ -49,6 +61,7 @@ public class ApplicationStarter {
         try {
             JIntellitype.getInstance();
         } catch (JIntellitypeException e) {
+            LOGGER.error("Exception initializing JIntelliType!", e);
             if (settings.isJIntelliTypeEnabled()) {
                 Alert alert = new Alert(Alert.AlertType.WARNING);
                 alert.getDialogPane().setPrefWidth(650.0);
@@ -99,19 +112,13 @@ public class ApplicationStarter {
         if (SystemTray.isSupported()) {
             Platform.setImplicitExit(false);
             systemTrayIcon.addOnClick(() -> {
-                Platform.runLater(() -> {
-                    primaryStage.show();
-                });
+                Platform.runLater(primaryStage::show);
             });
             systemTrayIcon.addPopUpMenuItem("Öffnen", (ActionEvent e) -> {
-                Platform.runLater(() -> {
-                    primaryStage.show();
-                });
+                Platform.runLater(primaryStage::show);
             });
             systemTrayIcon.addPopUpMenuItem("Verstecken", (ActionEvent e) -> {
-                Platform.runLater(() -> {
-                    primaryStage.hide();
-                });
+                Platform.runLater(primaryStage::hide);
             });
             systemTrayIcon.addPopUpMenuItem("Beenden", (ActionEvent e) -> {
                 Platform.exit();

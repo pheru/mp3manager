@@ -1,4 +1,4 @@
-package de.eru.mp3manager.service;
+package de.eru.mp3manager.exceptions;
 
 /**
  *

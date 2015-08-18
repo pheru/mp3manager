@@ -1,6 +1,5 @@
 package de.eru.mp3manager.utils.task;
 
-import de.eru.mp3manager.utils.ExceptionHandler;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.ObjectProperty;
@@ -13,7 +12,10 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.scene.control.Alert;
 import javax.enterprise.context.ApplicationScoped;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * Klasse zum abarbeiten von Tasks.<br/>
@@ -26,6 +28,8 @@ import javax.enterprise.context.ApplicationScoped;
  */
 @ApplicationScoped
 public class TaskPool {
+
+    private static final Logger LOGGER = LogManager.getLogger(TaskPool.class);
 
     private final ObservableList<Mp3ManagerTask> tasks = FXCollections.observableArrayList();
     private Mp3ManagerTask currentTask;
@@ -105,9 +109,13 @@ public class TaskPool {
             progress.bind(currentTask.progressProperty());
             status.bind(currentTask.statusProperty());
             currentTask.exceptionProperty().addListener((ObservableValue<? extends Throwable> observable, Throwable oldValue, Throwable newValue) -> {
-                ExceptionHandler.handle((Throwable) newValue, "Unexpected Exception"); // TODO Dialog?
+                //TODO FX-Thread?
+                //TODO RuntimeException?
+                LOGGER.error("Unexpected Exception running Mp3ManagerTask!", newValue);
                 status.unbind();
                 status.set(Mp3ManagerTask.Status.FAILED);
+                Alert alert = new Alert(Alert.AlertType.ERROR, "Fehler beim ausführen des Tasks!");
+                alert.showAndWait();
             });
             Thread thread = new Thread(currentTask);
             thread.setDaemon(true);

@@ -4,7 +4,6 @@ import de.eru.mp3manager.settings.Settings;
 import de.eru.mp3manager.cdi.XMLSettings;
 import de.eru.mp3manager.data.Mp3FileData;
 import de.eru.mp3manager.data.Playlist;
-import de.eru.mp3manager.utils.ExceptionHandler;
 import java.io.File;
 import java.net.MalformedURLException;
 import javafx.beans.binding.DoubleBinding;
@@ -15,12 +14,15 @@ import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ObservableValue;
+import javafx.scene.control.Alert;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.util.Duration;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * Player zum Abspielen von der MP3-Dateien.
@@ -29,6 +31,8 @@ import javax.inject.Inject;
  */
 @ApplicationScoped
 public class MusicPlayer {
+
+    private static final Logger LOGGER = LogManager.getLogger(MusicPlayer.class);
 
     private final DoubleProperty currentTime = new SimpleDoubleProperty(0.0);
     private final DoubleProperty totalTime = new SimpleDoubleProperty(0.0);
@@ -69,11 +73,11 @@ public class MusicPlayer {
         //TODO Meldung ausgeben, wenn player == null und playlist leer?
     }
 
-    public void play(Integer index){
+    public void play(Integer index) {
         playlist.setCurrentTitleIndex(index);
         play(playlist.getTitles().get(index));
     }
-    
+
     //TODO wenn bereits gespielt neu starten ode rnichts tun?
     private void play(Mp3FileData mp3) {
         if (player != null) {
@@ -116,9 +120,12 @@ public class MusicPlayer {
                     return volume.get() / 100.0;
                 }
             });
-        } catch (MalformedURLException ex) {
-            ExceptionHandler.handle(ex, "Fehler beim Abspielen der Datei\n" + file.getAbsolutePath() + "\naufgrund eines fehlerhaften Dateipfads!",
-                    "Exception creating URL from filePath " + file.getAbsolutePath());
+        } catch (MalformedURLException e) {
+            //TODO Thread
+            //TODO RuntimeException?
+            LOGGER.error("Exception creating URL from filePath " + file.getAbsolutePath(), e);
+            Alert alert = new Alert(Alert.AlertType.ERROR, "Fehler beim Abspielen der Datei\n" + file.getAbsolutePath() + "!");
+            alert.showAndWait();
         }
     }
 

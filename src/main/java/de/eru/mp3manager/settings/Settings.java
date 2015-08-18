@@ -2,28 +2,34 @@ package de.eru.mp3manager.settings;
 
 import de.eru.mp3manager.Mp3Manager;
 import de.eru.mp3manager.gui.applicationwindow.main.MainColumn;
-import de.eru.mp3manager.utils.ExceptionHandler;
+import de.eru.pherufx.notifications.Notification;
+import de.eru.pherufx.notifications.Notifications;
 import java.io.File;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.DoubleProperty;
+import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleDoubleProperty;
+import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.scene.control.Alert;
 import javax.enterprise.context.ApplicationScoped;
 import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.bind.ValidationEvent;
-import javax.xml.bind.ValidationException;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.eclipse.persistence.oxm.annotations.XmlPath;
 
 /**
@@ -39,18 +45,22 @@ public class Settings {
     public static final String FILE_PATH = Mp3Manager.APPLICATION_PATH + "/settings.xml";
 
     private static final String XMLPATH_ENDING = "/text()";
-    
+
     private static final String XMLPATH_GENERAL = "general/";
     private static final String XMLPATH_DIRECTORIES = "directories/";
     private static final String XMLPATH_APPLICATION_WINDOW = "applicationWindow/";
-    private static final String XMLPATH_EDITFILETAB = "editFileTab/";
     private static final String XMLPATH_MUSICPLAYER = "musicPlayer/";
+    private static final String XMLPATH_EDITFILETAB = "editFileTab/";
+    private static final String XMLPATH_NOTIFICATIONS = "notifications/";
+    private static final String XMLPATH_DIALOGS = "dialogs/";
+
+    private static final Logger LOGGER = LogManager.getLogger(Settings.class);
 
     //TODO Binding?
     @XmlPath(XMLPATH_GENERAL + "jIntelliTypeEnabled" + XMLPATH_ENDING)
     private final BooleanProperty jIntelliTypeEnabled = new SimpleBooleanProperty(true);
     private final BooleanProperty jIntelliTypeProhibited = new SimpleBooleanProperty(false);
-    
+
     @XmlPath(XMLPATH_DIRECTORIES + "music" + XMLPATH_ENDING)
     private final StringProperty musicDirectory = new SimpleStringProperty("");
     @XmlPath(XMLPATH_DIRECTORIES + "playlists" + XMLPATH_ENDING)
@@ -83,6 +93,11 @@ public class Settings {
     @XmlPath(XMLPATH_EDITFILETAB + "synchronizeTitle" + XMLPATH_ENDING)
     private final BooleanProperty editFileSynchronizeTitle = new SimpleBooleanProperty(false);
 
+    @XmlPath(XMLPATH_NOTIFICATIONS + "alignment" + XMLPATH_ENDING)
+    private final ObjectProperty<Notifications.Alignment> notificationsAlignment = new SimpleObjectProperty<>(Notifications.getAlignment());
+    @XmlPath(XMLPATH_NOTIFICATIONS + "timer" + XMLPATH_ENDING)
+    private final IntegerProperty notificationsTimer = new SimpleIntegerProperty(Notifications.getDefaultTimer());
+
     @XmlElementWrapper(name = "tableColumns")
     @XmlElement(name = "tableColumn")
     private final ObservableList<ColumnSettings> mainColumnSettings = FXCollections.observableArrayList();
@@ -101,14 +116,18 @@ public class Settings {
             JAXBContext context = JAXBContext.newInstance(Settings.class);
             Marshaller marshaller = context.createMarshaller();
             marshaller.setEventHandler((ValidationEvent event) -> {
-                ExceptionHandler.handle(event.getLinkedException(), "Exception validating settings.xml-file");
+                //TODO Alert oder kommt die Val.Ex im Catch an?
+                LOGGER.error("Exception validating settings!", event.getLinkedException());
                 return false;
             });
             marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
             marshaller.marshal(this, new File(FILE_PATH));
             return true;
-        } catch (Exception ex) {
-            ExceptionHandler.handle(ex, "Einstellungen konnten nicht gespeichert werden!", "Exception parsing settings.xml-file");
+        } catch (Exception e) {
+            //TODO FXThread
+            LOGGER.error("Exception parsing settings.xml!", e);
+            Alert alert = new Alert(Alert.AlertType.ERROR, "Einstellungen konnten nicht gespeichert werden!");
+            alert.showAndWait();
             return false;
         }
     }
@@ -116,19 +135,25 @@ public class Settings {
     public static Settings load() {
         try {
             if (!new File(FILE_PATH).exists()) {
-                System.out.println("Settings nicht da"); //TODO Notification
+                Notifications.createNotification(Notification.Type.INFO)
+                        .setText("Es konnten keine Einstellungen gefunden werden.\n"
+                                + "Eine neue Datei wird angelegt.")
+                        .show();
                 return createDefaultSettings();
             }
             JAXBContext context = JAXBContext.newInstance(Settings.class);
             Unmarshaller unmarshaller = context.createUnmarshaller();
             unmarshaller.setEventHandler((ValidationEvent event) -> {
-                ExceptionHandler.handle(event.getLinkedException(), "Invalid settings.xml!");
+                //TODO Alert oder kommt die Val.Ex im Catch an?
+                LOGGER.error("Invalid settings.xml!", event.getLinkedException());
                 return false;
             });
             return (Settings) unmarshaller.unmarshal(new File(FILE_PATH));
-        } catch (Exception ex) {
-            ExceptionHandler.handle(ex, "Es werden neue Einstellungen angelegt.", "Einstellungen konnten nicht geladen werden!",
-                    "Exception parsing settings.xml-file!");
+        } catch (Exception e) {
+            LOGGER.error("Exception parsing settings.xml!", e);
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setHeaderText("Einstellungen konnten nicht geladen werden!");
+            alert.setContentText("Es werden neue Einstellungen angelegt.");
             return createDefaultSettings();
         }
     }
@@ -163,7 +188,7 @@ public class Settings {
     public BooleanProperty jIntelliTypeEnabledProperty() {
         return jIntelliTypeEnabled;
     }
-    
+
     public boolean isJIntelliTypeProhibited() {
         return jIntelliTypeProhibited.get();
     }
@@ -172,7 +197,7 @@ public class Settings {
         this.jIntelliTypeProhibited.set(jIntelliTypeProhibited);
     }
 
-    public BooleanProperty intelliTypeProhibitedProperty() {
+    public BooleanProperty jIntelliTypeProhibitedProperty() {
         return jIntelliTypeProhibited;
     }
 
@@ -342,6 +367,30 @@ public class Settings {
 
     public BooleanProperty musicPlayerMutedProperty() {
         return musicPlayerMuted;
+    }
+
+    public Notifications.Alignment getNotificationsAlignment() {
+        return notificationsAlignment.get();
+    }
+
+    public void setNotificationsAlignment(final Notifications.Alignment notificationsAlignment) {
+        this.notificationsAlignment.set(notificationsAlignment);
+    }
+
+    public ObjectProperty<Notifications.Alignment> notificationsAlignmentProperty() {
+        return notificationsAlignment;
+    }
+
+    public int getNotificationsTimer() {
+        return notificationsTimer.get();
+    }
+
+    public void setNotificationsTimer(final int notificationsTimer) {
+        this.notificationsTimer.set(notificationsTimer);
+    }
+
+    public IntegerProperty notificationsTimerProperty() {
+        return notificationsTimer;
     }
 
 }

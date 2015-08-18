@@ -2,9 +2,8 @@ package de.eru.mp3manager.utils.task;
 
 import de.eru.mp3manager.data.Mp3FileData;
 import de.eru.mp3manager.service.FileService;
-import de.eru.mp3manager.service.RenameFailedException;
-import de.eru.mp3manager.service.SaveFailedException;
-import de.eru.mp3manager.utils.ExceptionHandler;
+import de.eru.mp3manager.exceptions.RenameFailedException;
+import de.eru.mp3manager.exceptions.SaveFailedException;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.FutureTask;
 import javafx.application.Platform;
@@ -16,15 +15,20 @@ import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * Task zum Speichern von MP3-Dateien.<br/>
  * Pro Task kann der Dateiname nur für eine einzelne Datei gespeichert werden.
- * Sonstige Tag-Informationen können für mehrere Dateien gleichzeitig gespeichert werden.
+ * Sonstige Tag-Informationen können für mehrere Dateien gleichzeitig
+ * gespeichert werden.
  *
  * @author Philipp Bruckner
  */
 public class SaveFilesTask extends Mp3ManagerTask {
+
+    private static final Logger LOGGER = LogManager.getLogger(SaveFilesTask.class);
 
     private final ObservableList<Mp3FileData> dataToSave;
     private final Mp3FileData changeData;
@@ -77,17 +81,17 @@ public class SaveFilesTask extends Mp3ManagerTask {
         }
     }
 
-    private void handleRenameFailed(RenameFailedException e) { //TODO Exception loggen
-        Platform.runLater(() -> {
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setHeaderText("Speichern fehlgeschlagen!");
-            alert.setContentText("Dateiname konnte nicht geändert werden!\n\n"
-                    + "Möglicherweise enthält der Dateiname ungültige Zeichen oder eine Datei mit diesem Namen existiert bereits.");
-            alert.showAndWait();
-        });
+    private void handleRenameFailed(RenameFailedException e) {
+        LOGGER.info("Exception renaming file!", e);
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setHeaderText("Speichern fehlgeschlagen!");
+        alert.setContentText("Dateiname konnte nicht geändert werden!\n\n"
+                + "Möglicherweise enthält der Dateiname ungültige Zeichen oder eine Datei mit diesem Namen existiert bereits.");
+        Platform.runLater(alert::showAndWait);
     }
 
-    private void handleSaveFailed(SaveFailedException e, String fileName) { //TODO Exception loggen
+    private void handleSaveFailed(SaveFailedException e, String fileName) {
+        LOGGER.info("Exception saving file!", e);
         if (firstFail || showAlertOnNextFail.get()) {
             firstFail = false;
             FutureTask<Void> alertTask = new FutureTask<>(() -> {
@@ -119,7 +123,10 @@ public class SaveFilesTask extends Mp3ManagerTask {
             try {
                 alertTask.get();
             } catch (InterruptedException | ExecutionException ex) {
-                ExceptionHandler.handle(ex, "Exception waiting for FutureTask!");
+                //TODO RuntimeException?
+                LOGGER.error("Exception waiting for FutureTask!", e);
+                Alert alert = new Alert(Alert.AlertType.ERROR, "");
+                Platform.runLater(alert::showAndWait);
             }
         }
     }

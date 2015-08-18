@@ -2,9 +2,11 @@ package de.eru.mp3manager.data.utils;
 
 import de.eru.mp3manager.data.ArtworkData;
 import de.eru.mp3manager.data.Mp3FileData;
-import de.eru.mp3manager.utils.ExceptionHandler;
 import java.io.File;
 import java.io.IOException;
+import javafx.scene.control.Alert;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jaudiotagger.audio.AudioFileIO;
 import org.jaudiotagger.audio.AudioHeader;
 import org.jaudiotagger.audio.exceptions.CannotReadException;
@@ -23,6 +25,8 @@ import org.jaudiotagger.tag.id3.AbstractID3v2Tag;
  */
 public final class Mp3Mapper {
 
+    private static final Logger LOGGER = LogManager.getLogger(Mp3Mapper.class);
+
     private Mp3Mapper() {
         //Utility-Klasse
     }
@@ -37,9 +41,11 @@ public final class Mp3Mapper {
         Mp3FileData mp3FileData = new Mp3FileData(file);
         try {
             fileToMp3FileData(file, mp3FileData);
-        } catch (CannotReadException | TagException | ReadOnlyFileException | InvalidAudioFrameException ex) {
-            ExceptionHandler.handle(ex, "Fehler beim Laden der Mp3-Informationen aus der Datei\n" + file.getAbsolutePath() + "!",
-                    "Exception reading mp3-data from file " + file.getAbsolutePath());
+        } catch (CannotReadException | TagException | ReadOnlyFileException | InvalidAudioFrameException e) {
+            LOGGER.error("Exception reading mp3-data from file " + file.getAbsolutePath(), e);
+            Alert alert = new Alert(Alert.AlertType.ERROR, "Fehler beim Laden der MP3-Informationen aus der Datei\n" + file.getAbsolutePath() + "!");
+            alert.showAndWait();
+            //TODO THread
         }
         return mp3FileData;
     }

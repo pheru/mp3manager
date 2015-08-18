@@ -39,6 +39,15 @@
                 </Route>
             </Routes>
         </Routing>
+        <Routing name="FatalRouting">
+            <Routes pattern="$${ctx:logfiles.path}">
+                <Route>
+                    <File name="FatalFile" fileName="${ctx:logfiles.path}/logs/fatal.log">
+                        <PatternLayout pattern="[%d{yyyy-MM-dd HH:mm:ss} | %-p | %c#%M:%L] %m%n"/>
+                    </File>
+                </Route>
+            </Routes>
+        </Routing>
     </Appenders>
     
     <Loggers>
@@ -47,6 +56,7 @@
             <AppenderRef ref="InfoRouting" level="info"/>
             <AppenderRef ref="WarningRouting" level="warn"/>
             <AppenderRef ref="ErrorRouting" level="error"/>
+            <AppenderRef ref="FatalRouting" level="fatal"/>
         </Root>
     </Loggers>
 </Configuration>

@@ -1,5 +1,7 @@
 package de.eru.mp3manager.service;
 
+import de.eru.mp3manager.exceptions.RenameFailedException;
+import de.eru.mp3manager.exceptions.SaveFailedException;
 import de.eru.mp3manager.data.Mp3FileData;
 import de.eru.mp3manager.data.Playlist;
 import de.eru.mp3manager.gui.applicationwindow.editfile.EditFilePresenter;

@@ -1,7 +1,6 @@
 package de.eru.mp3manager.data;
 
 import de.eru.mp3manager.data.utils.Mp3Mapper;
-import de.eru.mp3manager.utils.ExceptionHandler;
 import de.eru.mp3manager.utils.formatter.ByteFormatter;
 import de.eru.mp3manager.utils.formatter.TimeFormatter;
 import java.io.File;
@@ -13,6 +12,9 @@ import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
+import javafx.scene.control.Alert;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jaudiotagger.audio.exceptions.CannotReadException;
 import org.jaudiotagger.audio.exceptions.InvalidAudioFrameException;
 import org.jaudiotagger.audio.exceptions.ReadOnlyFileException;
@@ -29,6 +31,8 @@ public class Mp3FileData extends FileBasedData {
     public static final Mp3FileData EMPTY_PLAYLIST_DATA = createEmptyData();
     public static final String UNIT_SIZE = " MB";
     public static final String UNIT_BITRATE = " kBit/s";
+
+    private static final Logger LOGGER = LogManager.getLogger(Mp3FileData.class);
 
     private final StringProperty title = new SimpleStringProperty("");
     private final StringProperty album = new SimpleStringProperty("");
@@ -99,9 +103,11 @@ public class Mp3FileData extends FileBasedData {
     public void reload() { //TODO wirklich nötig?
         try {
             Mp3Mapper.fileToMp3FileData(new File(absolutePath.get()), this);
-        } catch (CannotReadException | IOException | TagException | ReadOnlyFileException | InvalidAudioFrameException ex) {
-            ExceptionHandler.handle(ex, "Fehler beim neuladen der Datei " + absolutePath.get() + "!", 
-                    "Exception reloading Mp3FileData");
+        } catch (CannotReadException | IOException | TagException | ReadOnlyFileException | InvalidAudioFrameException e) {
+            //TODO Thread
+            LOGGER.error("Exception reloading Mp3FileData " + absolutePath.get() + "!", e);
+            Alert alert = new Alert(Alert.AlertType.ERROR, "Fehler beim neu Laden der Datei " + absolutePath.get() + "!");
+            alert.showAndWait();
         }
     }
 

@@ -12,7 +12,6 @@ import de.eru.mp3manager.gui.utils.DragAndDropRowFactory;
 import de.eru.mp3manager.player.MusicPlayer;
 import de.eru.mp3manager.service.FileService;
 import de.eru.mp3manager.settings.Settings;
-import de.eru.mp3manager.utils.ExceptionHandler;
 import de.eru.mp3manager.utils.task.TaskPool;
 import de.eru.mp3manager.utils.formatter.TimeFormatter;
 import de.eru.mp3manager.utils.task.LoadPlaylistTask;
@@ -28,6 +27,7 @@ import javafx.beans.binding.StringBinding;
 import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuItem;
@@ -41,9 +41,13 @@ import javafx.util.Pair;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 @ApplicationScoped
 public class PlaylistPresenter implements Initializable {
+
+    private static final Logger LOGGER = LogManager.getLogger(PlaylistPresenter.class);
 
     @FXML
     private TableView<Mp3FileData> table;
@@ -192,8 +196,10 @@ public class PlaylistPresenter implements Initializable {
         try {
             FileService.savePlaylist(new File(playlist.getAbsolutePath()), playlist.getTitles());
             playlist.setDirty(false);
-        } catch (IOException ex) {
-            ExceptionHandler.handle(ex, "Fehler beim Speichern der Wiedergabeliste", "Exception saving playlist");
+        } catch (IOException e) {
+            LOGGER.error("Exception saving playlist!", e);
+            Alert alert = new Alert(Alert.AlertType.ERROR, "Fehler beim Speichern der Wiedergabeliste!");
+            alert.showAndWait();
         }
     }
 

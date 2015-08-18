@@ -3,11 +3,11 @@ package de.eru.mp3manager;
 import com.melloware.jintellitype.JIntellitype;
 import de.eru.mp3manager.cdi.XMLSettings;
 import de.eru.mp3manager.settings.Settings;
-import de.eru.mp3manager.utils.ExceptionHandler;
 import de.eru.pherufx.mvp.StartEvent;
 import de.eru.pherufx.mvp.PheruFXApplication;
 import java.util.logging.Level;
 import static javafx.application.Application.launch;
+import javafx.application.Platform;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javax.enterprise.util.AnnotationLiteral;
@@ -31,6 +31,7 @@ public class Mp3Manager extends PheruFXApplication {
     public static final String DLL_PATH = PRODUCTION_MODE ? APPLICATION_PATH : CODE_SOURCE_LOCATION.replace("target/classes/", "");
 
     private static final java.util.logging.Logger JAUDIOTAGGER_LOGGER = java.util.logging.Logger.getLogger("org.jaudiotagger");
+
     private static final Logger LOGGER = LogManager.getLogger(Mp3Manager.class);
 
     private static Alert startAlert;
@@ -40,7 +41,15 @@ public class Mp3Manager extends PheruFXApplication {
         ThreadContext.put("logfiles.path", APPLICATION_PATH);
 
         Thread.setDefaultUncaughtExceptionHandler((Thread t, Throwable e) -> {
-            ExceptionHandler.handle(e, "Unexpected Exception on Thread: " + t.getName());
+            LOGGER.fatal("Unexpected Exception on Thread: " + t.getName(), e);
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setHeaderText("Unerwarteter Fehler!");
+            alert.setContentText("Um weiteres unerwartetes Verhalten zu vermeiden, sollte die Anwendung neu gestartet werden.");
+            if (Platform.isFxApplicationThread()) {
+                alert.showAndWait();
+            } else {
+                Platform.runLater(alert::showAndWait);
+            }
         });
         Runtime.getRuntime().addShutdownHook(new Thread() {
             @Override
