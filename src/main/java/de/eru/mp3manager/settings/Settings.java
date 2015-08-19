@@ -2,6 +2,7 @@ package de.eru.mp3manager.settings;
 
 import de.eru.mp3manager.Mp3Manager;
 import de.eru.mp3manager.gui.applicationwindow.main.MainColumn;
+import de.eru.mp3manager.settings.objectproperties.NotificationsAlignmentProperty;
 import de.eru.pherufx.notifications.Notification;
 import de.eru.pherufx.notifications.Notifications;
 import java.io.File;
@@ -12,7 +13,6 @@ import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleIntegerProperty;
-import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
@@ -94,7 +94,7 @@ public class Settings {
     private final BooleanProperty editFileSynchronizeTitle = new SimpleBooleanProperty(false);
 
     @XmlPath(XMLPATH_NOTIFICATIONS + "alignment" + XMLPATH_ENDING)
-    private final ObjectProperty<Notifications.Alignment> notificationsAlignment = new SimpleObjectProperty<>(Notifications.getAlignment());
+    private final NotificationsAlignmentProperty notificationsAlignment = new NotificationsAlignmentProperty(Notifications.Alignment.BOTTOM_RIGHT);
     @XmlPath(XMLPATH_NOTIFICATIONS + "timer" + XMLPATH_ENDING)
     private final IntegerProperty notificationsTimer = new SimpleIntegerProperty(Notifications.getDefaultTimer());
 
@@ -154,6 +154,7 @@ public class Settings {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setHeaderText("Einstellungen konnten nicht geladen werden!");
             alert.setContentText("Es werden neue Einstellungen angelegt.");
+            alert.showAndWait();
             return createDefaultSettings();
         }
     }

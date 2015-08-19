@@ -2,16 +2,17 @@ package de.eru.mp3manager.utils;
 
 import de.eru.mp3manager.data.Mp3FileData;
 import de.eru.mp3manager.utils.formatter.TimeFormatter;
-import java.io.Serializable;
 import java.text.ParseException;
 import java.util.Comparator;
 import java.util.Date;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  *
  * @author Philipp Bruckner
  */
-public final class Comparators implements Serializable{
+public final class Comparators {
 
     public static final Comparator<String> NUMBER_COMPARATOR = createNumberComparator();
     public static final Comparator<String> DATE_COMPARATOR = createDateComparator();
@@ -19,6 +20,8 @@ public final class Comparators implements Serializable{
     public static final Comparator<String> BITRATE_COMPARATOR = createBitrateComparator();
     public static final Comparator<String> TIME_COMPARATOR = createTimeComparator();
 
+    private static final Logger LOGGER = LogManager.getLogger(Comparators.class);
+    
     private Comparators() {
         //Utility-Klasse
     }
@@ -43,20 +46,27 @@ public final class Comparators implements Serializable{
      */
     private static Comparator<String> createDateComparator() {
         return (String o1, String o2) -> {
+            Date d1;
+            Date d2;
             if (!isComparable(o1)) {
+                return -1;
+            }
+            try {
+                d1 = TimeFormatter.DATE_TIME_FORMAT.parse(o1);
+            } catch (ParseException e) {
+                LOGGER.warn("Exception parsing" + o1 + " to date!", e);
                 return -1;
             }
             if (!isComparable(o2)) {
                 return 1;
             }
             try {
-                Date d1 = TimeFormatter.DATE_TIME_FORMAT.parse(o1);
-                Date d2 = TimeFormatter.DATE_TIME_FORMAT.parse(o2);
-                return Long.compare(d1.getTime(), d2.getTime());
-            } catch (ParseException ex) {
-                ex.printStackTrace();
-                return 0;
+                d2 = TimeFormatter.DATE_TIME_FORMAT.parse(o2);
+            } catch (ParseException e) {
+                LOGGER.warn("Exception parsing" + o2 + " to date!", e);
+                return 1;
             }
+            return Long.compare(d1.getTime(), d2.getTime());
         };
     }
 
@@ -100,24 +110,24 @@ public final class Comparators implements Serializable{
      */
     private static Comparator<String> createTimeComparator() {
         return (String o1, String o2) -> {
+            Date d1;
+            Date d2;
             if (!isComparable(o1)) {
+                return -1;
+            }
+            try {
+                d1 = parseDuration(o1);
+            } catch (ParseException e) {
+                LOGGER.warn("Exception parsing " + o1 + " to duration!", e);
                 return -1;
             }
             if (!isComparable(o2)) {
                 return 1;
             }
-            Date d1;
-            Date d2;
-            try {
-                d1 = parseDuration(o1);
-            } catch (ParseException e) {
-                e.printStackTrace();
-                return -1;
-            }
             try {
                 d2 = parseDuration(o2);
             } catch (ParseException e) {
-                e.printStackTrace();
+                LOGGER.warn("Exception parsing " + o2 + " to duration!", e);
                 return 1;
             }
             return Long.compare(d1.getTime(), d2.getTime());

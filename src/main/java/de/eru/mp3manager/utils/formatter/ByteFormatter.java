@@ -35,15 +35,14 @@ public final class ByteFormatter {
         return NO_IMAGE_AVAILABLE;
     }
     
-    public static byte[] fileToByteArray(File file){
+    public static byte[] fileToByteArray(File file) throws IOException{
         try (RandomAccessFile randomAccessFile = new RandomAccessFile(file, "r")) {
             byte[] byteArray = new byte[(int) randomAccessFile.length()];
             randomAccessFile.read(byteArray);
             return byteArray;
-        } catch (IOException ex) {
-            ex.printStackTrace();
+        } catch (IOException e) {
+            throw e;
         }
-        return new byte[0];
     }
 
     /**

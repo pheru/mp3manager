@@ -14,6 +14,7 @@ import de.eru.mp3manager.utils.task.SaveFilesTask;
 import de.eru.pherufx.focus.FocusTraversal;
 import de.eru.pherufx.mvp.InjectableList;
 import java.io.File;
+import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.application.Platform;
@@ -38,6 +39,8 @@ import javafx.stage.FileChooser.ExtensionFilter;
 import javafx.stage.Window;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jaudiotagger.tag.id3.valuepair.ImageFormats;
 
 @ApplicationScoped
@@ -45,6 +48,8 @@ public class EditFilePresenter implements Initializable {
 
     public static final String DIFF_VALUES = "<Verschiedene Werte>";
     public static final String NOT_EDITABLE = "<Bei Mehrfachauswahl nicht editierbar>";
+
+    private static final Logger LOGGER = LogManager.getLogger(EditFilePresenter.class);
 
     @FXML
     private GridPane root;
@@ -80,18 +85,17 @@ public class EditFilePresenter implements Initializable {
     @Inject
     @XMLSettings
     private Settings settings;
+    @Inject
+    @TableData(source = TableDataSource.MAIN_SELECTED)
+    private InjectableList<Mp3FileData> selectedData;
+    @Inject
+    private TaskPool taskPool;
 
     private final ChangeListener<Boolean> sortListener = (ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
         updateFields(); //Es wird ein komplettes Update durchgeführt, um auch die ursprüngliche Reihenfolge wiederherzustellen
     };
 
     private final ObservableList<ComboBox<String>> fields = FXCollections.observableArrayList();
-
-    @Inject
-    @TableData(source = TableDataSource.MAIN_SELECTED)
-    private InjectableList<Mp3FileData> selectedData;
-    @Inject
-    private TaskPool taskPool;
 
     private final Mp3FileData changeData = new Mp3FileData();
 
@@ -380,7 +384,14 @@ public class EditFilePresenter implements Initializable {
         Window ownerWindow = root.getScene().getWindow();
         File imageAsFile = fileChooser.showOpenDialog(ownerWindow);
         if (imageAsFile != null) {
-            byte[] imageAsByteArray = ByteFormatter.fileToByteArray(imageAsFile);
+            byte[] imageAsByteArray;
+            try {
+                imageAsByteArray = ByteFormatter.fileToByteArray(imageAsFile);
+            } catch (IOException e) {
+                LOGGER.error("Exception converting file to byte-Array!", e);
+                //TODO Notification oder ähnliches
+                imageAsByteArray = new byte[0];
+            }
             Image image = ByteFormatter.byteArrayToImage(imageAsByteArray);
             ArtworkData artworkData = new ArtworkData(imageAsByteArray, Double.valueOf(image.getWidth()).intValue(),
                     Double.valueOf(image.getHeight()).intValue(), ImageFormats.getMimeTypeForBinarySignature(imageAsByteArray));

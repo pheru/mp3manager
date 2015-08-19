@@ -13,7 +13,6 @@ import javafx.scene.control.ButtonType;
 import javax.enterprise.util.AnnotationLiteral;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.ThreadContext;
 
 /**
  * Application-Klasse als Startpunkt für die JavaFX-Anwendung.
@@ -38,7 +37,7 @@ public class Mp3Manager extends PheruFXApplication {
     private static boolean cleanedUp = false;
 
     public static void main(String[] args) {
-        ThreadContext.put("logfiles.path", APPLICATION_PATH);
+        System.getProperties().put("logfiles.path", APPLICATION_PATH);;
 
         Thread.setDefaultUncaughtExceptionHandler((Thread t, Throwable e) -> {
             LOGGER.fatal("Unexpected Exception on Thread: " + t.getName(), e);
@@ -71,13 +70,16 @@ public class Mp3Manager extends PheruFXApplication {
             startAlert.hide();
         });
         launch(args);
+    }
 
+    @Override
+    public void stop() throws Exception {
         //CleanUp muss hier ausgeführt werden, da ansonsten bei normalem Beenden der Anwendung 
         //das SystemTrayIcon nicht aufgeräumt wird und damit die Anwendung nicht stoppt.
         cleanUp();
     }
 
-    public static void cleanUp() {
+    public static void cleanUp() { //TODO Auf Thread achten bei Dialogen
         if (!cleanedUp) {
             Settings settings = getWeldContainer().instance().select(Settings.class, new AnnotationLiteral<XMLSettings>() {
             }).get();

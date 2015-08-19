@@ -17,6 +17,8 @@ import de.eru.mp3manager.utils.formatter.TimeFormatter;
 import de.eru.mp3manager.utils.task.LoadPlaylistTask;
 import de.eru.mp3manager.utils.task.Mp3ManagerTask;
 import de.eru.pherufx.mvp.InjectableList;
+import de.eru.pherufx.notifications.Notification;
+import de.eru.pherufx.notifications.Notifications;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
@@ -84,6 +86,8 @@ public class PlaylistPresenter implements Initializable {
 
     @Inject
     private Parameters params;
+
+    private Notification currentTitleNotification;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -296,6 +300,14 @@ public class PlaylistPresenter implements Initializable {
 
     private void currentTitleUpdated(@Observes @Updated CurrentTitleEvent event) {
         updateStyledIndex(event.getNewCurrentTitleIndex());
+        Mp3FileData newCurrentTitle = event.getNewCurrentTitle();
+        if (currentTitleNotification != null) {
+            currentTitleNotification.hide();
+        }
+        currentTitleNotification = Notifications.createNotification(Notification.Type.INFO)
+                .setHeader("Aktueller Titel")
+                .setText(newCurrentTitle.getTitle() + "\n" + newCurrentTitle.getAlbum() + "\n" + newCurrentTitle.getArtist());
+        currentTitleNotification.show();
     }
 
     private void updateStyledIndex(int playlistIndex) {

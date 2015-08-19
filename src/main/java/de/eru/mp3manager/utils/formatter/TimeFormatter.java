@@ -3,6 +3,8 @@ package de.eru.mp3manager.utils.formatter;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * Klasse zum formatieren von Datums- und Zeitangaben.
@@ -15,6 +17,8 @@ public final class TimeFormatter {
     public static final SimpleDateFormat DATE_TIME_FORMAT = new SimpleDateFormat("dd.MM.yyyy - HH:mm:ss");
     public static final SimpleDateFormat DURATION_WITH_HOURS_FORMAT = new SimpleDateFormat("HH:mm:ss");
     public static final SimpleDateFormat DURATION_FORMAT = new SimpleDateFormat("mm:ss");
+
+    private static final Logger LOGGER = LogManager.getLogger(TimeFormatter.class);
 
     private TimeFormatter() {
         //Utility-Klasse
@@ -38,7 +42,7 @@ public final class TimeFormatter {
             Date date = new SimpleDateFormat("s").parse(String.valueOf(seconds));
             return smf.format(date);
         } catch (ParseException e) {
-            e.printStackTrace();
+            LOGGER.error("Exception parsing " + seconds + " to duration-format!" , e);
             return "";
         }
     }
@@ -83,7 +87,7 @@ public final class TimeFormatter {
             Date date = new SimpleDateFormat("S").parse(String.valueOf(milliseconds));
             return smf.format(date);
         } catch (ParseException e) {
-            e.printStackTrace();
+            LOGGER.error("Exception parsing " + milliseconds + " to duration-format!" , e);
             return "";
         }
     }
