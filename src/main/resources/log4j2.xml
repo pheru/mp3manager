@@ -1,14 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Configuration status="warn">
+    <Properties>
+        <Property name="pattern">[%d{yyyy-MM-dd HH:mm:ss} | %-p | %-t | %c#%M:%L] %m%n</Property>
+    </Properties>
     <Appenders>
         <Console name="Console" target="SYSTEM_OUT">
-            <PatternLayout pattern="[%d{yyyy-MM-dd HH:mm:ss} | %-p | %c#%M:%L] %m%n"/>
+            <PatternLayout pattern="${pattern}"/>
         </Console>
         <Routing name="InfoRouting">
             <Routes pattern="$${sys:logfiles.path}">
                 <Route>
                     <File name="InfoFile" fileName="${sys:logfiles.path}/logs/info.log">
-                        <PatternLayout pattern="[%d{yyyy-MM-dd HH:mm:ss} | %-p | %c#%M:%L] %m%n"/>
+                        <PatternLayout pattern="${pattern}"/>
                         <filters>
                             <ThresholdFilter level="info"/>
                             <ThresholdFilter level="warn" onMatch="deny" onMismatch="neutral"/>
@@ -21,7 +24,7 @@
             <Routes pattern="$${sys:logfiles.path}">
                 <Route>
                     <File name="WarningFile" fileName="${sys:logfiles.path}/logs/warning.log">
-                        <PatternLayout pattern="[%d{yyyy-MM-dd HH:mm:ss} | %-p | %c#%M:%L] %m%n"/>
+                        <PatternLayout pattern="${pattern}"/>
                         <filters>
                             <ThresholdFilter level="warn"/>
                             <ThresholdFilter level="error" onMatch="deny" onMismatch="neutral"/>
@@ -34,7 +37,7 @@
             <Routes pattern="$${sys:logfiles.path}">
                 <Route>
                     <File name="ErrorFile" fileName="${sys:logfiles.path}/logs/error.log">
-                        <PatternLayout pattern="[%d{yyyy-MM-dd HH:mm:ss} | %-p | %c#%M:%L] %m%n"/>
+                        <PatternLayout pattern="${pattern}"/>
                         <filters>
                             <ThresholdFilter level="error"/>
                             <ThresholdFilter level="fatal" onMatch="deny" onMismatch="neutral"/>
@@ -47,7 +50,7 @@
             <Routes pattern="$${sys:logfiles.path}">
                 <Route>
                     <File name="FatalFile" fileName="${sys:logfiles.path}/logs/fatal.log">
-                        <PatternLayout pattern="[%d{yyyy-MM-dd HH:mm:ss} | %-p | %c#%M:%L] %m%n"/>
+                        <PatternLayout pattern="${pattern}"/>
                     </File>
                 </Route>
             </Routes>

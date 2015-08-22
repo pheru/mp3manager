@@ -16,7 +16,6 @@ import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
-import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.scene.control.Alert;
 import javax.annotation.PostConstruct;
@@ -151,7 +150,7 @@ public class Playlist extends FileBasedData {
         }
         remove(indicesToRemove);
     }
-
+    
     /**
      *
      * @return true, wenn Playlist "dirty"

@@ -254,10 +254,10 @@ public class PlaylistPresenter implements Initializable {
             loadPlaylistTask.runningProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
                 if (oldValue && !newValue) {
                     musicPlayer.stop();
+                    settings.setPlaylistFilePath(playlistFile.getParent());
                 }
             });
             taskPool.addTask(loadPlaylistTask);
-            settings.setPlaylistFilePath(playlistFile.getParent());
         }
     }
 

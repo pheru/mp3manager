@@ -113,15 +113,16 @@ public class Settings {
 
     public boolean save() {
         try {
+            LOGGER.debug("Saving settings...");
             JAXBContext context = JAXBContext.newInstance(Settings.class);
             Marshaller marshaller = context.createMarshaller();
             marshaller.setEventHandler((ValidationEvent event) -> {
-                //TODO Alert oder kommt die Val.Ex im Catch an?
                 LOGGER.error("Exception validating settings!", event.getLinkedException());
                 return false;
             });
             marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
             marshaller.marshal(this, new File(FILE_PATH));
+            LOGGER.debug("Settings saved.");
             return true;
         } catch (Exception e) {
             //TODO FXThread
@@ -144,7 +145,6 @@ public class Settings {
             JAXBContext context = JAXBContext.newInstance(Settings.class);
             Unmarshaller unmarshaller = context.createUnmarshaller();
             unmarshaller.setEventHandler((ValidationEvent event) -> {
-                //TODO Alert oder kommt die Val.Ex im Catch an?
                 LOGGER.error("Invalid settings.xml!", event.getLinkedException());
                 return false;
             });

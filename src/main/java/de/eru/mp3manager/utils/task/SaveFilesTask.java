@@ -1,7 +1,7 @@
 package de.eru.mp3manager.utils.task;
 
 import de.eru.mp3manager.data.Mp3FileData;
-import de.eru.mp3manager.service.FileService;
+import de.eru.mp3manager.exceptions.Mp3ManagerRuntimeException;
 import de.eru.mp3manager.exceptions.RenameFailedException;
 import de.eru.mp3manager.exceptions.SaveFailedException;
 import java.util.concurrent.ExecutionException;
@@ -57,9 +57,9 @@ public class SaveFilesTask extends Mp3ManagerTask {
             updateTitle("Speichere Datei " + (i + 1) + " von " + dataToSave.size() + "...");
             updateMessage(dataToSave.get(i).getAbsolutePath());
             try {
-                FileService.saveMp3File(dataToSave.get(i), changeData);
+                dataToSave.get(i).save(changeData);
                 successfullySaved++;
-                Platform.runLater(dataToSave.get(i)::reload);
+                //TODO Reload entfernt. Kommentar entfernen wenn kein Fehler 
             } catch (RenameFailedException e) {
                 handleRenameFailed(e);
             } catch (SaveFailedException e) {
@@ -81,8 +81,8 @@ public class SaveFilesTask extends Mp3ManagerTask {
         }
     }
 
-    private void handleRenameFailed(RenameFailedException e) {
-        LOGGER.info("Exception renaming file!", e);
+    private void handleRenameFailed(RenameFailedException renameFailedException) {
+        LOGGER.info("Exception renaming file!", renameFailedException);
         Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.setHeaderText("Speichern fehlgeschlagen!");
         alert.setContentText("Dateiname konnte nicht geändert werden!\n\n"
@@ -90,8 +90,8 @@ public class SaveFilesTask extends Mp3ManagerTask {
         Platform.runLater(alert::showAndWait);
     }
 
-    private void handleSaveFailed(SaveFailedException e, String fileName) {
-        LOGGER.info("Exception saving file!", e);
+    private void handleSaveFailed(SaveFailedException saveFailedException, String fileName) {
+        LOGGER.info("Exception saving file!", saveFailedException);
         if (firstFail || showAlertOnNextFail.get()) {
             firstFail = false;
             FutureTask<Void> alertTask = new FutureTask<>(() -> {
@@ -122,11 +122,8 @@ public class SaveFilesTask extends Mp3ManagerTask {
 
             try {
                 alertTask.get();
-            } catch (InterruptedException | ExecutionException ex) {
-                //TODO RuntimeException?
-                LOGGER.error("Exception waiting for FutureTask!", e);
-                Alert alert = new Alert(Alert.AlertType.ERROR, "");
-                Platform.runLater(alert::showAndWait);
+            } catch (InterruptedException | ExecutionException e) {
+                throw new Mp3ManagerRuntimeException("Exception waiting for FutureTask!", e);
             }
         }
     }

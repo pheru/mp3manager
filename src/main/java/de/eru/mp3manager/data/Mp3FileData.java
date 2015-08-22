@@ -1,6 +1,9 @@
 package de.eru.mp3manager.data;
 
-import de.eru.mp3manager.data.utils.Mp3Mapper;
+import de.eru.mp3manager.exceptions.Mp3FileDataException;
+import de.eru.mp3manager.exceptions.RenameFailedException;
+import de.eru.mp3manager.exceptions.SaveFailedException;
+import de.eru.mp3manager.gui.applicationwindow.editfile.EditFilePresenter;
 import de.eru.mp3manager.utils.formatter.ByteFormatter;
 import de.eru.mp3manager.utils.formatter.TimeFormatter;
 import java.io.File;
@@ -12,13 +15,21 @@ import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
-import javafx.scene.control.Alert;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
+import org.jaudiotagger.audio.AudioFileIO;
+import org.jaudiotagger.audio.AudioHeader;
 import org.jaudiotagger.audio.exceptions.CannotReadException;
 import org.jaudiotagger.audio.exceptions.InvalidAudioFrameException;
 import org.jaudiotagger.audio.exceptions.ReadOnlyFileException;
+import org.jaudiotagger.audio.mp3.MP3File;
+import org.jaudiotagger.tag.FieldDataInvalidException;
+import org.jaudiotagger.tag.FieldKey;
+import org.jaudiotagger.tag.KeyNotFoundException;
 import org.jaudiotagger.tag.TagException;
+import org.jaudiotagger.tag.datatype.Artwork;
+import org.jaudiotagger.tag.id3.AbstractID3v2Tag;
+import org.jaudiotagger.tag.reference.PictureTypes;
 
 /**
  * Datenmodell für die Mp3-Dateien.
@@ -27,12 +38,10 @@ import org.jaudiotagger.tag.TagException;
  */
 public class Mp3FileData extends FileBasedData {
 
-    public static final Mp3FileData MUSICPLAYER_PLACEHOLDER_DATA = new Mp3FileData("<Titel>", "<Album>", "<Interpret>", 0.0);
+    public static final Mp3FileData MUSICPLAYER_PLACEHOLDER_DATA = createPlaceholderData();
     public static final Mp3FileData EMPTY_PLAYLIST_DATA = createEmptyData();
     public static final String UNIT_SIZE = " MB";
     public static final String UNIT_BITRATE = " kBit/s";
-
-    private static final Logger LOGGER = LogManager.getLogger(Mp3FileData.class);
 
     private final StringProperty title = new SimpleStringProperty("");
     private final StringProperty album = new SimpleStringProperty("");
@@ -64,18 +73,51 @@ public class Mp3FileData extends FileBasedData {
     }
 
     /**
-     * Erstellt ein Mp3FileData-Objekt mit allgemeinen File-Informationen.
+     * Erstellt ein Mp3FileData-Objekt.
      *
-     * @param file Die Datei für den Pfad.
+     * @param file Die MP3-Datei.
+     * @throws de.eru.mp3manager.exceptions.Mp3FileDataException Wenn ein Fehler
+     * beim Lesen der MP3-Informationen auftritt.
      */
-    public Mp3FileData(File file) {
+    public Mp3FileData(File file) throws Mp3FileDataException {
         this();
         fileName.set(file.getName());
         filePath.set(file.getParent());
         size.set(ByteFormatter.bytesToMB(file.length()));
         lastModified.set(TimeFormatter.millisecondsToDateFormat(file.lastModified()));
+
+        MP3File mp3File;
+        try {
+            mp3File = (MP3File) AudioFileIO.read(file);
+        } catch (CannotReadException | IOException | TagException | ReadOnlyFileException | InvalidAudioFrameException e) {
+            throw new Mp3FileDataException("Failed to read MP3-Data from file \"" + file.getAbsolutePath() + "\"!", e);
+        }
+        AudioHeader audioHeader = mp3File.getAudioHeader();
+
+        duration.set(audioHeader.getTrackLength());
+        bitrate.set(audioHeader.getBitRate().replace("~", "") + Mp3FileData.UNIT_BITRATE);
+        if (mp3File.hasID3v2Tag()) {
+            AbstractID3v2Tag tag = mp3File.getID3v2Tag();
+            title.set(tag.getFirst(FieldKey.TITLE));
+            artist.set(tag.getFirst(FieldKey.ARTIST));
+            album.set(tag.getFirst(FieldKey.ALBUM));
+            genre.set(tag.getFirst(FieldKey.GENRE));
+            year.set(tag.getFirst(FieldKey.YEAR));
+            track.set(tag.getFirst(FieldKey.TRACK));
+            if (tag.getFirstArtwork() != null) {
+                Artwork artwork = tag.getFirstArtwork();
+                artworkData.set(new ArtworkData(artwork.getBinaryData(), artwork.getMimeType()));
+            }
+        } else {
+            throw new Mp3FileDataException("File \"" + file.getAbsolutePath() + "\" does not have an ID3v2Tag!");
+        }
     }
 
+    /**
+     * Kopier-Konstruktor
+     *
+     * @param copyData Kopierdaten.
+     */
     public Mp3FileData(Mp3FileData copyData) {
         this();
         fileName.set(copyData.getFileName());
@@ -92,30 +134,75 @@ public class Mp3FileData extends FileBasedData {
         duration.set(copyData.getDuration());
     }
 
-    private Mp3FileData(String title, String album, String artist, double duration) {
-        this();
-        this.title.set(title);
-        this.album.set(album);
-        this.artist.set(artist);
-        this.duration.set(duration);
+    /**
+     * Speichert die geänderten MP3-Informationen ab.
+     *
+     * @param changeData Die zu speichernden MP3-Informationen.
+     * @throws de.eru.mp3manager.exceptions.RenameFailedException Wenn das
+     * Umbennen der Datei fehlschlägt.
+     * @throws de.eru.mp3manager.exceptions.SaveFailedException Wenn das
+     * Speichern fehlschlägt.
+     */
+    public void save(Mp3FileData changeData) throws RenameFailedException, SaveFailedException {
+        File file = new File(absolutePath.get());
+        if (!changeData.getFileName().equals(EditFilePresenter.NOT_EDITABLE + ".mp3")
+                && !fileName.get().equals(changeData.getFileName())) {
+            File newFile = new File(filePath.get() + "\\" + changeData.getFileName());
+            if (file.renameTo(newFile)) {
+                file = newFile;
+                fileName.set(changeData.getFileName());
+            } else {
+                throw new RenameFailedException("Could not rename file " + fileName.get() + " to " + changeData.getFileName());
+            }
+        }
+
+        try {
+            MP3File mp3File = (MP3File) AudioFileIO.read(file);
+            AbstractID3v2Tag tag = mp3File.getID3v2Tag();
+            setTagField(tag, FieldKey.TITLE, changeData.getTitle());
+            setTagField(tag, FieldKey.ARTIST, changeData.getArtist());
+            setTagField(tag, FieldKey.ALBUM, changeData.getAlbum());
+            setTagField(tag, FieldKey.GENRE, changeData.getGenre());
+            setTagField(tag, FieldKey.YEAR, changeData.getYear());
+            setTagField(tag, FieldKey.TRACK, changeData.getTrack());
+
+            if (changeData.getArtworkData() != null && changeData.getArtworkData().getBinaryData().length > 0) {
+                Artwork newArtwork = new Artwork();
+                newArtwork.setBinaryData(changeData.getArtworkData().getBinaryData());
+                newArtwork.setMimeType(changeData.getArtworkData().getMimeType());
+                newArtwork.setDescription("");
+                newArtwork.setPictureType(PictureTypes.DEFAULT_ID); //DEFAULT_ID == Cover (Front)
+                tag.deleteArtworkField();
+                tag.setField(newArtwork);
+            }
+            mp3File.save();
+        } catch (CannotReadException | IOException | ReadOnlyFileException | TagException | InvalidAudioFrameException e) {
+            throw new SaveFailedException("Failed to save\n"
+                    + ToStringBuilder.reflectionToString(this, ToStringStyle.MULTI_LINE_STYLE, true)
+                    + "\nwith changeData: " + ToStringBuilder.reflectionToString(changeData, ToStringStyle.MULTI_LINE_STYLE, true), e);
+        }
     }
 
-    public void reload() { //TODO wirklich nötig?
-        try {
-            Mp3Mapper.fileToMp3FileData(new File(absolutePath.get()), this);
-        } catch (CannotReadException | IOException | TagException | ReadOnlyFileException | InvalidAudioFrameException e) {
-            //TODO Thread
-            LOGGER.error("Exception reloading Mp3FileData " + absolutePath.get() + "!", e);
-            Alert alert = new Alert(Alert.AlertType.ERROR, "Fehler beim neu Laden der Datei " + absolutePath.get() + "!");
-            alert.showAndWait();
+    private void setTagField(AbstractID3v2Tag tag, FieldKey key, String value) throws KeyNotFoundException, FieldDataInvalidException {
+        if (!value.equals(EditFilePresenter.DIFF_VALUES)) {
+            tag.setField(key, value);
         }
     }
 
     private static Mp3FileData createEmptyData() {
-        Mp3FileData empty = new Mp3FileData("", "", "", 0.0);
+        Mp3FileData empty = new Mp3FileData();
         empty.formattedDuration.unbind();
         empty.formattedDuration.set("");
         return empty;
+    }
+
+    private static Mp3FileData createPlaceholderData() {
+        Mp3FileData placeholderData = new Mp3FileData();
+        placeholderData.setTitle("<Titel>");
+        placeholderData.setAlbum("<Album>");
+        placeholderData.setArtist("<Interpret>");
+        placeholderData.setDuration(0.0);
+        return placeholderData;
     }
 
     @Override
