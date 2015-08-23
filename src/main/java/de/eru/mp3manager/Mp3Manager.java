@@ -37,7 +37,7 @@ public class Mp3Manager extends PheruFXApplication {
     private static boolean cleanedUp = false;
 
     public static void main(String[] args) {
-        System.getProperties().put("logfiles.path", APPLICATION_PATH);;
+        System.getProperties().put("logfiles.path", APPLICATION_PATH);
         
         Thread.setDefaultUncaughtExceptionHandler((Thread t, Throwable e) -> {
             LOGGER.fatal("Unexpected Exception on Thread: " + t.getName(), e);
