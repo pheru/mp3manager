@@ -6,10 +6,11 @@
 <?import javafx.scene.control.*?>
 <?import java.lang.*?>
 <?import javafx.scene.layout.*?>
-<?import de.eru.mp3manager.gui.nodes.*?>
-<?import de.eru.pherufx.focus.*?>
+<?import de.pheru.media.gui.nodes.*?>
+<?import de.pheru.fx.focus.*?>
 
-<GridPane fx:id="root" minWidth="350.0" prefWidth="0.0" scaleShape="false" xmlns="http://javafx.com/javafx/8.0.40" xmlns:fx="http://javafx.com/fxml/1" fx:controller="de.eru.mp3manager.gui.applicationwindow.editfile.EditFilePresenter">
+<GridPane fx:id="root" minWidth="350.0" prefWidth="0.0" scaleShape="false" xmlns="http://javafx.com/javafx/8.0.40" 
+          xmlns:fx="http://javafx.com/fxml/1" fx:controller="de.pheru.media.gui.applicationwindow.editfile.EditFilePresenter">
     <children>
         <HBox alignment="CENTER_LEFT" GridPane.columnSpan="2147483647" GridPane.rowIndex="1">
             <children>

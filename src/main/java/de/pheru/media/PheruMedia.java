@@ -20,7 +20,7 @@ import org.apache.logging.log4j.Logger;
  */
 public class PheruMedia extends PheruFXApplication {
 
-    public static final String APPLICATION_NAME = "Mp3Manager";
+    public static final String APPLICATION_NAME = "Pheru Media";
     private static final String CODE_SOURCE_LOCATION = PheruMedia.class.getProtectionDomain().getCodeSource().getLocation().getPath();
     private static final boolean PRODUCTION_MODE = !CODE_SOURCE_LOCATION.endsWith("target/classes/");
     //TODO sollte einheitlich sein, was das "/" am ende betrifft

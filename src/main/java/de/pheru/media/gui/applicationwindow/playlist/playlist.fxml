@@ -5,9 +5,10 @@
 <?import javafx.scene.control.cell.*?>
 <?import java.lang.*?>
 <?import javafx.scene.layout.*?>
-<?import de.eru.pherufx.focus.*?>
+<?import de.pheru.fx.focus.*?>
 
-<VBox xmlns:fx="http://javafx.com/fxml/1" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minWidth="300.0" xmlns="http://javafx.com/javafx/8" fx:controller="de.eru.mp3manager.gui.applicationwindow.playlist.PlaylistPresenter">
+<VBox xmlns:fx="http://javafx.com/fxml/1" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minWidth="300.0" 
+      xmlns="http://javafx.com/javafx/8" fx:controller="de.pheru.media.gui.applicationwindow.playlist.PlaylistPresenter">
     <children>
         <HBox alignment="CENTER_LEFT" VBox.vgrow="NEVER">
             <children>
