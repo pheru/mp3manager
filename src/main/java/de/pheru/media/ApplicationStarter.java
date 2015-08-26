@@ -2,11 +2,11 @@ package de.pheru.media;
 
 import com.melloware.jintellitype.JIntellitype;
 import com.melloware.jintellitype.JIntellitypeException;
+import de.pheru.fx.mvp.StartApplication;
+import de.pheru.fx.notifications.Notifications;
 import de.pheru.media.cdi.qualifiers.XMLSettings;
-import de.pheru.media.settings.Settings;
 import de.pheru.media.gui.applicationwindow.application.ApplicationView;
-import de.eru.pherufx.mvp.StartApplication;
-import de.eru.pherufx.notifications.Notifications;
+import de.pheru.media.settings.Settings;
 import java.awt.SystemTray;
 import java.awt.event.ActionEvent;
 import javafx.application.Platform;

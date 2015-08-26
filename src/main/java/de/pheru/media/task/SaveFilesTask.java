@@ -1,6 +1,5 @@
 package de.pheru.media.task;
 
-import de.pheru.media.task.PheruMediaTask;
 import de.pheru.media.data.Mp3FileData;
 import de.pheru.media.exceptions.PheruMediaRuntimeException;
 import de.pheru.media.exceptions.RenameFailedException;

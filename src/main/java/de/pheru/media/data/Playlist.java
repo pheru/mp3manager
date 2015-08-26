@@ -1,9 +1,9 @@
 package de.pheru.media.data;
 
-import de.pheru.media.settings.Settings;
 import de.pheru.media.cdi.events.CurrentTitleEvent;
 import de.pheru.media.cdi.qualifiers.Updated;
 import de.pheru.media.cdi.qualifiers.XMLSettings;
+import de.pheru.media.settings.Settings;
 import de.pheru.media.util.FileUtil;
 import java.io.File;
 import java.io.IOException;

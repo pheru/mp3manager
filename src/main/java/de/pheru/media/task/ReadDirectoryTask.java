@@ -2,7 +2,6 @@ package de.pheru.media.task;
 
 import de.pheru.media.data.Mp3FileData;
 import de.pheru.media.exceptions.Mp3FileDataException;
-import de.pheru.media.gui.applicationwindow.main.MainPresenter;
 import de.pheru.media.gui.nodes.ReadingDirectoryPlaceholder;
 import de.pheru.media.util.FileUtil;
 import java.io.File;

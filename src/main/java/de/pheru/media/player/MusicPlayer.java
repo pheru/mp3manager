@@ -1,9 +1,9 @@
 package de.pheru.media.player;
 
-import de.pheru.media.settings.Settings;
 import de.pheru.media.cdi.qualifiers.XMLSettings;
 import de.pheru.media.data.Mp3FileData;
 import de.pheru.media.data.Playlist;
+import de.pheru.media.settings.Settings;
 import java.io.File;
 import java.net.MalformedURLException;
 import javafx.beans.binding.DoubleBinding;

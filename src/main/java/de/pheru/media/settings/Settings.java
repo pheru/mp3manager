@@ -1,10 +1,10 @@
 package de.pheru.media.settings;
 
+import de.pheru.fx.notifications.Notification;
+import de.pheru.fx.notifications.Notifications;
 import de.pheru.media.PheruMedia;
 import de.pheru.media.gui.applicationwindow.main.MainColumn;
 import de.pheru.media.settings.objectproperties.NotificationsAlignmentProperty;
-import de.eru.pherufx.notifications.Notification;
-import de.eru.pherufx.notifications.Notifications;
 import java.io.File;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.DoubleProperty;

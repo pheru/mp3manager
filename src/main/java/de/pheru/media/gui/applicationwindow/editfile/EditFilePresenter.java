@@ -1,17 +1,17 @@
 package de.pheru.media.gui.applicationwindow.editfile;
 
-import de.pheru.media.data.Mp3FileData;
+import de.pheru.fx.focus.FocusTraversal;
+import de.pheru.fx.mvp.InjectableList;
 import de.pheru.media.cdi.qualifiers.TableData;
 import de.pheru.media.cdi.qualifiers.XMLSettings;
 import de.pheru.media.data.ArtworkData;
+import de.pheru.media.data.Mp3FileData;
 import de.pheru.media.gui.nodes.NumberComboBox;
 import de.pheru.media.settings.Settings;
-import de.pheru.media.util.Comparators;
+import de.pheru.media.task.SaveFilesTask;
 import de.pheru.media.task.TaskPool;
 import de.pheru.media.util.ByteUtil;
-import de.pheru.media.task.SaveFilesTask;
-import de.eru.pherufx.focus.FocusTraversal;
-import de.eru.pherufx.mvp.InjectableList;
+import de.pheru.media.util.Comparators;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;

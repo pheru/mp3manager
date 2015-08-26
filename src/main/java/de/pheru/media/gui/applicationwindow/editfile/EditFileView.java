@@ -1,6 +1,6 @@
 package de.pheru.media.gui.applicationwindow.editfile;
 
-import de.eru.pherufx.mvp.PheruFXView;
+import de.pheru.fx.mvp.PheruFXView;
 import javax.enterprise.context.ApplicationScoped;
 
 /**

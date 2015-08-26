@@ -1,12 +1,12 @@
 package de.pheru.media.gui.applicationwindow.musicplayer;
 
-import de.pheru.media.settings.Settings;
 import de.pheru.media.cdi.events.CurrentTitleEvent;
 import de.pheru.media.cdi.qualifiers.Updated;
 import de.pheru.media.cdi.qualifiers.XMLSettings;
 import de.pheru.media.data.Mp3FileData;
 import de.pheru.media.data.Playlist;
 import de.pheru.media.player.MusicPlayer;
+import de.pheru.media.settings.Settings;
 import de.pheru.media.util.ByteUtil;
 import de.pheru.media.util.TimeUtil;
 import java.net.URL;

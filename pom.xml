@@ -8,17 +8,17 @@
 
     <dependencies>
         <dependency>
-            <groupId>de.eru</groupId>
+            <groupId>de.pheru.fx</groupId>
             <artifactId>pherufx-mvp</artifactId>
             <version>1.0.0-SNAPSHOT</version>
         </dependency>
         <dependency>
-            <groupId>de.eru</groupId>
+            <groupId>de.pheru.fx</groupId>
             <artifactId>pherufx-focus</artifactId>
             <version>1.0.0-SNAPSHOT</version>
         </dependency>
         <dependency>
-            <groupId>de.eru</groupId>
+            <groupId>de.pheru.fx</groupId>
             <artifactId>pherufx-notifications</artifactId>
             <version>1.0.0-SNAPSHOT</version>
         </dependency>

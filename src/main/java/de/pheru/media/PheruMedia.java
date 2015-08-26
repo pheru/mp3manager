@@ -1,12 +1,11 @@
 package de.pheru.media;
 
 import com.melloware.jintellitype.JIntellitype;
+import de.pheru.fx.mvp.PheruFXApplication;
+import de.pheru.fx.mvp.StartEvent;
 import de.pheru.media.cdi.qualifiers.XMLSettings;
 import de.pheru.media.settings.Settings;
-import de.eru.pherufx.mvp.StartEvent;
-import de.eru.pherufx.mvp.PheruFXApplication;
 import java.util.logging.Level;
-import static javafx.application.Application.launch;
 import javafx.application.Platform;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;

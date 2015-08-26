@@ -1,5 +1,8 @@
 package de.pheru.media.gui.applicationwindow.playlist;
 
+import de.pheru.fx.mvp.InjectableList;
+import de.pheru.fx.notifications.Notification;
+import de.pheru.fx.notifications.Notifications;
 import de.pheru.media.cdi.events.CurrentTitleEvent;
 import de.pheru.media.cdi.qualifiers.TableData;
 import de.pheru.media.cdi.qualifiers.Updated;
@@ -9,15 +12,12 @@ import de.pheru.media.data.Playlist;
 import de.pheru.media.gui.util.CssRowFactory;
 import de.pheru.media.gui.util.DragAndDropRowFactory;
 import de.pheru.media.player.MusicPlayer;
-import de.pheru.media.util.FileUtil;
 import de.pheru.media.settings.Settings;
-import de.pheru.media.task.TaskPool;
-import de.pheru.media.util.TimeUtil;
 import de.pheru.media.task.LoadPlaylistTask;
 import de.pheru.media.task.PheruMediaTask;
-import de.eru.pherufx.mvp.InjectableList;
-import de.eru.pherufx.notifications.Notification;
-import de.eru.pherufx.notifications.Notifications;
+import de.pheru.media.task.TaskPool;
+import de.pheru.media.util.FileUtil;
+import de.pheru.media.util.TimeUtil;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
