@@ -1,7 +1,7 @@
 package de.eru.mp3manager.gui.applicationwindow.application;
 
 import com.melloware.jintellitype.JIntellitype;
-import de.eru.mp3manager.cdi.XMLSettings;
+import de.eru.mp3manager.cdi.qualifiers.XMLSettings;
 import de.eru.mp3manager.settings.Settings;
 import java.net.URL;
 import java.util.ResourceBundle;

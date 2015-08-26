@@ -6,13 +6,10 @@
 <?import javafx.scene.control.*?>
 <?import java.lang.*?>
 <?import javafx.scene.layout.*?>
-<?import de.eru.mp3manager.gui.utils.*?>
+<?import de.eru.mp3manager.gui.nodes.*?>
 <?import de.eru.pherufx.focus.*?>
 
 <GridPane fx:id="root" minWidth="350.0" prefWidth="0.0" scaleShape="false" xmlns="http://javafx.com/javafx/8.0.40" xmlns:fx="http://javafx.com/fxml/1" fx:controller="de.eru.mp3manager.gui.applicationwindow.editfile.EditFilePresenter">
-    <fx:define>
-        <Scale fx:id="scale" />
-    </fx:define>
     <children>
         <HBox alignment="CENTER_LEFT" GridPane.columnSpan="2147483647" GridPane.rowIndex="1">
             <children>
@@ -72,8 +69,8 @@
                 </Label>
                 <Label minWidth="-Infinity" text="Jahr" GridPane.columnIndex="1" />
                 <Label minWidth="-Infinity" text="Genre" GridPane.columnIndex="2" />
-                <NumberComboBox fx:id="trackField" editable="true" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="${60.0 * scale.value}" GridPane.rowIndex="1" />
-                <NumberComboBox fx:id="yearField" editable="true" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="${66.6 * scale.value}" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                <NumberComboBox fx:id="trackField" editable="true" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="60.0" GridPane.rowIndex="1" />
+                <NumberComboBox fx:id="yearField" editable="true" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="66.6" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                 <ComboBox fx:id="genreField" editable="true" maxWidth="1.7976931348623157E308" minWidth="150.0" GridPane.columnIndex="2" GridPane.rowIndex="1" />
             </children>
             <columnConstraints>
@@ -105,7 +102,7 @@
         <HBox GridPane.columnSpan="2147483647" GridPane.rowIndex="9">
             <children>
                 <Label minWidth="-Infinity" text="Albumcover" GridPane.rowIndex="9" />
-                <Button fx:id="changeCoverButton" maxHeight="${20.0 * scale.value}" minHeight="${20.0 * scale.value}" minWidth="-Infinity" mnemonicParsing="false" onMouseClicked="#chooseCover" text="Ändern...">
+                <Button fx:id="changeCoverButton" maxHeight="20.0" minHeight="20.0" minWidth="-Infinity" mnemonicParsing="false" onMouseClicked="#chooseCover" text="Ändern...">
                     <HBox.margin>
                         <Insets left="10.0" />
                     </HBox.margin>

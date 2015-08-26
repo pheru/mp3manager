@@ -1,21 +1,20 @@
 package de.eru.mp3manager.gui.applicationwindow.playlist;
 
-import de.eru.mp3manager.cdi.CurrentTitleEvent;
-import de.eru.mp3manager.cdi.TableData;
-import de.eru.mp3manager.cdi.TableDataSource;
-import de.eru.mp3manager.cdi.Updated;
-import de.eru.mp3manager.cdi.XMLSettings;
+import de.eru.mp3manager.cdi.events.CurrentTitleEvent;
+import de.eru.mp3manager.cdi.qualifiers.TableData;
+import de.eru.mp3manager.cdi.qualifiers.Updated;
+import de.eru.mp3manager.cdi.qualifiers.XMLSettings;
 import de.eru.mp3manager.data.Mp3FileData;
 import de.eru.mp3manager.data.Playlist;
-import de.eru.mp3manager.gui.utils.CssRowFactory;
-import de.eru.mp3manager.gui.utils.DragAndDropRowFactory;
+import de.eru.mp3manager.gui.util.CssRowFactory;
+import de.eru.mp3manager.gui.util.DragAndDropRowFactory;
 import de.eru.mp3manager.player.MusicPlayer;
-import de.eru.mp3manager.service.FileService;
+import de.eru.mp3manager.util.FileUtil;
 import de.eru.mp3manager.settings.Settings;
-import de.eru.mp3manager.utils.task.TaskPool;
-import de.eru.mp3manager.utils.formatter.TimeFormatter;
-import de.eru.mp3manager.utils.task.LoadPlaylistTask;
-import de.eru.mp3manager.utils.task.Mp3ManagerTask;
+import de.eru.mp3manager.task.TaskPool;
+import de.eru.mp3manager.util.TimeUtil;
+import de.eru.mp3manager.task.LoadPlaylistTask;
+import de.eru.mp3manager.task.Mp3ManagerTask;
 import de.eru.pherufx.mvp.InjectableList;
 import de.eru.pherufx.notifications.Notification;
 import de.eru.pherufx.notifications.Notifications;
@@ -76,10 +75,10 @@ public class PlaylistPresenter implements Initializable {
     @Inject
     private TaskPool taskPool;
     @Inject
-    @TableData(source = TableDataSource.PLAYLIST_SELECTED)
+    @TableData(TableData.Source.PLAYLIST_SELECTED)
     private InjectableList<Mp3FileData> selectedTitles;
     @Inject
-    @TableData(source = TableDataSource.MAIN_ALL)
+    @TableData(TableData.Source.MAIN)
     private InjectableList<Mp3FileData> mainTitles;
     @Inject
     private MusicPlayer musicPlayer;
@@ -186,7 +185,7 @@ public class PlaylistPresenter implements Initializable {
                 for (Mp3FileData mp3FileData : playlist.getTitles()) {
                     duration += mp3FileData.getDuration();
                 }
-                return TimeFormatter.secondsToDurationFormat(duration, true);
+                return TimeUtil.secondsToDurationFormat(duration, true);
             }
         });
         deleteMenuItem.disableProperty().bind(playlist.fileNameProperty().isEmpty());
@@ -198,7 +197,7 @@ public class PlaylistPresenter implements Initializable {
     private void savePlaylist() {
         //TODO Statusbar-Meldung
         try {
-            FileService.savePlaylist(new File(playlist.getAbsolutePath()), playlist.getTitles());
+            FileUtil.savePlaylist(new File(playlist.getAbsolutePath()), playlist.getTitles());
             playlist.setDirty(false);
         } catch (IOException e) {
             LOGGER.error("Exception saving playlist!", e);
@@ -228,7 +227,7 @@ public class PlaylistPresenter implements Initializable {
         File playlistFile = fileChooser.showSaveDialog(table.getScene().getWindow());
         if (playlistFile != null) {
             try {
-                if (FileService.savePlaylist(playlistFile, playlist.getTitles())) {
+                if (FileUtil.savePlaylist(playlistFile, playlist.getTitles())) {
                     playlist.setFilePath(playlistFile.getParent());
                     playlist.setFileName(playlistFile.getName());
                     playlist.setDirty(false);
@@ -265,7 +264,7 @@ public class PlaylistPresenter implements Initializable {
     private void deletePlaylist() {
         //TODO Statusbar-Meldung
         //TODO Bestätigungsdialog mit Option die Titel aus der aktuellen Wiedergabe zu entfernen
-        if (FileService.deleteFile(playlist.getAbsolutePath())) {
+        if (new File(playlist.getAbsolutePath()).delete()) {
             playlist.setFilePath("");
             playlist.setFileName("");
         }

@@ -1,14 +1,14 @@
 package de.eru.mp3manager.gui.applicationwindow.musicplayer;
 
 import de.eru.mp3manager.settings.Settings;
-import de.eru.mp3manager.cdi.CurrentTitleEvent;
-import de.eru.mp3manager.cdi.Updated;
-import de.eru.mp3manager.cdi.XMLSettings;
+import de.eru.mp3manager.cdi.events.CurrentTitleEvent;
+import de.eru.mp3manager.cdi.qualifiers.Updated;
+import de.eru.mp3manager.cdi.qualifiers.XMLSettings;
 import de.eru.mp3manager.data.Mp3FileData;
 import de.eru.mp3manager.data.Playlist;
 import de.eru.mp3manager.player.MusicPlayer;
-import de.eru.mp3manager.utils.formatter.ByteFormatter;
-import de.eru.mp3manager.utils.formatter.TimeFormatter;
+import de.eru.mp3manager.util.ByteUtil;
+import de.eru.mp3manager.util.TimeUtil;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.beans.binding.DoubleBinding;
@@ -178,7 +178,7 @@ public class MusicPlayerPresenter implements Initializable {
                 if (newTitle.getArtworkData() == null) {
                     return null;
                 }
-                return ByteFormatter.byteArrayToImage(newTitle.getArtworkData().getBinaryData());
+                return ByteUtil.byteArrayToImage(newTitle.getArtworkData().getBinaryData());
             }
         });
     }
@@ -191,7 +191,7 @@ public class MusicPlayerPresenter implements Initializable {
 
             @Override
             protected String computeValue() {
-                return TimeFormatter.secondsToDurationFormat(property.get(), false);
+                return TimeUtil.secondsToDurationFormat(property.get(), false);
             }
         };
     }

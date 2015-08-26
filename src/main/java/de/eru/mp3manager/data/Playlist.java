@@ -1,10 +1,10 @@
 package de.eru.mp3manager.data;
 
 import de.eru.mp3manager.settings.Settings;
-import de.eru.mp3manager.cdi.CurrentTitleEvent;
-import de.eru.mp3manager.cdi.Updated;
-import de.eru.mp3manager.cdi.XMLSettings;
-import de.eru.mp3manager.service.FileService;
+import de.eru.mp3manager.cdi.events.CurrentTitleEvent;
+import de.eru.mp3manager.cdi.qualifiers.Updated;
+import de.eru.mp3manager.cdi.qualifiers.XMLSettings;
+import de.eru.mp3manager.util.FileUtil;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -160,7 +160,7 @@ public class Playlist extends FileBasedData {
             return false;
         }
         try {
-            List<String> filePaths = FileService.loadPlaylist(new File(absolutePath.get()));
+            List<String> filePaths = FileUtil.loadPlaylist(new File(absolutePath.get()));
             if (titles.size() != filePaths.size()) {
                 return true;
             }

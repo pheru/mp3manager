@@ -1,6 +1,6 @@
 package de.eru.mp3manager.gui.applicationwindow.main;
 
-import de.eru.mp3manager.utils.Comparators;
+import de.eru.mp3manager.util.Comparators;
 import java.util.Comparator;
 
 /**

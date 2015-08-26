@@ -4,8 +4,8 @@ import de.eru.mp3manager.exceptions.Mp3FileDataException;
 import de.eru.mp3manager.exceptions.RenameFailedException;
 import de.eru.mp3manager.exceptions.SaveFailedException;
 import de.eru.mp3manager.gui.applicationwindow.editfile.EditFilePresenter;
-import de.eru.mp3manager.utils.formatter.ByteFormatter;
-import de.eru.mp3manager.utils.formatter.TimeFormatter;
+import de.eru.mp3manager.util.ByteUtil;
+import de.eru.mp3manager.util.TimeUtil;
 import java.io.File;
 import java.io.IOException;
 import javafx.beans.binding.StringBinding;
@@ -67,7 +67,7 @@ public class Mp3FileData extends FileBasedData {
 
             @Override
             protected String computeValue() {
-                return TimeFormatter.secondsToDurationFormat(duration.get(), false);
+                return TimeUtil.secondsToDurationFormat(duration.get(), false);
             }
         });
     }
@@ -83,8 +83,8 @@ public class Mp3FileData extends FileBasedData {
         this();
         fileName.set(file.getName());
         filePath.set(file.getParent());
-        size.set(ByteFormatter.bytesToMB(file.length()));
-        lastModified.set(TimeFormatter.millisecondsToDateFormat(file.lastModified()));
+        size.set(ByteUtil.bytesToMB(file.length()));
+        lastModified.set(TimeUtil.millisecondsToDateFormat(file.lastModified()));
 
         MP3File mp3File;
         try {
@@ -176,6 +176,7 @@ public class Mp3FileData extends FileBasedData {
                 tag.setField(newArtwork);
             }
             mp3File.save();
+            //TODO reload
         } catch (CannotReadException | IOException | ReadOnlyFileException | TagException | InvalidAudioFrameException e) {
             throw new SaveFailedException("Failed to save\n"
                     + ToStringBuilder.reflectionToString(this, ToStringStyle.MULTI_LINE_STYLE, true)

@@ -1,7 +1,7 @@
 package de.eru.mp3manager;
 
 import com.melloware.jintellitype.JIntellitype;
-import de.eru.mp3manager.cdi.XMLSettings;
+import de.eru.mp3manager.cdi.qualifiers.XMLSettings;
 import de.eru.mp3manager.settings.Settings;
 import de.eru.pherufx.mvp.StartEvent;
 import de.eru.pherufx.mvp.PheruFXApplication;

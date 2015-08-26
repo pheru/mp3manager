@@ -1,16 +1,15 @@
 package de.eru.mp3manager.gui.applicationwindow.editfile;
 
 import de.eru.mp3manager.data.Mp3FileData;
-import de.eru.mp3manager.cdi.TableData;
-import de.eru.mp3manager.cdi.TableDataSource;
-import de.eru.mp3manager.cdi.XMLSettings;
+import de.eru.mp3manager.cdi.qualifiers.TableData;
+import de.eru.mp3manager.cdi.qualifiers.XMLSettings;
 import de.eru.mp3manager.data.ArtworkData;
-import de.eru.mp3manager.gui.utils.NumberComboBox;
+import de.eru.mp3manager.gui.nodes.NumberComboBox;
 import de.eru.mp3manager.settings.Settings;
-import de.eru.mp3manager.utils.Comparators;
-import de.eru.mp3manager.utils.task.TaskPool;
-import de.eru.mp3manager.utils.formatter.ByteFormatter;
-import de.eru.mp3manager.utils.task.SaveFilesTask;
+import de.eru.mp3manager.util.Comparators;
+import de.eru.mp3manager.task.TaskPool;
+import de.eru.mp3manager.util.ByteUtil;
+import de.eru.mp3manager.task.SaveFilesTask;
 import de.eru.pherufx.focus.FocusTraversal;
 import de.eru.pherufx.mvp.InjectableList;
 import java.io.File;
@@ -86,7 +85,7 @@ public class EditFilePresenter implements Initializable {
     @XMLSettings
     private Settings settings;
     @Inject
-    @TableData(source = TableDataSource.MAIN_SELECTED)
+    @TableData(TableData.Source.MAIN_SELECTED)
     private InjectableList<Mp3FileData> selectedData;
     @Inject
     private TaskPool taskPool;
@@ -357,7 +356,7 @@ public class EditFilePresenter implements Initializable {
 
     private void setCover(ArtworkData artworkData) {
         if (artworkData != null) {
-            coverView.setImage(ByteFormatter.byteArrayToImage(artworkData.getBinaryData()));
+            coverView.setImage(ByteUtil.byteArrayToImage(artworkData.getBinaryData()));
             coverInfo.setText(artworkData.getMimeType() + " | " + artworkData.getHeight() + " x " + artworkData.getWidth()); //TODO Höhe x Breite oder Breite x Höhe?
         } else {
             removeCover("<Kein Cover vorhanden>");
@@ -386,13 +385,13 @@ public class EditFilePresenter implements Initializable {
         if (imageAsFile != null) {
             byte[] imageAsByteArray;
             try {
-                imageAsByteArray = ByteFormatter.fileToByteArray(imageAsFile);
+                imageAsByteArray = ByteUtil.fileToByteArray(imageAsFile);
             } catch (IOException e) {
                 LOGGER.error("Exception converting file to byte-Array!", e);
                 //TODO Notification oder ähnliches
                 imageAsByteArray = new byte[0];
             }
-            Image image = ByteFormatter.byteArrayToImage(imageAsByteArray);
+            Image image = ByteUtil.byteArrayToImage(imageAsByteArray);
             ArtworkData artworkData = new ArtworkData(imageAsByteArray, Double.valueOf(image.getWidth()).intValue(),
                     Double.valueOf(image.getHeight()).intValue(), ImageFormats.getMimeTypeForBinarySignature(imageAsByteArray));
             changeData.setArtworkData(artworkData);

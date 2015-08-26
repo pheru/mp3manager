@@ -1,19 +1,20 @@
 package de.eru.mp3manager.gui.applicationwindow.main;
 
 import de.eru.mp3manager.settings.Settings;
-import de.eru.mp3manager.cdi.CurrentTitleEvent;
+import de.eru.mp3manager.cdi.events.CurrentTitleEvent;
 import de.eru.mp3manager.data.Mp3FileData;
 import de.eru.mp3manager.data.Playlist;
-import de.eru.mp3manager.cdi.TableData;
-import de.eru.mp3manager.cdi.TableDataSource;
-import de.eru.mp3manager.cdi.Updated;
-import de.eru.mp3manager.cdi.XMLSettings;
-import de.eru.mp3manager.gui.utils.CssRowFactory;
-import de.eru.mp3manager.gui.utils.TablePlaceholders;
+import de.eru.mp3manager.cdi.qualifiers.TableData;
+import de.eru.mp3manager.cdi.qualifiers.Updated;
+import de.eru.mp3manager.cdi.qualifiers.XMLSettings;
+import de.eru.mp3manager.gui.nodes.EmptyDirectoryPlaceholder;
+import de.eru.mp3manager.gui.nodes.NoDirectoryPlaceholder;
+import de.eru.mp3manager.gui.nodes.NoFilterResultPlaceholder;
+import de.eru.mp3manager.gui.util.CssRowFactory;
 import de.eru.mp3manager.settings.ColumnSettings;
-import de.eru.mp3manager.utils.task.Mp3ManagerTask;
-import de.eru.mp3manager.utils.task.TaskPool;
-import de.eru.mp3manager.utils.task.ReadDirectoryTask;
+import de.eru.mp3manager.task.Mp3ManagerTask;
+import de.eru.mp3manager.task.TaskPool;
+import de.eru.mp3manager.task.ReadDirectoryTask;
 import de.eru.pherufx.focus.FocusTraversal;
 import de.eru.pherufx.mvp.InjectableList;
 import java.io.File;
@@ -34,7 +35,6 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
-import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressIndicator;
@@ -80,7 +80,13 @@ public class MainPresenter implements Initializable {
     private TableView<Mp3FileData> table;
     private CssRowFactory<Mp3FileData> tableRowFactory; //TODO Liste der Indizes würde reichen
 
-    public static final Node DEFAULT_TABLE_PLACEHOLDER = TablePlaceholders.NO_FILTER_RESULT;
+    private final NoFilterResultPlaceholder noFilterResultPlaceholder = new NoFilterResultPlaceholder();
+    private final EmptyDirectoryPlaceholder emptyDirectoryPlaceholder = new EmptyDirectoryPlaceholder((ActionEvent event) -> {
+        changeDirectory();
+    });
+    private final NoDirectoryPlaceholder noDirectoryPlaceholder = new NoDirectoryPlaceholder((ActionEvent event) -> {
+        changeDirectory();
+    });
 
     @Inject
     private TaskPool taskPool;
@@ -91,10 +97,10 @@ public class MainPresenter implements Initializable {
     private Settings settings;
 
     @Inject
-    @TableData(source = TableDataSource.MAIN_ALL)
+    @TableData(TableData.Source.MAIN)
     private InjectableList<Mp3FileData> masterData;
     @Inject
-    @TableData(source = TableDataSource.MAIN_SELECTED)
+    @TableData(TableData.Source.MAIN_SELECTED)
     private InjectableList<Mp3FileData> selectedData;
 
     private boolean updatingColumnsOrderList = false;
@@ -104,8 +110,8 @@ public class MainPresenter implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         initTable();
         bindUI();
-        FocusTraversal.createFocusTraversalGroup("mainGroup", table, TablePlaceholders.getEmptyDirectoryButton(),
-                TablePlaceholders.getNoDirectoryButton(), filterTextField);
+        FocusTraversal.createFocusTraversalGroup("mainGroup", table, emptyDirectoryPlaceholder.getButton(),
+                noDirectoryPlaceholder.getButton(), filterTextField);
     }
 
     /**
@@ -126,10 +132,10 @@ public class MainPresenter implements Initializable {
 //        playlist.currentTitleIndexProperty().addListener((ObservableValue<? extends Number> observable, Number oldValue, Number newValue) -> {
 //            updateStyledIndex(newValue.intValue());
 //        });
-        if (!settings.getMusicDirectory().isEmpty()) {
-            table.setPlaceholder(DEFAULT_TABLE_PLACEHOLDER);
+        if (settings.getMusicDirectory().isEmpty()) {
+            table.setPlaceholder(noDirectoryPlaceholder);
         } else {
-            table.setPlaceholder(TablePlaceholders.NO_DIRECTORY);
+            table.setPlaceholder(noFilterResultPlaceholder);
         }
         table.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
         table.setItems(setUpTableFilter());
@@ -148,14 +154,6 @@ public class MainPresenter implements Initializable {
         updateColumnsOrderTable(); // Initiale Anpassung der Reihenfolge an die Settings
         table.setOnSort((SortEvent<TableView<Mp3FileData>> event) -> {
             updateStyledIndex(playlist.getCurrentTitleIndex());
-        });
-        TablePlaceholders.getEmptyDirectoryButton().setText("Verzeichnis wechseln");
-        TablePlaceholders.getEmptyDirectoryButton().setOnAction((ActionEvent event) -> {
-            changeDirectory();
-        });
-        TablePlaceholders.getNoDirectoryButton().setText("Verzeichnis wählen");
-        TablePlaceholders.getNoDirectoryButton().setOnAction((ActionEvent event) -> {
-            changeDirectory();
         });
     }
 
@@ -264,7 +262,7 @@ public class MainPresenter implements Initializable {
      * Bindet die UI-Elemente untereinander.
      */
     private void bindUI() {
-        TablePlaceholders.noFilterResultFilterProperty().bind(filterTextField.textProperty());
+        noFilterResultPlaceholder.filterProperty().bind(filterTextField.textProperty());
         clearFilterButton.visibleProperty().bind(filterTextField.textProperty().isEmpty().not());
 //        taskCancelButton.disableProperty().bind(taskPool.cancellingProperty().or(taskPool.runningProperty().not()));
         taskCancelButton.disableProperty().bind(taskPool.statusProperty().isNotEqualTo(Mp3ManagerTask.Status.RUNNING));
@@ -320,7 +318,8 @@ public class MainPresenter implements Initializable {
     public void readDirectory() {
         String directory = settings.getMusicDirectory();
         if (directory != null && !directory.isEmpty()) {
-            Mp3ManagerTask readDirectoryTask = new ReadDirectoryTask(directory, masterData, table.placeholderProperty(), playlist.getTitles());
+            Mp3ManagerTask readDirectoryTask = new ReadDirectoryTask(directory, masterData, table.placeholderProperty(),
+                    playlist.getTitles(), emptyDirectoryPlaceholder, noFilterResultPlaceholder);
             readDirectoryTask.runningProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
                 if (oldValue && !newValue) {
                     updateStyledIndex(playlist.getCurrentTitleIndex());

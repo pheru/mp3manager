@@ -2,7 +2,7 @@ package de.eru.mp3manager;
 
 import com.melloware.jintellitype.JIntellitype;
 import com.melloware.jintellitype.JIntellitypeException;
-import de.eru.mp3manager.cdi.XMLSettings;
+import de.eru.mp3manager.cdi.qualifiers.XMLSettings;
 import de.eru.mp3manager.settings.Settings;
 import de.eru.mp3manager.gui.applicationwindow.application.ApplicationView;
 import de.eru.pherufx.mvp.StartApplication;

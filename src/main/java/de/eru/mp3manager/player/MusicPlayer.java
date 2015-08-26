@@ -1,7 +1,7 @@
 package de.eru.mp3manager.player;
 
 import de.eru.mp3manager.settings.Settings;
-import de.eru.mp3manager.cdi.XMLSettings;
+import de.eru.mp3manager.cdi.qualifiers.XMLSettings;
 import de.eru.mp3manager.data.Mp3FileData;
 import de.eru.mp3manager.data.Playlist;
 import java.io.File;
