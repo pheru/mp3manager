@@ -1,6 +1,6 @@
 package de.pheru.media.gui.applicationwindow.main;
 
-import de.pheru.fx.focus.FocusTraversal;
+import de.pheru.fx.util.focus.FocusTraversal;
 import de.pheru.fx.mvp.InjectableList;
 import de.pheru.media.cdi.events.CurrentTitleEvent;
 import de.pheru.media.cdi.qualifiers.TableData;

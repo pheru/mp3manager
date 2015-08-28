@@ -1,7 +1,7 @@
 package de.pheru.media.gui.applicationwindow.application;
 
 import com.melloware.jintellitype.JIntellitype;
-import de.pheru.fx.focus.FocusTraversal;
+import de.pheru.fx.util.focus.FocusTraversal;
 import de.pheru.media.cdi.qualifiers.XMLSettings;
 import de.pheru.media.gui.applicationwindow.editfile.EditFilePresenter;
 import de.pheru.media.gui.applicationwindow.editfile.EditFileView;

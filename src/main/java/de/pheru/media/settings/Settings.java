@@ -1,7 +1,7 @@
 package de.pheru.media.settings;
 
-import de.pheru.fx.notifications.Notification;
-import de.pheru.fx.notifications.Notifications;
+import de.pheru.fx.controls.notification.Notification;
+import de.pheru.fx.controls.notification.Notifications;
 import de.pheru.media.PheruMedia;
 import de.pheru.media.gui.applicationwindow.main.MainColumn;
 import de.pheru.media.settings.objectproperties.NotificationsAlignmentProperty;
@@ -69,9 +69,9 @@ public class Settings {
     @XmlPath(XMLPATH_APPLICATION_WINDOW + "maximized" + XMLPATH_ENDING)
     private final BooleanProperty applicationWindowMaximized = new SimpleBooleanProperty(false);
     @XmlPath(XMLPATH_APPLICATION_WINDOW + "width" + XMLPATH_ENDING)
-    private final DoubleProperty applicationWindowWidth = new SimpleDoubleProperty(1300.0);
+    private final DoubleProperty applicationWindowWidth = new SimpleDoubleProperty(800.0);
     @XmlPath(XMLPATH_APPLICATION_WINDOW + "height" + XMLPATH_ENDING)
-    private final DoubleProperty applicationWindowHeight = new SimpleDoubleProperty(800.0);
+    private final DoubleProperty applicationWindowHeight = new SimpleDoubleProperty(500.0);
     @XmlPath(XMLPATH_APPLICATION_WINDOW + "splitPosition" + XMLPATH_ENDING)
     private final DoubleProperty applicationWindowSplitPosition = new SimpleDoubleProperty(0.0);
 

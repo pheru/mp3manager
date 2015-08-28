@@ -1,8 +1,8 @@
 package de.pheru.media.gui.applicationwindow.playlist;
 
+import de.pheru.fx.controls.notification.Notification;
+import de.pheru.fx.controls.notification.Notifications;
 import de.pheru.fx.mvp.InjectableList;
-import de.pheru.fx.notifications.Notification;
-import de.pheru.fx.notifications.Notifications;
 import de.pheru.media.cdi.events.CurrentTitleEvent;
 import de.pheru.media.cdi.qualifiers.TableData;
 import de.pheru.media.cdi.qualifiers.Updated;

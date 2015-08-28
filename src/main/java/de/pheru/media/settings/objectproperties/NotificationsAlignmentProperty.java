@@ -1,6 +1,6 @@
 package de.pheru.media.settings.objectproperties;
 
-import de.pheru.fx.notifications.Notifications;
+import de.pheru.fx.controls.notification.Notifications;
 import javafx.beans.property.SimpleObjectProperty;
 
 /**
