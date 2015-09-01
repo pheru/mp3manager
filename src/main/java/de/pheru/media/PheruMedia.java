@@ -2,13 +2,13 @@ package de.pheru.media;
 
 import com.melloware.jintellitype.JIntellitype;
 import de.pheru.fx.mvp.PheruFXApplication;
-import de.pheru.fx.mvp.StartEvent;
 import de.pheru.media.cdi.qualifiers.XMLSettings;
 import de.pheru.media.settings.Settings;
 import java.util.logging.Level;
 import javafx.application.Platform;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
+import javafx.scene.image.ImageView;
 import javax.enterprise.util.AnnotationLiteral;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -37,7 +37,7 @@ public class PheruMedia extends PheruFXApplication {
 
     public static void main(String[] args) {
         System.getProperties().put("logfiles.path", APPLICATION_PATH);
-        
+
         Thread.setDefaultUncaughtExceptionHandler((Thread t, Throwable e) -> {
             LOGGER.fatal("Unexpected Exception on Thread: " + t.getName(), e);
             Alert alert = new Alert(Alert.AlertType.ERROR);
@@ -57,18 +57,22 @@ public class PheruMedia extends PheruFXApplication {
         });
         JAUDIOTAGGER_LOGGER.setLevel(Level.WARNING);
 
-        setOnStarting((StartEvent event) -> {
-            startAlert = new Alert(Alert.AlertType.NONE);
-            startAlert.setResult(ButtonType.CLOSE);
-            startAlert.setTitle(APPLICATION_NAME);
-            startAlert.setContentText("Starte " + APPLICATION_NAME + "...");
-//            startAlert.setGraphic(new ImageView("img/clock_48.png"));
-            startAlert.show();
-        });
-        setOnStartFinished((StartEvent event) -> {
-            startAlert.hide();
-        });
         launch(args);
+    }
+
+    @Override
+    public void beforeStart() {
+        startAlert = new Alert(Alert.AlertType.NONE);
+        startAlert.setResult(ButtonType.CLOSE);
+        startAlert.setTitle(APPLICATION_NAME);
+        startAlert.setContentText("Starte " + APPLICATION_NAME + "...");
+        startAlert.setGraphic(new ImageView("img/trayIcon.png"));
+        startAlert.show();
+    }
+
+    @Override
+    public void startFinished() {
+        startAlert.hide();
     }
 
     @Override

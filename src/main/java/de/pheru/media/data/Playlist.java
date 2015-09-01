@@ -1,7 +1,5 @@
 package de.pheru.media.data;
 
-import de.pheru.media.cdi.events.CurrentTitleEvent;
-import de.pheru.media.cdi.qualifiers.Updated;
 import de.pheru.media.cdi.qualifiers.XMLSettings;
 import de.pheru.media.settings.Settings;
 import de.pheru.media.util.FileUtil;
@@ -20,7 +18,6 @@ import javafx.collections.ObservableList;
 import javafx.scene.control.Alert;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
 /**
@@ -38,9 +35,6 @@ public class Playlist extends FileBasedData {
     @Inject
     @XMLSettings
     private Settings settings;
-    @Inject
-    @Updated
-    private Event<CurrentTitleEvent> currentTitleUpdateEvent;
 
     private final BooleanProperty dirty = new SimpleBooleanProperty(false);
     private final ObservableList<Mp3FileData> titles = FXCollections.observableArrayList();
@@ -49,14 +43,6 @@ public class Playlist extends FileBasedData {
 
     @PostConstruct
     private void init() {
-        currentTitleIndex.addListener((ObservableValue<? extends Number> observable, Number oldValue, Number newValue) -> {
-            int newValueInt = newValue.intValue();
-            if (newValueInt != UNDEFINED_CURRENT_INDEX) {
-                currentTitleUpdateEvent.fire(new CurrentTitleEvent(titles.get(newValueInt), newValueInt));
-            } else {
-                currentTitleUpdateEvent.fire(new CurrentTitleEvent(Mp3FileData.MUSICPLAYER_PLACEHOLDER_DATA, newValueInt));
-            }
-        });
         settings.musicPlayerRandomProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
             if (newValue) {
                 initRandomIndicesToPlay();
@@ -84,7 +70,8 @@ public class Playlist extends FileBasedData {
 
     //TODO kann etwas refactored werden (event wird mit jedem schleifendurchlauf gefeuert)
     /**
-     * @deprecated Zugriff sollte direkt auf die Liste geschehen (Listener um Indizes zu aktualisieren nötig)
+     * @deprecated Zugriff sollte direkt auf die Liste geschehen (Listener um
+     * Indizes zu aktualisieren nötig)
      */
     public void remove(List<Integer> selectedIndices) {
         List<Integer> indicesToRemove = new ArrayList<>(selectedIndices);
@@ -96,13 +83,13 @@ public class Playlist extends FileBasedData {
             for (int i = indicesToRemove.size() - 1; i >= 0; i--) {
                 //Titel entfernen
                 titles.remove(indicesToRemove.get(i).intValue());
-                
+
                 // Aktuellen zufälligen Index anpassen
                 int currentRandomIndex = randomIndicesToPlay.indexOf(currentTitleIndex.get());
                 if (randomIndicesToPlay.indexOf(indicesToRemove.get(i)) < currentRandomIndex) {
                     currentRandomIndex--;
                 }
-                
+
                 //Index entfernen und folgende Indizes anpassen
                 randomIndicesToPlay.remove(indicesToRemove.get(i));
                 for (int j = 0; j < randomIndicesToPlay.size(); j++) {
@@ -110,7 +97,7 @@ public class Playlist extends FileBasedData {
                         randomIndicesToPlay.set(j, randomIndicesToPlay.get(j) - 1);
                     }
                 }
-                
+
                 //Aktuellen Index anpassen
                 if (settings.isMusicPlayerRandom()) {
                     if (currentRandomIndex >= randomIndicesToPlay.size()) {
@@ -139,18 +126,19 @@ public class Playlist extends FileBasedData {
 //            System.out.println(" - " + titles.get(randomIndicesToPlay.get(j)).getTitle());
 //        }
     }
-    
+
     /**
-     * @deprecated Zugriff sollte direkt auf die Liste geschehen (Listener um Indizes zu aktualisieren nötig)
+     * @deprecated Zugriff sollte direkt auf die Liste geschehen (Listener um
+     * Indizes zu aktualisieren nötig)
      */
-    public void clear(){ 
+    public void clear() {
         List<Integer> indicesToRemove = new ArrayList();
-        for(int i = 0; i < titles.size(); i++){
+        for (int i = 0; i < titles.size(); i++) {
             indicesToRemove.add(i);
         }
         remove(indicesToRemove);
     }
-    
+
     /**
      *
      * @return true, wenn Playlist "dirty"

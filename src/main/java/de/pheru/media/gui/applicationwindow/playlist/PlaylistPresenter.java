@@ -3,9 +3,7 @@ package de.pheru.media.gui.applicationwindow.playlist;
 import de.pheru.fx.controls.notification.Notification;
 import de.pheru.fx.controls.notification.Notifications;
 import de.pheru.fx.mvp.InjectableList;
-import de.pheru.media.cdi.events.CurrentTitleEvent;
 import de.pheru.media.cdi.qualifiers.TableData;
-import de.pheru.media.cdi.qualifiers.Updated;
 import de.pheru.media.cdi.qualifiers.XMLSettings;
 import de.pheru.media.data.Mp3FileData;
 import de.pheru.media.data.Playlist;
@@ -25,6 +23,7 @@ import java.util.ResourceBundle;
 import javafx.application.Application.Parameters;
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.StringBinding;
+import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -40,7 +39,6 @@ import javafx.scene.input.MouseEvent;
 import javafx.stage.FileChooser;
 import javafx.util.Pair;
 import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -92,6 +90,17 @@ public class PlaylistPresenter implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         initTable();
         bindUI();
+        playlist.currentTitleIndexProperty().addListener(new ChangeListener<Number>() {
+
+            @Override
+            public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
+                updateStyledIndex(newValue.intValue());
+                Mp3FileData newCurrentTitle = playlist.getCurrentTitle();
+                if (newCurrentTitle != null) {
+                    showCurrentTitleNotification(newCurrentTitle);
+                }
+            }
+        });
         if (!params.getRaw().isEmpty()) {
             PheruMediaTask loadPlaylistTask = new LoadPlaylistTask(playlist, new File(params.getRaw().get(0)), mainTitles);
             loadPlaylistTask.runningProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
@@ -108,7 +117,7 @@ public class PlaylistPresenter implements Initializable {
      */
     private void initTable() {
         table.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
-        DragAndDropRowFactory<Mp3FileData> dndRowFactory = new DragAndDropRowFactory<>(table, Mp3FileData.EMPTY_PLAYLIST_DATA, (TableView<Mp3FileData> param) -> {
+        DragAndDropRowFactory<Mp3FileData> dndRowFactory = new DragAndDropRowFactory<>(table, Mp3FileData.EMPTY_DATA, (TableView<Mp3FileData> param) -> {
             TableRow<Mp3FileData> row = new TableRow<>();
             row.setOnMouseClicked((MouseEvent event) -> {
                 if (event.getClickCount() == 2 && !row.isEmpty()) {
@@ -168,7 +177,7 @@ public class PlaylistPresenter implements Initializable {
 
             @Override
             protected String computeValue() {
-                if (playlist.getTitles().contains(Mp3FileData.EMPTY_PLAYLIST_DATA)) {
+                if (playlist.getTitles().contains(Mp3FileData.EMPTY_DATA)) {
                     return String.valueOf(playlist.getTitles().size() - 1);
                 }
                 return String.valueOf(playlist.getTitles().size());
@@ -297,9 +306,7 @@ public class PlaylistPresenter implements Initializable {
         }
     }
 
-    private void currentTitleUpdated(@Observes @Updated CurrentTitleEvent event) {
-        updateStyledIndex(event.getNewCurrentTitleIndex());
-        Mp3FileData newCurrentTitle = event.getNewCurrentTitle();
+    private void showCurrentTitleNotification(Mp3FileData newCurrentTitle) {
         if (currentTitleNotification != null) {
             currentTitleNotification.hide();
         }

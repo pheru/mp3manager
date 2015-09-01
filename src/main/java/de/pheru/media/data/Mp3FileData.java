@@ -38,8 +38,8 @@ import org.jaudiotagger.tag.reference.PictureTypes;
  */
 public class Mp3FileData extends FileBasedData {
 
-    public static final Mp3FileData MUSICPLAYER_PLACEHOLDER_DATA = createPlaceholderData();
-    public static final Mp3FileData EMPTY_PLAYLIST_DATA = createEmptyData();
+    public static final Mp3FileData PLACEHOLDER_DATA = createPlaceholderData();
+    public static final Mp3FileData EMPTY_DATA = createEmptyData();
     public static final String UNIT_SIZE = " MB";
     public static final String UNIT_BITRATE = " kBit/s";
 

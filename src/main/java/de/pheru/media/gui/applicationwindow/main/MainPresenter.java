@@ -2,9 +2,7 @@ package de.pheru.media.gui.applicationwindow.main;
 
 import de.pheru.fx.util.focus.FocusTraversal;
 import de.pheru.fx.mvp.InjectableList;
-import de.pheru.media.cdi.events.CurrentTitleEvent;
 import de.pheru.media.cdi.qualifiers.TableData;
-import de.pheru.media.cdi.qualifiers.Updated;
 import de.pheru.media.cdi.qualifiers.XMLSettings;
 import de.pheru.media.data.Mp3FileData;
 import de.pheru.media.data.Playlist;
@@ -27,6 +25,7 @@ import javafx.beans.binding.Bindings;
 import javafx.beans.binding.StringBinding;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
+import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.ListChangeListener;
 import javafx.collections.transformation.FilteredList;
@@ -287,10 +286,9 @@ public class MainPresenter implements Initializable {
         taskProgress.progressProperty().bind(taskPool.progressProperty());
         directoryLabel.textProperty().bind(settings.musicDirectoryProperty());
 
-    }
-
-    private void currentTitleUpdated(@Observes @Updated CurrentTitleEvent event) {
-        updateStyledIndex(event.getNewCurrentTitleIndex());
+        playlist.currentTitleIndexProperty().addListener((ObservableValue<? extends Number> observable, Number oldValue, Number newValue) -> {
+            updateStyledIndex(newValue.intValue());
+        });
     }
 
     private void updateStyledIndex(int playlistIndex) {

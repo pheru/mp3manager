@@ -1,7 +1,5 @@
 package de.pheru.media.gui.applicationwindow.musicplayer;
 
-import de.pheru.media.cdi.events.CurrentTitleEvent;
-import de.pheru.media.cdi.qualifiers.Updated;
 import de.pheru.media.cdi.qualifiers.XMLSettings;
 import de.pheru.media.data.Mp3FileData;
 import de.pheru.media.data.Playlist;
@@ -15,6 +13,7 @@ import javafx.beans.binding.DoubleBinding;
 import javafx.beans.binding.ObjectBinding;
 import javafx.beans.binding.StringBinding;
 import javafx.beans.property.DoubleProperty;
+import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
@@ -28,7 +27,6 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.media.MediaPlayer;
 import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
 @ApplicationScoped
@@ -157,13 +155,14 @@ public class MusicPlayerPresenter implements Initializable {
 //        playlist.currentTitleIndexProperty().addListener((ObservableValue<? extends Number> observable, Number oldValue, Number newValue) -> {
 //            updateCurrentTitleBinding(newValue.intValue());
 //        });
+        playlist.currentTitleIndexProperty().addListener((ObservableValue<? extends Number> observable, Number oldValue, Number newValue) -> {
+            Mp3FileData bindingData = playlist.getCurrentTitle() != null
+                    ? playlist.getCurrentTitle() : Mp3FileData.PLACEHOLDER_DATA;
+            updateCurrentTitleBinding(bindingData);
+        });
     }
 
-    private void currentTitleUpdated(@Observes @Updated CurrentTitleEvent event) {
-        updateCurrentTitleBinding(event.getNewCurrentTitle());
-    }
-
-    public void updateCurrentTitleBinding(Mp3FileData newTitle) {
+    private void updateCurrentTitleBinding(Mp3FileData newTitle) {
         titleLabel.textProperty().bind(newTitle.titleProperty());
         albumLabel.textProperty().bind(newTitle.albumProperty());
         artistLabel.textProperty().bind(newTitle.artistProperty());

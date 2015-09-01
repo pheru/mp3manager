@@ -96,7 +96,7 @@ public class Settings {
     @XmlPath(XMLPATH_NOTIFICATIONS + "alignment" + XMLPATH_ENDING)
     private final NotificationsAlignmentProperty notificationsAlignment = new NotificationsAlignmentProperty(Notifications.Alignment.BOTTOM_RIGHT);
     @XmlPath(XMLPATH_NOTIFICATIONS + "timer" + XMLPATH_ENDING)
-    private final IntegerProperty notificationsTimer = new SimpleIntegerProperty(Notifications.getDefaultTimer());
+    private final IntegerProperty notificationsTimer = new SimpleIntegerProperty(5);
 
     @XmlElementWrapper(name = "tableColumns")
     @XmlElement(name = "tableColumn")
