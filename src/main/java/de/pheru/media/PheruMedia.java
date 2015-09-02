@@ -20,9 +20,10 @@ import org.apache.logging.log4j.Logger;
  */
 public class PheruMedia extends PheruFXApplication {
 
-    public static final String APPLICATION_NAME = "Pheru Media";
     private static final String CODE_SOURCE_LOCATION = PheruMedia.class.getProtectionDomain().getCodeSource().getLocation().getPath();
     private static final boolean PRODUCTION_MODE = !CODE_SOURCE_LOCATION.endsWith("target/classes/");
+
+    public static final String APPLICATION_NAME = "Pheru Media";
     //TODO sollte einheitlich sein, was das "/" am ende betrifft
     public static final String APPLICATION_PATH = PRODUCTION_MODE
             ? CODE_SOURCE_LOCATION.substring(0, CODE_SOURCE_LOCATION.lastIndexOf("/app")) : CODE_SOURCE_LOCATION;
@@ -40,14 +41,12 @@ public class PheruMedia extends PheruFXApplication {
 
         Thread.setDefaultUncaughtExceptionHandler((Thread t, Throwable e) -> {
             LOGGER.fatal("Unexpected Exception on Thread: " + t.getName(), e);
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setHeaderText("Unerwarteter Fehler!");
-            alert.setContentText("Um weiteres unerwartetes Verhalten zu vermeiden, sollte die Anwendung neu gestartet werden.");
-            if (Platform.isFxApplicationThread()) {
+            Platform.runLater(() -> {
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setHeaderText("Unerwarteter Fehler!");
+                alert.setContentText("Um weiteres unerwartetes Verhalten zu vermeiden, sollte die Anwendung neu gestartet werden.");
                 alert.showAndWait();
-            } else {
-                Platform.runLater(alert::showAndWait);
-            }
+            });
         });
         Runtime.getRuntime().addShutdownHook(new Thread() {
             @Override
@@ -66,7 +65,7 @@ public class PheruMedia extends PheruFXApplication {
         startAlert.setResult(ButtonType.CLOSE);
         startAlert.setTitle(APPLICATION_NAME);
         startAlert.setContentText("Starte " + APPLICATION_NAME + "...");
-        startAlert.setGraphic(new ImageView("img/trayIcon.png"));
+//        startAlert.setGraphic(new ImageView("img/trayIcon.png"));
         startAlert.show();
     }
 

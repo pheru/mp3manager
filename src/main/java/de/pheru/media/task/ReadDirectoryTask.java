@@ -2,15 +2,12 @@ package de.pheru.media.task;
 
 import de.pheru.media.data.Mp3FileData;
 import de.pheru.media.exceptions.Mp3FileDataException;
-import de.pheru.media.gui.nodes.ReadingDirectoryPlaceholder;
 import de.pheru.media.util.FileUtil;
 import java.io.File;
 import java.util.List;
 import javafx.application.Platform;
-import javafx.beans.property.ObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.scene.Node;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
 import org.apache.logging.log4j.LogManager;
@@ -27,10 +24,7 @@ public class ReadDirectoryTask extends PheruMediaTask {
 
     private final String directory;
     private final ObservableList<Mp3FileData> masterData;
-    private final ObjectProperty<Node> placeholderProperty; //GUI-Objekt in Logik?
     private final List<Mp3FileData> playlistTitles;
-    private final Node emptyPlaceHolder;
-    private final Node defaultPlaceholder;
 
     /**
      * @param directory Das auszulesende Verzeichnis.
@@ -39,20 +33,15 @@ public class ReadDirectoryTask extends PheruMediaTask {
      * @param playlistTitles
      */
     public ReadDirectoryTask(final String directory, final ObservableList<Mp3FileData> masterData,
-            final ObjectProperty<Node> placeholderProperty, final List<Mp3FileData> playlistTitles,
-            final Node emptyPlaceHolder, final Node defaultPlaceholder) {
+            final List<Mp3FileData> playlistTitles) {
         this.directory = directory;
         this.masterData = masterData;
-        this.placeholderProperty = placeholderProperty;
         this.playlistTitles = playlistTitles;
-        this.emptyPlaceHolder = emptyPlaceHolder;
-        this.defaultPlaceholder = defaultPlaceholder;
     }
 
     @Override
     protected void innerCall() {
         Platform.runLater(() -> {
-            placeholderProperty.set(new ReadingDirectoryPlaceholder());
             masterData.clear();
         });
         //Verzeichnis auslesen
@@ -99,10 +88,14 @@ public class ReadDirectoryTask extends PheruMediaTask {
             updateMessage(loadedData.size() + " von " + files.size() + " Dateien wurden erfolgreich geladen.");
             if (loadedData.isEmpty()) {
                 setStatus(Status.FAILED);
-                showFailedAlert(directory, failedToLoadFileNames);
+                Platform.runLater(() -> {
+                    showFailedAlert(directory, failedToLoadFileNames);
+                });
             } else if (loadedData.size() < files.size()) {
                 setStatus(Status.INSUFFICIENT);
-                showFailedAlert(directory, failedToLoadFileNames);
+                Platform.runLater(() -> {
+                    showFailedAlert(directory, failedToLoadFileNames);
+                });
             } else {
                 setStatus(Status.SUCCESSFUL);
             }
@@ -110,15 +103,13 @@ public class ReadDirectoryTask extends PheruMediaTask {
 
         Platform.runLater(() -> {
             if (loadedData.isEmpty()) {
-                placeholderProperty.set(emptyPlaceHolder);
                 updateProgress(1, 1);
             } else {
                 masterData.addAll(loadedData);
-                placeholderProperty.set(defaultPlaceholder);
             }
         });
     }
-    
+
     private void showFailedAlert(String directory, List<String> failedToLoadFileNames) {
         StringBuilder fileNamesStringBuilder = new StringBuilder();
         for (String failedToLoadFileName : failedToLoadFileNames) {
@@ -129,6 +120,6 @@ public class ReadDirectoryTask extends PheruMediaTask {
         alert.setHeaderText("Fehler beim Lesen des Verzeichnisses \"" + directory + "\"!");
         alert.setContentText("Folgende Dateien konnten nicht gelesen werden:");
         alert.getDialogPane().setExpandableContent(new Label(fileNamesStringBuilder.toString()));
-        Platform.runLater(alert::showAndWait);
+        alert.showAndWait();
     }
 }

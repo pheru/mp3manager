@@ -9,6 +9,7 @@ import de.pheru.media.data.Playlist;
 import de.pheru.media.gui.nodes.EmptyDirectoryPlaceholder;
 import de.pheru.media.gui.nodes.NoDirectoryPlaceholder;
 import de.pheru.media.gui.nodes.NoFilterResultPlaceholder;
+import de.pheru.media.gui.nodes.ReadingDirectoryPlaceholder;
 import de.pheru.media.gui.util.CssRowFactory;
 import de.pheru.media.settings.ColumnSettings;
 import de.pheru.media.settings.Settings;
@@ -25,7 +26,6 @@ import javafx.beans.binding.Bindings;
 import javafx.beans.binding.StringBinding;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
-import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.ListChangeListener;
 import javafx.collections.transformation.FilteredList;
@@ -49,7 +49,6 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
 import javafx.stage.DirectoryChooser;
 import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
 @ApplicationScoped
@@ -79,6 +78,7 @@ public class MainPresenter implements Initializable {
     private TableView<Mp3FileData> table;
     private CssRowFactory<Mp3FileData> tableRowFactory; //TODO Liste der Indizes würde reichen
 
+    private final ReadingDirectoryPlaceholder readingDirectoryPlaceholder = new ReadingDirectoryPlaceholder();
     private final NoFilterResultPlaceholder noFilterResultPlaceholder = new NoFilterResultPlaceholder();
     private final EmptyDirectoryPlaceholder emptyDirectoryPlaceholder = new EmptyDirectoryPlaceholder((ActionEvent event) -> {
         changeDirectory();
@@ -316,11 +316,17 @@ public class MainPresenter implements Initializable {
     public void readDirectory() {
         String directory = settings.getMusicDirectory();
         if (directory != null && !directory.isEmpty()) {
-            PheruMediaTask readDirectoryTask = new ReadDirectoryTask(directory, masterData, table.placeholderProperty(),
-                    playlist.getTitles(), emptyDirectoryPlaceholder, noFilterResultPlaceholder);
+            PheruMediaTask readDirectoryTask = new ReadDirectoryTask(directory, masterData, playlist.getTitles());
             readDirectoryTask.runningProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
-                if (oldValue && !newValue) {
+                if (newValue) {
+                    table.setPlaceholder(readingDirectoryPlaceholder);
+                } else {
                     updateStyledIndex(playlist.getCurrentTitleIndex());
+                    if (masterData.isEmpty()) {
+                        table.setPlaceholder(emptyDirectoryPlaceholder);
+                    } else {
+                        table.setPlaceholder(noFilterResultPlaceholder);
+                    }
                 }
             });
             taskPool.addTask(readDirectoryTask);
