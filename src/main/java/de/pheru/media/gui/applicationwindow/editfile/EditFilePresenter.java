@@ -1,7 +1,6 @@
 package de.pheru.media.gui.applicationwindow.editfile;
 
 import de.pheru.fx.util.focus.FocusTraversal;
-import de.pheru.fx.mvp.InjectableList;
 import de.pheru.media.cdi.qualifiers.TableData;
 import de.pheru.media.cdi.qualifiers.XMLSettings;
 import de.pheru.media.data.ArtworkData;
@@ -86,7 +85,7 @@ public class EditFilePresenter implements Initializable {
     private Settings settings;
     @Inject
     @TableData(TableData.Source.MAIN_SELECTED)
-    private InjectableList<Mp3FileData> selectedData;
+    private ObservableList<Mp3FileData> selectedData;
     @Inject
     private TaskPool taskPool;
 

@@ -24,16 +24,15 @@ public class ReadDirectoryTask extends PheruMediaTask {
 
     private final String directory;
     private final ObservableList<Mp3FileData> masterData;
-    private final List<Mp3FileData> playlistTitles;
+    private final ObservableList<Mp3FileData> playlistTitles;
 
     /**
      * @param directory Das auszulesende Verzeichnis.
      * @param masterData Die Liste für die Mp3FileData-Objekte.
-     * @param placeholderProperty
      * @param playlistTitles
      */
     public ReadDirectoryTask(final String directory, final ObservableList<Mp3FileData> masterData,
-            final List<Mp3FileData> playlistTitles) {
+            final ObservableList<Mp3FileData> playlistTitles) {
         this.directory = directory;
         this.masterData = masterData;
         this.playlistTitles = playlistTitles;
@@ -100,7 +99,6 @@ public class ReadDirectoryTask extends PheruMediaTask {
                 setStatus(Status.SUCCESSFUL);
             }
         }
-
         Platform.runLater(() -> {
             if (loadedData.isEmpty()) {
                 updateProgress(1, 1);
@@ -110,6 +108,7 @@ public class ReadDirectoryTask extends PheruMediaTask {
         });
     }
 
+    @Deprecated //TODO nicht in Task
     private void showFailedAlert(String directory, List<String> failedToLoadFileNames) {
         StringBuilder fileNamesStringBuilder = new StringBuilder();
         for (String failedToLoadFileName : failedToLoadFileNames) {

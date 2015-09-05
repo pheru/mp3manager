@@ -122,6 +122,9 @@ public class SaveFilesTask extends PheruMediaTask {
             try {
                 alertTask.get();
             } catch (InterruptedException | ExecutionException e) {
+                if(isCancelled()){
+                    return;
+                }
                 throw new PheruMediaRuntimeException("Exception waiting for FutureTask!", e);
             }
         }

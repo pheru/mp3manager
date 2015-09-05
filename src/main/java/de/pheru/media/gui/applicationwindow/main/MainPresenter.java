@@ -1,7 +1,6 @@
 package de.pheru.media.gui.applicationwindow.main;
 
 import de.pheru.fx.util.focus.FocusTraversal;
-import de.pheru.fx.mvp.InjectableList;
 import de.pheru.media.cdi.qualifiers.TableData;
 import de.pheru.media.cdi.qualifiers.XMLSettings;
 import de.pheru.media.data.Mp3FileData;
@@ -28,6 +27,7 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.ListChangeListener;
+import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import javafx.collections.transformation.SortedList;
 import javafx.event.ActionEvent;
@@ -50,9 +50,13 @@ import javafx.scene.layout.VBox;
 import javafx.stage.DirectoryChooser;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 @ApplicationScoped
 public class MainPresenter implements Initializable {
+
+    private static final Logger LOGGER = LogManager.getLogger(MainPresenter.class);
 
     @FXML
     private VBox root;
@@ -97,10 +101,10 @@ public class MainPresenter implements Initializable {
 
     @Inject
     @TableData(TableData.Source.MAIN)
-    private InjectableList<Mp3FileData> masterData;
+    private ObservableList<Mp3FileData> masterData;
     @Inject
     @TableData(TableData.Source.MAIN_SELECTED)
-    private InjectableList<Mp3FileData> selectedData;
+    private ObservableList<Mp3FileData> selectedData;
 
     private boolean updatingColumnsOrderList = false;
     private boolean updatingColumnsOrderTable = false;
@@ -138,7 +142,7 @@ public class MainPresenter implements Initializable {
         }
         table.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
         table.setItems(setUpTableFilter());
-        selectedData.set(table.getSelectionModel().getSelectedItems());
+        Bindings.bindContent(selectedData, table.getSelectionModel().getSelectedItems());
         initColumns();
         settings.getAllMainColumnSettings().addListener((ListChangeListener.Change<? extends ColumnSettings> change) -> {
             if (!updatingColumnsOrderList) {
@@ -165,6 +169,7 @@ public class MainPresenter implements Initializable {
     private SortedList<Mp3FileData> setUpTableFilter() {
         FilteredList<Mp3FileData> filteredData = masterData.filtered((Mp3FileData t) -> true);
         filterTextField.textProperty().addListener((ObservableValue<? extends String> observable, String oldValue, String newValue) -> {
+            table.getSelectionModel().clearSelection();
             filteredData.setPredicate((Mp3FileData mp3FileData) -> {
                 if (newValue == null || newValue.isEmpty()) {
                     return true;

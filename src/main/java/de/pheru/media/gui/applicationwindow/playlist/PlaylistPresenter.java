@@ -2,7 +2,6 @@ package de.pheru.media.gui.applicationwindow.playlist;
 
 import de.pheru.fx.controls.notification.Notification;
 import de.pheru.fx.controls.notification.Notifications;
-import de.pheru.fx.mvp.InjectableList;
 import de.pheru.media.cdi.qualifiers.TableData;
 import de.pheru.media.cdi.qualifiers.XMLSettings;
 import de.pheru.media.data.Mp3FileData;
@@ -23,8 +22,8 @@ import java.util.ResourceBundle;
 import javafx.application.Application.Parameters;
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.StringBinding;
-import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Alert;
@@ -74,10 +73,10 @@ public class PlaylistPresenter implements Initializable {
     private TaskPool taskPool;
     @Inject
     @TableData(TableData.Source.PLAYLIST_SELECTED)
-    private InjectableList<Mp3FileData> selectedTitles;
+    private ObservableList<Mp3FileData> selectedTitles;
     @Inject
     @TableData(TableData.Source.MAIN)
-    private InjectableList<Mp3FileData> mainTitles;
+    private ObservableList<Mp3FileData> mainTitles;
     @Inject
     private MusicPlayer musicPlayer;
 
@@ -90,15 +89,11 @@ public class PlaylistPresenter implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         initTable();
         bindUI();
-        playlist.currentTitleIndexProperty().addListener(new ChangeListener<Number>() {
-
-            @Override
-            public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
-                updateStyledIndex(newValue.intValue());
-                Mp3FileData newCurrentTitle = playlist.getCurrentTitle();
-                if (newCurrentTitle != null) {
-                    showCurrentTitleNotification(newCurrentTitle);
-                }
+        playlist.currentTitleIndexProperty().addListener((ObservableValue<? extends Number> observable, Number oldValue, Number newValue) -> {
+            updateStyledIndex(newValue.intValue());
+            Mp3FileData newCurrentTitle = playlist.getCurrentTitle();
+            if (newCurrentTitle != null) {
+                showCurrentTitleNotification(newCurrentTitle);
             }
         });
         if (!params.getRaw().isEmpty()) {
@@ -145,7 +140,7 @@ public class PlaylistPresenter implements Initializable {
         tableRowFactory = new CssRowFactory<>("played", dndRowFactory);
         table.setRowFactory(tableRowFactory);
         table.setItems(playlist.getTitles());
-        selectedTitles.set(table.getSelectionModel().getSelectedItems());
+        Bindings.bindContent(selectedTitles, table.getSelectionModel().getSelectedItems());
     }
 
     /**
@@ -243,7 +238,7 @@ public class PlaylistPresenter implements Initializable {
                     settings.setPlaylistFilePath(playlistFile.getParent());
                 }
             } catch (IOException e) {
-                e.printStackTrace();
+                LOGGER.error("TODO",e); //TODO Loggermessage
             }
         }
     }
