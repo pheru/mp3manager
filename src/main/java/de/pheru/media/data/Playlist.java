@@ -158,6 +158,7 @@ public class Playlist extends FileBasedData {
                 }
             }
         } catch (IOException ex) {
+            //TODO GUI in Playlist?
             Alert alert = new Alert(Alert.AlertType.ERROR);
             //TODO Meldung + Möglichkeit Playlist wiederherzustellen
             alert.showAndWait();

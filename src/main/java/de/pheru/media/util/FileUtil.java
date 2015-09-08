@@ -41,7 +41,7 @@ public final class FileUtil {
      */
     public static boolean savePlaylist(File playlistFile, List<Mp3FileData> playlistTitles) throws IOException {
         if (playlistFile.exists()) {
-            if (!playlistFile.delete()) {//Funktioniert nicht wie erwartet (Änderungsdatum bleibt gleich)
+            if (!playlistFile.delete()) {//TODO Funktioniert nicht wie erwartet (Änderungsdatum bleibt gleich)
                 return false;
             }
         }

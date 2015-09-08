@@ -8,7 +8,6 @@ import java.util.logging.Level;
 import javafx.application.Platform;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
-import javafx.scene.image.ImageView;
 import javax.enterprise.util.AnnotationLiteral;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

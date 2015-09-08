@@ -25,7 +25,6 @@ import org.jaudiotagger.audio.exceptions.ReadOnlyFileException;
 import org.jaudiotagger.audio.mp3.MP3File;
 import org.jaudiotagger.tag.FieldDataInvalidException;
 import org.jaudiotagger.tag.FieldKey;
-import org.jaudiotagger.tag.KeyNotFoundException;
 import org.jaudiotagger.tag.TagException;
 import org.jaudiotagger.tag.datatype.Artwork;
 import org.jaudiotagger.tag.id3.AbstractID3v2Tag;
@@ -184,7 +183,7 @@ public class Mp3FileData extends FileBasedData {
         }
     }
 
-    private void setTagField(AbstractID3v2Tag tag, FieldKey key, String value) throws KeyNotFoundException, FieldDataInvalidException {
+    private void setTagField(AbstractID3v2Tag tag, FieldKey key, String value) throws FieldDataInvalidException {
         if (!value.equals(EditFilePresenter.DIFF_VALUES)) {
             tag.setField(key, value);
         }

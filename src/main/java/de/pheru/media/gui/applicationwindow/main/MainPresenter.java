@@ -329,7 +329,7 @@ public class MainPresenter implements Initializable {
                     updateStyledIndex(playlist.getCurrentTitleIndex());
                     if (masterData.isEmpty()) {
                         table.setPlaceholder(emptyDirectoryPlaceholder);
-                    } else {
+                    } else {//TODO funktioniert bei Abbruch nicht
                         table.setPlaceholder(noFilterResultPlaceholder);
                     }
                 }
