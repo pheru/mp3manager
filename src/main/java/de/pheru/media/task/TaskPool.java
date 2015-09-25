@@ -1,5 +1,6 @@
 package de.pheru.media.task;
 
+import javafx.application.Platform;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.ObjectProperty;
@@ -109,15 +110,16 @@ public class TaskPool {
             progress.bind(currentTask.progressProperty());
             status.bind(currentTask.statusProperty());
             currentTask.exceptionProperty().addListener((ObservableValue<? extends Throwable> observable, Throwable oldValue, Throwable newValue) -> {
-                //TODO FX-Thread?
-                //TODO RuntimeException?
-                LOGGER.error("Unexpected Exception running Mp3ManagerTask!", newValue);
-                status.unbind();
-                status.set(PheruMediaTask.Status.FAILED);
-                Alert alert = new Alert(Alert.AlertType.ERROR, "Fehler beim ausführen des Tasks!");
-                alert.showAndWait();
+                //TODO Keine GUI
+                LOGGER.fatal("Unexpected Exception running Task!", newValue);
+                Platform.runLater(() -> {
+                    status.unbind();
+                    status.set(PheruMediaTask.Status.FAILED);
+                    Alert alert = new Alert(Alert.AlertType.ERROR, "Fehler beim ausführen einer Aufgabe!");
+                    alert.showAndWait();
+                });
             });
-            Thread thread = new Thread(currentTask);
+            Thread thread = new Thread(currentTask, currentTask.getClass().toString());
             thread.setDaemon(true);
             thread.start();
         }

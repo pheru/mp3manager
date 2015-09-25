@@ -81,6 +81,7 @@ public class SaveFilesTask extends PheruMediaTask {
     }
 
     private void handleRenameFailed(RenameFailedException renameFailedException) {
+        //TODO Keine GUI
         LOGGER.info("Exception renaming file!", renameFailedException);
         Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.setHeaderText("Speichern fehlgeschlagen!");
@@ -90,6 +91,7 @@ public class SaveFilesTask extends PheruMediaTask {
     }
 
     private void handleSaveFailed(SaveFailedException saveFailedException, String fileName) {
+        //TODO keine GUI
         LOGGER.info("Exception saving file!", saveFailedException);
         if (firstFail || showAlertOnNextFail.get()) {
             firstFail = false;

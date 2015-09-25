@@ -315,6 +315,7 @@ public class PlaylistPresenter implements Initializable {
                 new Label(newCurrentTitle.getAlbum()), new Label(newCurrentTitle.getArtist()));
         vbox.setAlignment(Pos.CENTER_LEFT);
         
+        //TODO auf null achten bei image
         ImageView artworkImage = new ImageView(ByteUtil.byteArrayToImage(newCurrentTitle.getArtworkData().getBinaryData()));
         artworkImage.setFitHeight(75);
         artworkImage.setFitWidth(75);

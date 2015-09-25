@@ -8,7 +8,7 @@ import javax.xml.bind.annotation.adapters.XmlAdapter;
  *
  * @author Philipp Bruckner
  */
-public class NotificationsAlignmentPropertyAdapter extends XmlAdapter<String, NotificationsAlignmentProperty>{
+public class NotificationsAlignmentPropertyAdapter extends XmlAdapter<String, NotificationsAlignmentProperty> {
 
     @Override
     public NotificationsAlignmentProperty unmarshal(String v) throws Exception {
@@ -19,5 +19,4 @@ public class NotificationsAlignmentPropertyAdapter extends XmlAdapter<String, No
     public String marshal(NotificationsAlignmentProperty v) throws Exception {
         return String.valueOf(v.get());
     }
-
 }

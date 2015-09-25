@@ -23,6 +23,7 @@ public final class FileUtil {
         //Utility-Klasse
     }
 
+    @Deprecated
     public static List<String> loadPlaylist(File playlistFile) throws IOException { //TODO Fehlerhafte Playlists verarbeiten
         List<String> playlistTitles = new ArrayList<>();
         try (Stream<String> lines = Files.lines(playlistFile.toPath())) {
@@ -39,6 +40,7 @@ public final class FileUtil {
      * werden soll.
      * @return true, wenn das Speichern erfolgreich war.
      */
+    @Deprecated
     public static boolean savePlaylist(File playlistFile, List<Mp3FileData> playlistTitles) throws IOException {
         if (playlistFile.exists()) {
             if (!playlistFile.delete()) {//TODO Funktioniert nicht wie erwartet (Änderungsdatum bleibt gleich)

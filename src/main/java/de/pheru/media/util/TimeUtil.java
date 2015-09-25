@@ -33,7 +33,7 @@ public final class TimeUtil {
      */
     public static String secondsToDurationFormat(double seconds, boolean withHours) {
         SimpleDateFormat smf;
-        if (seconds >= 3600 || withHours) {
+        if (withHours) {
             smf = DURATION_WITH_HOURS_FORMAT;
         } else {
             smf = DURATION_FORMAT;
@@ -43,7 +43,7 @@ public final class TimeUtil {
             return smf.format(date);
         } catch (ParseException e) {
             LOGGER.error("Exception parsing " + seconds + " to duration-format!" , e);
-            return "";
+            return "error";
         }
     }
 
@@ -78,7 +78,7 @@ public final class TimeUtil {
      */
     public static String millisecondsToDurationFormat(double milliseconds, boolean withHours) {
         SimpleDateFormat smf;
-        if (milliseconds >= 3600000 || withHours) {
+        if (withHours) {
             smf = DURATION_WITH_HOURS_FORMAT;
         } else {
             smf = DURATION_FORMAT;
@@ -88,7 +88,7 @@ public final class TimeUtil {
             return smf.format(date);
         } catch (ParseException e) {
             LOGGER.error("Exception parsing " + milliseconds + " to duration-format!" , e);
-            return "";
+            return "error";
         }
     }
 

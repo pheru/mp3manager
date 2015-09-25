@@ -5,6 +5,8 @@ import de.pheru.fx.mvp.PheruFXApplication;
 import de.pheru.media.cdi.qualifiers.XMLSettings;
 import de.pheru.media.settings.Settings;
 import java.util.logging.Level;
+import javafx.application.Application;
+import javafx.application.ConditionalFeature;
 import javafx.application.Platform;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
@@ -19,6 +21,8 @@ import org.apache.logging.log4j.Logger;
  */
 public class PheruMedia extends PheruFXApplication {
 
+    private static final Logger LOGGER = LogManager.getLogger(PheruMedia.class);
+    
     private static final String CODE_SOURCE_LOCATION = PheruMedia.class.getProtectionDomain().getCodeSource().getLocation().getPath();
     private static final boolean PRODUCTION_MODE = !CODE_SOURCE_LOCATION.endsWith("target/classes/");
 
@@ -28,15 +32,12 @@ public class PheruMedia extends PheruFXApplication {
             ? CODE_SOURCE_LOCATION.substring(0, CODE_SOURCE_LOCATION.lastIndexOf("/app")) : CODE_SOURCE_LOCATION;
     public static final String DLL_PATH = PRODUCTION_MODE ? APPLICATION_PATH : CODE_SOURCE_LOCATION.replace("target/classes/", "");
 
-    private static final java.util.logging.Logger JAUDIOTAGGER_LOGGER = java.util.logging.Logger.getLogger("org.jaudiotagger");
-
-    private static final Logger LOGGER = LogManager.getLogger(PheruMedia.class);
-
     private static Alert startAlert;
     private static boolean cleanedUp = false;
 
     public static void main(String[] args) {
         System.getProperties().put("logfiles.path", APPLICATION_PATH);
+        java.util.logging.Logger.getLogger("org.jaudiotagger").setLevel(Level.WARNING);
 
         Thread.setDefaultUncaughtExceptionHandler((Thread t, Throwable e) -> {
             LOGGER.fatal("Unexpected Exception on Thread: " + t.getName(), e);
@@ -53,8 +54,6 @@ public class PheruMedia extends PheruFXApplication {
                 cleanUp();
             }
         });
-        JAUDIOTAGGER_LOGGER.setLevel(Level.WARNING);
-
         launch(args);
     }
 
@@ -81,7 +80,7 @@ public class PheruMedia extends PheruFXApplication {
         cleanUp();
     }
 
-    public static void cleanUp() { //TODO Auf Thread achten bei Dialogen
+    public static void cleanUp() {
         if (!cleanedUp) {
             Settings settings = getWeldContainer().instance().select(Settings.class, new AnnotationLiteral<XMLSettings>() {
             }).get();

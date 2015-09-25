@@ -20,5 +20,4 @@ public class Mp3FileDataException extends Exception {
     public Mp3FileDataException(String message, Throwable cause) {
         super(message, cause);
     }
-
 }

@@ -25,7 +25,7 @@ import org.apache.logging.log4j.Logger;
  * @author Philipp Bruckner
  */
 public class ApplicationStarter {
-
+    
     private static final Logger LOGGER = LogManager.getLogger(ApplicationStarter.class);
 
     @Inject
@@ -38,7 +38,6 @@ public class ApplicationStarter {
 
     private void launchJavaFXApplication(@Observes @StartApplication Stage primaryStage) {
         try {
-            primaryStage.getIcons().add(new Image("img/trayIcon.png"));
             initNotifications();
             initJIntelliType();
             initPrimaryStage(primaryStage);
@@ -86,7 +85,9 @@ public class ApplicationStarter {
 
     private void initPrimaryStage(Stage primaryStage) {
         Scene scene = new Scene(applicationView.getView());
+        
         primaryStage.setTitle(PheruMedia.APPLICATION_NAME);
+        primaryStage.getIcons().add(new Image("img/trayIcon.png"));
         primaryStage.setWidth(settings.getApplicationWindowWidth());
         primaryStage.setHeight(settings.getApplicationWindowHeight());
         primaryStage.setMaximized(settings.isApplicationWindowMaximized());
@@ -96,7 +97,6 @@ public class ApplicationStarter {
             settings.applicationWindowWidthProperty().bind(primaryStage.widthProperty());
             settings.applicationWindowHeightProperty().bind(primaryStage.heightProperty());
         }
-
         settings.applicationWindowMaximizedProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
             if (newValue) {
                 settings.applicationWindowWidthProperty().unbind();
@@ -106,7 +106,6 @@ public class ApplicationStarter {
                 settings.applicationWindowHeightProperty().bind(primaryStage.heightProperty());
             }
         });
-
         primaryStage.setScene(scene);
     }
 

@@ -8,7 +8,7 @@ import javax.xml.bind.annotation.adapters.XmlAdapter;
  *
  * @author Philipp Bruckner
  */
-public class BooleanPropertyAdapter extends XmlAdapter<String, BooleanProperty>{
+public class BooleanPropertyAdapter extends XmlAdapter<String, BooleanProperty> {
 
     @Override
     public BooleanProperty unmarshal(String v) throws Exception {
@@ -19,5 +19,4 @@ public class BooleanPropertyAdapter extends XmlAdapter<String, BooleanProperty>{
     public String marshal(BooleanProperty v) throws Exception {
         return String.valueOf(v.get());
     }
-
 }

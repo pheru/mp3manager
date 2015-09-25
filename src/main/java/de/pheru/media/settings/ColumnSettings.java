@@ -15,11 +15,7 @@ public class ColumnSettings {
 
     @XmlElement //nötig, da kein public setter vorhanden ist
     private MainColumn column;
-    //XmlElement //TODO Adapter wären vorhanden
-    //Darf nicht direkt annotiert werden, da die public getter/setter verwendet werden sollen (ansonsten wäre ein Adapter nötig)
     private final DoubleProperty width = new SimpleDoubleProperty(0.0);
-    //XmlElement //TODO Adapter wären vorhanden
-    //Darf nicht direkt annotiert werden, da die public getter/setter verwendet werden sollen (ansonsten wäre ein Adapter nötig)
     private final BooleanProperty visible = new SimpleBooleanProperty(false);
 
     public ColumnSettings(MainColumn column) {
@@ -27,19 +23,20 @@ public class ColumnSettings {
         this.width.set(column.getDefaultWidth());
         this.visible.set(column.isDefaultVisible());
     }
+
     public ColumnSettings(MainColumn column, double width, boolean visible) {
         this.column = column;
         this.width.set(width);
         this.visible.set(visible);
     }
-    
+
     public ColumnSettings() {
     }
 
     public MainColumn getColumn() {
         return column;
     }
-    
+
     public double getWidth() {
         return width.get();
     }
@@ -47,8 +44,8 @@ public class ColumnSettings {
     public void setWidth(double width) {
         this.width.set(width);
     }
-    
-    public DoubleProperty widthProperty(){
+
+    public DoubleProperty widthProperty() {
         return width;
     }
 
@@ -59,9 +56,9 @@ public class ColumnSettings {
     public void setVisible(boolean visible) {
         this.visible.set(visible);
     }
-    
-    public BooleanProperty visibleProperty(){
+
+    public BooleanProperty visibleProperty() {
         return visible;
     }
-    
+
 }

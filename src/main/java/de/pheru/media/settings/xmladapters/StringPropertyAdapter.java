@@ -8,7 +8,7 @@ import javax.xml.bind.annotation.adapters.XmlAdapter;
  *
  * @author Philipp Bruckner
  */
-public class StringPropertyAdapter extends XmlAdapter<String, StringProperty>{
+public class StringPropertyAdapter extends XmlAdapter<String, StringProperty> {
 
     @Override
     public StringProperty unmarshal(String v) throws Exception {
@@ -19,5 +19,4 @@ public class StringPropertyAdapter extends XmlAdapter<String, StringProperty>{
     public String marshal(StringProperty v) throws Exception {
         return v.get();
     }
-
 }

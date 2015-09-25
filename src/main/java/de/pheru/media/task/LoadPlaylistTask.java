@@ -74,6 +74,7 @@ public class LoadPlaylistTask extends PheruMediaTask {
             setStatus(Status.FAILED);
             updateTitle("Laden der Wiedergabeliste fehlgeschlagen!");
             updateProgress(1, 1);
+            //TODO Alert darf nur in FX thread erzeugt werden
             Alert alert = new Alert(Alert.AlertType.ERROR, "Fehler beim Laden der Wiedergabiste \"" + playlistFileToLoad.getName() + "\"!");
             Platform.runLater(alert::showAndWait);
             return;

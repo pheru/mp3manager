@@ -12,12 +12,16 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javax.imageio.ImageIO;
 import javax.imageio.stream.ImageInputStream;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  *
  * @author Philipp Bruckner
  */
 public class ArtworkData {
+    
+    private static final Logger LOGGER = LogManager.getLogger(ArtworkData.class);
 
     private final ObjectProperty<byte[]> binaryData = new SimpleObjectProperty<>();
     private final IntegerProperty width = new SimpleIntegerProperty(0);
@@ -96,7 +100,8 @@ public class ArtworkData {
             BufferedImage bi = ImageIO.read(iis);
             width.set(bi.getWidth());
             height.set(bi.getHeight());
-        } catch (IOException ex) {
+        } catch (IOException e) {
+            LOGGER.error("Exception loading dimensions of ArtworkData!", e);
             width.set(-1);
             height.set(-1);
         }
