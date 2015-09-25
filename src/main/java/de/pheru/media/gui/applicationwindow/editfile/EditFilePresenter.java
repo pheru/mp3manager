@@ -104,7 +104,6 @@ public class EditFilePresenter implements Initializable {
         setUpListeners();
         FocusTraversal.createFocusTraversalGroup("editFileFields", fileNameField, titleField.getEditor(), albumField.getEditor(),
                 artistField.getEditor(), trackField.getEditor(), yearField.getEditor(), genreField.getEditor());
-//        setUpValidation();
     }
 
     /**

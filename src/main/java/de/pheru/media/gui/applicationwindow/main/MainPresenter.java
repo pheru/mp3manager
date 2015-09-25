@@ -361,6 +361,7 @@ public class MainPresenter implements Initializable {
      */
     @FXML
     private void addToPlaylist() {
+        LOGGER.debug("addToPlaylist: " + selectedData);
         playlist.add(selectedData);
     }
 

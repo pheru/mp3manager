@@ -19,6 +19,8 @@ import javafx.scene.control.Alert;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * Klasse zum verwalten einer Wiedergabeliste.
@@ -28,6 +30,8 @@ import javax.inject.Inject;
 @ApplicationScoped
 public class Playlist extends FileBasedData {
 
+    private static final Logger LOGGER = LogManager.getLogger(Playlist.class);
+    
     public static final int UNDEFINED_CURRENT_INDEX = -42;
     public static final String FILE_EXTENSION = "mmpl";
     public static final String FILE_SPLIT = System.lineSeparator();
@@ -55,6 +59,7 @@ public class Playlist extends FileBasedData {
      * Indizes zu aktualisieren nötig)
      */
     public void add(List<Mp3FileData> dataToAdd) {
+        LOGGER.debug("add: " + dataToAdd);
         titles.addAll(dataToAdd);
         if (dataToAdd.size() == titles.size()) {
             setCurrentTitleIndex(0);
@@ -172,6 +177,7 @@ public class Playlist extends FileBasedData {
 
     private void initRandomIndicesToPlay() {
         if (!randomIndicesToPlay.isEmpty()) {
+            LOGGER.debug("initRandomIndices");
             Collections.shuffle(randomIndicesToPlay);
             Collections.swap(randomIndicesToPlay, 0, randomIndicesToPlay.indexOf(currentTitleIndex.get()));
         }
@@ -179,6 +185,7 @@ public class Playlist extends FileBasedData {
 
     private void resetRandomIndicesToPlay() {
         if (!randomIndicesToPlay.isEmpty()) {
+            LOGGER.debug("resetRandomIndices");
             Integer lastRandomIndex = randomIndicesToPlay.get(randomIndicesToPlay.size() - 1);
             Collections.shuffle(randomIndicesToPlay);
             if (randomIndicesToPlay.indexOf(lastRandomIndex) == 0) {

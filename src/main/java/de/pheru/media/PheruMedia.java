@@ -64,8 +64,9 @@ public class PheruMedia extends PheruFXApplication {
         startAlert.setResult(ButtonType.CLOSE);
         startAlert.setTitle(APPLICATION_NAME);
         startAlert.setContentText("Starte " + APPLICATION_NAME + "...");
-//        startAlert.setGraphic(new ImageView("img/trayIcon.png"));
         startAlert.show();
+//        Stage stage = new Stage();//(Stage) startAlert.getDialogPane().getScene().getWindow();
+//        stage.getIcons().add(new Image("img/trayIcon.png"));
     }
 
     @Override

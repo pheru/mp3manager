@@ -13,6 +13,7 @@ import javafx.application.Platform;
 import javafx.beans.value.ObservableValue;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
+import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
@@ -37,6 +38,7 @@ public class ApplicationStarter {
 
     private void launchJavaFXApplication(@Observes @StartApplication Stage primaryStage) {
         try {
+            primaryStage.getIcons().add(new Image("img/trayIcon.png"));
             initNotifications();
             initJIntelliType();
             initPrimaryStage(primaryStage);

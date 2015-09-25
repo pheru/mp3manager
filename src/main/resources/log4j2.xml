@@ -7,6 +7,25 @@
         <Console name="Console" target="SYSTEM_OUT">
             <PatternLayout pattern="${pattern}"/>
         </Console>
+        <!--TODO entfernen oder optional machen-->
+        <Routing name="DebugRouting">
+            <Routes pattern="$${sys:logfiles.path}">
+                <Route>
+                    <RollingFile name="DebugFile" fileName="${sys:logfiles.path}/logs/debug.log"
+                                 filePattern="${sys:logfiles.path}/logs/debug-%i.log.zip">
+                        <PatternLayout pattern="${pattern}"/>
+                        <filters>
+                            <ThresholdFilter level="debug"/>
+                            <ThresholdFilter level="info" onMatch="deny" onMismatch="neutral"/>
+                        </filters>
+                        <Policies>
+                            <SizeBasedTriggeringPolicy size="2 MB"/>
+                        </Policies>
+                        <DefaultRolloverStrategy max="2"/>
+                    </RollingFile>
+                </Route>
+            </Routes>
+        </Routing>
         <Routing name="InfoRouting">
             <Routes pattern="$${sys:logfiles.path}">
                 <Route>
@@ -18,7 +37,7 @@
                             <ThresholdFilter level="warn" onMatch="deny" onMismatch="neutral"/>
                         </filters>
                         <Policies>
-                            <SizeBasedTriggeringPolicy size="5 MB"/>
+                            <SizeBasedTriggeringPolicy size="2 MB"/>
                         </Policies>
                         <DefaultRolloverStrategy max="2"/>
                     </RollingFile>
@@ -36,7 +55,7 @@
                             <ThresholdFilter level="error" onMatch="deny" onMismatch="neutral"/>
                         </filters>
                         <Policies>
-                            <SizeBasedTriggeringPolicy size="5 MB"/>
+                            <SizeBasedTriggeringPolicy size="2 MB"/>
                         </Policies>
                         <DefaultRolloverStrategy max="2"/>
                     </RollingFile>
@@ -54,9 +73,9 @@
                             <ThresholdFilter level="fatal" onMatch="deny" onMismatch="neutral"/>
                         </filters>
                         <Policies>
-                            <SizeBasedTriggeringPolicy size="5 MB"/>
+                            <SizeBasedTriggeringPolicy size="2 MB"/>
                         </Policies>
-                        <DefaultRolloverStrategy max="5"/>
+                        <DefaultRolloverStrategy max="3"/>
                     </RollingFile>
                 </Route>
             </Routes>
@@ -68,9 +87,9 @@
                                  filePattern="${sys:logfiles.path}/logs/fatal-%i.log.zip">
                         <PatternLayout pattern="${pattern}"/>
                         <Policies>
-                            <SizeBasedTriggeringPolicy size="5 MB"/>
+                            <SizeBasedTriggeringPolicy size="3 MB"/>
                         </Policies>
-                        <DefaultRolloverStrategy max="5"/>
+                        <DefaultRolloverStrategy max="3"/>
                     </RollingFile>
                 </Route>
             </Routes>
@@ -80,6 +99,7 @@
     <Loggers>
         <Root level="debug" additivity="false">
             <AppenderRef ref="Console" level="debug"/>
+            <AppenderRef ref="DebugRouting" level="debug"/>
             <AppenderRef ref="InfoRouting" level="info"/>
             <AppenderRef ref="WarningRouting" level="warn"/>
             <AppenderRef ref="ErrorRouting" level="error"/>

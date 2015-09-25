@@ -91,9 +91,8 @@ public class ArtworkData {
     }
 
     private void loadDimensions() {
-        try {
-            ByteArrayInputStream bais = new ByteArrayInputStream(getBinaryData());
-            ImageInputStream iis = ImageIO.createImageInputStream(bais);
+        try (ByteArrayInputStream bais = new ByteArrayInputStream(getBinaryData());
+                ImageInputStream iis = ImageIO.createImageInputStream(bais);) {
             BufferedImage bi = ImageIO.read(iis);
             width.set(bi.getWidth());
             height.set(bi.getHeight());
@@ -103,6 +102,7 @@ public class ArtworkData {
         }
     }
 
+    @SuppressWarnings("null") //null-prüfung findet statt
     public static boolean equals(ArtworkData a1, ArtworkData a2) {
         if ((a1 == null && a2 != null)
                 || (a2 == null && a1 != null)) {

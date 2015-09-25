@@ -137,10 +137,10 @@ public class Mp3FileData extends FileBasedData {
      * Speichert die geänderten MP3-Informationen ab.
      *
      * @param changeData Die zu speichernden MP3-Informationen.
-     * @throws de.pheru.media.exceptions.RenameFailedException Wenn das
-     * Umbennen der Datei fehlschlägt.
-     * @throws de.pheru.media.exceptions.SaveFailedException Wenn das
-     * Speichern fehlschlägt.
+     * @throws de.pheru.media.exceptions.RenameFailedException Wenn das Umbennen
+     * der Datei fehlschlägt.
+     * @throws de.pheru.media.exceptions.SaveFailedException Wenn das Speichern
+     * fehlschlägt.
      */
     public void save(Mp3FileData changeData) throws RenameFailedException, SaveFailedException {
         File file = new File(absolutePath.get());
@@ -207,7 +207,7 @@ public class Mp3FileData extends FileBasedData {
 
     @Override
     public String toString() {
-        return "[" + title.get() + "] - [" + album.get() + "] - [" + artist.get() + "]";
+        return title.get() + " - " + album.get() + " - " + artist.get();
     }
 
     public String getTitle() {
