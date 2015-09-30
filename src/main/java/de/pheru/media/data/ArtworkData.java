@@ -11,7 +11,6 @@ import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javax.imageio.ImageIO;
-import javax.imageio.stream.ImageInputStream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -20,7 +19,7 @@ import org.apache.logging.log4j.Logger;
  * @author Philipp Bruckner
  */
 public class ArtworkData {
-    
+
     private static final Logger LOGGER = LogManager.getLogger(ArtworkData.class);
 
     private final ObjectProperty<byte[]> binaryData = new SimpleObjectProperty<>();
@@ -95,9 +94,8 @@ public class ArtworkData {
     }
 
     private void loadDimensions() {
-        try (ByteArrayInputStream bais = new ByteArrayInputStream(getBinaryData());
-                ImageInputStream iis = ImageIO.createImageInputStream(bais);) {
-            BufferedImage bi = ImageIO.read(iis);
+        try (ByteArrayInputStream bais = new ByteArrayInputStream(getBinaryData())) {
+            BufferedImage bi = ImageIO.read(bais);
             width.set(bi.getWidth());
             height.set(bi.getHeight());
         } catch (IOException e) {

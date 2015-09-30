@@ -5,8 +5,6 @@ import de.pheru.fx.mvp.PheruFXApplication;
 import de.pheru.media.cdi.qualifiers.XMLSettings;
 import de.pheru.media.settings.Settings;
 import java.util.logging.Level;
-import javafx.application.Application;
-import javafx.application.ConditionalFeature;
 import javafx.application.Platform;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
@@ -22,7 +20,11 @@ import org.apache.logging.log4j.Logger;
 public class PheruMedia extends PheruFXApplication {
 
     private static final Logger LOGGER = LogManager.getLogger(PheruMedia.class);
-    
+
+    //Ohne Konstante wird das Log-Level nicht richtig gesetzt
+    private static final java.util.logging.Logger JAUDIOTAGGER_LOGGER
+            = java.util.logging.Logger.getLogger("org.jaudiotagger");
+
     private static final String CODE_SOURCE_LOCATION = PheruMedia.class.getProtectionDomain().getCodeSource().getLocation().getPath();
     private static final boolean PRODUCTION_MODE = !CODE_SOURCE_LOCATION.endsWith("target/classes/");
 
@@ -37,10 +39,10 @@ public class PheruMedia extends PheruFXApplication {
 
     public static void main(String[] args) {
         System.getProperties().put("logfiles.path", APPLICATION_PATH);
-        java.util.logging.Logger.getLogger("org.jaudiotagger").setLevel(Level.WARNING);
+        JAUDIOTAGGER_LOGGER.setLevel(Level.WARNING);
 
         Thread.setDefaultUncaughtExceptionHandler((Thread t, Throwable e) -> {
-            LOGGER.fatal("Unexpected Exception on Thread: " + t.getName(), e);
+            LOGGER.fatal("Unexpected Exception!", e);
             Platform.runLater(() -> {
                 Alert alert = new Alert(Alert.AlertType.ERROR);
                 alert.setHeaderText("Unerwarteter Fehler!");
@@ -88,7 +90,6 @@ public class PheruMedia extends PheruFXApplication {
             if (settings.isJIntelliTypeEnabled()) {
                 JIntellitype.getInstance().cleanUp();
             }
-            getWeldContainer().instance().select(SystemTrayIcon.class).get().shutdown();
             cleanedUp = true;
         }
     }

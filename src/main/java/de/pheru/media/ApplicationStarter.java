@@ -7,14 +7,18 @@ import de.pheru.fx.mvp.StartApplication;
 import de.pheru.media.cdi.qualifiers.XMLSettings;
 import de.pheru.media.gui.applicationwindow.application.ApplicationView;
 import de.pheru.media.settings.Settings;
-import java.awt.SystemTray;
-import java.awt.event.ActionEvent;
 import javafx.application.Platform;
 import javafx.beans.value.ObservableValue;
+import javafx.event.EventHandler;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.CheckBox;
+import javafx.scene.control.Label;
 import javafx.scene.image.Image;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 import org.apache.logging.log4j.LogManager;
@@ -25,14 +29,12 @@ import org.apache.logging.log4j.Logger;
  * @author Philipp Bruckner
  */
 public class ApplicationStarter {
-    
+
     private static final Logger LOGGER = LogManager.getLogger(ApplicationStarter.class);
 
     @Inject
     @XMLSettings
     private Settings settings;
-    @Inject
-    private SystemTrayIcon systemTrayIcon;
     @Inject
     private ApplicationView applicationView;
 
@@ -41,7 +43,6 @@ public class ApplicationStarter {
             initNotifications();
             initJIntelliType();
             initPrimaryStage(primaryStage);
-            initSystemTrayIcon(primaryStage);
             primaryStage.show();
         } catch (Exception e) {
             LOGGER.fatal("Exception initializing Application!", e);
@@ -85,7 +86,7 @@ public class ApplicationStarter {
 
     private void initPrimaryStage(Stage primaryStage) {
         Scene scene = new Scene(applicationView.getView());
-        
+
         primaryStage.setTitle(PheruMedia.APPLICATION_NAME);
         primaryStage.getIcons().add(new Image("img/trayIcon.png"));
         primaryStage.setWidth(settings.getApplicationWindowWidth());
@@ -106,24 +107,25 @@ public class ApplicationStarter {
                 settings.applicationWindowHeightProperty().bind(primaryStage.heightProperty());
             }
         });
+        primaryStage.setOnCloseRequest(createOnCloseRequestHandler());
         primaryStage.setScene(scene);
     }
-
-    private void initSystemTrayIcon(Stage primaryStage) {
-        if (SystemTray.isSupported()) {
-            Platform.setImplicitExit(false);
-            systemTrayIcon.addOnClick(() -> {
-                Platform.runLater(primaryStage::show);
-            });
-            systemTrayIcon.addPopUpMenuItem("Öffnen", (ActionEvent e) -> {
-                Platform.runLater(primaryStage::show);
-            });
-            systemTrayIcon.addPopUpMenuItem("Verstecken", (ActionEvent e) -> {
-                Platform.runLater(primaryStage::hide);
-            });
-            systemTrayIcon.addPopUpMenuItem("Beenden", (ActionEvent e) -> {
-                Platform.exit();
-            });
-        }
+    
+    private EventHandler<WindowEvent> createOnCloseRequestHandler(){
+        return (WindowEvent event) -> {
+            if (!settings.isDontShowAgainApplicationCloseDialog()) {
+                Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+                alert.setHeaderText(null);
+                Label text = new Label(PheruMedia.APPLICATION_NAME + " wirklich schließen?");
+                CheckBox rememberDecisionBox = new CheckBox("Diese Meldung nicht mehr anzeigen");
+                rememberDecisionBox.selectedProperty().bindBidirectional(settings.dontShowAgainApplicationCloseDialogProperty());
+                VBox content = new VBox(text, rememberDecisionBox);
+                content.setSpacing(15);
+                alert.getDialogPane().setContent(content);
+                if (alert.showAndWait().get() != ButtonType.OK) {
+                    event.consume();
+                }
+            }
+        };
     }
 }

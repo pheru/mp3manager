@@ -82,12 +82,14 @@ public class SaveFilesTask extends PheruMediaTask {
 
     private void handleRenameFailed(RenameFailedException renameFailedException) {
         //TODO Keine GUI
-        LOGGER.info("Exception renaming file!", renameFailedException);
-        Alert alert = new Alert(Alert.AlertType.ERROR);
-        alert.setHeaderText("Speichern fehlgeschlagen!");
-        alert.setContentText("Dateiname konnte nicht geändert werden!\n\n"
-                + "Möglicherweise enthält der Dateiname ungültige Zeichen oder eine Datei mit diesem Namen existiert bereits.");
-        Platform.runLater(alert::showAndWait);
+        Platform.runLater(() -> {
+            LOGGER.info("Exception renaming file!", renameFailedException);
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setHeaderText("Speichern fehlgeschlagen!");
+            alert.setContentText("Dateiname konnte nicht geändert werden!\n\n"
+                    + "Möglicherweise enthält der Dateiname ungültige Zeichen oder eine Datei mit diesem Namen existiert bereits.");
+            alert.showAndWait();
+        });
     }
 
     private void handleSaveFailed(SaveFailedException saveFailedException, String fileName) {
@@ -124,7 +126,7 @@ public class SaveFilesTask extends PheruMediaTask {
             try {
                 alertTask.get();
             } catch (InterruptedException | ExecutionException e) {
-                if(isCancelled()){
+                if (isCancelled()) {
                     return;
                 }
                 throw new PheruMediaRuntimeException("Exception waiting for FutureTask!", e);

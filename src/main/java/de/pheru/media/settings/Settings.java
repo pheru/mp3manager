@@ -97,6 +97,9 @@ public class Settings {
     private final NotificationsAlignmentProperty notificationsAlignment = new NotificationsAlignmentProperty(Notifications.Alignment.BOTTOM_RIGHT);
     @XmlPath(XMLPATH_NOTIFICATIONS + "timer" + XMLPATH_ENDING)
     private final IntegerProperty notificationsTimer = new SimpleIntegerProperty(5);
+    
+    @XmlPath(XMLPATH_DIALOGS + "dontShowAgainApplicationCloseDialog" + XMLPATH_ENDING)
+    private final BooleanProperty dontShowAgainApplicationCloseDialog = new SimpleBooleanProperty(false);
 
     @XmlElementWrapper(name = "tableColumns")
     @XmlElement(name = "tableColumn")
@@ -392,6 +395,18 @@ public class Settings {
 
     public IntegerProperty notificationsTimerProperty() {
         return notificationsTimer;
+    }
+
+    public Boolean isDontShowAgainApplicationCloseDialog() {
+        return dontShowAgainApplicationCloseDialog.get();
+    }
+
+    public void setDontShowAgainApplicationCloseDialog(final Boolean dontShowAgainApplicationCloseDialog) {
+        this.dontShowAgainApplicationCloseDialog.set(dontShowAgainApplicationCloseDialog);
+    }
+
+    public BooleanProperty dontShowAgainApplicationCloseDialogProperty() {
+        return dontShowAgainApplicationCloseDialog;
     }
 
 }
