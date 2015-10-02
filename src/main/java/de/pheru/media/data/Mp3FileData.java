@@ -175,7 +175,7 @@ public class Mp3FileData extends FileBasedData {
                 tag.setField(newArtwork);
             }
             mp3File.save();
-            //TODO reload
+            //TODO Mp3File nach save neu laden
         } catch (CannotReadException | IOException | ReadOnlyFileException | TagException | InvalidAudioFrameException e) {
             throw new SaveFailedException("Failed to save\n"
                     + ToStringBuilder.reflectionToString(this, ToStringStyle.MULTI_LINE_STYLE, true)

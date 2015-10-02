@@ -73,7 +73,6 @@ public class Playlist extends FileBasedData {
         setDirtyByCheck();
     }
 
-    //TODO kann etwas refactored werden (event wird mit jedem schleifendurchlauf gefeuert)
     /**
      * @deprecated Zugriff sollte direkt auf die Liste geschehen (Listener um
      * Indizes zu aktualisieren nötig)
@@ -162,10 +161,10 @@ public class Playlist extends FileBasedData {
                     return true;
                 }
             }
-        } catch (IOException ex) {
-            //TODO GUI in Playlist?
+        } catch (IOException e) {
+            //TODO Keine GUI in Playlist
             Alert alert = new Alert(Alert.AlertType.ERROR);
-            //TODO Meldung + Möglichkeit Playlist wiederherzustellen
+            //TODO checkIfDirty: Exception behandeln
             alert.showAndWait();
         }
         return false;

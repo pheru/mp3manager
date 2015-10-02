@@ -36,7 +36,7 @@ public class MusicPlayer {
 
     private final DoubleProperty currentTime = new SimpleDoubleProperty(0.0);
     private final DoubleProperty totalTime = new SimpleDoubleProperty(0.0);
-    //TODO Redundanz (werden 1:1 an settings-Properties gebunden)?
+    //TODO Property-Redundanz (werden 1:1 an settings-Properties gebunden)?
     private final DoubleProperty volume = new SimpleDoubleProperty(100.0);
     private final BooleanProperty repeat = new SimpleBooleanProperty(false);
     private final BooleanProperty random = new SimpleBooleanProperty(false);
@@ -78,13 +78,13 @@ public class MusicPlayer {
         play(playlist.getTitles().get(index));
     }
 
-    //TODO wenn bereits gespielt neu starten ode rnichts tun?
+    //TODO play: wenn bereits gespielt neu starten oder nichts tun?
     private void play(Mp3FileData mp3) {
         if (player != null) {
             player.stop();
         }
         File file = new File(mp3.getAbsolutePath());
-        try {
+        try { //TODO try...catch Inhalt zu groß
             Media media = new Media(file.toURI().toURL().toExternalForm());
             player = new MediaPlayer(media);
             player.setOnEndOfMedia(() -> {
@@ -121,8 +121,7 @@ public class MusicPlayer {
                 }
             });
         } catch (MalformedURLException e) {
-            //TODO Thread
-            //TODO RuntimeException?
+            //TODO Alert in Fx-Thread
             LOGGER.error("Exception creating URL from filePath " + file.getAbsolutePath(), e);
             Alert alert = new Alert(Alert.AlertType.ERROR, "Fehler beim Abspielen der Datei\n" + file.getAbsolutePath() + "!");
             alert.showAndWait();

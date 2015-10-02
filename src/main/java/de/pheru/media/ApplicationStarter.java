@@ -1,7 +1,5 @@
 package de.pheru.media;
 
-import com.melloware.jintellitype.JIntellitype;
-import com.melloware.jintellitype.JIntellitypeException;
 import de.pheru.fx.controls.notification.Notifications;
 import de.pheru.fx.mvp.StartApplication;
 import de.pheru.media.cdi.qualifiers.XMLSettings;
@@ -23,6 +21,8 @@ import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.jnativehook.GlobalScreen;
+import org.jnativehook.NativeHookException;
 
 /**
  *
@@ -36,12 +36,16 @@ public class ApplicationStarter {
     @XMLSettings
     private Settings settings;
     @Inject
+    private GlobalKeyListener globalKeyListener;
+    @Inject
     private ApplicationView applicationView;
 
     private void launchJavaFXApplication(@Observes @StartApplication Stage primaryStage) {
         try {
             initNotifications();
-            initJIntelliType();
+            if (settings.isShortcutsEnabled()) {
+                initJNativeHook();
+            }
             initPrimaryStage(primaryStage);
             primaryStage.show();
         } catch (Exception e) {
@@ -57,31 +61,20 @@ public class ApplicationStarter {
         Notifications.defaultTimerProperty().bind(settings.notificationsTimerProperty());
     }
 
-    private void initJIntelliType() {
-        String dll = is64BitOS() ? "/JIntellitype64.dll" : "/JIntellitype.dll";
-        JIntellitype.setLibraryLocation(PheruMedia.DLL_PATH + dll);
+    private void initJNativeHook() {
+        GlobalScreen.addNativeKeyListener(globalKeyListener);
         try {
-            JIntellitype.getInstance();
-        } catch (JIntellitypeException e) {
-            LOGGER.error("Exception initializing JIntelliType!", e);
-            if (settings.isJIntelliTypeEnabled()) {
-                Alert alert = new Alert(Alert.AlertType.WARNING);
-                alert.getDialogPane().setPrefWidth(650.0);
-                alert.setHeaderText("Initialisierung von JIntelliType fehlgeschlagen!");
-                alert.setContentText("Stellen Sie sicher, dass sich unter \n\"" + PheruMedia.DLL_PATH
-                        + "\"\n die Dateien \"JIntellitype.dll\" und \"JIntellitype64.dll\" befindet.\n\n"
-                        + "Shortcuts wurden deaktiviert.");
-                alert.showAndWait();
-            }
-            settings.setJIntelliTypeProhibited(true);
-            settings.setJIntelliTypeEnabled(false);
+            GlobalScreen.registerNativeHook();
+        } catch (NativeHookException e) {
+            LOGGER.error("Exception initializing JNativeHook!", e);
+            Alert alert = new Alert(Alert.AlertType.WARNING);
+            alert.getDialogPane().setPrefWidth(650.0);
+            alert.setHeaderText("Shortcuts!"); //TODO Shortcuts-Alert: Header u. Content
+            alert.setContentText("TODO");
+            alert.showAndWait();
+            settings.setShortcutsEnabled(false);
+            settings.setShortcutsProhibited(true);
         }
-    }
-
-    private boolean is64BitOS() {
-        String arch = System.getenv("PROCESSOR_ARCHITECTURE");
-        String wow64Arch = System.getenv("PROCESSOR_ARCHITEW6432");
-        return arch.endsWith("64") || (wow64Arch != null && wow64Arch.endsWith("64"));
     }
 
     private void initPrimaryStage(Stage primaryStage) {
@@ -107,12 +100,14 @@ public class ApplicationStarter {
                 settings.applicationWindowHeightProperty().bind(primaryStage.heightProperty());
             }
         });
-        primaryStage.setOnCloseRequest(createOnCloseRequestHandler());
+        primaryStage.setOnCloseRequest(new OnCloseRequestHandler());
         primaryStage.setScene(scene);
     }
-    
-    private EventHandler<WindowEvent> createOnCloseRequestHandler(){
-        return (WindowEvent event) -> {
+
+    private class OnCloseRequestHandler implements EventHandler<WindowEvent> {
+
+        @Override
+        public void handle(WindowEvent event) {
             if (!settings.isDontShowAgainApplicationCloseDialog()) {
                 Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
                 alert.setHeaderText(null);
@@ -126,6 +121,6 @@ public class ApplicationStarter {
                     event.consume();
                 }
             }
-        };
+        }
     }
 }

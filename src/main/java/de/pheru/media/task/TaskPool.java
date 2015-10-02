@@ -110,7 +110,7 @@ public class TaskPool {
             progress.bind(currentTask.progressProperty());
             status.bind(currentTask.statusProperty());
             currentTask.exceptionProperty().addListener((ObservableValue<? extends Throwable> observable, Throwable oldValue, Throwable newValue) -> {
-                //TODO Keine GUI
+                //TODO Keine GUI in TaskPool
                 LOGGER.fatal("Unexpected Exception running Task!", newValue);
                 Platform.runLater(() -> {
                     status.unbind();

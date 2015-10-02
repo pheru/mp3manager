@@ -204,7 +204,7 @@ public class PlaylistPresenter implements Initializable {
 
     @FXML
     private void savePlaylist() {
-        //TODO Statusbar-Meldung
+        //TODO Playlist speichern: Statusbar-Meldung
         try {
             FileUtil.savePlaylist(new File(playlist.getAbsolutePath()), playlist.getTitles());
             playlist.setDirty(false);
@@ -217,7 +217,7 @@ public class PlaylistPresenter implements Initializable {
 
     @FXML
     private void savePlaylistAs() {
-        //TODO Statusbar-Meldung
+        //TODO Playlist speichern: Statusbar-Meldung
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Wiedergabeliste speichern");
         if (!settings.getPlaylistFilePath().isEmpty()) {
@@ -243,7 +243,8 @@ public class PlaylistPresenter implements Initializable {
                     settings.setPlaylistFilePath(playlistFile.getParent());
                 }
             } catch (IOException e) {
-                LOGGER.error("TODO", e); //TODO Loggermessage
+                //TODO Playlist speichern: Exception behandeln
+                LOGGER.error("TODO", e);
             }
         }
     }
@@ -271,8 +272,8 @@ public class PlaylistPresenter implements Initializable {
 
     @FXML
     private void deletePlaylist() {
-        //TODO Statusbar-Meldung
-        //TODO Bestätigungsdialog mit Option die Titel aus der aktuellen Wiedergabe zu entfernen
+        //TODO Playlist löschen: Statusbar-Meldung
+        //TODO Playlist löschen: Bestätigungsdialog mit Option die Titel aus der aktuellen Wiedergabe zu entfernen
         if (new File(playlist.getAbsolutePath()).delete()) {
             playlist.setFilePath("");
             playlist.setFileName("");
@@ -282,7 +283,8 @@ public class PlaylistPresenter implements Initializable {
     @FXML
     private void play() {
         if (!selectedTitles.isEmpty()) {
-            musicPlayer.play(table.getSelectionModel().getSelectedIndices().get(0)); // TODO Bei Mehrfachauswahl die nicht selektierten entfernen?
+            // TODO play: Bei Mehrfachauswahl die nicht selektierten entfernen?
+            musicPlayer.play(table.getSelectionModel().getSelectedIndices().get(0)); 
         }
     }
 
@@ -307,7 +309,7 @@ public class PlaylistPresenter implements Initializable {
     }
 
     private void showCurrentTitleNotification(Mp3FileData newCurrentTitle) {
-        //TODO nicht jedes mal eine neue erzeugen
+        //TODO Titel-Notification: nicht immer neue Instanz erzeugen
         if (currentTitleNotification != null) {
             currentTitleNotification.hide();
         }
@@ -315,7 +317,7 @@ public class PlaylistPresenter implements Initializable {
                 new Label(newCurrentTitle.getAlbum()), new Label(newCurrentTitle.getArtist()));
         vbox.setAlignment(Pos.CENTER_LEFT);
         
-        //TODO auf null achten bei image
+        //TODO Titel-Notification: auf null achten bei image
         ImageView artworkImage = new ImageView(ByteUtil.byteArrayToImage(newCurrentTitle.getArtworkData().getBinaryData()));
         artworkImage.setFitHeight(75);
         artworkImage.setFitWidth(75);

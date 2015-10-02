@@ -355,7 +355,8 @@ public class EditFilePresenter implements Initializable {
     private void setCover(ArtworkData artworkData) {
         if (artworkData != null) {
             coverView.setImage(ByteUtil.byteArrayToImage(artworkData.getBinaryData()));
-            coverInfo.setText(artworkData.getMimeType() + " | " + artworkData.getHeight() + " x " + artworkData.getWidth()); //TODO Höhe x Breite oder Breite x Höhe?
+            //TODO CoverInfo: Höhe x Breite oder Breite x Höhe?
+            coverInfo.setText(artworkData.getMimeType() + " | " + artworkData.getHeight() + " x " + artworkData.getWidth()); 
         } else {
             removeCover("<Kein Cover vorhanden>");
         }
@@ -386,7 +387,7 @@ public class EditFilePresenter implements Initializable {
                 imageAsByteArray = ByteUtil.fileToByteArray(imageAsFile);
             } catch (IOException e) {
                 LOGGER.error("Exception converting file to byte-Array!", e);
-                //TODO Notification oder ähnliches
+                //TODO chooseCover: Exception behandeln
                 imageAsByteArray = new byte[0];
             }
             Image image = ByteUtil.byteArrayToImage(imageAsByteArray);

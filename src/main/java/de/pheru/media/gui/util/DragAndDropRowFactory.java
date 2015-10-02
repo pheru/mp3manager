@@ -26,7 +26,6 @@ import org.apache.logging.log4j.Logger;
  *
  * @author Philipp Bruckner
  */
-//TODO table.getItems sollte nicht gemacht werden
 public class DragAndDropRowFactory<T> implements Callback<TableView<T>, TableRow<T>> {
 
     private static final Logger LOGGER = LogManager.getLogger(DragAndDropRowFactory.class);
@@ -72,7 +71,7 @@ public class DragAndDropRowFactory<T> implements Callback<TableView<T>, TableRow
     private EventHandler<MouseEvent> createDragDetectedHandler(TableRow<T> row, TableView<T> table) {
         return (MouseEvent event) -> {
             Dragboard db = row.startDragAndDrop(TransferMode.ANY);
-            db.setDragView(row.snapshot(null, null)); //TODO Snapshot
+            db.setDragView(row.snapshot(null, null)); //TODO Drag&Drop: Snapshot
             ClipboardContent content = new ClipboardContent();
             String indicesAsString = table.getSelectionModel().getSelectedIndices().stream()
                     .map((Integer t) -> t.toString())
@@ -149,11 +148,11 @@ public class DragAndDropRowFactory<T> implements Callback<TableView<T>, TableRow
                 }
             } catch (Exception e) {
                 /*
-                 TODO Exception vermutlich nicht korrekt verarbeitet.
+                 TODO Drag&Drop: Exception vermutlich nicht korrekt verarbeitet.
                  Siehe RT-38641: https://javafx-jira.kenai.com/browse/RT-38641
                  */
                 LOGGER.error("Exception while Drag&Drop!", e);
-                //TODO Thread
+                //TODO Alert in FX-Thread
                 Alert alert = new Alert(Alert.AlertType.ERROR, "Fehler beim Ausführen des Drag&Drop!");
                 alert.showAndWait();
             }

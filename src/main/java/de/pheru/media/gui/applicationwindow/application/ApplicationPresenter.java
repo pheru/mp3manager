@@ -1,7 +1,7 @@
 package de.pheru.media.gui.applicationwindow.application;
 
-import com.melloware.jintellitype.JIntellitype;
 import de.pheru.fx.util.focus.FocusTraversal;
+import de.pheru.media.GlobalKeyListener;
 import de.pheru.media.cdi.qualifiers.XMLSettings;
 import de.pheru.media.gui.applicationwindow.editfile.EditFilePresenter;
 import de.pheru.media.gui.applicationwindow.editfile.EditFileView;
@@ -27,6 +27,7 @@ import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+import org.jnativehook.keyboard.NativeKeyEvent;
 
 @ApplicationScoped
 public class ApplicationPresenter implements Initializable {
@@ -49,6 +50,8 @@ public class ApplicationPresenter implements Initializable {
     @Inject
     @XMLSettings
     private Settings settings;
+    @Inject
+    private GlobalKeyListener globalKeyListener;
     @Inject
     private MusicPlayer musicPlayer;
 
@@ -84,9 +87,7 @@ public class ApplicationPresenter implements Initializable {
             }
             tabPane.getSelectionModel().select(tabIndex);
         });
-        if (settings.isJIntelliTypeEnabled()) {
-            setUpJIntelliType();
-        }
+        setUpShortcuts();
         mainPresenter.readDirectory();
     }
 
@@ -126,24 +127,19 @@ public class ApplicationPresenter implements Initializable {
         });
     }
 
-    private void setUpJIntelliType() {
-//        JIntellitype.getInstance().registerHotKey(1, 0, (int) 'A');
-//        JIntellitype.getInstance().addHotKeyListener((int identifier) -> {
-//            System.out.println(identifier);
-//        });
-
-        JIntellitype.getInstance().addIntellitypeListener((int command) -> {
-            switch (command) {
-                case JIntellitype.APPCOMMAND_MEDIA_PLAY_PAUSE:
+    private void setUpShortcuts() {
+        globalKeyListener.addKeyPressedHandler((NativeKeyEvent e) -> {
+            switch (e.getKeyCode()) {
+                case NativeKeyEvent.VC_MEDIA_PLAY:
                     Platform.runLater(musicPlayer::playPause);
                     break;
-                case JIntellitype.APPCOMMAND_MEDIA_PREVIOUSTRACK:
+                case NativeKeyEvent.VC_MEDIA_PREVIOUS:
                     Platform.runLater(musicPlayer::previous);
                     break;
-                case JIntellitype.APPCOMMAND_MEDIA_NEXTTRACK:
+                case NativeKeyEvent.VC_MEDIA_NEXT:
                     Platform.runLater(musicPlayer::next);
                     break;
-                case JIntellitype.APPCOMMAND_MEDIA_STOP:
+                case NativeKeyEvent.VC_MEDIA_STOP:
                     Platform.runLater(musicPlayer::stop);
                     break;
             }

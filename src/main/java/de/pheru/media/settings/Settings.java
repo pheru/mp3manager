@@ -56,10 +56,10 @@ public class Settings {
 
     private static final Logger LOGGER = LogManager.getLogger(Settings.class);
 
-    //TODO Binding?
-    @XmlPath(XMLPATH_GENERAL + "jIntelliTypeEnabled" + XMLPATH_ENDING)
-    private final BooleanProperty jIntelliTypeEnabled = new SimpleBooleanProperty(true);
-    private final BooleanProperty jIntelliTypeProhibited = new SimpleBooleanProperty(false);
+    //TODO Shortcuts: Binding zws prohibited und enabled?
+    @XmlPath(XMLPATH_GENERAL + "shortcutsEnabled" + XMLPATH_ENDING)
+    private final BooleanProperty shortcutsEnabled = new SimpleBooleanProperty(true);
+    private final BooleanProperty shortcutsProhibited = new SimpleBooleanProperty(false);
 
     @XmlPath(XMLPATH_DIRECTORIES + "music" + XMLPATH_ENDING)
     private final StringProperty musicDirectory = new SimpleStringProperty("");
@@ -128,7 +128,7 @@ public class Settings {
             LOGGER.debug("Settings saved.");
             return true;
         } catch (Exception e) {
-            //TODO FXThread
+            //TODO Alert in FX-Thread
             LOGGER.error("Exception parsing settings.xml!", e);
             Alert alert = new Alert(Alert.AlertType.ERROR, "Einstellungen konnten nicht gespeichert werden!");
             alert.showAndWait();
@@ -179,30 +179,6 @@ public class Settings {
             }
         }
         return null;
-    }
-
-    public boolean isJIntelliTypeEnabled() {
-        return jIntelliTypeEnabled.get();
-    }
-
-    public void setJIntelliTypeEnabled(final boolean jIntelliTypeEnabled) {
-        this.jIntelliTypeEnabled.set(jIntelliTypeEnabled);
-    }
-
-    public BooleanProperty jIntelliTypeEnabledProperty() {
-        return jIntelliTypeEnabled;
-    }
-
-    public boolean isJIntelliTypeProhibited() {
-        return jIntelliTypeProhibited.get();
-    }
-
-    public void setJIntelliTypeProhibited(final boolean jIntelliTypeProhibited) {
-        this.jIntelliTypeProhibited.set(jIntelliTypeProhibited);
-    }
-
-    public BooleanProperty jIntelliTypeProhibitedProperty() {
-        return jIntelliTypeProhibited;
     }
 
     public String getMusicDirectory() {
@@ -407,6 +383,30 @@ public class Settings {
 
     public BooleanProperty dontShowAgainApplicationCloseDialogProperty() {
         return dontShowAgainApplicationCloseDialog;
+    }
+
+    public Boolean isShortcutsEnabled() {
+        return shortcutsEnabled.get();
+    }
+
+    public void setShortcutsEnabled(final Boolean shortcutsEnabled) {
+        this.shortcutsEnabled.set(shortcutsEnabled);
+    }
+
+    public BooleanProperty shortcutsEnabledProperty() {
+        return shortcutsEnabled;
+    }
+
+    public Boolean isShortcutsProhibited() {
+        return shortcutsProhibited.get();
+    }
+
+    public void setShortcutsProhibited(final Boolean shortcutsProhibited) {
+        this.shortcutsProhibited.set(shortcutsProhibited);
+    }
+
+    public BooleanProperty shortcutsProhibitedProperty() {
+        return shortcutsProhibited;
     }
 
 }

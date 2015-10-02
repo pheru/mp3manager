@@ -80,7 +80,7 @@ public class MainPresenter implements Initializable {
     private ProgressIndicator taskProgress;
     @FXML
     private TableView<Mp3FileData> table;
-    private CssRowFactory<Mp3FileData> tableRowFactory; //TODO Liste der Indizes würde reichen
+    private CssRowFactory<Mp3FileData> tableRowFactory; //TODO Liste der styledIndices statt komplette RowFactory
 
     private final ReadingDirectoryPlaceholder readingDirectoryPlaceholder = new ReadingDirectoryPlaceholder();
     private final NoFilterResultPlaceholder noFilterResultPlaceholder = new NoFilterResultPlaceholder();
@@ -329,7 +329,7 @@ public class MainPresenter implements Initializable {
                     updateStyledIndex(playlist.getCurrentTitleIndex());
                     if (masterData.isEmpty()) {
                         table.setPlaceholder(emptyDirectoryPlaceholder);
-                    } else {//TODO funktioniert bei Abbruch nicht
+                    } else {//TODO readDirectory: Placeholder wird bei Abbruch nicht korrekt gesetzt
                         table.setPlaceholder(noFilterResultPlaceholder);
                     }
                 }
@@ -351,7 +351,7 @@ public class MainPresenter implements Initializable {
     @FXML
     private void play() {
         if (!selectedData.isEmpty()) {
-            //TODO implementieren
+            //TODO Kontextmenü-Play: implementieren
         }
     }
 

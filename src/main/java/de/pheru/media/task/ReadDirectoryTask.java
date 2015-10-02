@@ -108,7 +108,7 @@ public class ReadDirectoryTask extends PheruMediaTask {
         });
     }
 
-    @Deprecated //TODO nicht in Task
+    @Deprecated //TODO Keine GUI in Task
     private void showFailedAlert(String directory, List<String> failedToLoadFileNames) {
         StringBuilder fileNamesStringBuilder = new StringBuilder();
         for (String failedToLoadFileName : failedToLoadFileNames) {

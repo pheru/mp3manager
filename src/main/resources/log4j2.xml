@@ -7,7 +7,7 @@
         <Console name="Console" target="SYSTEM_OUT">
             <PatternLayout pattern="${pattern}"/>
         </Console>
-        <!--TODO entfernen oder optional machen-->
+        <!--TODO Debug-Logging entfernen oder optional machen-->
         <Routing name="DebugRouting">
             <Routes pattern="$${sys:logfiles.path}">
                 <Route>
