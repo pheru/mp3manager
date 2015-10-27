@@ -30,7 +30,9 @@ import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import javafx.collections.transformation.SortedList;
+import javafx.concurrent.WorkerStateEvent;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
@@ -269,7 +271,7 @@ public class MainPresenter implements Initializable {
         noFilterResultPlaceholder.filterProperty().bind(filterTextField.textProperty());
         clearFilterButton.visibleProperty().bind(filterTextField.textProperty().isEmpty().not());
 //        taskCancelButton.disableProperty().bind(taskPool.cancellingProperty().or(taskPool.runningProperty().not()));
-        taskCancelButton.disableProperty().bind(taskPool.statusProperty().isNotEqualTo(PheruMediaTask.Status.RUNNING));
+        taskCancelButton.disableProperty().bind(taskPool.statusProperty().isNotEqualTo(PheruMediaTask.PheruMediaTaskStatus.RUNNING));
         taskProgress.styleProperty().bind(new StringBinding() {
             {
                 bind(taskPool.statusProperty());
@@ -322,17 +324,18 @@ public class MainPresenter implements Initializable {
         String directory = settings.getMusicDirectory();
         if (directory != null && !directory.isEmpty()) {
             PheruMediaTask readDirectoryTask = new ReadDirectoryTask(directory, masterData, playlist.getTitles());
-            readDirectoryTask.runningProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
-                if (newValue) {
-                    table.setPlaceholder(readingDirectoryPlaceholder);
-                } else {
+            readDirectoryTask.setOnRunning((WorkerStateEvent event) -> {
+                table.setPlaceholder(readingDirectoryPlaceholder);
+            });
+            readDirectoryTask.setOnFinished((PheruMediaTask.PheruMediaTaskEvent event) -> {
+                Platform.runLater(() -> {
                     updateStyledIndex(playlist.getCurrentTitleIndex());
                     if (masterData.isEmpty()) {
                         table.setPlaceholder(emptyDirectoryPlaceholder);
-                    } else {//TODO readDirectory: Placeholder wird bei Abbruch nicht korrekt gesetzt
+                    } else {
                         table.setPlaceholder(noFilterResultPlaceholder);
                     }
-                }
+                });
             });
             taskPool.addTask(readDirectoryTask);
         }

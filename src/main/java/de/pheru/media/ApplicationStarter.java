@@ -62,7 +62,7 @@ public class ApplicationStarter {
     }
 
     private void initJNativeHook() {
-        GlobalScreen.addNativeKeyListener(globalKeyListener);
+        GlobalScreen.addNativeKeyListener(globalKeyListener); //TODO GlobalScreen kann Uns.LinkError werfen (v.a. wenn Anwendung mehrfach gestartet wird) Siehe #56
         try {
             GlobalScreen.registerNativeHook();
         } catch (NativeHookException e) {

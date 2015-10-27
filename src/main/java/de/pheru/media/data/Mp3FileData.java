@@ -55,6 +55,22 @@ public class Mp3FileData extends FileBasedData {
     private final DoubleProperty duration = new SimpleDoubleProperty(0);
     private final StringProperty formattedDuration = new SimpleStringProperty("");
 
+    private static Mp3FileData createEmptyData() {
+        Mp3FileData empty = new Mp3FileData();
+        empty.formattedDuration.unbind();
+        empty.formattedDuration.set("");
+        return empty;
+    }
+
+    private static Mp3FileData createPlaceholderData() {
+        Mp3FileData placeholderData = new Mp3FileData();
+        placeholderData.setTitle("<Titel>");
+        placeholderData.setAlbum("<Album>");
+        placeholderData.setArtist("<Interpret>");
+        placeholderData.setDuration(0.0);
+        return placeholderData;
+    }
+
     /**
      * Erstellt ein leeres Mp3FileData-Objekt.
      */
@@ -184,25 +200,9 @@ public class Mp3FileData extends FileBasedData {
     }
 
     private void setTagField(AbstractID3v2Tag tag, FieldKey key, String value) throws FieldDataInvalidException {
-        if (!value.equals(EditFilePresenter.DIFF_VALUES)) {
+        if (!value.equals(EditFilePresenter.DIFF_VALUES)) { //TODO Keine GUI in Mp3FileData; konstante verschieben
             tag.setField(key, value);
         }
-    }
-
-    private static Mp3FileData createEmptyData() {
-        Mp3FileData empty = new Mp3FileData();
-        empty.formattedDuration.unbind();
-        empty.formattedDuration.set("");
-        return empty;
-    }
-
-    private static Mp3FileData createPlaceholderData() {
-        Mp3FileData placeholderData = new Mp3FileData();
-        placeholderData.setTitle("<Titel>");
-        placeholderData.setAlbum("<Album>");
-        placeholderData.setArtist("<Interpret>");
-        placeholderData.setDuration(0.0);
-        return placeholderData;
     }
 
     @Override

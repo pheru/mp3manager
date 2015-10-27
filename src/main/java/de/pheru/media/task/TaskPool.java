@@ -38,7 +38,7 @@ public class TaskPool {
     private final StringProperty message = new SimpleStringProperty();
     private final StringProperty title = new SimpleStringProperty();
     private final DoubleProperty progress = new SimpleDoubleProperty();
-    private final ObjectProperty<PheruMediaTask.Status> status = new SimpleObjectProperty<>(PheruMediaTask.Status.READY);
+    private final ObjectProperty<PheruMediaTask.PheruMediaTaskStatus> status = new SimpleObjectProperty<>(PheruMediaTask.PheruMediaTaskStatus.READY);
 
     private final BooleanProperty stopping = new SimpleBooleanProperty(false);
 
@@ -101,7 +101,7 @@ public class TaskPool {
      * Startet den nächsten Task, sofern kein anderer zu diesem Zeitpunkt läuft.
      */
     public void start() {
-        if (!status.get().equals(PheruMediaTask.Status.RUNNING) && !stopping.get() && !tasks.isEmpty()) {
+        if (!status.get().equals(PheruMediaTask.PheruMediaTaskStatus.RUNNING) && !stopping.get() && !tasks.isEmpty()) {
             currentTask = tasks.get(0);
             tasks.remove(currentTask);
             currentTask.runningProperty().addListener(createTaskRunningListener());
@@ -114,7 +114,7 @@ public class TaskPool {
                 LOGGER.fatal("Unexpected Exception running Task!", newValue);
                 Platform.runLater(() -> {
                     status.unbind();
-                    status.set(PheruMediaTask.Status.FAILED);
+                    status.set(PheruMediaTask.PheruMediaTaskStatus.FAILED);
                     Alert alert = new Alert(Alert.AlertType.ERROR, "Fehler beim ausführen einer Aufgabe!");
                     alert.showAndWait();
                 });
@@ -156,11 +156,11 @@ public class TaskPool {
         return progress;
     }
 
-    public ObjectProperty<PheruMediaTask.Status> statusProperty() {
+    public ObjectProperty<PheruMediaTask.PheruMediaTaskStatus> statusProperty() {
         return status;
     }
 
-    public PheruMediaTask.Status getStatus() {
+    public PheruMediaTask.PheruMediaTaskStatus getStatus() {
         return status.get();
     }
 

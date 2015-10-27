@@ -38,6 +38,7 @@ public class ReadDirectoryTask extends PheruMediaTask {
         this.playlistTitles = playlistTitles;
     }
 
+    //TODO Innercall überarbeiten: zu unübersichtlich und lang
     @Override
     protected void innerCall() {
         Platform.runLater(() -> {
@@ -50,18 +51,17 @@ public class ReadDirectoryTask extends PheruMediaTask {
         ObservableList<File> files = FileUtil.collectMp3FilesFromDirectory(directory);
 
         //Mp3Informationen laden und am Ende der Liste hinzufügen
-        updateProgress(-1, 1);
         ObservableList<Mp3FileData> loadedData = FXCollections.observableArrayList();
         ObservableList<String> failedToLoadFileNames = FXCollections.observableArrayList();
         for (int i = 0; i < files.size(); i++) {
-            File currentFile = files.get(i);
             if (isCancelled()) {
                 updateTitle("Laden der Dateien abgebrochen!");
                 updateMessage(loadedData.size() + " von " + files.size() + " Dateien wurden erfolgreich geladen.");
                 updateProgress(1, 1);
-                setStatus(Status.INSUFFICIENT);
+                setStatus(PheruMediaTaskStatus.INSUFFICIENT);
                 break;
             }
+            File currentFile = files.get(i);
             updateTitle("Lade Datei " + (i + 1) + " von " + files.size() + "...");
             updateMessage(currentFile.getAbsolutePath());
             boolean dataAlreadyInPlaylist = false;
@@ -85,18 +85,18 @@ public class ReadDirectoryTask extends PheruMediaTask {
         if (!isCancelled()) {
             updateTitle("Laden der Dateien abgeschlossen.");
             updateMessage(loadedData.size() + " von " + files.size() + " Dateien wurden erfolgreich geladen.");
-            if (loadedData.isEmpty()) {
-                setStatus(Status.FAILED);
+            if (loadedData.isEmpty() && !files.isEmpty()) {
+                setStatus(PheruMediaTaskStatus.FAILED);
                 Platform.runLater(() -> {
                     showFailedAlert(directory, failedToLoadFileNames);
                 });
             } else if (loadedData.size() < files.size()) {
-                setStatus(Status.INSUFFICIENT);
+                setStatus(PheruMediaTaskStatus.INSUFFICIENT);
                 Platform.runLater(() -> {
                     showFailedAlert(directory, failedToLoadFileNames);
                 });
             } else {
-                setStatus(Status.SUCCESSFUL);
+                setStatus(PheruMediaTaskStatus.SUCCESSFUL);
             }
         }
         Platform.runLater(() -> {

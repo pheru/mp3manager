@@ -284,7 +284,7 @@ public class PlaylistPresenter implements Initializable {
     private void play() {
         if (!selectedTitles.isEmpty()) {
             // TODO play: Bei Mehrfachauswahl die nicht selektierten entfernen?
-            musicPlayer.play(table.getSelectionModel().getSelectedIndices().get(0)); 
+            musicPlayer.play(table.getSelectionModel().getSelectedIndices().get(0));
         }
     }
 
@@ -313,23 +313,24 @@ public class PlaylistPresenter implements Initializable {
         if (currentTitleNotification != null) {
             currentTitleNotification.hide();
         }
-        VBox vbox = new VBox(new Label(newCurrentTitle.getTitle()), 
+        VBox vbox = new VBox(new Label(newCurrentTitle.getTitle()),
                 new Label(newCurrentTitle.getAlbum()), new Label(newCurrentTitle.getArtist()));
         vbox.setAlignment(Pos.CENTER_LEFT);
-        
+
         //TODO Titel-Notification: auf null achten bei image
         ImageView artworkImage = new ImageView(ByteUtil.byteArrayToImage(newCurrentTitle.getArtworkData().getBinaryData()));
         artworkImage.setFitHeight(75);
         artworkImage.setFitWidth(75);
-        
+
         HBox content = new HBox(artworkImage, vbox);
         content.setSpacing(5);
-        
-        currentTitleNotification = Notifications.createCustomNotification(content).setTitle("Aktueller Titel")
+
+        currentTitleNotification = Notifications.createCustomNotification(content)
                 .setOnMouseClicked((MouseEvent event) -> {
                     currentTitleNotification.hide();
-        });
-        currentTitleNotification.show();
+                });
+        //TODO Notification show update
+//        currentTitleNotification.show();
     }
 
     private void updateStyledIndex(int playlistIndex) {

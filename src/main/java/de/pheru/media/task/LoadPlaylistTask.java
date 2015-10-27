@@ -47,7 +47,7 @@ public class LoadPlaylistTask extends PheruMediaTask {
                     updateTitle("Laden der Wiedergabeliste abgebrochen!");
                     updateMessage(loadedData.size() + " von " + filePaths.size() + " Dateien wurden erfolgreich geladen.");
                     updateProgress(1, 1);
-                    setStatus(Status.INSUFFICIENT);
+                    setStatus(PheruMediaTaskStatus.INSUFFICIENT);
                     break;
                 }
                 updateMessage("Lade Titel " + (i + 1) + " von " + filePaths.size() + "...");
@@ -71,7 +71,7 @@ public class LoadPlaylistTask extends PheruMediaTask {
             }
         } catch (IOException e) {
             LOGGER.error("Exception loading playlist!", e);
-            setStatus(Status.FAILED);
+            setStatus(PheruMediaTaskStatus.FAILED);
             updateTitle("Laden der Wiedergabeliste fehlgeschlagen!");
             updateProgress(1, 1);
             //TODO Alert in FX thread 
@@ -83,13 +83,13 @@ public class LoadPlaylistTask extends PheruMediaTask {
         updateMessage(loadedData.size() + " Titel wurden erfolgreich geladen.");
 
         if (loadedData.isEmpty()) {
-            setStatus(Status.FAILED);
+            setStatus(PheruMediaTaskStatus.FAILED);
             showFailedAlert(playlistFileToLoad.getAbsolutePath(), failedToLoadFilePaths);
         } else if (loadedData.size() < filePaths.size()) {
-            setStatus(Status.INSUFFICIENT);
+            setStatus(PheruMediaTaskStatus.INSUFFICIENT);
             showFailedAlert(playlistFileToLoad.getAbsolutePath(), failedToLoadFilePaths);
         } else {
-            setStatus(Status.SUCCESSFUL);
+            setStatus(PheruMediaTaskStatus.SUCCESSFUL);
         }
         
         Platform.runLater(() -> {

@@ -139,10 +139,11 @@ public class Settings {
     public static Settings load() {
         try {
             if (!new File(FILE_PATH).exists()) {
-                Notifications.createNotification(Notification.Type.INFO)
-                        .setText("Es konnten keine Einstellungen gefunden werden.\n"
-                                + "Eine neue Datei wird angelegt.")
-                        .show();
+                //TODO Notification show update
+//                Notifications.createNotification(Notification.Type.INFO)
+//                        .setText("Es konnten keine Einstellungen gefunden werden.\n"
+//                                + "Eine neue Datei wird angelegt.")
+//                        .show();
                 return createDefaultSettings();
             }
             JAXBContext context = JAXBContext.newInstance(Settings.class);

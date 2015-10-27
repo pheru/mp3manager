@@ -51,7 +51,7 @@ public class SaveFilesTask extends PheruMediaTask {
                 updateTitle("Speichern der Dateien abgebrochen!");
                 updateMessage(successfullySaved + " von " + dataToSave.size() + " Dateien wurden erfolgreich gespeichert.");
                 updateProgress(1, 1);
-                setStatus(Status.INSUFFICIENT);
+                setStatus(PheruMediaTaskStatus.INSUFFICIENT);
                 return;
             }
             updateTitle("Speichere Datei " + (i + 1) + " von " + dataToSave.size() + "...");
@@ -72,11 +72,11 @@ public class SaveFilesTask extends PheruMediaTask {
         updateTitle("Speichern der Dateien abgeschlossen.");
         updateMessage(successfullySaved + " von " + dataToSave.size() + " Dateien wurden erfolgreich gespeichert.");
         if (successfullySaved == 0) {
-            setStatus(Status.FAILED);
+            setStatus(PheruMediaTaskStatus.FAILED);
         } else if (successfullySaved < dataToSave.size()) {
-            setStatus(Status.INSUFFICIENT);
+            setStatus(PheruMediaTaskStatus.INSUFFICIENT);
         } else {
-            setStatus(Status.SUCCESSFUL);
+            setStatus(PheruMediaTaskStatus.SUCCESSFUL);
         }
     }
 
