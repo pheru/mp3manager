@@ -32,7 +32,6 @@ import javafx.collections.transformation.FilteredList;
 import javafx.collections.transformation.SortedList;
 import javafx.concurrent.WorkerStateEvent;
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
@@ -107,7 +106,7 @@ public class MainPresenter implements Initializable {
     @Inject
     @TableData(TableData.Source.MAIN_SELECTED)
     private ObservableList<Mp3FileData> selectedData;
-
+    
     private boolean updatingColumnsOrderList = false;
     private boolean updatingColumnsOrderTable = false;
 

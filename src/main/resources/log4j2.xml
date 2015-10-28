@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Configuration status="warn">
     <Properties>
-        <Property name="pattern">[%d{yyyy-MM-dd HH:mm:ss} | %-p | %-t | %c#%M:%L] %m%n</Property>
+        <Property name="pattern">[%d{yyyy-MM-dd HH:mm:ss,SSS} | %-5.5p | %-t | %c#%M:%L] %m%n</Property>
     </Properties>
     <Appenders>
         <Console name="Console" target="SYSTEM_OUT">
             <PatternLayout pattern="${pattern}"/>
         </Console>
-        <!--TODO Debug-Logging entfernen oder optional machen-->
+        <!--TODO Logging: Nur ein File?-->
         <Routing name="DebugRouting">
             <Routes pattern="$${sys:logfiles.path}">
                 <Route>

@@ -8,8 +8,6 @@ import java.util.List;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Label;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -115,10 +113,10 @@ public class ReadDirectoryTask extends PheruMediaTask {
             fileNamesStringBuilder.append(failedToLoadFileName);
             fileNamesStringBuilder.append("\n");
         }
-        Alert alert = new Alert(Alert.AlertType.ERROR);
-        alert.setHeaderText("Fehler beim Lesen des Verzeichnisses \"" + directory + "\"!");
-        alert.setContentText("Folgende Dateien konnten nicht gelesen werden:");
-        alert.getDialogPane().setExpandableContent(new Label(fileNamesStringBuilder.toString()));
-        alert.showAndWait();
+//        Alert alert = new Alert(Alert.AlertType.ERROR);
+//        alert.setHeaderText("Fehler beim Lesen des Verzeichnisses \"" + directory + "\"!");
+//        alert.setContentText("Folgende Dateien konnten nicht gelesen werden:");
+//        alert.getDialogPane().setExpandableContent(new Label(fileNamesStringBuilder.toString()));
+//        alert.showAndWait();
     }
 }

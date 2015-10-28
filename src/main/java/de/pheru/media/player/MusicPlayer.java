@@ -14,7 +14,6 @@ import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ObservableValue;
-import javafx.scene.control.Alert;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.util.Duration;
@@ -121,10 +120,10 @@ public class MusicPlayer {
                 }
             });
         } catch (MalformedURLException e) {
-            //TODO Alert in Fx-Thread
+            //TODO GUI in MusicPlayser
             LOGGER.error("Exception creating URL from filePath " + file.getAbsolutePath(), e);
-            Alert alert = new Alert(Alert.AlertType.ERROR, "Fehler beim Abspielen der Datei\n" + file.getAbsolutePath() + "!");
-            alert.showAndWait();
+//            Alert alert = new Alert(Alert.AlertType.ERROR, "Fehler beim Abspielen der Datei\n" + file.getAbsolutePath() + "!");
+//            alert.showAndWait();
         }
     }
 

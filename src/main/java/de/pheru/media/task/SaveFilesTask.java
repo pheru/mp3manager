@@ -10,11 +10,6 @@ import javafx.application.Platform;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.collections.ObservableList;
-import javafx.scene.control.Alert;
-import javafx.scene.control.CheckBox;
-import javafx.scene.control.Label;
-import javafx.scene.layout.Pane;
-import javafx.scene.layout.VBox;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -81,15 +76,15 @@ public class SaveFilesTask extends PheruMediaTask {
     }
 
     private void handleRenameFailed(RenameFailedException renameFailedException) {
+        LOGGER.info("Exception renaming file!", renameFailedException);
         //TODO Keine GUI in Task
-        Platform.runLater(() -> {
-            LOGGER.info("Exception renaming file!", renameFailedException);
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setHeaderText("Speichern fehlgeschlagen!");
-            alert.setContentText("Dateiname konnte nicht geändert werden!\n\n"
-                    + "Möglicherweise enthält der Dateiname ungültige Zeichen oder eine Datei mit diesem Namen existiert bereits.");
-            alert.showAndWait();
-        });
+//        Platform.runLater(() -> {
+//            Alert alert = new Alert(Alert.AlertType.ERROR);
+//            alert.setHeaderText("Speichern fehlgeschlagen!");
+//            alert.setContentText("Dateiname konnte nicht geändert werden!\n\n"
+//                    + "Möglicherweise enthält der Dateiname ungültige Zeichen oder eine Datei mit diesem Namen existiert bereits.");
+//            alert.showAndWait();
+//        });
     }
 
     private void handleSaveFailed(SaveFailedException saveFailedException, String fileName) {
@@ -98,39 +93,39 @@ public class SaveFilesTask extends PheruMediaTask {
         if (firstFail || showAlertOnNextFail.get()) {
             firstFail = false;
             FutureTask<Void> alertTask = new FutureTask<>(() -> {
-                Alert alert = new Alert(Alert.AlertType.ERROR);
-                alert.setHeaderText("Speichern fehlgeschlagen!");
-                Label contentText = new Label("Fehler beim Speichern der Datei \"" + fileName
-                        + "\"!\n\nMöglicherweise ist die Datei schreibgeschützt oder in einer anderen Anwendung geöffnet.");
-
-                CheckBox continueBox = new CheckBox("Mit verbleibenden Dateien fortfahren");
-                continueBox.selectedProperty().bindBidirectional(continueOnFail);
-                CheckBox showAlertBox = new CheckBox("Diesen Dialog bei Fehler erneut zeigen");
-                showAlertBox.selectedProperty().bindBidirectional(showAlertOnNextFail);
-                showAlertBox.disableProperty().bind(continueBox.selectedProperty().not());
-
-                VBox content = new VBox(contentText);
-                if (dataToSave.size() > 1) {
-                    Pane pane = new Pane();
-                    pane.setMinHeight(20);
-                    pane.setPrefWidth(0);
-                    content.getChildren().addAll(pane, continueBox, showAlertBox);
-                }
-
-                alert.getDialogPane().setContent(content);
-                alert.showAndWait();
+//                Alert alert = new Alert(Alert.AlertType.ERROR);
+//                alert.setHeaderText("Speichern fehlgeschlagen!");
+//                Label contentText = new Label("Fehler beim Speichern der Datei \"" + fileName
+//                        + "\"!\n\nMöglicherweise ist die Datei schreibgeschützt oder in einer anderen Anwendung geöffnet.");
+//
+//                CheckBox continueBox = new CheckBox("Mit verbleibenden Dateien fortfahren");
+//                continueBox.selectedProperty().bindBidirectional(continueOnFail);
+//                CheckBox showAlertBox = new CheckBox("Diesen Dialog bei Fehler erneut zeigen");
+//                showAlertBox.selectedProperty().bindBidirectional(showAlertOnNextFail);
+//                showAlertBox.disableProperty().bind(continueBox.selectedProperty().not());
+//
+//                VBox content = new VBox(contentText);
+//                if (dataToSave.size() > 1) {
+//                    Pane pane = new Pane();
+//                    pane.setMinHeight(20);
+//                    pane.setPrefWidth(0);
+//                    content.getChildren().addAll(pane, continueBox, showAlertBox);
+//                }
+//
+//                alert.getDialogPane().setContent(content);
+//                alert.showAndWait();
             }, null);
 
-            Platform.runLater(alertTask);
+//            Platform.runLater(alertTask);
 
-            try {
-                alertTask.get();
-            } catch (InterruptedException | ExecutionException e) {
-                if (isCancelled()) {
-                    return;
-                }
-                throw new PheruMediaRuntimeException("Exception waiting for FutureTask!", e);
-            }
+//            try {
+//                alertTask.get();
+//            } catch (InterruptedException | ExecutionException e) {
+//                if (isCancelled()) {
+//                    return;
+//                }
+//                throw new PheruMediaRuntimeException("Exception waiting for FutureTask!", e);
+//            }
         }
     }
 

@@ -22,10 +22,10 @@ public class ArtworkData {
 
     private static final Logger LOGGER = LogManager.getLogger(ArtworkData.class);
 
-    private final ObjectProperty<byte[]> binaryData = new SimpleObjectProperty<>();
+    private final ObjectProperty<byte[]> binaryData = new SimpleObjectProperty<>(new byte[0]);
     private final IntegerProperty width = new SimpleIntegerProperty(0);
     private final IntegerProperty height = new SimpleIntegerProperty(0);
-    private final StringProperty mimeType = new SimpleStringProperty();
+    private final StringProperty mimeType = new SimpleStringProperty("");
 
     public ArtworkData(byte[] binaryData, int width, int height, String mimeType) {
         this.binaryData.set(binaryData);

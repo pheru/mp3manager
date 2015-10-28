@@ -13,7 +13,6 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.scene.control.Alert;
 import javax.enterprise.context.ApplicationScoped;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -115,8 +114,9 @@ public class TaskPool {
                 Platform.runLater(() -> {
                     status.unbind();
                     status.set(PheruMediaTask.PheruMediaTaskStatus.FAILED);
-                    Alert alert = new Alert(Alert.AlertType.ERROR, "Fehler beim ausführen einer Aufgabe!");
-                    alert.showAndWait();
+                    //TODO Keine GUI in TaskPool
+//                    Alert alert = new Alert(Alert.AlertType.ERROR, "Fehler beim ausführen einer Aufgabe!");
+//                    alert.showAndWait();
                 });
             });
             Thread thread = new Thread(currentTask, currentTask.getClass().toString());

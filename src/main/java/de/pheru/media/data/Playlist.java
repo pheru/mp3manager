@@ -15,7 +15,6 @@ import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.scene.control.Alert;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -162,10 +161,10 @@ public class Playlist extends FileBasedData {
                 }
             }
         } catch (IOException e) {
-            //TODO Keine GUI in Playlist
-            Alert alert = new Alert(Alert.AlertType.ERROR);
             //TODO checkIfDirty: Exception behandeln
-            alert.showAndWait();
+            //TODO Keine GUI in Playlist
+//            Alert alert = new Alert(Alert.AlertType.ERROR);
+//            alert.showAndWait();
         }
         return false;
     }

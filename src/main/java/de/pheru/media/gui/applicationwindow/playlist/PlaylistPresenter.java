@@ -2,6 +2,7 @@ package de.pheru.media.gui.applicationwindow.playlist;
 
 import de.pheru.fx.controls.notification.CustomNotification;
 import de.pheru.fx.controls.notification.Notifications;
+import de.pheru.fx.mvp.PrimaryStage;
 import de.pheru.media.cdi.qualifiers.TableData;
 import de.pheru.media.cdi.qualifiers.XMLSettings;
 import de.pheru.media.data.Mp3FileData;
@@ -41,6 +42,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
+import javafx.stage.Stage;
 import javafx.util.Pair;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -87,6 +89,9 @@ public class PlaylistPresenter implements Initializable {
 
     @Inject
     private Parameters params;
+    @Inject
+    @PrimaryStage
+    private Stage primaryStage;
 
     private CustomNotification currentTitleNotification;
 
@@ -97,7 +102,7 @@ public class PlaylistPresenter implements Initializable {
         playlist.currentTitleIndexProperty().addListener((ObservableValue<? extends Number> observable, Number oldValue, Number newValue) -> {
             updateStyledIndex(newValue.intValue());
             Mp3FileData newCurrentTitle = playlist.getCurrentTitle();
-            if (!table.getScene().getWindow().isFocused() && newCurrentTitle != null) {
+            if (!primaryStage.isFocused() && newCurrentTitle != null) {
                 showCurrentTitleNotification(newCurrentTitle);
             }
         });
@@ -309,15 +314,13 @@ public class PlaylistPresenter implements Initializable {
     }
 
     private void showCurrentTitleNotification(Mp3FileData newCurrentTitle) {
-        //TODO Titel-Notification: nicht immer neue Instanz erzeugen
         if (currentTitleNotification != null) {
-            currentTitleNotification.hide();
+            currentTitleNotification.hide(false);
         }
         VBox vbox = new VBox(new Label(newCurrentTitle.getTitle()),
                 new Label(newCurrentTitle.getAlbum()), new Label(newCurrentTitle.getArtist()));
         vbox.setAlignment(Pos.CENTER_LEFT);
 
-        //TODO Titel-Notification: auf null achten bei image
         ImageView artworkImage = new ImageView(ByteUtil.byteArrayToImage(newCurrentTitle.getArtworkData().getBinaryData()));
         artworkImage.setFitHeight(75);
         artworkImage.setFitWidth(75);
@@ -327,10 +330,11 @@ public class PlaylistPresenter implements Initializable {
 
         currentTitleNotification = Notifications.createCustomNotification(content)
                 .setOnMouseClicked((MouseEvent event) -> {
-                    currentTitleNotification.hide();
+                    primaryStage.setIconified(false);
+                    primaryStage.toFront();
+                    currentTitleNotification.hide(false); //TODO aktueller Titel-Notif.: fadeOut?
                 });
-        //TODO Notification show update
-//        currentTitleNotification.show();
+        currentTitleNotification.show(primaryStage);
     }
 
     private void updateStyledIndex(int playlistIndex) {

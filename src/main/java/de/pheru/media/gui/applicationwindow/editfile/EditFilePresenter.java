@@ -44,9 +44,6 @@ import org.jaudiotagger.tag.id3.valuepair.ImageFormats;
 @ApplicationScoped
 public class EditFilePresenter implements Initializable {
 
-    public static final String DIFF_VALUES = "<Verschiedene Werte>";
-    public static final String NOT_EDITABLE = "<Bei Mehrfachauswahl nicht editierbar>";
-
     private static final Logger LOGGER = LogManager.getLogger(EditFilePresenter.class);
 
     @FXML
@@ -297,10 +294,10 @@ public class EditFilePresenter implements Initializable {
      * Wert dieses Feldes auf DIFF_VALUES gesetzt.
      */
     private void setFieldValues() {
-        fileNameField.setText(NOT_EDITABLE);
+        fileNameField.setText(Mp3FileData.FIELD_NOT_EDITABLE);
         for (ComboBox<String> field : fields) {
             if (field.getItems().size() > 1) {
-                field.setValue(DIFF_VALUES);
+                field.setValue(Mp3FileData.FIELD_DIFF_VALUES);
             } else if (!field.getItems().isEmpty()) {
                 field.setValue(field.getItems().get(0));
             }

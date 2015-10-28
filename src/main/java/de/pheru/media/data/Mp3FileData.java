@@ -3,7 +3,6 @@ package de.pheru.media.data;
 import de.pheru.media.exceptions.Mp3FileDataException;
 import de.pheru.media.exceptions.RenameFailedException;
 import de.pheru.media.exceptions.SaveFailedException;
-import de.pheru.media.gui.applicationwindow.editfile.EditFilePresenter;
 import de.pheru.media.util.ByteUtil;
 import de.pheru.media.util.TimeUtil;
 import java.io.File;
@@ -41,6 +40,8 @@ public class Mp3FileData extends FileBasedData {
     public static final Mp3FileData EMPTY_DATA = createEmptyData();
     public static final String UNIT_SIZE = " MB";
     public static final String UNIT_BITRATE = " kBit/s";
+    public static final String FIELD_DIFF_VALUES = "<Verschiedene Werte>";
+    public static final String FIELD_NOT_EDITABLE = "<Bei Mehrfachauswahl nicht editierbar>";
 
     private final StringProperty title = new SimpleStringProperty("");
     private final StringProperty album = new SimpleStringProperty("");
@@ -160,7 +161,7 @@ public class Mp3FileData extends FileBasedData {
      */
     public void save(Mp3FileData changeData) throws RenameFailedException, SaveFailedException {
         File file = new File(absolutePath.get());
-        if (!changeData.getFileName().equals(EditFilePresenter.NOT_EDITABLE + ".mp3")
+        if (!changeData.getFileName().equals(FIELD_NOT_EDITABLE + ".mp3")
                 && !fileName.get().equals(changeData.getFileName())) {
             File newFile = new File(filePath.get() + "\\" + changeData.getFileName());
             if (file.renameTo(newFile)) {
@@ -200,7 +201,7 @@ public class Mp3FileData extends FileBasedData {
     }
 
     private void setTagField(AbstractID3v2Tag tag, FieldKey key, String value) throws FieldDataInvalidException {
-        if (!value.equals(EditFilePresenter.DIFF_VALUES)) { //TODO Keine GUI in Mp3FileData; konstante verschieben
+        if (!value.equals(FIELD_DIFF_VALUES)) {
             tag.setField(key, value);
         }
     }

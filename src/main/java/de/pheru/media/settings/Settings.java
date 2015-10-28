@@ -1,6 +1,5 @@
 package de.pheru.media.settings;
 
-import de.pheru.fx.controls.notification.Notification;
 import de.pheru.fx.controls.notification.Notifications;
 import de.pheru.media.PheruMedia;
 import de.pheru.media.gui.applicationwindow.main.MainColumn;
@@ -17,7 +16,6 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.scene.control.Alert;
 import javax.enterprise.context.ApplicationScoped;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Marshaller;
@@ -128,10 +126,10 @@ public class Settings {
             LOGGER.debug("Settings saved.");
             return true;
         } catch (Exception e) {
-            //TODO Alert in FX-Thread
+            //TODO Keine GUI in Settings
             LOGGER.error("Exception parsing settings.xml!", e);
-            Alert alert = new Alert(Alert.AlertType.ERROR, "Einstellungen konnten nicht gespeichert werden!");
-            alert.showAndWait();
+//            Alert alert = new Alert(Alert.AlertType.ERROR, "Einstellungen konnten nicht gespeichert werden!");
+//            alert.showAndWait();
             return false;
         }
     }
@@ -155,10 +153,11 @@ public class Settings {
             return (Settings) unmarshaller.unmarshal(new File(FILE_PATH));
         } catch (Exception e) {
             LOGGER.error("Exception parsing settings.xml!", e);
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setHeaderText("Einstellungen konnten nicht geladen werden!");
-            alert.setContentText("Es werden neue Einstellungen angelegt.");
-            alert.showAndWait();
+            //TODO Keine GUI in Settings
+//            Alert alert = new Alert(Alert.AlertType.ERROR);
+//            alert.setHeaderText("Einstellungen konnten nicht geladen werden!");
+//            alert.setContentText("Es werden neue Einstellungen angelegt.");
+//            alert.showAndWait();
             return createDefaultSettings();
         }
     }

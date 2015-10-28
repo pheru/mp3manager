@@ -9,8 +9,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import javafx.application.Platform;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Label;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -74,9 +72,9 @@ public class LoadPlaylistTask extends PheruMediaTask {
             setStatus(PheruMediaTaskStatus.FAILED);
             updateTitle("Laden der Wiedergabeliste fehlgeschlagen!");
             updateProgress(1, 1);
-            //TODO Alert in FX thread 
-            Alert alert = new Alert(Alert.AlertType.ERROR, "Fehler beim Laden der Wiedergabiste \"" + playlistFileToLoad.getName() + "\"!");
-            Platform.runLater(alert::showAndWait);
+            //TODO Keine GUI in Task
+//            Alert alert = new Alert(Alert.AlertType.ERROR, "Fehler beim Laden der Wiedergabiste \"" + playlistFileToLoad.getName() + "\"!");
+//            Platform.runLater(alert::showAndWait);
             return;
         }
         updateTitle("Laden der Wiedergabeliste abgeschlossen.");
@@ -107,10 +105,11 @@ public class LoadPlaylistTask extends PheruMediaTask {
             fileNamesStringBuilder.append(failedToLoadFileName);
             fileNamesStringBuilder.append("\n");
         }
-        Alert alert = new Alert(Alert.AlertType.ERROR);
-        alert.setHeaderText("Fehler beim Laden der Wiedergabliste \"" + playlistPath + "\"!");
-        alert.setContentText("Folgende Titel konnten nicht gelesen werden:");
-        alert.getDialogPane().setExpandableContent(new Label(fileNamesStringBuilder.toString()));
-        Platform.runLater(alert::showAndWait);
+        //TODO Keine GUI in Task
+//        Alert alert = new Alert(Alert.AlertType.ERROR);
+//        alert.setHeaderText("Fehler beim Laden der Wiedergabliste \"" + playlistPath + "\"!");
+//        alert.setContentText("Folgende Titel konnten nicht gelesen werden:");
+//        alert.getDialogPane().setExpandableContent(new Label(fileNamesStringBuilder.toString()));
+//        Platform.runLater(alert::showAndWait);
     }
 }
