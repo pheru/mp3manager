@@ -353,7 +353,7 @@ public class EditFilePresenter implements Initializable {
         if (artworkData != null) {
             coverView.setImage(ByteUtil.byteArrayToImage(artworkData.getBinaryData()));
             //TODO CoverInfo: Höhe x Breite oder Breite x Höhe?
-            coverInfo.setText(artworkData.getMimeType() + " | " + artworkData.getHeight() + " x " + artworkData.getWidth()); 
+            coverInfo.setText(artworkData.getMimeType() + " | " + artworkData.getHeight() + " x " + artworkData.getWidth());
         } else {
             removeCover("<Kein Cover vorhanden>");
         }

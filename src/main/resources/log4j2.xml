@@ -1,109 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Configuration status="warn">
     <Properties>
-        <Property name="pattern">[%d{yyyy-MM-dd HH:mm:ss,SSS} | %-5.5p | %-t | %c#%M:%L] %m%n</Property>
+        <!-- TODO Logging: pattern evtl. anpassen -->
+        <Property name="pattern">[%d{dd.MM.yyyy HH:mm:ss,SSS} | %-5.5p | %-t | %c#%M:%L]%n  %m%n</Property>
     </Properties>
+    
     <Appenders>
         <Console name="Console" target="SYSTEM_OUT">
             <PatternLayout pattern="${pattern}"/>
         </Console>
-        <!--TODO Logging: Nur ein File?-->
-        <Routing name="DebugRouting">
-            <Routes pattern="$${sys:logfiles.path}">
-                <Route>
-                    <RollingFile name="DebugFile" fileName="${sys:logfiles.path}/logs/debug.log"
-                                 filePattern="${sys:logfiles.path}/logs/debug-%i.log.zip">
-                        <PatternLayout pattern="${pattern}"/>
-                        <filters>
-                            <ThresholdFilter level="debug"/>
-                            <ThresholdFilter level="info" onMatch="deny" onMismatch="neutral"/>
-                        </filters>
-                        <Policies>
-                            <SizeBasedTriggeringPolicy size="2 MB"/>
-                        </Policies>
-                        <DefaultRolloverStrategy max="2"/>
-                    </RollingFile>
-                </Route>
-            </Routes>
-        </Routing>
-        <Routing name="InfoRouting">
-            <Routes pattern="$${sys:logfiles.path}">
-                <Route>
-                    <RollingFile name="InfoFile" fileName="${sys:logfiles.path}/logs/info.log"
-                                 filePattern="${sys:logfiles.path}/logs/info-%i.log.zip">
-                        <PatternLayout pattern="${pattern}"/>
-                        <filters>
-                            <ThresholdFilter level="info"/>
-                            <ThresholdFilter level="warn" onMatch="deny" onMismatch="neutral"/>
-                        </filters>
-                        <Policies>
-                            <SizeBasedTriggeringPolicy size="2 MB"/>
-                        </Policies>
-                        <DefaultRolloverStrategy max="2"/>
-                    </RollingFile>
-                </Route>
-            </Routes>
-        </Routing>
-        <Routing name="WarningRouting">
-            <Routes pattern="$${sys:logfiles.path}">
-                <Route>
-                    <RollingFile name="WarningFile" fileName="${sys:logfiles.path}/logs/warning.log"
-                                 filePattern="${sys:logfiles.path}/logs/warning-%i.log.zip">
-                        <PatternLayout pattern="${pattern}"/>
-                        <filters>
-                            <ThresholdFilter level="warn"/>
-                            <ThresholdFilter level="error" onMatch="deny" onMismatch="neutral"/>
-                        </filters>
-                        <Policies>
-                            <SizeBasedTriggeringPolicy size="2 MB"/>
-                        </Policies>
-                        <DefaultRolloverStrategy max="2"/>
-                    </RollingFile>
-                </Route>
-            </Routes>
-        </Routing>
-        <Routing name="ErrorRouting">
-            <Routes pattern="$${sys:logfiles.path}">
-                <Route>
-                    <RollingFile name="ErrorFile" fileName="${sys:logfiles.path}/logs/error.log"
-                                 filePattern="${sys:logfiles.path}/logs/error-%i.log.zip">
-                        <PatternLayout pattern="${pattern}"/>
-                        <filters>
-                            <ThresholdFilter level="error"/>
-                            <ThresholdFilter level="fatal" onMatch="deny" onMismatch="neutral"/>
-                        </filters>
-                        <Policies>
-                            <SizeBasedTriggeringPolicy size="2 MB"/>
-                        </Policies>
-                        <DefaultRolloverStrategy max="3"/>
-                    </RollingFile>
-                </Route>
-            </Routes>
-        </Routing>
-        <Routing name="FatalRouting">
-            <Routes pattern="$${sys:logfiles.path}">
-                <Route>
-                    <RollingFile name="FatalFile" fileName="${sys:logfiles.path}/logs/fatal.log"
-                                 filePattern="${sys:logfiles.path}/logs/fatal-%i.log.zip">
-                        <PatternLayout pattern="${pattern}"/>
-                        <Policies>
-                            <SizeBasedTriggeringPolicy size="3 MB"/>
-                        </Policies>
-                        <DefaultRolloverStrategy max="3"/>
-                    </RollingFile>
-                </Route>
-            </Routes>
-        </Routing>
+        <RollingFile name="File" fileName="${sys:logfiles.location}/logs/pherumedia.log"
+                                 filePattern="${sys:logfiles.location}/logs/pherumedia-%i.log.zip">
+            <PatternLayout pattern="${pattern}"/>
+            <Policies>
+                <SizeBasedTriggeringPolicy size="2 MB"/>
+            </Policies>
+            <DefaultRolloverStrategy max="5"/>
+        </RollingFile>
     </Appenders>
     
     <Loggers>
         <Root level="debug" additivity="false">
             <AppenderRef ref="Console" level="debug"/>
-            <AppenderRef ref="DebugRouting" level="debug"/>
-            <AppenderRef ref="InfoRouting" level="info"/>
-            <AppenderRef ref="WarningRouting" level="warn"/>
-            <AppenderRef ref="ErrorRouting" level="error"/>
-            <AppenderRef ref="FatalRouting" level="fatal"/>
+            <AppenderRef ref="File" level="debug"/>
         </Root>
     </Loggers>
 </Configuration>

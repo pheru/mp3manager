@@ -144,6 +144,7 @@ public class PlaylistPresenter implements Initializable {
                 }
             }
             playlist.setCurrentTitleIndex(newCurrentIndex);
+            //TODO dirtyflag-update nach drop nötig? (drop führt add/remove aus)
             playlist.setDirtyByCheck();
         });
 

@@ -20,8 +20,6 @@ import org.jnativehook.NativeHookException;
  */
 public class PheruMedia extends PheruFXApplication {
 
-    private static final Logger LOGGER = LogManager.getLogger(PheruMedia.class);
-
     private static final String CODE_SOURCE_LOCATION = PheruMedia.class.getProtectionDomain().getCodeSource().getLocation().getPath();
     private static final boolean PRODUCTION_MODE = !CODE_SOURCE_LOCATION.endsWith("target/classes/");
 
@@ -29,15 +27,21 @@ public class PheruMedia extends PheruFXApplication {
     //TODO APPLICATION_PATH: einheitlich bzgl "/" am ende 
     public static final String APPLICATION_PATH = PRODUCTION_MODE
             ? CODE_SOURCE_LOCATION.substring(0, CODE_SOURCE_LOCATION.lastIndexOf("/app")) : CODE_SOURCE_LOCATION;
-    public static final String DLL_PATH = PRODUCTION_MODE ? APPLICATION_PATH : CODE_SOURCE_LOCATION.replace("target/classes/", "");
+
+    private static final Logger LOGGER = createLogger(); //Muss nach APPLICATION_PATH initialisiert werden
 
     private static Alert startAlert;
     private static boolean cleanedUp = false;
 
+    private static Logger createLogger() {
+        System.getProperties().put("logfiles.location", APPLICATION_PATH);
+        return LogManager.getLogger(PheruMedia.class);
+    }
+
     public static void main(String[] args) {
         setUpLogging();
         LOGGER.info("Starte " + APPLICATION_NAME + "...");
-
+        
         Thread.setDefaultUncaughtExceptionHandler(new UncaughtExceptionHandler());
         Runtime.getRuntime().addShutdownHook(new Thread() {
             @Override
@@ -49,7 +53,6 @@ public class PheruMedia extends PheruFXApplication {
     }
 
     private static void setUpLogging() {
-        System.getProperties().put("logfiles.path", APPLICATION_PATH);
         java.util.logging.LogManager.getLogManager().reset();
 //        java.util.logging.Logger.getLogger("org.jboss.weld").setLevel(Level.WARNING); //TODO Weld: Loglevel setzen funktioniert nicht
         java.util.logging.Logger.getLogger("org.jaudiotagger").setLevel(Level.WARNING);
@@ -76,6 +79,7 @@ public class PheruMedia extends PheruFXApplication {
     public void stop() throws Exception {
         //CleanUp muss hier ausgeführt werden, da ansonsten bei normalem Beenden der Anwendung 
         //das SystemTrayIcon nicht aufgeräumt wird und damit die Anwendung nicht stoppt.
+        //TODO cleanup: kann nun evtl. aus stop() raus
         cleanUp();
     }
 

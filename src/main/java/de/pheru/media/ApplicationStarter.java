@@ -58,7 +58,7 @@ public class ApplicationStarter {
 
     private void initNotifications() {
         Notifications.alignmentProperty().bind(settings.notificationsAlignmentProperty());
-        Notifications.defaultTimerProperty().bind(settings.notificationsTimerProperty());
+//        Notifications.defaultDurationProperty().bind(settings.notificationsTimerProperty()); //TODO Not.-Settings: Duration-Binding
     }
 
     private void initJNativeHook() {

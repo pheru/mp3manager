@@ -43,6 +43,7 @@ public class DragAndDropRowFactory<T> implements Callback<TableView<T>, TableRow
         this.baseFactory = baseFactory;
         this.emptyData = emptyData;
         Platform.runLater(() -> {
+            //TODO DragAndDropRowFactory-Konstruktor: NPE behandeln?
             TableViewSkin<?> tableSkin = (TableViewSkin<?>) table.getSkin();
             virtualFlow = (VirtualFlow<?>) tableSkin.getChildren().get(1);
         });

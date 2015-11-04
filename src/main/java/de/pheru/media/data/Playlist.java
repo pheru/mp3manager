@@ -123,11 +123,6 @@ public class Playlist extends FileBasedData {
             }
         }
         setDirtyByCheck();
-//        System.out.println("-----------------");
-//        for (int j = 0; j < randomIndicesToPlay.size(); j++) {
-//            System.out.print(randomIndicesToPlay.get(j));
-//            System.out.println(" - " + titles.get(randomIndicesToPlay.get(j)).getTitle());
-//        }
     }
 
     /**
@@ -162,7 +157,7 @@ public class Playlist extends FileBasedData {
             }
         } catch (IOException e) {
             //TODO checkIfDirty: Exception behandeln
-            //TODO Keine GUI in Playlist
+            //TODO Keine GUI in Playlist -> CDI Event
 //            Alert alert = new Alert(Alert.AlertType.ERROR);
 //            alert.showAndWait();
         }
