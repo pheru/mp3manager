@@ -3,13 +3,14 @@ package de.pheru.media.task;
 import de.pheru.media.data.Mp3FileData;
 import de.pheru.media.exceptions.Mp3FileDataException;
 import de.pheru.media.util.FileUtil;
-import java.io.File;
-import java.util.List;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import java.io.File;
+import java.util.List;
 
 /**
  * Task zum Auslesen von Dateien aus einem Verzeichnis.
@@ -25,8 +26,8 @@ public class ReadDirectoryTask extends PheruMediaTask {
     private final ObservableList<Mp3FileData> playlistTitles;
 
     /**
-     * @param directory Das auszulesende Verzeichnis.
-     * @param masterData Die Liste für die Mp3FileData-Objekte.
+     * @param directory      Das auszulesende Verzeichnis.
+     * @param masterData     Die Liste für die Mp3FileData-Objekte.
      * @param playlistTitles
      */
     public ReadDirectoryTask(final String directory, final ObservableList<Mp3FileData> masterData,

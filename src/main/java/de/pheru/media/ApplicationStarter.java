@@ -1,6 +1,6 @@
 package de.pheru.media;
 
-import de.pheru.fx.controls.notification.Notifications;
+import de.pheru.fx.controls.notification.NotificationManager;
 import de.pheru.fx.mvp.StartApplication;
 import de.pheru.media.cdi.qualifiers.XMLSettings;
 import de.pheru.media.gui.applicationwindow.application.ApplicationView;
@@ -17,15 +17,15 @@ import javafx.scene.image.Image;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
-import javax.enterprise.event.Observes;
-import javax.inject.Inject;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jnativehook.GlobalScreen;
 import org.jnativehook.NativeHookException;
 
+import javax.enterprise.event.Observes;
+import javax.inject.Inject;
+
 /**
- *
  * @author Philipp Bruckner
  */
 public class ApplicationStarter {
@@ -57,7 +57,7 @@ public class ApplicationStarter {
     }
 
     private void initNotifications() {
-        Notifications.alignmentProperty().bind(settings.notificationsAlignmentProperty());
+        NotificationManager.alignmentProperty().bind(settings.notificationsAlignmentProperty());
 //        Notifications.defaultDurationProperty().bind(settings.notificationsTimerProperty()); //TODO Not.-Settings: Duration-Binding
     }
 

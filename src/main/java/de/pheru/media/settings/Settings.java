@@ -1,10 +1,9 @@
 package de.pheru.media.settings;
 
-import de.pheru.fx.controls.notification.Notifications;
+import de.pheru.fx.controls.notification.NotificationManager;
 import de.pheru.media.PheruMedia;
 import de.pheru.media.gui.applicationwindow.main.MainColumn;
 import de.pheru.media.settings.objectproperties.NotificationsAlignmentProperty;
-import java.io.File;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.IntegerProperty;
@@ -16,6 +15,10 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.eclipse.persistence.oxm.annotations.XmlPath;
+
 import javax.enterprise.context.ApplicationScoped;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Marshaller;
@@ -26,9 +29,7 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.eclipse.persistence.oxm.annotations.XmlPath;
+import java.io.File;
 
 /**
  * Klasse zum Speichern und Auslesen von Einstellungen.
@@ -92,10 +93,10 @@ public class Settings {
     private final BooleanProperty editFileSynchronizeTitle = new SimpleBooleanProperty(false);
 
     @XmlPath(XMLPATH_NOTIFICATIONS + "alignment" + XMLPATH_ENDING)
-    private final NotificationsAlignmentProperty notificationsAlignment = new NotificationsAlignmentProperty(Notifications.Alignment.BOTTOM_RIGHT);
+    private final NotificationsAlignmentProperty notificationsAlignment = new NotificationsAlignmentProperty(NotificationManager.Alignment.BOTTOM_RIGHT);
     @XmlPath(XMLPATH_NOTIFICATIONS + "timer" + XMLPATH_ENDING)
     private final IntegerProperty notificationsTimer = new SimpleIntegerProperty(5);
-    
+
     @XmlPath(XMLPATH_DIALOGS + "dontShowAgainApplicationCloseDialog" + XMLPATH_ENDING)
     private final BooleanProperty dontShowAgainApplicationCloseDialog = new SimpleBooleanProperty(false);
 
@@ -349,15 +350,15 @@ public class Settings {
         return musicPlayerMuted;
     }
 
-    public Notifications.Alignment getNotificationsAlignment() {
+    public NotificationManager.Alignment getNotificationsAlignment() {
         return notificationsAlignment.get();
     }
 
-    public void setNotificationsAlignment(final Notifications.Alignment notificationsAlignment) {
+    public void setNotificationsAlignment(final NotificationManager.Alignment notificationsAlignment) {
         this.notificationsAlignment.set(notificationsAlignment);
     }
 
-    public ObjectProperty<Notifications.Alignment> notificationsAlignmentProperty() {
+    public ObjectProperty<NotificationManager.Alignment> notificationsAlignmentProperty() {
         return notificationsAlignment;
     }
 

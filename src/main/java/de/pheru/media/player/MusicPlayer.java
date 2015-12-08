@@ -79,6 +79,10 @@ public class MusicPlayer {
 
     //TODO play: wenn bereits gespielt neu starten oder nichts tun?
     private void play(Mp3FileData mp3) {
+        //TODO Player in neuem Thread zur Performanceverbesserung und/oder Standbyproblematik (#75)?
+        //new Thread(() -> {
+
+
         if (player != null) {
             player.stop();
         }
@@ -125,6 +129,7 @@ public class MusicPlayer {
 //            Alert alert = new Alert(Alert.AlertType.ERROR, "Fehler beim Abspielen der Datei\n" + file.getAbsolutePath() + "!");
 //            alert.showAndWait();
         }
+    //}).start();
     }
 
     public void stop() {

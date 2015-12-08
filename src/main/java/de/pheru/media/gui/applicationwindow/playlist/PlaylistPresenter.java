@@ -1,7 +1,6 @@
 package de.pheru.media.gui.applicationwindow.playlist;
 
-import de.pheru.fx.controls.notification.CustomNotification;
-import de.pheru.fx.controls.notification.Notifications;
+import de.pheru.fx.controls.notification.Notification;
 import de.pheru.fx.mvp.PrimaryStage;
 import de.pheru.media.cdi.qualifiers.TableData;
 import de.pheru.media.cdi.qualifiers.XMLSettings;
@@ -17,10 +16,6 @@ import de.pheru.media.task.TaskPool;
 import de.pheru.media.util.ByteUtil;
 import de.pheru.media.util.FileUtil;
 import de.pheru.media.util.TimeUtil;
-import java.io.File;
-import java.io.IOException;
-import java.net.URL;
-import java.util.ResourceBundle;
 import javafx.application.Application.Parameters;
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.StringBinding;
@@ -44,10 +39,15 @@ import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.util.Pair;
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+import java.io.File;
+import java.io.IOException;
+import java.net.URL;
+import java.util.ResourceBundle;
 
 @ApplicationScoped
 public class PlaylistPresenter implements Initializable {
@@ -93,7 +93,7 @@ public class PlaylistPresenter implements Initializable {
     @PrimaryStage
     private Stage primaryStage;
 
-    private CustomNotification currentTitleNotification;
+    private Notification currentTitleNotification;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -329,13 +329,13 @@ public class PlaylistPresenter implements Initializable {
         HBox content = new HBox(artworkImage, vbox);
         content.setSpacing(5);
 
-        currentTitleNotification = Notifications.createCustomNotification(content)
-                .setOnMouseClicked((MouseEvent event) -> {
-                    primaryStage.setIconified(false);
-                    primaryStage.toFront();
-                    currentTitleNotification.hide(false); //TODO aktueller Titel-Notif.: fadeOut?
-                });
-        currentTitleNotification.show(primaryStage);
+        currentTitleNotification = new Notification(content);
+        currentTitleNotification.setOnMouseClicked((MouseEvent event) -> {
+            primaryStage.setIconified(false);
+            primaryStage.toFront();
+            currentTitleNotification.hide(false); //TODO aktueller Titel-Notif.: fadeOut?
+        });
+        currentTitleNotification.show();
     }
 
     private void updateStyledIndex(int playlistIndex) {

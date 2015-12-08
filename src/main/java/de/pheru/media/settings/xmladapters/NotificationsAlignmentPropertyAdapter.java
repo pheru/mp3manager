@@ -1,6 +1,6 @@
 package de.pheru.media.settings.xmladapters;
 
-import de.pheru.fx.controls.notification.Notifications;
+import de.pheru.fx.controls.notification.NotificationManager;
 import de.pheru.media.settings.objectproperties.NotificationsAlignmentProperty;
 import javax.xml.bind.annotation.adapters.XmlAdapter;
 
@@ -12,7 +12,7 @@ public class NotificationsAlignmentPropertyAdapter extends XmlAdapter<String, No
 
     @Override
     public NotificationsAlignmentProperty unmarshal(String v) throws Exception {
-        return new NotificationsAlignmentProperty(Notifications.Alignment.valueOf(v));
+        return new NotificationsAlignmentProperty(NotificationManager.Alignment.valueOf(v));
     }
 
     @Override
