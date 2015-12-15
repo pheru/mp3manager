@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Configuration status="warn">
     <Properties>
-        <!-- TODO Logging: pattern evtl. anpassen -->
         <Property name="pattern">[%d{dd.MM.yyyy HH:mm:ss,SSS} | %-5.5p | %-t | %c#%M:%L]%n  %m%n</Property>
     </Properties>
     

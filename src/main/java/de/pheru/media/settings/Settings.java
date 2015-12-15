@@ -49,21 +49,19 @@ public class Settings {
     private static final String XMLPATH_DIRECTORIES = "directories/";
     private static final String XMLPATH_APPLICATION_WINDOW = "applicationWindow/";
     private static final String XMLPATH_MUSICPLAYER = "musicPlayer/";
-    private static final String XMLPATH_EDITFILETAB = "editFileTab/";
+    private static final String XMLPATH_EDITFILEVIEW = "editFileView/";
     private static final String XMLPATH_NOTIFICATIONS = "notifications/";
     private static final String XMLPATH_DIALOGS = "dialogs/";
 
     private static final Logger LOGGER = LogManager.getLogger(Settings.class);
 
-    //TODO Shortcuts: Binding zws prohibited und enabled?
     @XmlPath(XMLPATH_GENERAL + "shortcutsEnabled" + XMLPATH_ENDING)
     private final BooleanProperty shortcutsEnabled = new SimpleBooleanProperty(true);
-    private final BooleanProperty shortcutsProhibited = new SimpleBooleanProperty(false);
 
     @XmlPath(XMLPATH_DIRECTORIES + "music" + XMLPATH_ENDING)
     private final StringProperty musicDirectory = new SimpleStringProperty("");
     @XmlPath(XMLPATH_DIRECTORIES + "playlists" + XMLPATH_ENDING)
-    private final StringProperty playlistFilePath = new SimpleStringProperty(PheruMedia.APPLICATION_PATH);
+    private final StringProperty playlistsDirectory = new SimpleStringProperty(PheruMedia.APPLICATION_PATH);
 
     @XmlPath(XMLPATH_APPLICATION_WINDOW + "maximized" + XMLPATH_ENDING)
     private final BooleanProperty applicationWindowMaximized = new SimpleBooleanProperty(false);
@@ -83,33 +81,37 @@ public class Settings {
     @XmlPath(XMLPATH_MUSICPLAYER + "random" + XMLPATH_ENDING)
     private final BooleanProperty musicPlayerRandom = new SimpleBooleanProperty(false);
 
-    @XmlPath(XMLPATH_EDITFILETAB + "sortTitles" + XMLPATH_ENDING)
-    private final BooleanProperty editFileSortTitle = new SimpleBooleanProperty(false);
-    @XmlPath(XMLPATH_EDITFILETAB + "sortAlbums" + XMLPATH_ENDING)
-    private final BooleanProperty editFileSortAlbum = new SimpleBooleanProperty(false);
-    @XmlPath(XMLPATH_EDITFILETAB + "sortArtists" + XMLPATH_ENDING)
-    private final BooleanProperty editFileSortArtist = new SimpleBooleanProperty(false);
-    @XmlPath(XMLPATH_EDITFILETAB + "synchronizeTitle" + XMLPATH_ENDING)
-    private final BooleanProperty editFileSynchronizeTitle = new SimpleBooleanProperty(false);
+    @XmlPath(XMLPATH_EDITFILEVIEW + "sortTitles" + XMLPATH_ENDING)
+    private final BooleanProperty editFileViewSortTitles = new SimpleBooleanProperty(false);
+    @XmlPath(XMLPATH_EDITFILEVIEW + "sortAlbums" + XMLPATH_ENDING)
+    private final BooleanProperty editFileViewSortAlbums = new SimpleBooleanProperty(false);
+    @XmlPath(XMLPATH_EDITFILEVIEW + "sortArtists" + XMLPATH_ENDING)
+    private final BooleanProperty editFileViewSortArtists = new SimpleBooleanProperty(false);
+    @XmlPath(XMLPATH_EDITFILEVIEW + "synchronizeTitle" + XMLPATH_ENDING)
+    private final BooleanProperty editFileViewSynchronizeTitle = new SimpleBooleanProperty(false);
 
     @XmlPath(XMLPATH_NOTIFICATIONS + "alignment" + XMLPATH_ENDING)
     private final NotificationsAlignmentProperty notificationsAlignment = new NotificationsAlignmentProperty(NotificationManager.Alignment.BOTTOM_RIGHT);
-    @XmlPath(XMLPATH_NOTIFICATIONS + "timer" + XMLPATH_ENDING)
-    private final IntegerProperty notificationsTimer = new SimpleIntegerProperty(5);
+    @XmlPath(XMLPATH_NOTIFICATIONS + "duration" + XMLPATH_ENDING)
+    private final IntegerProperty notificationsDuration = new SimpleIntegerProperty(5);
 
+    //TODO settings-xmlpath: dontshowagain zu lang -> schachteln
     @XmlPath(XMLPATH_DIALOGS + "dontShowAgainApplicationCloseDialog" + XMLPATH_ENDING)
     private final BooleanProperty dontShowAgainApplicationCloseDialog = new SimpleBooleanProperty(false);
 
+    //TODO Umbenennen
     @XmlElementWrapper(name = "tableColumns")
     @XmlElement(name = "tableColumn")
-    private final ObservableList<ColumnSettings> mainColumnSettings = FXCollections.observableArrayList();
+    private final ObservableList<ColumnSettings> mainTableColumnSettings = FXCollections.observableArrayList();
 
-    public Settings() {
+    @Deprecated
+    Settings() {
+        //CDI
     }
 
     private void initDefaultMainColumnSettings() {
         for (MainColumn column : MainColumn.values()) {
-            mainColumnSettings.add(new ColumnSettings(column));
+            mainTableColumnSettings.add(new ColumnSettings(column));
         }
     }
 
@@ -169,13 +171,13 @@ public class Settings {
         return defaultSettings;
     }
 
-    public ObservableList<ColumnSettings> getAllMainColumnSettings() {
-        return mainColumnSettings;
+    public ObservableList<ColumnSettings> getAllMainTableColumnSettings() {
+        return mainTableColumnSettings;
     }
 
-    public ColumnSettings getMainColumnSettings(MainColumn column) {
-        for (ColumnSettings mainColumnSetting : mainColumnSettings) {
-            if (mainColumnSetting.getColumn().equals(column)) {
+    public ColumnSettings getMainTableColumnSettings(MainColumn column) {
+        for (ColumnSettings mainColumnSetting : mainTableColumnSettings) {
+            if (mainColumnSetting.getColumn() == column) {
                 return mainColumnSetting;
             }
         }
@@ -266,64 +268,64 @@ public class Settings {
         return applicationWindowMaximized;
     }
 
-    public boolean isEditFileSortTitle() {
-        return editFileSortTitle.get();
+    public boolean getEditFileViewSortTitles() {
+        return editFileViewSortTitles.get();
     }
 
-    public void setEditFileSortTitle(final boolean editFileSortTitle) {
-        this.editFileSortTitle.set(editFileSortTitle);
+    public void setEditFileViewSortTitles(final boolean editFileViewSortTitles) {
+        this.editFileViewSortTitles.set(editFileViewSortTitles);
     }
 
-    public BooleanProperty editFileSortTitleProperty() {
-        return editFileSortTitle;
+    public BooleanProperty editFileViewSortTitlesProperty() {
+        return editFileViewSortTitles;
     }
 
-    public boolean isEditFileSortAlbum() {
-        return editFileSortAlbum.get();
+    public boolean getEditFileViewSortAlbums() {
+        return editFileViewSortAlbums.get();
     }
 
-    public void setEditFileSortAlbum(final boolean editFileSortAlbum) {
-        this.editFileSortAlbum.set(editFileSortAlbum);
+    public void setEditFileViewSortAlbums(final boolean editFileViewSortAlbums) {
+        this.editFileViewSortAlbums.set(editFileViewSortAlbums);
     }
 
-    public BooleanProperty editFileSortAlbumProperty() {
-        return editFileSortAlbum;
+    public BooleanProperty editFileViewSortAlbumsProperty() {
+        return editFileViewSortAlbums;
     }
 
-    public boolean isEditFileSortArtist() {
-        return editFileSortArtist.get();
+    public boolean getEditFileViewSortArtists() {
+        return editFileViewSortArtists.get();
     }
 
-    public void setEditFileSortArtist(final boolean editFileSortArtist) {
-        this.editFileSortArtist.set(editFileSortArtist);
+    public void setEditFileViewSortArtists(final boolean editFileViewSortArtists) {
+        this.editFileViewSortArtists.set(editFileViewSortArtists);
     }
 
-    public BooleanProperty editFileSortArtistProperty() {
-        return editFileSortArtist;
+    public BooleanProperty editFileViewSortArtistsProperty() {
+        return editFileViewSortArtists;
     }
 
-    public boolean isEditFileSynchronizeTitle() {
-        return editFileSynchronizeTitle.get();
+    public boolean getEditFileViewSynchronizeTitle() {
+        return editFileViewSynchronizeTitle.get();
     }
 
-    public void setEditFileSynchronizeTitle(final boolean editFileSynchronizeTitle) {
-        this.editFileSynchronizeTitle.set(editFileSynchronizeTitle);
+    public void setEditFileViewSynchronizeTitle(final boolean editFileViewSynchronizeTitle) {
+        this.editFileViewSynchronizeTitle.set(editFileViewSynchronizeTitle);
     }
 
-    public BooleanProperty editFileSynchronizeTitleProperty() {
-        return editFileSynchronizeTitle;
+    public BooleanProperty editFileViewSynchronizeTitleProperty() {
+        return editFileViewSynchronizeTitle;
     }
 
-    public String getPlaylistFilePath() {
-        return playlistFilePath.get();
+    public String getPlaylistsDirectory() {
+        return playlistsDirectory.get();
     }
 
-    public void setPlaylistFilePath(final String playlistFilePath) {
-        this.playlistFilePath.set(playlistFilePath);
+    public void setPlaylistsDirectory(final String playlistsDirectory) {
+        this.playlistsDirectory.set(playlistsDirectory);
     }
 
-    public StringProperty playlistFilePathProperty() {
-        return playlistFilePath;
+    public StringProperty playlistsDirectoryProperty() {
+        return playlistsDirectory;
     }
 
     public double getApplicationWindowSplitPosition() {
@@ -362,16 +364,16 @@ public class Settings {
         return notificationsAlignment;
     }
 
-    public int getNotificationsTimer() {
-        return notificationsTimer.get();
+    public int getNotificationsDuration() {
+        return notificationsDuration.get();
     }
 
-    public void setNotificationsTimer(final int notificationsTimer) {
-        this.notificationsTimer.set(notificationsTimer);
+    public void setNotificationsDuration(final int notificationsDuration) {
+        this.notificationsDuration.set(notificationsDuration);
     }
 
-    public IntegerProperty notificationsTimerProperty() {
-        return notificationsTimer;
+    public IntegerProperty notificationsDurationProperty() {
+        return notificationsDuration;
     }
 
     public Boolean isDontShowAgainApplicationCloseDialog() {
@@ -396,18 +398,6 @@ public class Settings {
 
     public BooleanProperty shortcutsEnabledProperty() {
         return shortcutsEnabled;
-    }
-
-    public Boolean isShortcutsProhibited() {
-        return shortcutsProhibited.get();
-    }
-
-    public void setShortcutsProhibited(final Boolean shortcutsProhibited) {
-        this.shortcutsProhibited.set(shortcutsProhibited);
-    }
-
-    public BooleanProperty shortcutsProhibitedProperty() {
-        return shortcutsProhibited;
     }
 
 }

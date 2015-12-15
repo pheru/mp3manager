@@ -43,7 +43,6 @@ public class DragAndDropRowFactory<T> implements Callback<TableView<T>, TableRow
         this.baseFactory = baseFactory;
         this.emptyData = emptyData;
         Platform.runLater(() -> {
-            //TODO DragAndDropRowFactory-Konstruktor: NPE behandeln?
             TableViewSkin<?> tableSkin = (TableViewSkin<?>) table.getSkin();
             virtualFlow = (VirtualFlow<?>) tableSkin.getChildren().get(1);
         });
@@ -72,7 +71,7 @@ public class DragAndDropRowFactory<T> implements Callback<TableView<T>, TableRow
     private EventHandler<MouseEvent> createDragDetectedHandler(TableRow<T> row, TableView<T> table) {
         return (MouseEvent event) -> {
             Dragboard db = row.startDragAndDrop(TransferMode.ANY);
-            db.setDragView(row.snapshot(null, null)); //TODO Drag&Drop: Snapshot
+            db.setDragView(row.snapshot(null, null));
             ClipboardContent content = new ClipboardContent();
             String indicesAsString = table.getSelectionModel().getSelectedIndices().stream()
                     .map((Integer t) -> t.toString())
@@ -148,10 +147,6 @@ public class DragAndDropRowFactory<T> implements Callback<TableView<T>, TableRow
                     dropCompletedHandler.handle(dropCompletedEvent);
                 }
             } catch (Exception e) {
-                /*
-                 TODO Drag&Drop: Exception vermutlich nicht korrekt verarbeitet.
-                 Siehe RT-38641: https://javafx-jira.kenai.com/browse/RT-38641
-                 */
                 LOGGER.error("Exception while Drag&Drop!", e);
                 //TODO Alert in FX-Thread
                 Alert alert = new Alert(Alert.AlertType.ERROR, "Fehler beim Ausführen des Drag&Drop!");

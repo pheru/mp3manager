@@ -1,17 +1,16 @@
 package de.pheru.media.task;
 
 import de.pheru.media.data.Mp3FileData;
-import de.pheru.media.exceptions.PheruMediaRuntimeException;
+import de.pheru.media.exceptions.Mp3FileDataException;
 import de.pheru.media.exceptions.RenameFailedException;
 import de.pheru.media.exceptions.SaveFailedException;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.FutureTask;
-import javafx.application.Platform;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.collections.ObservableList;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import java.util.concurrent.FutureTask;
 
 /**
  * Task zum Speichern von MP3-Dateien.<br/>
@@ -61,6 +60,9 @@ public class SaveFilesTask extends PheruMediaTask {
                 if (!continueOnFail.get()) {
                     cancel();
                 }
+            } catch (Mp3FileDataException e) {
+                //EXC
+                e.printStackTrace();
             }
             updateProgress(i + 1, dataToSave.size());
         }

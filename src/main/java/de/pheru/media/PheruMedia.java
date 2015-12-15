@@ -3,15 +3,16 @@ package de.pheru.media;
 import de.pheru.fx.mvp.PheruFXApplication;
 import de.pheru.media.cdi.qualifiers.XMLSettings;
 import de.pheru.media.settings.Settings;
-import java.util.logging.Level;
 import javafx.application.Platform;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
-import javax.enterprise.util.AnnotationLiteral;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jnativehook.GlobalScreen;
 import org.jnativehook.NativeHookException;
+
+import javax.enterprise.util.AnnotationLiteral;
+import java.util.logging.Level;
 
 /**
  * Application-Klasse als Startpunkt für die JavaFX-Anwendung.
@@ -41,7 +42,7 @@ public class PheruMedia extends PheruFXApplication {
     public static void main(String[] args) {
         setUpLogging();
         LOGGER.info("Starte " + APPLICATION_NAME + "...");
-        
+
         Thread.setDefaultUncaughtExceptionHandler(new UncaughtExceptionHandler());
         Runtime.getRuntime().addShutdownHook(new Thread() {
             @Override
@@ -53,14 +54,18 @@ public class PheruMedia extends PheruFXApplication {
     }
 
     private static void setUpLogging() {
+//        java.util.logging.Logger l = java.util.logging.Logger.getLogger(GlobalScreen.class.getPackage().getName());
+//        l.setLevel(Level.WARNING);
+
         java.util.logging.LogManager.getLogManager().reset();
-//        java.util.logging.Logger.getLogger("org.jboss.weld").setLevel(Level.WARNING); //TODO Weld: Loglevel setzen funktioniert nicht
+//        java.util.logging.Logger.getLogger("org.jboss.weld").setLevel(Level.WARNING);
         java.util.logging.Logger.getLogger("org.jaudiotagger").setLevel(Level.WARNING);
         java.util.logging.Logger.getLogger("org.jnativehook").setLevel(Level.WARNING);
     }
 
     @Override
     public void beforeStart() {
+        //TODO Stage statt alert
         startAlert = new Alert(Alert.AlertType.NONE);
         startAlert.setResult(ButtonType.CLOSE);
         startAlert.setTitle(APPLICATION_NAME);
@@ -79,7 +84,7 @@ public class PheruMedia extends PheruFXApplication {
     public void stop() throws Exception {
         //CleanUp muss hier ausgeführt werden, da ansonsten bei normalem Beenden der Anwendung 
         //das SystemTrayIcon nicht aufgeräumt wird und damit die Anwendung nicht stoppt.
-        //TODO cleanup: kann nun evtl. aus stop() raus
+        //TODO cleanup: kann nun evtl. aus stop() raus ///falsch, jnativehook läuft noch
         cleanUp();
     }
 
@@ -92,7 +97,6 @@ public class PheruMedia extends PheruFXApplication {
                 GlobalScreen.unregisterNativeHook();
             } catch (NativeHookException e) {
                 LOGGER.error("Exception cleaning up JNativeHook!", e);
-                //TODO Shortcuts: Exception bei Cleanup behandeln
             }
             cleanedUp = true;
         }

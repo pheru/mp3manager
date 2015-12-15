@@ -143,10 +143,10 @@ public class EditFilePresenter implements Initializable {
                 }
             }
         });
-        synchronizeTitleBox.selectedProperty().bindBidirectional(settings.editFileSynchronizeTitleProperty());
-        sortTitleBox.selectedProperty().bindBidirectional(settings.editFileSortTitleProperty());
-        sortAlbumBox.selectedProperty().bindBidirectional(settings.editFileSortAlbumProperty());
-        sortArtistBox.selectedProperty().bindBidirectional(settings.editFileSortArtistProperty());
+        synchronizeTitleBox.selectedProperty().bindBidirectional(settings.editFileViewSynchronizeTitleProperty());
+        sortTitleBox.selectedProperty().bindBidirectional(settings.editFileViewSortTitlesProperty());
+        sortAlbumBox.selectedProperty().bindBidirectional(settings.editFileViewSortAlbumsProperty());
+        sortArtistBox.selectedProperty().bindBidirectional(settings.editFileViewSortArtistsProperty());
     }
 
     /**
@@ -324,7 +324,6 @@ public class EditFilePresenter implements Initializable {
 
     private void setCoverImageForMultipleData() {
         for (int i = 0; i < selectedData.size() - 1; i++) {
-            //TODO genauerer Image-Vergleich
             if (!ArtworkData.equals(selectedData.get(i).getArtworkData(), selectedData.get(i + 1).getArtworkData())) {
                 removeCover("<Verschiedene Cover vorhanden>");
                 changeData.setArtworkData(null);

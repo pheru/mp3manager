@@ -226,13 +226,13 @@ public class PlaylistPresenter implements Initializable {
         //TODO Playlist speichern: Statusbar-Meldung
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Wiedergabeliste speichern");
-        if (!settings.getPlaylistFilePath().isEmpty()) {
-            fileChooser.setInitialDirectory(new File(settings.getPlaylistFilePath()));
+        if (!settings.getPlaylistsDirectory().isEmpty()) {
+            fileChooser.setInitialDirectory(new File(settings.getPlaylistsDirectory()));
         }
 
         String fileName = "Wiedergabeliste";
         int i = 2;
-        while (new File(settings.getPlaylistFilePath() + "\\" + fileName + "." + Playlist.FILE_EXTENSION).exists()) {
+        while (new File(settings.getPlaylistsDirectory() + "\\" + fileName + "." + Playlist.FILE_EXTENSION).exists()) {
             fileName = "Wiedergabeliste (" + i + ")";
             i++;
         }
@@ -246,7 +246,7 @@ public class PlaylistPresenter implements Initializable {
                     playlist.setFilePath(playlistFile.getParent());
                     playlist.setFileName(playlistFile.getName());
                     playlist.setDirty(false);
-                    settings.setPlaylistFilePath(playlistFile.getParent());
+                    settings.setPlaylistsDirectory(playlistFile.getParent());
                 }
             } catch (IOException e) {
                 //TODO Playlist speichern: Exception behandeln
@@ -259,8 +259,8 @@ public class PlaylistPresenter implements Initializable {
     private void loadPlaylist() {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Wiedergabeliste laden");
-        if (!settings.getPlaylistFilePath().isEmpty()) {
-            fileChooser.setInitialDirectory(new File(settings.getPlaylistFilePath()));
+        if (!settings.getPlaylistsDirectory().isEmpty()) {
+            fileChooser.setInitialDirectory(new File(settings.getPlaylistsDirectory()));
         }
         fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Wiedergabelisten", "*." + Playlist.FILE_EXTENSION));
         File playlistFile = fileChooser.showOpenDialog(table.getScene().getWindow());
@@ -269,7 +269,7 @@ public class PlaylistPresenter implements Initializable {
             loadPlaylistTask.runningProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
                 if (oldValue && !newValue) {
                     musicPlayer.stop();
-                    settings.setPlaylistFilePath(playlistFile.getParent());
+                    settings.setPlaylistsDirectory(playlistFile.getParent());
                 }
             });
             taskPool.addTask(loadPlaylistTask);

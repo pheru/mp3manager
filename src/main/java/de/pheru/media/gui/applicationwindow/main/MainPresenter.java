@@ -145,7 +145,7 @@ public class MainPresenter implements Initializable {
         table.setItems(setUpTableFilter());
         Bindings.bindContent(selectedData, table.getSelectionModel().getSelectedItems());
         initColumns();
-        settings.getAllMainColumnSettings().addListener((ListChangeListener.Change<? extends ColumnSettings> change) -> {
+        settings.getAllMainTableColumnSettings().addListener((ListChangeListener.Change<? extends ColumnSettings> change) -> {
             if (!updatingColumnsOrderList) {
                 updateColumnsOrderTable();
             }
@@ -220,9 +220,10 @@ public class MainPresenter implements Initializable {
                     return cell;
                 });
             }
-            tableColumn.prefWidthProperty().bind(settings.getMainColumnSettings(column).widthProperty());
-            settings.getMainColumnSettings(column).widthProperty().bind(tableColumn.widthProperty());
-            tableColumn.visibleProperty().bindBidirectional(settings.getMainColumnSettings(column).visibleProperty());
+            ColumnSettings mainTableColumnSettings = settings.getMainTableColumnSettings(column);
+            tableColumn.prefWidthProperty().bind(mainTableColumnSettings .widthProperty());
+            mainTableColumnSettings .widthProperty().bind(tableColumn.widthProperty());
+            tableColumn.visibleProperty().bindBidirectional(mainTableColumnSettings .visibleProperty());
             tableColumn.setCellValueFactory(new PropertyValueFactory(column.getPropertyName()));
             if (column.getComparator() != null) {
                 tableColumn.setComparator(column.getComparator());
@@ -235,7 +236,7 @@ public class MainPresenter implements Initializable {
         updatingColumnsOrderTable = true;
         List<TableColumn> columns = new ArrayList<>(table.getColumns());
         table.getColumns().clear();
-        for (ColumnSettings cs : settings.getAllMainColumnSettings()) {
+        for (ColumnSettings cs : settings.getAllMainTableColumnSettings()) {
             table.getColumns().add(getColumnByName(columns, cs.getColumn().getColumnName()));
         }
         updatingColumnsOrderTable = false;
@@ -254,11 +255,11 @@ public class MainPresenter implements Initializable {
         updatingColumnsOrderList = true;
         List<ColumnSettings> newOrder = new ArrayList<>();
         for (TableColumn<Mp3FileData, ?> column : table.getColumns()) {
-            newOrder.add(settings.getMainColumnSettings(MainColumn.getMainColumnByColumnName(column.getText())));
+            newOrder.add(settings.getMainTableColumnSettings(MainColumn.getMainColumnByColumnName(column.getText())));
         }
-        settings.getAllMainColumnSettings().clear();
+        settings.getAllMainTableColumnSettings().clear();
         for (ColumnSettings cs : newOrder) {
-            settings.getAllMainColumnSettings().add(cs);
+            settings.getAllMainTableColumnSettings().add(cs);
         }
         updatingColumnsOrderList = false;
     }
@@ -353,7 +354,7 @@ public class MainPresenter implements Initializable {
     @FXML
     private void play() {
         if (!selectedData.isEmpty()) {
-            //TODO Kontextmenü-Play: implementieren
+            //Kontextmenü-Play: implementieren
         }
     }
 

@@ -58,7 +58,7 @@ public class ApplicationStarter {
 
     private void initNotifications() {
         NotificationManager.alignmentProperty().bind(settings.notificationsAlignmentProperty());
-//        Notifications.defaultDurationProperty().bind(settings.notificationsTimerProperty()); //TODO Not.-Settings: Duration-Binding
+//        Notifications.defaultDurationProperty().bind(settings.notificationsDurationProperty());
     }
 
     private void initJNativeHook() {
@@ -73,7 +73,6 @@ public class ApplicationStarter {
             alert.setContentText("TODO");
             alert.showAndWait();
             settings.setShortcutsEnabled(false);
-            settings.setShortcutsProhibited(true);
         }
     }
 

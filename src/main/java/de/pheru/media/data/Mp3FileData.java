@@ -5,8 +5,6 @@ import de.pheru.media.exceptions.RenameFailedException;
 import de.pheru.media.exceptions.SaveFailedException;
 import de.pheru.media.util.ByteUtil;
 import de.pheru.media.util.TimeUtil;
-import java.io.File;
-import java.io.IOException;
 import javafx.beans.binding.StringBinding;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.ObjectProperty;
@@ -28,6 +26,9 @@ import org.jaudiotagger.tag.TagException;
 import org.jaudiotagger.tag.datatype.Artwork;
 import org.jaudiotagger.tag.id3.AbstractID3v2Tag;
 import org.jaudiotagger.tag.reference.PictureTypes;
+
+import java.io.File;
+import java.io.IOException;
 
 /**
  * Datenmodell für die Mp3-Dateien.
@@ -93,10 +94,14 @@ public class Mp3FileData extends FileBasedData {
      *
      * @param file Die MP3-Datei.
      * @throws de.pheru.media.exceptions.Mp3FileDataException Wenn ein Fehler
-     * beim Lesen der MP3-Informationen auftritt.
+     *                                                        beim Lesen der MP3-Informationen auftritt.
      */
     public Mp3FileData(File file) throws Mp3FileDataException {
         this();
+        loadDataFromFile(file);
+    }
+
+    private void loadDataFromFile(File file) throws Mp3FileDataException {
         fileName.set(file.getName());
         filePath.set(file.getParent());
         size.set(ByteUtil.bytesToMB(file.length()));
@@ -154,12 +159,12 @@ public class Mp3FileData extends FileBasedData {
      * Speichert die geänderten MP3-Informationen ab.
      *
      * @param changeData Die zu speichernden MP3-Informationen.
-     * @throws de.pheru.media.exceptions.RenameFailedException Wenn das Umbennen
-     * der Datei fehlschlägt.
-     * @throws de.pheru.media.exceptions.SaveFailedException Wenn das Speichern
-     * fehlschlägt.
+     * @throws de.pheru.media.exceptions.RenameFailedException Wenn das Umbennen der Datei fehlschlägt.
+     * @throws de.pheru.media.exceptions.SaveFailedException   Wenn das Speichern fehlschlägt.
+     * @throws de.pheru.media.exceptions.Mp3FileDataException  Wenn das erneute Laden der Mp3FileData fehlschlägt.
      */
-    public void save(Mp3FileData changeData) throws RenameFailedException, SaveFailedException {
+    public void save(Mp3FileData changeData) throws RenameFailedException, SaveFailedException, Mp3FileDataException {
+        //TODO refactoren (untergliedern)
         File file = new File(absolutePath.get());
         if (!changeData.getFileName().equals(FIELD_NOT_EDITABLE + ".mp3")
                 && !fileName.get().equals(changeData.getFileName())) {
@@ -192,12 +197,12 @@ public class Mp3FileData extends FileBasedData {
                 tag.setField(newArtwork);
             }
             mp3File.save();
-            //TODO Mp3File nach save neu laden
         } catch (CannotReadException | IOException | ReadOnlyFileException | TagException | InvalidAudioFrameException e) {
             throw new SaveFailedException("Failed to save\n"
                     + ToStringBuilder.reflectionToString(this, ToStringStyle.MULTI_LINE_STYLE, true)
                     + "\nwith changeData: " + ToStringBuilder.reflectionToString(changeData, ToStringStyle.MULTI_LINE_STYLE, true), e);
         }
+        loadDataFromFile(file); //TODO testen, ob funktioniert
     }
 
     private void setTagField(AbstractID3v2Tag tag, FieldKey key, String value) throws FieldDataInvalidException {

@@ -74,16 +74,15 @@ public abstract class PheruMediaTask extends Task<Void> {
 
     public enum PheruMediaTaskStatus {
 
-        READY("dodgerblue"),//TODO bei überarbeitetem Pool evtl. garnicht nötig
+        READY("dodgerblue"),
         RUNNING("dodgerblue"),
         SUCCESSFUL("limegreen"),
-        INSUFFICIENT("darkorange"),//TODO Taskstatus-insufficient: farbe evtl. etwas gelblicher/heller
+        INSUFFICIENT("darkorange"),
         FAILED("red");
-        //TODO Task-Status "WAITING" ? Bspw. für Dialog in ReadDirectoryTask; ersetzt evtl. ready 
 
         private final String color;
 
-        private PheruMediaTaskStatus(String color) {
+        PheruMediaTaskStatus(String color) {
             this.color = color;
         }
 

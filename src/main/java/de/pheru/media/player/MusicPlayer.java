@@ -35,11 +35,6 @@ public class MusicPlayer {
 
     private final DoubleProperty currentTime = new SimpleDoubleProperty(0.0);
     private final DoubleProperty totalTime = new SimpleDoubleProperty(0.0);
-    //TODO Property-Redundanz (werden 1:1 an settings-Properties gebunden)?
-    private final DoubleProperty volume = new SimpleDoubleProperty(100.0);
-    private final BooleanProperty repeat = new SimpleBooleanProperty(false);
-    private final BooleanProperty random = new SimpleBooleanProperty(false);
-    private final BooleanProperty muted = new SimpleBooleanProperty(false);
     private final ObjectProperty<MediaPlayer.Status> status = new SimpleObjectProperty<>(MediaPlayer.Status.UNKNOWN);
 
     @Inject
@@ -52,13 +47,9 @@ public class MusicPlayer {
 
     @PostConstruct
     private void init() {
-        repeat.bindBidirectional(settings.musicPlayerRepeatProperty());
-        random.bindBidirectional(settings.musicPlayerRandomProperty());
-        volume.bindBidirectional(settings.musicPlayerVolumeProperty());
-        volume.addListener((ObservableValue<? extends Number> observable, Number oldValue, Number newValue) -> {
-            muted.set(false);
+        settings.musicPlayerVolumeProperty().addListener((ObservableValue<? extends Number> observable, Number oldValue, Number newValue) -> {
+            settings.setMusicPlayerMuted(false);//TODO binding in settings?
         });
-        muted.bindBidirectional(settings.musicPlayerMutedProperty());
     }
 
     public void playPause() {
@@ -91,7 +82,7 @@ public class MusicPlayer {
             Media media = new Media(file.toURI().toURL().toExternalForm());
             player = new MediaPlayer(media);
             player.setOnEndOfMedia(() -> {
-                if (!playlist.next() || repeat.get()) {
+                if (!playlist.next() || settings.isMusicPlayerRepeat()) {
                     play(playlist.getCurrentTitle());
                 } else {
                     player.stop();
@@ -112,15 +103,15 @@ public class MusicPlayer {
             });
             player.volumeProperty().bind(new DoubleBinding() {
                 {
-                    bind(volume, muted);
+                    bind(settings.musicPlayerVolumeProperty(), settings.musicPlayerMutedProperty());
                 }
 
                 @Override
                 protected double computeValue() {
-                    if (muted.get()) {
+                    if (settings.isMusicPlayerMuted()) {
                         return 0.0;
                     }
-                    return volume.get() / 100.0;
+                    return settings.getMusicPlayerVolume() / 100.0;
                 }
             });
         } catch (MalformedURLException e) {
@@ -154,42 +145,6 @@ public class MusicPlayer {
 
     public void seek(double seconds) {
         player.seek(Duration.seconds(seconds));
-    }
-
-    public BooleanProperty repeatProperty() {
-        return repeat;
-    }
-
-    public BooleanProperty randomProperty() {
-        return random;
-    }
-
-    public Double getVolume() {
-        return volume.get();
-    }
-
-    public void setVolume(final Double volume) {
-        this.volume.set(volume);
-    }
-
-    public DoubleProperty volumeProperty() {
-        return volume;
-    }
-
-    public Boolean isRepeat() {
-        return repeat.get();
-    }
-
-    public void setRepeat(final Boolean repeat) {
-        this.repeat.set(repeat);
-    }
-
-    public Boolean isRandom() {
-        return random.get();
-    }
-
-    public void setRandom(final Boolean random) {
-        this.random.set(random);
     }
 
     public MediaPlayer.Status getStatus() {
@@ -226,17 +181,5 @@ public class MusicPlayer {
 
     public DoubleProperty totalTimeProperty() {
         return totalTime;
-    }
-
-    public Boolean isMuted() {
-        return muted.get();
-    }
-
-    public void setMuted(final Boolean muted) {
-        this.muted.set(muted);
-    }
-
-    public BooleanProperty mutedProperty() {
-        return muted;
     }
 }

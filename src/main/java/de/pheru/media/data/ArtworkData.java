@@ -1,21 +1,21 @@
 package de.pheru.media.data;
 
-import java.awt.image.BufferedImage;
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.util.Arrays;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
-import javax.imageio.ImageIO;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.util.Arrays;
+
 /**
- *
  * @author Philipp Bruckner
  */
 public class ArtworkData {
@@ -105,14 +105,12 @@ public class ArtworkData {
         }
     }
 
-    @SuppressWarnings("null") //null-prüfung findet statt
     public static boolean equals(ArtworkData a1, ArtworkData a2) {
-        if ((a1 == null && a2 != null)
-                || (a2 == null && a1 != null)) {
-            return false;
-        }
-        if (a1 == null && a2 == null) {
+        if (a1 == a2) {
             return true;
+        }
+        if (a1 == null || a2 == null) {
+            return false;
         }
         return Arrays.equals(a1.getBinaryData(), a2.getBinaryData());
     }
