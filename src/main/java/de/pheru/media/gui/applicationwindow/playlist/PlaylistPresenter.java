@@ -14,7 +14,6 @@ import de.pheru.media.task.LoadPlaylistTask;
 import de.pheru.media.task.PheruMediaTask;
 import de.pheru.media.task.TaskPool;
 import de.pheru.media.util.ByteUtil;
-import de.pheru.media.util.FileUtil;
 import de.pheru.media.util.TimeUtil;
 import javafx.application.Application.Parameters;
 import javafx.beans.binding.Bindings;
@@ -212,7 +211,7 @@ public class PlaylistPresenter implements Initializable {
     private void savePlaylist() {
         //TODO Playlist speichern: Statusbar-Meldung
         try {
-            FileUtil.savePlaylist(new File(playlist.getAbsolutePath()), playlist.getTitles());
+            playlist.save();
             playlist.setDirty(false);
         } catch (IOException e) {
             LOGGER.error("Exception saving playlist!", e);
@@ -242,7 +241,7 @@ public class PlaylistPresenter implements Initializable {
         File playlistFile = fileChooser.showSaveDialog(table.getScene().getWindow());
         if (playlistFile != null) {
             try {
-                if (FileUtil.savePlaylist(playlistFile, playlist.getTitles())) {
+                if (playlist.save(playlistFile)) {
                     playlist.setFilePath(playlistFile.getParent());
                     playlist.setFileName(playlistFile.getName());
                     playlist.setDirty(false);
@@ -333,7 +332,7 @@ public class PlaylistPresenter implements Initializable {
         currentTitleNotification.setOnMouseClicked((MouseEvent event) -> {
             primaryStage.setIconified(false);
             primaryStage.toFront();
-            currentTitleNotification.hide(false); //TODO aktueller Titel-Notif.: fadeOut?
+            currentTitleNotification.hide(false);
         });
         currentTitleNotification.show();
     }

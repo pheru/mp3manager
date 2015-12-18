@@ -17,12 +17,12 @@ public abstract class PheruMediaTask extends Task<Void> {
     private final ObjectProperty<PheruMediaTaskStatus> status = new SimpleObjectProperty<>(PheruMediaTaskStatus.READY);
     private EventHandler<PheruMediaTaskEvent> onFinishedHandler;
 
-    protected abstract void innerCall();
+    protected abstract void callImpl();
 
     @Override
     protected Void call() throws Exception {
         setStatus(PheruMediaTaskStatus.RUNNING);
-        innerCall();
+        callImpl();
         if (onFinishedHandler != null) {
             PheruMediaTaskEvent event = new PheruMediaTaskEvent();
             event.setStatus(getStatus());

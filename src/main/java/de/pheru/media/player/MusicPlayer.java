@@ -4,24 +4,21 @@ import de.pheru.media.cdi.qualifiers.XMLSettings;
 import de.pheru.media.data.Mp3FileData;
 import de.pheru.media.data.Playlist;
 import de.pheru.media.settings.Settings;
-import java.io.File;
-import java.net.MalformedURLException;
 import javafx.beans.binding.DoubleBinding;
-import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleObjectProperty;
-import javafx.beans.value.ObservableValue;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.util.Duration;
-import javax.annotation.PostConstruct;
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+import java.io.File;
+import java.net.MalformedURLException;
 
 /**
  * Player zum Abspielen von der MP3-Dateien.
@@ -45,13 +42,6 @@ public class MusicPlayer {
 
     private MediaPlayer player;
 
-    @PostConstruct
-    private void init() {
-        settings.musicPlayerVolumeProperty().addListener((ObservableValue<? extends Number> observable, Number oldValue, Number newValue) -> {
-            settings.setMusicPlayerMuted(false);//TODO binding in settings?
-        });
-    }
-
     public void playPause() {
         if (player != null && player.getStatus() == MediaPlayer.Status.PLAYING) {
             player.pause();
@@ -60,7 +50,6 @@ public class MusicPlayer {
         } else if (playlist.getCurrentTitle() != null) {
             play(playlist.getCurrentTitle());
         }
-        //TODO Meldung ausgeben, wenn player == null und playlist leer?
     }
 
     public void play(Integer index) {
@@ -68,9 +57,8 @@ public class MusicPlayer {
         play(playlist.getTitles().get(index));
     }
 
-    //TODO play: wenn bereits gespielt neu starten oder nichts tun?
     private void play(Mp3FileData mp3) {
-        //TODO Player in neuem Thread zur Performanceverbesserung und/oder Standbyproblematik (#75)?
+        //Player in neuem Thread zur Performanceverbesserung und/oder Standbyproblematik (#75)?
         //new Thread(() -> {
 
 
@@ -115,12 +103,12 @@ public class MusicPlayer {
                 }
             });
         } catch (MalformedURLException e) {
-            //TODO GUI in MusicPlayser
+            //TODO Keine GUI in MusicPlayser
             LOGGER.error("Exception creating URL from filePath " + file.getAbsolutePath(), e);
 //            Alert alert = new Alert(Alert.AlertType.ERROR, "Fehler beim Abspielen der Datei\n" + file.getAbsolutePath() + "!");
 //            alert.showAndWait();
         }
-    //}).start();
+        //}).start();
     }
 
     public void stop() {

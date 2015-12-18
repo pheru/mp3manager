@@ -37,7 +37,7 @@ public class SaveFilesTask extends PheruMediaTask {
     }
 
     @Override
-    protected void innerCall() {
+    protected void callImpl() {
         int successfullySaved = 0;
         updateProgress(-1, 1);
         for (int i = 0; i < dataToSave.size(); i++) {

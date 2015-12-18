@@ -62,15 +62,15 @@ public class ApplicationStarter {
     }
 
     private void initJNativeHook() {
-        GlobalScreen.addNativeKeyListener(globalKeyListener); //TODO GlobalScreen kann Uns.LinkError werfen (v.a. wenn Anwendung mehrfach gestartet wird) Siehe #56
         try {
+            GlobalScreen.addNativeKeyListener(globalKeyListener);
             GlobalScreen.registerNativeHook();
-        } catch (NativeHookException e) {
-            LOGGER.error("Exception initializing JNativeHook!", e);
+        } catch (NativeHookException | UnsatisfiedLinkError e) {
+            LOGGER.error("Exception/Error initializing JNativeHook!", e);
             Alert alert = new Alert(Alert.AlertType.WARNING);
             alert.getDialogPane().setPrefWidth(650.0);
-            alert.setHeaderText("Shortcuts!"); //TODO Shortcuts-Alert: Header u. Content
-            alert.setContentText("TODO");
+            alert.setHeaderText("Shortcuts konnten nicht initialisiert werden!");
+            alert.setContentText("Shortcuts werden deaktiviert.");
             alert.showAndWait();
             settings.setShortcutsEnabled(false);
         }
@@ -112,7 +112,7 @@ public class ApplicationStarter {
                 alert.setHeaderText(null);
                 Label text = new Label(PheruMedia.APPLICATION_NAME + " wirklich schließen?");
                 CheckBox rememberDecisionBox = new CheckBox("Diese Meldung nicht mehr anzeigen");
-                rememberDecisionBox.selectedProperty().bindBidirectional(settings.dontShowAgainApplicationCloseDialogProperty());
+                rememberDecisionBox.selectedProperty().bindBidirectional(settings.dontShowAgainCloseApplicationDialogProperty());
                 VBox content = new VBox(text, rememberDecisionBox);
                 content.setSpacing(15);
                 alert.getDialogPane().setContent(content);

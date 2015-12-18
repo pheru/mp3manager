@@ -2,7 +2,7 @@ package de.pheru.media.settings;
 
 import de.pheru.fx.controls.notification.NotificationManager;
 import de.pheru.media.PheruMedia;
-import de.pheru.media.gui.applicationwindow.main.MainColumn;
+import de.pheru.media.gui.applicationwindow.main.MainTableColumn;
 import de.pheru.media.settings.objectproperties.NotificationsAlignmentProperty;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.DoubleProperty;
@@ -13,6 +13,7 @@ import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import org.apache.logging.log4j.LogManager;
@@ -41,9 +42,9 @@ import java.io.File;
 @XmlAccessorType(XmlAccessType.NONE)
 public class Settings {
 
-    public static final String FILE_PATH = PheruMedia.APPLICATION_PATH + "/settings.xml";
+    public static final String FILE_PATH = PheruMedia.APPLICATION_PATH + "settings.xml";
 
-    private static final String XMLPATH_ENDING = "/text()";
+    private static final Logger LOGGER = LogManager.getLogger(Settings.class);
 
     private static final String XMLPATH_GENERAL = "general/";
     private static final String XMLPATH_DIRECTORIES = "directories/";
@@ -53,7 +54,9 @@ public class Settings {
     private static final String XMLPATH_NOTIFICATIONS = "notifications/";
     private static final String XMLPATH_DIALOGS = "dialogs/";
 
-    private static final Logger LOGGER = LogManager.getLogger(Settings.class);
+    private static final String XMLSUBPATH_DONTSHOWAGAIN = "/dontShowAgain/";
+
+    private static final String XMLPATH_ENDING = "/text()";
 
     @XmlPath(XMLPATH_GENERAL + "shortcutsEnabled" + XMLPATH_ENDING)
     private final BooleanProperty shortcutsEnabled = new SimpleBooleanProperty(true);
@@ -95,23 +98,22 @@ public class Settings {
     @XmlPath(XMLPATH_NOTIFICATIONS + "duration" + XMLPATH_ENDING)
     private final IntegerProperty notificationsDuration = new SimpleIntegerProperty(5);
 
-    //TODO settings-xmlpath: dontshowagain zu lang -> schachteln
-    @XmlPath(XMLPATH_DIALOGS + "dontShowAgainApplicationCloseDialog" + XMLPATH_ENDING)
-    private final BooleanProperty dontShowAgainApplicationCloseDialog = new SimpleBooleanProperty(false);
+    @XmlPath(XMLPATH_DIALOGS + XMLSUBPATH_DONTSHOWAGAIN + "closeApplication" + XMLPATH_ENDING)
+    private final BooleanProperty dontShowAgainCloseApplicationDialog = new SimpleBooleanProperty(false);
 
-    //TODO Umbenennen
-    @XmlElementWrapper(name = "tableColumns")
-    @XmlElement(name = "tableColumn")
-    private final ObservableList<ColumnSettings> mainTableColumnSettings = FXCollections.observableArrayList();
+    @XmlElementWrapper(name = "mainTableColumns")
+    @XmlElement(name = "mainTableColumn")
+    private final ObservableList<MainTableColumnSettings> mainTableColumnSettings = FXCollections.observableArrayList();
 
-    @Deprecated
     Settings() {
-        //CDI
+        musicPlayerVolume.addListener((ObservableValue<? extends Number> observable, Number oldValue, Number newValue) -> {
+            setMusicPlayerMuted(false);
+        });
     }
 
     private void initDefaultMainColumnSettings() {
-        for (MainColumn column : MainColumn.values()) {
-            mainTableColumnSettings.add(new ColumnSettings(column));
+        for (MainTableColumn column : MainTableColumn.values()) {
+            mainTableColumnSettings.add(new MainTableColumnSettings(column));
         }
     }
 
@@ -140,7 +142,7 @@ public class Settings {
     public static Settings load() {
         try {
             if (!new File(FILE_PATH).exists()) {
-                //TODO Notification show update
+                //TODO Keine GUI in Settings
 //                Notifications.createNotification(Notification.Type.INFO)
 //                        .setText("Es konnten keine Einstellungen gefunden werden.\n"
 //                                + "Eine neue Datei wird angelegt.")
@@ -171,12 +173,12 @@ public class Settings {
         return defaultSettings;
     }
 
-    public ObservableList<ColumnSettings> getAllMainTableColumnSettings() {
+    public ObservableList<MainTableColumnSettings> getAllMainTableColumnSettings() {
         return mainTableColumnSettings;
     }
 
-    public ColumnSettings getMainTableColumnSettings(MainColumn column) {
-        for (ColumnSettings mainColumnSetting : mainTableColumnSettings) {
+    public MainTableColumnSettings getMainTableColumnSettings(MainTableColumn column) {
+        for (MainTableColumnSettings mainColumnSetting : mainTableColumnSettings) {
             if (mainColumnSetting.getColumn() == column) {
                 return mainColumnSetting;
             }
@@ -377,15 +379,15 @@ public class Settings {
     }
 
     public Boolean isDontShowAgainApplicationCloseDialog() {
-        return dontShowAgainApplicationCloseDialog.get();
+        return dontShowAgainCloseApplicationDialog.get();
     }
 
-    public void setDontShowAgainApplicationCloseDialog(final Boolean dontShowAgainApplicationCloseDialog) {
-        this.dontShowAgainApplicationCloseDialog.set(dontShowAgainApplicationCloseDialog);
+    public void setDontShowAgainCloseApplicationDialog(final Boolean dontShowAgainCloseApplicationDialog) {
+        this.dontShowAgainCloseApplicationDialog.set(dontShowAgainCloseApplicationDialog);
     }
 
-    public BooleanProperty dontShowAgainApplicationCloseDialogProperty() {
-        return dontShowAgainApplicationCloseDialog;
+    public BooleanProperty dontShowAgainCloseApplicationDialogProperty() {
+        return dontShowAgainCloseApplicationDialog;
     }
 
     public Boolean isShortcutsEnabled() {

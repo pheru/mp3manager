@@ -3,11 +3,6 @@ package de.pheru.media.data;
 import de.pheru.media.cdi.qualifiers.XMLSettings;
 import de.pheru.media.settings.Settings;
 import de.pheru.media.util.FileUtil;
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleBooleanProperty;
@@ -15,11 +10,18 @@ import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * Klasse zum verwalten einer Wiedergabeliste.
@@ -30,10 +32,9 @@ import org.apache.logging.log4j.Logger;
 public class Playlist extends FileBasedData {
 
     private static final Logger LOGGER = LogManager.getLogger(Playlist.class);
-    
+
     public static final int UNDEFINED_CURRENT_INDEX = -42;
-    public static final String FILE_EXTENSION = "mmpl";
-    public static final String FILE_SPLIT = System.lineSeparator();
+    public static final String FILE_EXTENSION = "pmpl";
 
     @Inject
     @XMLSettings
@@ -65,8 +66,8 @@ public class Playlist extends FileBasedData {
         }
         for (int i = 0; i < dataToAdd.size(); i++) {
             randomIndicesToPlay.add(Double.valueOf(Math.random() * (randomIndicesToPlay.size()
-                    - randomIndicesToPlay.indexOf(currentTitleIndex.get()))).intValue()
-                    + randomIndicesToPlay.indexOf(currentTitleIndex.get()) + 1,
+                            - randomIndicesToPlay.indexOf(currentTitleIndex.get()))).intValue()
+                            + randomIndicesToPlay.indexOf(currentTitleIndex.get()) + 1,
                     randomIndicesToPlay.size());
         }
         setDirtyByCheck();
@@ -130,7 +131,7 @@ public class Playlist extends FileBasedData {
      * Indizes zu aktualisieren nötig)
      */
     public void clear() {
-        List<Integer> indicesToRemove = new ArrayList();
+        List<Integer> indicesToRemove = new ArrayList<>();
         for (int i = 0; i < titles.size(); i++) {
             indicesToRemove.add(i);
         }
@@ -138,7 +139,39 @@ public class Playlist extends FileBasedData {
     }
 
     /**
+     * Speichert eine Wiedergabeliste.
      *
+     * @param playlistFile Das File, in welches die Wiedergabeliste gespeichert
+     *                     werden soll.
+     * @return true, wenn das Speichern erfolgreich war.
+     */
+    public boolean save(File playlistFile) throws IOException {
+        if (playlistFile.exists()) {
+            if (!playlistFile.delete()) {
+                throw new IOException("Could not delete old playlist-file!");
+            }
+        }
+        try (FileWriter writer = new FileWriter(playlistFile)) {
+            for (int i = 0; i < titles.size(); i++) {
+                writer.append(titles.get(i).getAbsolutePath());
+                if (i < titles.size() - 1) {
+                    writer.append(System.lineSeparator());
+                }
+            }
+        }
+        return playlistFile.exists();
+    }
+
+    /**
+     * Speichert eine Wiedergabeliste.
+     *
+     * @return true, wenn das Speichern erfolgreich war.
+     */
+    public boolean save() throws IOException {
+        return save(new File(absolutePath.get()));
+    }
+
+    /**
      * @return true, wenn Playlist "dirty"
      */
     private boolean checkIfDirty() {
@@ -146,7 +179,7 @@ public class Playlist extends FileBasedData {
             return false;
         }
         try {
-            List<String> filePaths = FileUtil.loadPlaylist(new File(absolutePath.get()));
+            List<String> filePaths = FileUtil.readLinesFromFile(new File(absolutePath.get()), true);
             if (titles.size() != filePaths.size()) {
                 return true;
             }
@@ -188,7 +221,6 @@ public class Playlist extends FileBasedData {
     }
 
     /**
-     *
      * @return true wenn ende der liste erreicht
      */
     public boolean next() {

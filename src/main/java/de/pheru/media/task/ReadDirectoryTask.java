@@ -4,12 +4,12 @@ import de.pheru.media.data.Mp3FileData;
 import de.pheru.media.exceptions.Mp3FileDataException;
 import de.pheru.media.util.FileUtil;
 import javafx.application.Platform;
-import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -25,6 +25,9 @@ public class ReadDirectoryTask extends PheruMediaTask {
     private final ObservableList<Mp3FileData> masterData;
     private final ObservableList<Mp3FileData> playlistTitles;
 
+    private final List<Mp3FileData> loadedData = new ArrayList<>();
+    private final List<String> failedToLoadFileNames = new ArrayList<>();
+
     /**
      * @param directory      Das auszulesende Verzeichnis.
      * @param masterData     Die Liste für die Mp3FileData-Objekte.
@@ -37,26 +40,44 @@ public class ReadDirectoryTask extends PheruMediaTask {
         this.playlistTitles = playlistTitles;
     }
 
-    //TODO Innercall überarbeiten: zu unübersichtlich und lang
     @Override
-    protected void innerCall() {
+    protected void callImpl() {
+        Platform.runLater(masterData::clear);
+
+        List<File> files = readDirectory();
+        loadData(files);
+
+        if (!isCancelled()) {
+            updateTitle("Laden der Dateien abgeschlossen.");
+            updateMessage(loadedData.size() + " von " + files.size() + " Dateien wurden erfolgreich geladen.");
+            if (loadedData.isEmpty() && !files.isEmpty()) {
+                setStatus(PheruMediaTaskStatus.FAILED);
+                Platform.runLater(() -> showFailedAlert(directory, failedToLoadFileNames));
+            } else if (loadedData.size() < files.size()) {
+                setStatus(PheruMediaTaskStatus.INSUFFICIENT);
+                Platform.runLater(() -> showFailedAlert(directory, failedToLoadFileNames));
+            } else {
+                setStatus(PheruMediaTaskStatus.SUCCESSFUL);
+            }
+        }
         Platform.runLater(() -> {
-            masterData.clear();
+            updateProgress(1, 1);
+            masterData.addAll(loadedData);
         });
-        //Verzeichnis auslesen
+    }
+
+    private List<File> readDirectory() {
         updateTitle("Lese Verzeichnis...");
         updateMessage(directory);
         updateProgress(-1, 1);
-        ObservableList<File> files = FileUtil.collectMp3FilesFromDirectory(directory);
+        return FileUtil.collectMp3FilesFromDirectory(directory);
+    }
 
-        //Mp3Informationen laden und am Ende der Liste hinzufügen
-        ObservableList<Mp3FileData> loadedData = FXCollections.observableArrayList();
-        ObservableList<String> failedToLoadFileNames = FXCollections.observableArrayList();
+    private void loadData(List<File> files) {
         for (int i = 0; i < files.size(); i++) {
             if (isCancelled()) {
                 updateTitle("Laden der Dateien abgebrochen!");
                 updateMessage(loadedData.size() + " von " + files.size() + " Dateien wurden erfolgreich geladen.");
-                updateProgress(1, 1);
                 setStatus(PheruMediaTaskStatus.INSUFFICIENT);
                 break;
             }
@@ -81,30 +102,6 @@ public class ReadDirectoryTask extends PheruMediaTask {
             }
             updateProgress(i + 1, files.size());
         }
-        if (!isCancelled()) {
-            updateTitle("Laden der Dateien abgeschlossen.");
-            updateMessage(loadedData.size() + " von " + files.size() + " Dateien wurden erfolgreich geladen.");
-            if (loadedData.isEmpty() && !files.isEmpty()) {
-                setStatus(PheruMediaTaskStatus.FAILED);
-                Platform.runLater(() -> {
-                    showFailedAlert(directory, failedToLoadFileNames);
-                });
-            } else if (loadedData.size() < files.size()) {
-                setStatus(PheruMediaTaskStatus.INSUFFICIENT);
-                Platform.runLater(() -> {
-                    showFailedAlert(directory, failedToLoadFileNames);
-                });
-            } else {
-                setStatus(PheruMediaTaskStatus.SUCCESSFUL);
-            }
-        }
-        Platform.runLater(() -> {
-            if (loadedData.isEmpty()) {
-                updateProgress(1, 1);
-            } else {
-                masterData.addAll(loadedData);
-            }
-        });
     }
 
     @Deprecated //TODO Keine GUI in Task

@@ -164,37 +164,18 @@ public class Mp3FileData extends FileBasedData {
      * @throws de.pheru.media.exceptions.Mp3FileDataException  Wenn das erneute Laden der Mp3FileData fehlschlägt.
      */
     public void save(Mp3FileData changeData) throws RenameFailedException, SaveFailedException, Mp3FileDataException {
-        //TODO refactoren (untergliedern)
         File file = new File(absolutePath.get());
         if (!changeData.getFileName().equals(FIELD_NOT_EDITABLE + ".mp3")
                 && !fileName.get().equals(changeData.getFileName())) {
-            File newFile = new File(filePath.get() + "\\" + changeData.getFileName());
-            if (file.renameTo(newFile)) {
-                file = newFile;
-                fileName.set(changeData.getFileName());
-            } else {
-                throw new RenameFailedException("Could not rename file " + fileName.get() + " to " + changeData.getFileName());
-            }
+            file = renameFile(file, changeData.getFileName());
         }
-
         try {
             MP3File mp3File = (MP3File) AudioFileIO.read(file);
             AbstractID3v2Tag tag = mp3File.getID3v2Tag();
-            setTagField(tag, FieldKey.TITLE, changeData.getTitle());
-            setTagField(tag, FieldKey.ARTIST, changeData.getArtist());
-            setTagField(tag, FieldKey.ALBUM, changeData.getAlbum());
-            setTagField(tag, FieldKey.GENRE, changeData.getGenre());
-            setTagField(tag, FieldKey.YEAR, changeData.getYear());
-            setTagField(tag, FieldKey.TRACK, changeData.getTrack());
+            setTagFields(tag, changeData);
 
             if (changeData.getArtworkData() != null && changeData.getArtworkData().getBinaryData().length > 0) {
-                Artwork newArtwork = new Artwork();
-                newArtwork.setBinaryData(changeData.getArtworkData().getBinaryData());
-                newArtwork.setMimeType(changeData.getArtworkData().getMimeType());
-                newArtwork.setDescription("");
-                newArtwork.setPictureType(PictureTypes.DEFAULT_ID); //DEFAULT_ID == Cover (Front)
-                tag.deleteArtworkField();
-                tag.setField(newArtwork);
+                setArtworkTagField(tag, changeData);
             }
             mp3File.save();
         } catch (CannotReadException | IOException | ReadOnlyFileException | TagException | InvalidAudioFrameException e) {
@@ -202,7 +183,36 @@ public class Mp3FileData extends FileBasedData {
                     + ToStringBuilder.reflectionToString(this, ToStringStyle.MULTI_LINE_STYLE, true)
                     + "\nwith changeData: " + ToStringBuilder.reflectionToString(changeData, ToStringStyle.MULTI_LINE_STYLE, true), e);
         }
-        loadDataFromFile(file); //TODO testen, ob funktioniert
+        loadDataFromFile(file);
+    }
+
+    private void setTagFields(AbstractID3v2Tag tag, Mp3FileData changeData) throws FieldDataInvalidException {
+        setTagField(tag, FieldKey.TITLE, changeData.getTitle());
+        setTagField(tag, FieldKey.ARTIST, changeData.getArtist());
+        setTagField(tag, FieldKey.ALBUM, changeData.getAlbum());
+        setTagField(tag, FieldKey.GENRE, changeData.getGenre());
+        setTagField(tag, FieldKey.YEAR, changeData.getYear());
+        setTagField(tag, FieldKey.TRACK, changeData.getTrack());
+    }
+
+    private void setArtworkTagField(AbstractID3v2Tag tag, Mp3FileData changeData) throws FieldDataInvalidException {
+        Artwork newArtwork = new Artwork();
+        newArtwork.setBinaryData(changeData.getArtworkData().getBinaryData());
+        newArtwork.setMimeType(changeData.getArtworkData().getMimeType());
+        newArtwork.setDescription("");
+        newArtwork.setPictureType(PictureTypes.DEFAULT_ID); //DEFAULT_ID == Cover (Front)
+        tag.deleteArtworkField();
+        tag.setField(newArtwork);
+    }
+
+    private File renameFile(final File file, final String newFileName) throws RenameFailedException {
+        File newFile = new File(filePath.get() + "\\" + newFileName);
+        if (file.renameTo(newFile)) {
+            fileName.set(newFileName);
+            return newFile;
+        } else {
+            throw new RenameFailedException("Could not rename file " + fileName.get() + " to " + newFileName);
+        }
     }
 
     private void setTagField(AbstractID3v2Tag tag, FieldKey key, String value) throws FieldDataInvalidException {

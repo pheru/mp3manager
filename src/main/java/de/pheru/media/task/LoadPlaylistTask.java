@@ -30,8 +30,9 @@ public class LoadPlaylistTask extends PheruMediaTask {
         this.masterData = masterData;
     }
 
+    //TODO callImpl zu lange
     @Override
-    protected void innerCall() {
+    protected void callImpl() {
         updateProgress(-1, 1);
         updateTitle("Lade Wiedergabeliste " + playlistFileToLoad.getName()+ "...");
         updateMessage("Lese Datei...");
@@ -39,7 +40,7 @@ public class LoadPlaylistTask extends PheruMediaTask {
         List<String> failedToLoadFilePaths = new ArrayList<>();
         List<String> filePaths;
         try {
-            filePaths = FileUtil.loadPlaylist(playlistFileToLoad);
+            filePaths = FileUtil.readLinesFromFile(playlistFileToLoad, true);
             for (int i = 0; i < filePaths.size(); i++) {
                 if (isCancelled()) {
                     updateTitle("Laden der Wiedergabeliste abgebrochen!");

@@ -10,7 +10,7 @@ import de.pheru.media.gui.nodes.NoDirectoryPlaceholder;
 import de.pheru.media.gui.nodes.NoFilterResultPlaceholder;
 import de.pheru.media.gui.nodes.ReadingDirectoryPlaceholder;
 import de.pheru.media.gui.util.CssRowFactory;
-import de.pheru.media.settings.ColumnSettings;
+import de.pheru.media.settings.MainTableColumnSettings;
 import de.pheru.media.settings.Settings;
 import de.pheru.media.task.PheruMediaTask;
 import de.pheru.media.task.ReadDirectoryTask;
@@ -81,7 +81,7 @@ public class MainPresenter implements Initializable {
     private ProgressIndicator taskProgress;
     @FXML
     private TableView<Mp3FileData> table;
-    private CssRowFactory<Mp3FileData> tableRowFactory; //TODO Liste der styledIndices statt komplette RowFactory
+    private CssRowFactory<Mp3FileData> tableRowFactory;
 
     private final ReadingDirectoryPlaceholder readingDirectoryPlaceholder = new ReadingDirectoryPlaceholder();
     private final NoFilterResultPlaceholder noFilterResultPlaceholder = new NoFilterResultPlaceholder();
@@ -145,7 +145,7 @@ public class MainPresenter implements Initializable {
         table.setItems(setUpTableFilter());
         Bindings.bindContent(selectedData, table.getSelectionModel().getSelectedItems());
         initColumns();
-        settings.getAllMainTableColumnSettings().addListener((ListChangeListener.Change<? extends ColumnSettings> change) -> {
+        settings.getAllMainTableColumnSettings().addListener((ListChangeListener.Change<? extends MainTableColumnSettings> change) -> {
             if (!updatingColumnsOrderList) {
                 updateColumnsOrderTable();
             }
@@ -197,7 +197,7 @@ public class MainPresenter implements Initializable {
     }
 
     private void initColumns() {
-        for (MainColumn column : MainColumn.values()) {
+        for (MainTableColumn column : MainTableColumn.values()) {
             TableColumn<Mp3FileData, String> tableColumn = new TableColumn<>(column.getColumnName());
             if (column.isAlignRight()) {
                 tableColumn.setCellFactory((TableColumn<Mp3FileData, String> param) -> {
@@ -220,7 +220,7 @@ public class MainPresenter implements Initializable {
                     return cell;
                 });
             }
-            ColumnSettings mainTableColumnSettings = settings.getMainTableColumnSettings(column);
+            MainTableColumnSettings mainTableColumnSettings = settings.getMainTableColumnSettings(column);
             tableColumn.prefWidthProperty().bind(mainTableColumnSettings .widthProperty());
             mainTableColumnSettings .widthProperty().bind(tableColumn.widthProperty());
             tableColumn.visibleProperty().bindBidirectional(mainTableColumnSettings .visibleProperty());
@@ -236,7 +236,7 @@ public class MainPresenter implements Initializable {
         updatingColumnsOrderTable = true;
         List<TableColumn> columns = new ArrayList<>(table.getColumns());
         table.getColumns().clear();
-        for (ColumnSettings cs : settings.getAllMainTableColumnSettings()) {
+        for (MainTableColumnSettings cs : settings.getAllMainTableColumnSettings()) {
             table.getColumns().add(getColumnByName(columns, cs.getColumn().getColumnName()));
         }
         updatingColumnsOrderTable = false;
@@ -253,12 +253,12 @@ public class MainPresenter implements Initializable {
 
     private void updateColumnsOrderList() {
         updatingColumnsOrderList = true;
-        List<ColumnSettings> newOrder = new ArrayList<>();
+        List<MainTableColumnSettings> newOrder = new ArrayList<>();
         for (TableColumn<Mp3FileData, ?> column : table.getColumns()) {
-            newOrder.add(settings.getMainTableColumnSettings(MainColumn.getMainColumnByColumnName(column.getText())));
+            newOrder.add(settings.getMainTableColumnSettings(MainTableColumn.getMainColumnByColumnName(column.getText())));
         }
         settings.getAllMainTableColumnSettings().clear();
-        for (ColumnSettings cs : newOrder) {
+        for (MainTableColumnSettings cs : newOrder) {
             settings.getAllMainTableColumnSettings().add(cs);
         }
         updatingColumnsOrderList = false;
