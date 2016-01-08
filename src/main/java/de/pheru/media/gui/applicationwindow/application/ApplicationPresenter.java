@@ -1,7 +1,7 @@
 package de.pheru.media.gui.applicationwindow.application;
 
 import de.pheru.fx.util.focus.FocusTraversal;
-import de.pheru.media.GlobalKeyListener;
+import de.pheru.media.util.GlobalKeyListener;
 import de.pheru.media.cdi.qualifiers.XMLSettings;
 import de.pheru.media.gui.applicationwindow.editfile.EditFilePresenter;
 import de.pheru.media.gui.applicationwindow.editfile.EditFileView;

@@ -1,7 +1,7 @@
 package de.pheru.media.settings;
 
 import de.pheru.fx.controls.notification.NotificationManager;
-import de.pheru.media.PheruMedia;
+import de.pheru.media.gui.PheruMedia;
 import de.pheru.media.gui.applicationwindow.main.MainTableColumn;
 import de.pheru.media.settings.objectproperties.NotificationsAlignmentProperty;
 import javafx.beans.property.BooleanProperty;

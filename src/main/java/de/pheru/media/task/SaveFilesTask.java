@@ -4,37 +4,32 @@ import de.pheru.media.data.Mp3FileData;
 import de.pheru.media.exceptions.Mp3FileDataException;
 import de.pheru.media.exceptions.RenameFailedException;
 import de.pheru.media.exceptions.SaveFailedException;
-import javafx.beans.property.BooleanProperty;
-import javafx.beans.property.SimpleBooleanProperty;
 import javafx.collections.ObservableList;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.util.concurrent.FutureTask;
-
 /**
- * Task zum Speichern von MP3-Dateien.<br/>
- * Pro Task kann der Dateiname nur für eine einzelne Datei gespeichert werden.
- * Sonstige Tag-Informationen können für mehrere Dateien gleichzeitig
- * gespeichert werden.
+ * Task zum Speichern von MP3-Dateien.
  *
  * @author Philipp Bruckner
  */
-public class SaveFilesTask extends PheruMediaTask {
+public abstract class SaveFilesTask extends PheruMediaTask {
 
     private static final Logger LOGGER = LogManager.getLogger(SaveFilesTask.class);
 
-    private final ObservableList<Mp3FileData> dataToSave;
+    private final ObservableList<Mp3FileData> dataToSave; //TODO Observable nötig?
     private final Mp3FileData changeData;
-
-    private boolean firstFail = true;
-    private final BooleanProperty continueOnFail = new SimpleBooleanProperty(true);
-    private final BooleanProperty showAlertOnNextFail = new SimpleBooleanProperty(true);
 
     public SaveFilesTask(final ObservableList<Mp3FileData> dataToSave, final Mp3FileData changeData) {
         this.dataToSave = dataToSave;
         this.changeData = changeData;
     }
+
+    protected abstract void handleRenameFailed();
+
+    protected abstract boolean handleSaveFailed(String fileName); //TODO filename nötig?
+
+    protected abstract void handleReloadFailed();
 
     @Override
     protected void callImpl() {
@@ -54,15 +49,16 @@ public class SaveFilesTask extends PheruMediaTask {
                 dataToSave.get(i).save(changeData);
                 successfullySaved++;
             } catch (RenameFailedException e) {
-                handleRenameFailed(e);
+                LOGGER.info("Exception renaming file!", e);
+                handleRenameFailed();
             } catch (SaveFailedException e) {
-                handleSaveFailed(e, dataToSave.get(i).getFileName());
-                if (!continueOnFail.get()) {
+                LOGGER.info("Exception saving file!", e);
+                if (!handleSaveFailed(dataToSave.get(i).getFileName())) {
                     cancel();
                 }
             } catch (Mp3FileDataException e) {
-                //EXC
-                e.printStackTrace();
+                LOGGER.error("Exception reloading saved file!", e);
+                handleReloadFailed(); //TODO evtl. filename als Parameter
             }
             updateProgress(i + 1, dataToSave.size());
         }
@@ -77,9 +73,8 @@ public class SaveFilesTask extends PheruMediaTask {
         }
     }
 
-    private void handleRenameFailed(RenameFailedException renameFailedException) {
-        LOGGER.info("Exception renaming file!", renameFailedException);
-        //TODO Keine GUI in Task
+//    protected abstract void handleRenameFailed();
+    //TODO Keine GUI in Task
 //        Platform.runLater(() -> {
 //            Alert alert = new Alert(Alert.AlertType.ERROR);
 //            alert.setHeaderText("Speichern fehlgeschlagen!");
@@ -87,48 +82,47 @@ public class SaveFilesTask extends PheruMediaTask {
 //                    + "Möglicherweise enthält der Dateiname ungültige Zeichen oder eine Datei mit diesem Namen existiert bereits.");
 //            alert.showAndWait();
 //        });
-    }
+//    }
 
-    private void handleSaveFailed(SaveFailedException saveFailedException, String fileName) {
-        //TODO keine GUI in Task
-        LOGGER.info("Exception saving file!", saveFailedException);
-        if (firstFail || showAlertOnNextFail.get()) {
-            firstFail = false;
-            FutureTask<Void> alertTask = new FutureTask<>(() -> {
-//                Alert alert = new Alert(Alert.AlertType.ERROR);
-//                alert.setHeaderText("Speichern fehlgeschlagen!");
-//                Label contentText = new Label("Fehler beim Speichern der Datei \"" + fileName
-//                        + "\"!\n\nMöglicherweise ist die Datei schreibgeschützt oder in einer anderen Anwendung geöffnet.");
+//    protected abstract boolean handleSaveFailed(String fileName); //TODO filename nötig?
+//        //TODO keine GUI in Task
+//        if (firstFail || showAlertOnNextFail.get()) {
+//            firstFail = false;
+//            FutureTask<Void> alertTask = new FutureTask<>(() -> {
+////                Alert alert = new Alert(Alert.AlertType.ERROR);
+////                alert.setHeaderText("Speichern fehlgeschlagen!");
+////                Label contentText = new Label("Fehler beim Speichern der Datei \"" + fileName
+////                        + "\"!\n\nMöglicherweise ist die Datei schreibgeschützt oder in einer anderen Anwendung geöffnet.");
+////
+////                CheckBox continueBox = new CheckBox("Mit verbleibenden Dateien fortfahren");
+////                continueBox.selectedProperty().bindBidirectional(continueOnFail);
+////                CheckBox showAlertBox = new CheckBox("Diesen Dialog bei Fehler erneut zeigen");
+////                showAlertBox.selectedProperty().bindBidirectional(showAlertOnNextFail);
+////                showAlertBox.disableProperty().bind(continueBox.selectedProperty().not());
+////
+////                VBox content = new VBox(contentText);
+////                if (dataToSave.size() > 1) {
+////                    Pane pane = new Pane();
+////                    pane.setMinHeight(20);
+////                    pane.setPrefWidth(0);
+////                    content.getChildren().addAll(pane, continueBox, showAlertBox);
+////                }
+////
+////                alert.getDialogPane().setContent(content);
+////                alert.showAndWait();
+//            }, null);
 //
-//                CheckBox continueBox = new CheckBox("Mit verbleibenden Dateien fortfahren");
-//                continueBox.selectedProperty().bindBidirectional(continueOnFail);
-//                CheckBox showAlertBox = new CheckBox("Diesen Dialog bei Fehler erneut zeigen");
-//                showAlertBox.selectedProperty().bindBidirectional(showAlertOnNextFail);
-//                showAlertBox.disableProperty().bind(continueBox.selectedProperty().not());
+////            Platform.runLater(alertTask);
 //
-//                VBox content = new VBox(contentText);
-//                if (dataToSave.size() > 1) {
-//                    Pane pane = new Pane();
-//                    pane.setMinHeight(20);
-//                    pane.setPrefWidth(0);
-//                    content.getChildren().addAll(pane, continueBox, showAlertBox);
-//                }
-//
-//                alert.getDialogPane().setContent(content);
-//                alert.showAndWait();
-            }, null);
-
-//            Platform.runLater(alertTask);
-
-//            try {
-//                alertTask.get();
-//            } catch (InterruptedException | ExecutionException e) {
-//                if (isCancelled()) {
-//                    return;
-//                }
-//                throw new PheruMediaRuntimeException("Exception waiting for FutureTask!", e);
-//            }
-        }
-    }
+////            try {
+////                alertTask.get();
+////            } catch (InterruptedException | ExecutionException e) {
+////                if (isCancelled()) {
+////                    return;
+////                }
+////                throw new PheruMediaRuntimeException("Exception waiting for FutureTask!", e);
+////            }
+//        }
+//    }
 
 }
