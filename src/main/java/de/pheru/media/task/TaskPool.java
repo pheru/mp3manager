@@ -1,5 +1,6 @@
 package de.pheru.media.task;
 
+import de.pheru.media.cdi.events.TaskExceptionEvent;
 import javafx.application.Platform;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.DoubleProperty;
@@ -13,9 +14,12 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javax.enterprise.context.ApplicationScoped;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.event.Event;
+import javax.inject.Inject;
 
 /**
  * Klasse zum abarbeiten von Tasks.<br/>
@@ -30,6 +34,9 @@ import org.apache.logging.log4j.Logger;
 public class TaskPool {
 
     private static final Logger LOGGER = LogManager.getLogger(TaskPool.class);
+
+    @Inject
+    private Event<TaskExceptionEvent> taskExceptionEvent;
 
     private final ObservableList<PheruMediaTask> tasks = FXCollections.observableArrayList();
     private PheruMediaTask currentTask;
@@ -109,14 +116,11 @@ public class TaskPool {
             progress.bind(currentTask.progressProperty());
             status.bind(currentTask.statusProperty());
             currentTask.exceptionProperty().addListener((ObservableValue<? extends Throwable> observable, Throwable oldValue, Throwable newValue) -> {
-                //TODO Keine GUI in TaskPool
                 LOGGER.fatal("Unexpected Exception running Task!", newValue);
                 Platform.runLater(() -> {
                     status.unbind();
                     status.set(PheruMediaTask.PheruMediaTaskStatus.FAILED);
-                    //TODO Keine GUI in TaskPool
-//                    Alert alert = new Alert(Alert.AlertType.ERROR, "Fehler beim ausführen einer Aufgabe!");
-//                    alert.showAndWait();
+                    taskExceptionEvent.fire(new TaskExceptionEvent());
                 });
             });
             Thread thread = new Thread(currentTask, currentTask.getClass().toString());

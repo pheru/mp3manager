@@ -1,12 +1,13 @@
 package de.pheru.media.util;
 
 import de.pheru.media.data.Mp3FileData;
+import javafx.scene.image.Image;
+
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
-import java.io.RandomAccessFile;
+import java.nio.file.Files;
 import java.text.DecimalFormat;
-import javafx.scene.image.Image;
 
 /**
  * Klasse zum formatieren von Bytes.
@@ -16,7 +17,6 @@ import javafx.scene.image.Image;
 public final class ByteUtil {
 
     private static final DecimalFormat TWO_DECIMAL_PLACES_FORMAT = new DecimalFormat("#0.00");
-    private static final Image NO_IMAGE_AVAILABLE = new Image("img/noImage.png");
 
     private ByteUtil() {
         //Utility-Klasse
@@ -29,20 +29,14 @@ public final class ByteUtil {
      * @return Das aus dem Byte-Array erzeugte Image.
      */
     public static Image byteArrayToImage(byte[] bytes) {
-        if (bytes != null && bytes.length > 0) {
-            return new Image(new ByteArrayInputStream(bytes));
+        if (bytes == null || bytes.length == 0) {
+            throw new IllegalArgumentException("byte-array must not be null or empty!");
         }
-        return NO_IMAGE_AVAILABLE;
+        return new Image(new ByteArrayInputStream(bytes));
     }
-    
-    public static byte[] fileToByteArray(File file) throws IOException{
-        try (RandomAccessFile randomAccessFile = new RandomAccessFile(file, "r")) {
-            byte[] byteArray = new byte[(int) randomAccessFile.length()];
-            randomAccessFile.read(byteArray);
-            return byteArray;
-        } catch (IOException e) {
-            throw e;
-        }
+
+    public static byte[] fileToByteArray(File file) throws IOException {
+        return Files.readAllBytes(file.toPath());
     }
 
     /**

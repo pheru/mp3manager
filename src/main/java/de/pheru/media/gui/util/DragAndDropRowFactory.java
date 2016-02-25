@@ -2,9 +2,6 @@ package de.pheru.media.gui.util;
 
 import com.sun.javafx.scene.control.skin.TableViewSkin;
 import com.sun.javafx.scene.control.skin.VirtualFlow;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
 import javafx.application.Platform;
 import javafx.event.Event;
 import javafx.event.EventHandler;
@@ -22,8 +19,11 @@ import javafx.util.Pair;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+
 /**
- *
  * @author Philipp Bruckner
  */
 public class DragAndDropRowFactory<T> implements Callback<TableView<T>, TableRow<T>> {
@@ -147,7 +147,6 @@ public class DragAndDropRowFactory<T> implements Callback<TableView<T>, TableRow
                 }
             } catch (Exception e) {
                 LOGGER.error("Exception while Drag&Drop!", e);
-                //TODO FX-Thread? (Alert)
                 Alert alert = new Alert(Alert.AlertType.ERROR, "Fehler beim Ausführen des Drag&Drop!");
                 alert.showAndWait();
             }

@@ -18,7 +18,6 @@ import org.apache.logging.log4j.Logger;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import java.io.File;
-import java.net.MalformedURLException;
 
 /**
  * Player zum Abspielen von der MP3-Dateien.
@@ -60,54 +59,45 @@ public class MusicPlayer {
     private void play(Mp3FileData mp3) {
         //Player in neuem Thread zur Performanceverbesserung und/oder Standbyproblematik (#75)?
         //new Thread(() -> {
-
-
         if (player != null) {
             player.stop();
         }
         File file = new File(mp3.getAbsolutePath());
-        try { //TODO try...catch Inhalt zu groß
-            Media media = new Media(file.toURI().toURL().toExternalForm());
-            player = new MediaPlayer(media);
-            player.setOnEndOfMedia(() -> {
-                if (!playlist.next() || settings.isMusicPlayerRepeat()) {
-                    play(playlist.getCurrentTitle());
-                } else {
-                    player.stop();
-                }
-            });
-            player.play();
-            status.bind(player.statusProperty());
-            totalTime.bind(mp3.durationProperty());
-            currentTime.bind(new DoubleBinding() {
-                {
-                    bind(player.currentTimeProperty());
-                }
+        Media media = new Media(file.toURI().toString());
+        player = new MediaPlayer(media);
+        player.setOnEndOfMedia(() -> {
+            if (!playlist.next() || settings.isMusicPlayerRepeat()) {
+                play(playlist.getCurrentTitle());
+            } else {
+                player.stop();
+            }
+        });
+        player.play();
+        status.bind(player.statusProperty());
+        totalTime.bind(mp3.durationProperty());
+        currentTime.bind(new DoubleBinding() {
+            {
+                bind(player.currentTimeProperty());
+            }
 
-                @Override
-                protected double computeValue() {
-                    return player.getCurrentTime().toSeconds();
-                }
-            });
-            player.volumeProperty().bind(new DoubleBinding() {
-                {
-                    bind(settings.musicPlayerVolumeProperty(), settings.musicPlayerMutedProperty());
-                }
+            @Override
+            protected double computeValue() {
+                return player.getCurrentTime().toSeconds();
+            }
+        });
+        player.volumeProperty().bind(new DoubleBinding() {
+            {
+                bind(settings.musicPlayerVolumeProperty(), settings.musicPlayerMutedProperty());
+            }
 
-                @Override
-                protected double computeValue() {
-                    if (settings.isMusicPlayerMuted()) {
-                        return 0.0;
-                    }
-                    return settings.getMusicPlayerVolume() / 100.0;
+            @Override
+            protected double computeValue() {
+                if (settings.isMusicPlayerMuted()) {
+                    return 0.0;
                 }
-            });
-        } catch (MalformedURLException e) {
-            //TODO Keine GUI in MusicPlayser
-            LOGGER.error("Exception creating URL from filePath " + file.getAbsolutePath(), e);
-//            Alert alert = new Alert(Alert.AlertType.ERROR, "Fehler beim Abspielen der Datei\n" + file.getAbsolutePath() + "!");
-//            alert.showAndWait();
-        }
+                return settings.getMusicPlayerVolume() / 100.0;
+            }
+        });
         //}).start();
     }
 

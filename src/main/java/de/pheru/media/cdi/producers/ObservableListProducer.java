@@ -4,6 +4,7 @@ import de.pheru.media.cdi.qualifiers.TableData;
 import de.pheru.media.data.Mp3FileData;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Produces;
 

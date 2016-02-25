@@ -7,8 +7,6 @@ import de.pheru.media.player.MusicPlayer;
 import de.pheru.media.settings.Settings;
 import de.pheru.media.util.ByteUtil;
 import de.pheru.media.util.TimeUtil;
-import java.net.URL;
-import java.util.ResourceBundle;
 import javafx.beans.binding.DoubleBinding;
 import javafx.beans.binding.ObjectBinding;
 import javafx.beans.binding.StringBinding;
@@ -26,8 +24,11 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.media.MediaPlayer;
+
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+import java.net.URL;
+import java.util.ResourceBundle;
 
 @ApplicationScoped
 public class MusicPlayerPresenter implements Initializable {

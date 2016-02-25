@@ -19,6 +19,7 @@
     </Appenders>
     
     <Loggers>
+        <Logger name="org.jboss" level="warn" />
         <Root level="debug" additivity="false">
             <AppenderRef ref="Console" level="debug"/>
             <AppenderRef ref="File" level="debug"/>

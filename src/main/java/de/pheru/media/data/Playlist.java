@@ -70,7 +70,7 @@ public class Playlist extends FileBasedData {
                             + randomIndicesToPlay.indexOf(currentTitleIndex.get()) + 1,
                     randomIndicesToPlay.size());
         }
-        setDirtyByCheck();
+        updateDirtyFlag();
     }
 
     /**
@@ -123,7 +123,7 @@ public class Playlist extends FileBasedData {
                 }
             }
         }
-        setDirtyByCheck();
+        updateDirtyFlag();
     }
 
     /**
@@ -171,6 +171,10 @@ public class Playlist extends FileBasedData {
         return save(new File(absolutePath.get()));
     }
 
+    public void updateDirtyFlag() {
+        dirty.set(checkIfDirty());
+    }
+
     /**
      * @return true, wenn Playlist "dirty"
      */
@@ -189,16 +193,10 @@ public class Playlist extends FileBasedData {
                 }
             }
         } catch (IOException e) {
-            //TODO checkIfDirty: Exception behandeln
-            //TODO Keine GUI in Playlist -> CDI Event
-//            Alert alert = new Alert(Alert.AlertType.ERROR);
-//            alert.showAndWait();
+            LOGGER.error("Dirty-Check: Playlist-File konnte nicht gelesen werden!", e);
+            return true;
         }
         return false;
-    }
-
-    public void setDirtyByCheck() {
-        dirty.set(checkIfDirty());
     }
 
     private void initRandomIndicesToPlay() {

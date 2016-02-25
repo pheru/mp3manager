@@ -1,7 +1,6 @@
 package de.pheru.media.gui.applicationwindow.application;
 
 import de.pheru.fx.util.focus.FocusTraversal;
-import de.pheru.media.util.GlobalKeyListener;
 import de.pheru.media.cdi.qualifiers.XMLSettings;
 import de.pheru.media.gui.applicationwindow.editfile.EditFilePresenter;
 import de.pheru.media.gui.applicationwindow.editfile.EditFileView;
@@ -13,8 +12,7 @@ import de.pheru.media.gui.applicationwindow.playlist.PlaylistPresenter;
 import de.pheru.media.gui.applicationwindow.playlist.PlaylistView;
 import de.pheru.media.player.MusicPlayer;
 import de.pheru.media.settings.Settings;
-import java.net.URL;
-import java.util.ResourceBundle;
+import de.pheru.media.util.GlobalKeyListener;
 import javafx.application.Platform;
 import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
@@ -25,9 +23,12 @@ import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
+import org.jnativehook.keyboard.NativeKeyEvent;
+
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
-import org.jnativehook.keyboard.NativeKeyEvent;
+import java.net.URL;
+import java.util.ResourceBundle;
 
 @ApplicationScoped
 public class ApplicationPresenter implements Initializable {

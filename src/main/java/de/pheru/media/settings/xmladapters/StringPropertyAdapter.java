@@ -2,6 +2,7 @@ package de.pheru.media.settings.xmladapters;
 
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
+
 import javax.xml.bind.annotation.adapters.XmlAdapter;
 
 /**

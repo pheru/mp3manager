@@ -17,7 +17,7 @@ import java.util.List;
  *
  * @author Philipp Bruckner
  */
-public class ReadDirectoryTask extends PheruMediaTask {
+public abstract class ReadDirectoryTask extends PheruMediaTask {
 
     private static final Logger LOGGER = LogManager.getLogger(ReadDirectoryTask.class);
 
@@ -40,6 +40,10 @@ public class ReadDirectoryTask extends PheruMediaTask {
         this.playlistTitles = playlistTitles;
     }
 
+    protected abstract void handleReadDirectoryInsufficient(String directory, List<String> failedToLoadFileNames);
+
+    protected abstract void handleReadDirectoryFailed(String directory, List<String> failedToLoadFileNames);
+
     @Override
     protected void callImpl() {
         Platform.runLater(masterData::clear);
@@ -52,10 +56,10 @@ public class ReadDirectoryTask extends PheruMediaTask {
             updateMessage(loadedData.size() + " von " + files.size() + " Dateien wurden erfolgreich geladen.");
             if (loadedData.isEmpty() && !files.isEmpty()) {
                 setStatus(PheruMediaTaskStatus.FAILED);
-                Platform.runLater(() -> showFailedAlert(directory, failedToLoadFileNames));
+                handleReadDirectoryFailed(directory, failedToLoadFileNames);
             } else if (loadedData.size() < files.size()) {
                 setStatus(PheruMediaTaskStatus.INSUFFICIENT);
-                Platform.runLater(() -> showFailedAlert(directory, failedToLoadFileNames));
+                handleReadDirectoryInsufficient(directory, failedToLoadFileNames);
             } else {
                 setStatus(PheruMediaTaskStatus.SUCCESSFUL);
             }
@@ -76,6 +80,7 @@ public class ReadDirectoryTask extends PheruMediaTask {
     private void loadData(List<File> files) {
         for (int i = 0; i < files.size(); i++) {
             if (isCancelled()) {
+                handleReadDirectoryInsufficient("test", new ArrayList<>());
                 updateTitle("Laden der Dateien abgebrochen!");
                 updateMessage(loadedData.size() + " von " + files.size() + " Dateien wurden erfolgreich geladen.");
                 setStatus(PheruMediaTaskStatus.INSUFFICIENT);
@@ -102,19 +107,5 @@ public class ReadDirectoryTask extends PheruMediaTask {
             }
             updateProgress(i + 1, files.size());
         }
-    }
-
-    @Deprecated //TODO Keine GUI in Task
-    private void showFailedAlert(String directory, List<String> failedToLoadFileNames) {
-        StringBuilder fileNamesStringBuilder = new StringBuilder();
-        for (String failedToLoadFileName : failedToLoadFileNames) {
-            fileNamesStringBuilder.append(failedToLoadFileName);
-            fileNamesStringBuilder.append("\n");
-        }
-//        Alert alert = new Alert(Alert.AlertType.ERROR);
-//        alert.setHeaderText("Fehler beim Lesen des Verzeichnisses \"" + directory + "\"!");
-//        alert.setContentText("Folgende Dateien konnten nicht gelesen werden:");
-//        alert.getDialogPane().setExpandableContent(new Label(fileNamesStringBuilder.toString()));
-//        alert.showAndWait();
     }
 }

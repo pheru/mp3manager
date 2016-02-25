@@ -2,10 +2,10 @@ package de.pheru.media.gui;
 
 import de.pheru.fx.controls.notification.NotificationManager;
 import de.pheru.fx.mvp.StartApplication;
-import de.pheru.media.util.GlobalKeyListener;
 import de.pheru.media.cdi.qualifiers.XMLSettings;
 import de.pheru.media.gui.applicationwindow.application.ApplicationView;
 import de.pheru.media.settings.Settings;
+import de.pheru.media.util.GlobalKeyListener;
 import javafx.application.Platform;
 import javafx.beans.value.ObservableValue;
 import javafx.event.EventHandler;

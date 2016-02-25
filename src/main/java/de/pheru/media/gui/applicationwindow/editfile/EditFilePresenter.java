@@ -6,17 +6,12 @@ import de.pheru.media.cdi.qualifiers.XMLSettings;
 import de.pheru.media.data.ArtworkData;
 import de.pheru.media.data.Mp3FileData;
 import de.pheru.media.gui.nodes.NumberComboBox;
+import de.pheru.media.gui.taskimpl.SaveFilesTaskImpl;
 import de.pheru.media.settings.Settings;
-import de.pheru.media.task.SaveFilesTask;
 import de.pheru.media.task.TaskPool;
 import de.pheru.media.util.ByteUtil;
 import de.pheru.media.util.Comparators;
-import java.io.File;
-import java.io.IOException;
-import java.net.URL;
-import java.util.ResourceBundle;
 import javafx.application.Platform;
-import javafx.beans.binding.DoubleBinding;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -24,6 +19,7 @@ import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Alert;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
@@ -35,11 +31,16 @@ import javafx.scene.layout.Pane;
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
 import javafx.stage.Window;
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jaudiotagger.tag.id3.valuepair.ImageFormats;
+
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+import java.io.File;
+import java.io.IOException;
+import java.net.URL;
+import java.util.ResourceBundle;
 
 @ApplicationScoped
 public class EditFilePresenter implements Initializable {
@@ -126,23 +127,7 @@ public class EditFilePresenter implements Initializable {
         changeData.genreProperty().bind(genreField.valueProperty());
         changeData.yearProperty().bind(yearField.valueProperty());
         changeData.trackProperty().bind(trackField.valueProperty());
-        coverView.fitHeightProperty().bind(coverView.fitWidthProperty());
-        coverView.fitWidthProperty().bind(new DoubleBinding() {
-            {
-                bind(coverPane.widthProperty(), coverPane.heightProperty());
-            }
-
-            @Override
-            protected double computeValue() {
-                double height = coverPane.heightProperty().get();
-                double width = coverPane.widthProperty().get();
-                if (width > height) {
-                    return height;
-                } else {
-                    return width;
-                }
-            }
-        });
+        coverView.fitHeightProperty().bind(coverPane.heightProperty());
         synchronizeTitleBox.selectedProperty().bindBidirectional(settings.editFileViewSynchronizeTitleProperty());
         sortTitleBox.selectedProperty().bindBidirectional(settings.editFileViewSortTitlesProperty());
         sortAlbumBox.selectedProperty().bindBidirectional(settings.editFileViewSortAlbumsProperty());
@@ -351,8 +336,7 @@ public class EditFilePresenter implements Initializable {
     private void setCover(ArtworkData artworkData) {
         if (artworkData != null) {
             coverView.setImage(ByteUtil.byteArrayToImage(artworkData.getBinaryData()));
-            //TODO CoverInfo: Höhe x Breite oder Breite x Höhe?
-            coverInfo.setText(artworkData.getMimeType() + " | " + artworkData.getHeight() + " x " + artworkData.getWidth());
+            coverInfo.setText(artworkData.getMimeType() + " | " + artworkData.getWidth() + " x " + artworkData.getHeight());
         } else {
             removeCover("<Kein Cover vorhanden>");
         }
@@ -373,8 +357,7 @@ public class EditFilePresenter implements Initializable {
                         new ExtensionFilter("bmp", "*.bmp"),
                         new ExtensionFilter("jpg, jpeg", "*.jpg",
                                 "*.jpeg"),
-                        new ExtensionFilter("png", "*.png"),
-                        new ExtensionFilter("All Files", "*.*"));
+                        new ExtensionFilter("png", "*.png"));
         Window ownerWindow = root.getScene().getWindow();
         File imageAsFile = fileChooser.showOpenDialog(ownerWindow);
         if (imageAsFile != null) {
@@ -383,10 +366,15 @@ public class EditFilePresenter implements Initializable {
                 imageAsByteArray = ByteUtil.fileToByteArray(imageAsFile);
             } catch (IOException e) {
                 LOGGER.error("Exception converting file to byte-Array!", e);
-                //TODO chooseCover: Exception behandeln
-                imageAsByteArray = new byte[0];
+                //TODO FX-Thread?
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setContentText("Ausgewählte Datei konnte nicht gelesen werden!\n" +
+                        "Versuchen Sie es erneut oder wählen sie eine andere Datei.");
+                alert.showAndWait();
+                return;
             }
             Image image = ByteUtil.byteArrayToImage(imageAsByteArray);
+            //TODO choosecover: image null-prüfung
             ArtworkData artworkData = new ArtworkData(imageAsByteArray, Double.valueOf(image.getWidth()).intValue(),
                     Double.valueOf(image.getHeight()).intValue(), ImageFormats.getMimeTypeForBinarySignature(imageAsByteArray));
             changeData.setArtworkData(artworkData);
@@ -397,7 +385,7 @@ public class EditFilePresenter implements Initializable {
 
     @FXML
     public void save() {
-        taskPool.addTask(new EditFileSaveFilesTask(FXCollections.observableArrayList(selectedData), new Mp3FileData(changeData)));
+        taskPool.addTask(new SaveFilesTaskImpl(FXCollections.observableArrayList(selectedData), new Mp3FileData(changeData)));
     }
 
     //@FXML

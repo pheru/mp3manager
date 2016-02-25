@@ -62,11 +62,7 @@ public class PheruMedia extends PheruFXApplication {
     }
 
     private static void setUpLogging() {
-//        java.util.logging.Logger l = java.util.logging.Logger.getLogger(GlobalScreen.class.getPackage().getName());
-//        l.setLevel(Level.WARNING);
-
         java.util.logging.LogManager.getLogManager().reset();
-//        java.util.logging.Logger.getLogger("org.jboss.weld").setLevel(Level.WARNING);
         java.util.logging.Logger.getLogger("org.jaudiotagger").setLevel(Level.WARNING);
         java.util.logging.Logger.getLogger("org.jnativehook").setLevel(Level.WARNING);
     }
@@ -101,7 +97,14 @@ public class PheruMedia extends PheruFXApplication {
         if (!cleanedUp) {
             Settings settings = getWeldContainer().instance().select(Settings.class, new AnnotationLiteral<XMLSettings>() {
             }).get();
-            settings.save();
+            if(!settings.save()){
+                if(!settings.save()){ //Nochmal versuchen
+                    //TODO FX-Thread?
+                    Alert alert = new Alert(Alert.AlertType.ERROR);
+                    alert.setContentText("Einstellungen konnten nicht gespeichert werden!");
+                    alert.showAndWait();
+                }
+            }
             try {
                 GlobalScreen.unregisterNativeHook();
             } catch (NativeHookException e) {

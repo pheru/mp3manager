@@ -22,8 +22,8 @@ import org.eclipse.persistence.oxm.annotations.XmlPath;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
-import javax.xml.bind.Unmarshaller;
 import javax.xml.bind.ValidationEvent;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -111,7 +111,8 @@ public class Settings {
         });
     }
 
-    private void initDefaultMainColumnSettings() {
+    protected void initDefaultMainColumnSettings() {
+        mainTableColumnSettings.clear();
         for (MainTableColumn column : MainTableColumn.values()) {
             mainTableColumnSettings.add(new MainTableColumnSettings(column));
         }
@@ -119,7 +120,6 @@ public class Settings {
 
     public boolean save() {
         try {
-            LOGGER.debug("Saving settings...");
             JAXBContext context = JAXBContext.newInstance(Settings.class);
             Marshaller marshaller = context.createMarshaller();
             marshaller.setEventHandler((ValidationEvent event) -> {
@@ -128,49 +128,12 @@ public class Settings {
             });
             marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
             marshaller.marshal(this, new File(FILE_PATH));
-            LOGGER.debug("Settings saved.");
-            return true;
-        } catch (Exception e) {
-            //TODO Keine GUI in Settings
+            LOGGER.info("Einstellungen erfolgreich gespeichert.");
+        } catch (JAXBException e) {
             LOGGER.error("Exception parsing settings.xml!", e);
-//            Alert alert = new Alert(Alert.AlertType.ERROR, "Einstellungen konnten nicht gespeichert werden!");
-//            alert.showAndWait();
             return false;
         }
-    }
-
-    public static Settings load() {
-        try {
-            if (!new File(FILE_PATH).exists()) {
-                //TODO Keine GUI in Settings
-//                Notifications.createNotification(Notification.Type.INFO)
-//                        .setText("Es konnten keine Einstellungen gefunden werden.\n"
-//                                + "Eine neue Datei wird angelegt.")
-//                        .show();
-                return createDefaultSettings();
-            }
-            JAXBContext context = JAXBContext.newInstance(Settings.class);
-            Unmarshaller unmarshaller = context.createUnmarshaller();
-            unmarshaller.setEventHandler((ValidationEvent event) -> {
-                LOGGER.error("Invalid settings.xml!", event.getLinkedException());
-                return false;
-            });
-            return (Settings) unmarshaller.unmarshal(new File(FILE_PATH));
-        } catch (Exception e) {
-            LOGGER.error("Exception parsing settings.xml!", e);
-            //TODO Keine GUI in Settings
-//            Alert alert = new Alert(Alert.AlertType.ERROR);
-//            alert.setHeaderText("Einstellungen konnten nicht geladen werden!");
-//            alert.setContentText("Es werden neue Einstellungen angelegt.");
-//            alert.showAndWait();
-            return createDefaultSettings();
-        }
-    }
-
-    private static Settings createDefaultSettings() {
-        Settings defaultSettings = new Settings();
-        defaultSettings.initDefaultMainColumnSettings();
-        return defaultSettings;
+        return true;
     }
 
     public ObservableList<MainTableColumnSettings> getAllMainTableColumnSettings() {

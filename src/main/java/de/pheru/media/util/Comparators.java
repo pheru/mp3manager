@@ -1,11 +1,12 @@
 package de.pheru.media.util;
 
 import de.pheru.media.data.Mp3FileData;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import java.text.ParseException;
 import java.util.Comparator;
 import java.util.Date;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 /**
  *

@@ -9,17 +9,12 @@ import de.pheru.media.gui.nodes.EmptyDirectoryPlaceholder;
 import de.pheru.media.gui.nodes.NoDirectoryPlaceholder;
 import de.pheru.media.gui.nodes.NoFilterResultPlaceholder;
 import de.pheru.media.gui.nodes.ReadingDirectoryPlaceholder;
+import de.pheru.media.gui.taskimpl.ReadDirectoryTaskImpl;
 import de.pheru.media.gui.util.CssRowFactory;
 import de.pheru.media.settings.MainTableColumnSettings;
 import de.pheru.media.settings.Settings;
 import de.pheru.media.task.PheruMediaTask;
-import de.pheru.media.task.ReadDirectoryTask;
 import de.pheru.media.task.TaskPool;
-import java.io.File;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.ResourceBundle;
 import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.StringBinding;
@@ -49,10 +44,17 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
 import javafx.stage.DirectoryChooser;
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
+import javafx.util.Callback;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+import java.io.File;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.ResourceBundle;
 
 @ApplicationScoped
 public class MainPresenter implements Initializable {
@@ -106,7 +108,7 @@ public class MainPresenter implements Initializable {
     @Inject
     @TableData(TableData.Source.MAIN_SELECTED)
     private ObservableList<Mp3FileData> selectedData;
-    
+
     private boolean updatingColumnsOrderList = false;
     private boolean updatingColumnsOrderTable = false;
 
@@ -202,11 +204,9 @@ public class MainPresenter implements Initializable {
             if (column.isAlignRight()) {
                 tableColumn.setCellFactory((TableColumn<Mp3FileData, String> param) -> {
                     TableCell<Mp3FileData, String> cell = new TableCell<Mp3FileData, String>() {
-
                         @Override
                         protected void updateItem(String item, boolean empty) {
                             super.updateItem(item, empty);
-
                             if (empty || item == null) {
                                 setText(null);
                                 setGraphic(null);
@@ -214,16 +214,15 @@ public class MainPresenter implements Initializable {
                                 setText(item);
                             }
                         }
-
                     };
                     cell.setAlignment(Pos.CENTER_RIGHT);
                     return cell;
                 });
             }
             MainTableColumnSettings mainTableColumnSettings = settings.getMainTableColumnSettings(column);
-            tableColumn.prefWidthProperty().bind(mainTableColumnSettings .widthProperty());
-            mainTableColumnSettings .widthProperty().bind(tableColumn.widthProperty());
-            tableColumn.visibleProperty().bindBidirectional(mainTableColumnSettings .visibleProperty());
+            tableColumn.prefWidthProperty().bind(mainTableColumnSettings.widthProperty());
+            mainTableColumnSettings.widthProperty().bind(tableColumn.widthProperty());
+            tableColumn.visibleProperty().bindBidirectional(mainTableColumnSettings.visibleProperty());
             tableColumn.setCellValueFactory(new PropertyValueFactory(column.getPropertyName()));
             if (column.getComparator() != null) {
                 tableColumn.setComparator(column.getComparator());
@@ -323,7 +322,7 @@ public class MainPresenter implements Initializable {
     public void readDirectory() {
         String directory = settings.getMusicDirectory();
         if (directory != null && !directory.isEmpty()) {
-            PheruMediaTask readDirectoryTask = new ReadDirectoryTask(directory, masterData, playlist.getTitles());
+            PheruMediaTask readDirectoryTask = new ReadDirectoryTaskImpl(directory, masterData, playlist.getTitles());
             readDirectoryTask.setOnRunning((WorkerStateEvent event) -> {
                 table.setPlaceholder(readingDirectoryPlaceholder);
             });
@@ -349,7 +348,6 @@ public class MainPresenter implements Initializable {
     /**
      * Kontextmenü-Methode.<br/>
      * Spielt die ausgewählten Titel ab.
-     *
      */
     @FXML
     private void play() {

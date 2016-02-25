@@ -1,7 +1,6 @@
 package de.pheru.media.gui.nodes;
 
 import de.pheru.media.data.Mp3FileData;
-import de.pheru.media.gui.applicationwindow.editfile.EditFilePresenter;
 import javafx.collections.ObservableList;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextFormatter;

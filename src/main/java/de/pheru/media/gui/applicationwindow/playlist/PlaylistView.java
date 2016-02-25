@@ -1,6 +1,7 @@
 package de.pheru.media.gui.applicationwindow.playlist;
 
 import de.pheru.fx.mvp.PheruFXView;
+
 import javax.enterprise.context.ApplicationScoped;
 
 /**

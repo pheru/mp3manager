@@ -6,11 +6,11 @@ import de.pheru.media.cdi.qualifiers.TableData;
 import de.pheru.media.cdi.qualifiers.XMLSettings;
 import de.pheru.media.data.Mp3FileData;
 import de.pheru.media.data.Playlist;
+import de.pheru.media.gui.taskimpl.LoadPlaylistTaskImpl;
 import de.pheru.media.gui.util.CssRowFactory;
 import de.pheru.media.gui.util.DragAndDropRowFactory;
 import de.pheru.media.player.MusicPlayer;
 import de.pheru.media.settings.Settings;
-import de.pheru.media.task.LoadPlaylistTask;
 import de.pheru.media.task.PheruMediaTask;
 import de.pheru.media.task.TaskPool;
 import de.pheru.media.util.ByteUtil;
@@ -106,7 +106,7 @@ public class PlaylistPresenter implements Initializable {
             }
         });
         if (!params.getRaw().isEmpty()) {
-            PheruMediaTask loadPlaylistTask = new LoadPlaylistTask(playlist, new File(params.getRaw().get(0)), mainTitles);
+            PheruMediaTask loadPlaylistTask = new LoadPlaylistTaskImpl(playlist, new File(params.getRaw().get(0)), mainTitles);
             loadPlaylistTask.runningProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
                 if (oldValue && !newValue) {
                     musicPlayer.playPause();
@@ -143,8 +143,7 @@ public class PlaylistPresenter implements Initializable {
                 }
             }
             playlist.setCurrentTitleIndex(newCurrentIndex);
-            //TODO dirtyflag-update nach drop nötig? (drop führt add/remove aus)
-            playlist.setDirtyByCheck();
+            //TODO dirtyflag nach DnD überprüfen
         });
 
         tableRowFactory = new CssRowFactory<>("played", dndRowFactory);
@@ -209,7 +208,6 @@ public class PlaylistPresenter implements Initializable {
 
     @FXML
     private void savePlaylist() {
-        //TODO Playlist speichern: Statusbar-Meldung
         try {
             playlist.save();
             playlist.setDirty(false);
@@ -222,7 +220,6 @@ public class PlaylistPresenter implements Initializable {
 
     @FXML
     private void savePlaylistAs() {
-        //TODO Playlist speichern: Statusbar-Meldung
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Wiedergabeliste speichern");
         if (!settings.getPlaylistsDirectory().isEmpty()) {
@@ -264,7 +261,7 @@ public class PlaylistPresenter implements Initializable {
         fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Wiedergabelisten", "*." + Playlist.FILE_EXTENSION));
         File playlistFile = fileChooser.showOpenDialog(table.getScene().getWindow());
         if (playlistFile != null) {
-            PheruMediaTask loadPlaylistTask = new LoadPlaylistTask(playlist, playlistFile, mainTitles);
+            PheruMediaTask loadPlaylistTask = new LoadPlaylistTaskImpl(playlist, playlistFile, mainTitles);
             loadPlaylistTask.runningProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
                 if (oldValue && !newValue) {
                     musicPlayer.stop();
@@ -277,7 +274,6 @@ public class PlaylistPresenter implements Initializable {
 
     @FXML
     private void deletePlaylist() {
-        //TODO Playlist löschen: Statusbar-Meldung
         //TODO Playlist löschen: Bestätigungsdialog mit Option die Titel aus der aktuellen Wiedergabe zu entfernen
         if (new File(playlist.getAbsolutePath()).delete()) {
             playlist.setFilePath("");

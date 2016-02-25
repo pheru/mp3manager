@@ -2,6 +2,7 @@ package de.pheru.media.settings.xmladapters;
 
 import de.pheru.fx.controls.notification.NotificationManager;
 import de.pheru.media.settings.objectproperties.NotificationsAlignmentProperty;
+
 import javax.xml.bind.annotation.adapters.XmlAdapter;
 
 /**
