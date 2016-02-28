@@ -49,6 +49,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 import java.io.File;
 import java.net.URL;
@@ -369,6 +370,10 @@ public class MainPresenter implements Initializable {
     @FXML
     private void clearFilter() {
         filterTextField.setText("");
+    }
+
+    public void testObserve(@Observes Integer i){
+        masterData.clear();
     }
 
 }

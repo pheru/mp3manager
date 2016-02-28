@@ -40,7 +40,6 @@ public class PheruMedia extends PheruFXApplication {
     private static final Logger LOGGER = createLogger(); //Muss nach APPLICATION_PATH initialisiert werden
 
     private static Stage splashStage;
-    private static boolean cleanedUp = false;
 
     private static Logger createLogger() {
         System.getProperties().put("logfiles.location", APPLICATION_PATH);
@@ -52,12 +51,6 @@ public class PheruMedia extends PheruFXApplication {
         LOGGER.info("Starte " + APPLICATION_NAME + "...");
 
         Thread.setDefaultUncaughtExceptionHandler(new UncaughtExceptionHandler());
-        Runtime.getRuntime().addShutdownHook(new Thread() {
-            @Override
-            public void run() {
-                cleanUp();
-            }
-        });
         launch(args);
     }
 
@@ -94,23 +87,19 @@ public class PheruMedia extends PheruFXApplication {
     }
 
     public static void cleanUp() {
-        if (!cleanedUp) {
-            Settings settings = getWeldContainer().instance().select(Settings.class, new AnnotationLiteral<XMLSettings>() {
-            }).get();
-            if(!settings.save()){
-                if(!settings.save()){ //Nochmal versuchen
-                    //TODO FX-Thread?
-                    Alert alert = new Alert(Alert.AlertType.ERROR);
-                    alert.setContentText("Einstellungen konnten nicht gespeichert werden!");
-                    alert.showAndWait();
-                }
+        Settings settings = getWeldContainer().instance().select(Settings.class, new AnnotationLiteral<XMLSettings>() {
+        }).get();
+        if (!settings.save()) {
+            if (!settings.save()) { //Nochmal versuchen
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setContentText("Einstellungen konnten nicht gespeichert werden!");
+                alert.showAndWait();
             }
-            try {
-                GlobalScreen.unregisterNativeHook();
-            } catch (NativeHookException e) {
-                LOGGER.error("Exception cleaning up JNativeHook!", e);
-            }
-            cleanedUp = true;
+        }
+        try {
+            GlobalScreen.unregisterNativeHook();
+        } catch (NativeHookException e) {
+            LOGGER.error("Exception cleaning up JNativeHook!", e);
         }
     }
 

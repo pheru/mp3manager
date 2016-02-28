@@ -26,6 +26,7 @@ import javafx.scene.layout.VBox;
 import org.jnativehook.keyboard.NativeKeyEvent;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.event.Event;
 import javax.inject.Inject;
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -150,6 +151,14 @@ public class ApplicationPresenter implements Initializable {
     @FXML
     private void changeDirectory() {
         mainPresenter.changeDirectory();
+    }
+
+    @Inject
+    private Event<Integer> testEvent;
+
+    @FXML
+    private void test() {
+        testEvent.fire(0);
     }
 
     @FXML

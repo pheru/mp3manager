@@ -19,11 +19,14 @@ import javafx.application.Application.Parameters;
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.StringBinding;
 import javafx.beans.value.ObservableValue;
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
 import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuItem;
@@ -143,7 +146,7 @@ public class PlaylistPresenter implements Initializable {
                 }
             }
             playlist.setCurrentTitleIndex(newCurrentIndex);
-            //TODO dirtyflag nach DnD überprüfen
+            playlist.updateDirtyFlag();
         });
 
         tableRowFactory = new CssRowFactory<>("played", dndRowFactory);
@@ -209,8 +212,9 @@ public class PlaylistPresenter implements Initializable {
     @FXML
     private void savePlaylist() {
         try {
-            playlist.save();
-            playlist.setDirty(false);
+            if (playlist.save()) {
+                playlist.setDirty(false);
+            }
         } catch (IOException e) {
             LOGGER.error("Exception saving playlist!", e);
             Alert alert = new Alert(Alert.AlertType.ERROR, "Fehler beim Speichern der Wiedergabeliste!");
@@ -245,8 +249,9 @@ public class PlaylistPresenter implements Initializable {
                     settings.setPlaylistsDirectory(playlistFile.getParent());
                 }
             } catch (IOException e) {
-                //TODO Playlist speichern: Exception behandeln
-                LOGGER.error("TODO", e);
+                LOGGER.error("Exception saving playlist!", e);
+                Alert alert = new Alert(Alert.AlertType.ERROR, "Fehler beim Speichern der Wiedergabeliste!");
+                alert.showAndWait();
             }
         }
     }
@@ -274,18 +279,36 @@ public class PlaylistPresenter implements Initializable {
 
     @FXML
     private void deletePlaylist() {
-        //TODO Playlist löschen: Bestätigungsdialog mit Option die Titel aus der aktuellen Wiedergabe zu entfernen
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        CheckBox clearPlaylistBox = new CheckBox("Titel aus aktueller Wiedergabe entfernen");
+        alert.getDialogPane().setContent(clearPlaylistBox);
+        alert.setHeaderText("Wiedergabeliste löschen?");
+        ButtonType result = alert.showAndWait().get();
+        if (result == ButtonType.CANCEL) {
+            return;
+        }
         if (new File(playlist.getAbsolutePath()).delete()) {
             playlist.setFilePath("");
             playlist.setFileName("");
+            if (clearPlaylistBox.isSelected()) {
+                table.getSelectionModel().clearSelection();
+                playlist.clear();
+            }
         }
     }
 
     @FXML
     private void play() {
         if (!selectedTitles.isEmpty()) {
-            // TODO play: Bei Mehrfachauswahl die nicht selektierten entfernen?
-            musicPlayer.play(table.getSelectionModel().getSelectedIndices().get(0));
+            if (selectedTitles.size() > 1) {
+                ObservableList<Mp3FileData> selectedTitlesCopy = FXCollections.observableArrayList(selectedTitles);
+                table.getSelectionModel().clearSelection(); //TODO mit 8u45 testen ob selectedTitles.clear funktioniert
+                playlist.clear();
+                playlist.add(selectedTitlesCopy);
+                musicPlayer.play(0);
+            } else {
+                musicPlayer.play(table.getSelectionModel().getSelectedIndices().get(0));
+            }
         }
     }
 

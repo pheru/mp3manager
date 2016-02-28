@@ -80,7 +80,6 @@ public abstract class ReadDirectoryTask extends PheruMediaTask {
     private void loadData(List<File> files) {
         for (int i = 0; i < files.size(); i++) {
             if (isCancelled()) {
-                handleReadDirectoryInsufficient("test", new ArrayList<>());
                 updateTitle("Laden der Dateien abgebrochen!");
                 updateMessage(loadedData.size() + " von " + files.size() + " Dateien wurden erfolgreich geladen.");
                 setStatus(PheruMediaTaskStatus.INSUFFICIENT);
