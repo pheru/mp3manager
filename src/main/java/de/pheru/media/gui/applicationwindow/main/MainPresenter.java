@@ -1,5 +1,6 @@
 package de.pheru.media.gui.applicationwindow.main;
 
+import de.pheru.fx.mvp.ObservableListWrapper;
 import de.pheru.fx.util.focus.FocusTraversal;
 import de.pheru.media.cdi.qualifiers.TableData;
 import de.pheru.media.cdi.qualifiers.XMLSettings;
@@ -44,7 +45,6 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
 import javafx.stage.DirectoryChooser;
-import javafx.util.Callback;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -108,7 +108,7 @@ public class MainPresenter implements Initializable {
     private ObservableList<Mp3FileData> masterData;
     @Inject
     @TableData(TableData.Source.MAIN_SELECTED)
-    private ObservableList<Mp3FileData> selectedData;
+    private ObservableListWrapper<Mp3FileData> selectedDataWrapper;
 
     private boolean updatingColumnsOrderList = false;
     private boolean updatingColumnsOrderTable = false;
@@ -146,7 +146,7 @@ public class MainPresenter implements Initializable {
         }
         table.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
         table.setItems(setUpTableFilter());
-        Bindings.bindContent(selectedData, table.getSelectionModel().getSelectedItems());
+        selectedDataWrapper.setList(table.getSelectionModel().getSelectedItems());
         initColumns();
         settings.getAllMainTableColumnSettings().addListener((ListChangeListener.Change<? extends MainTableColumnSettings> change) -> {
             if (!updatingColumnsOrderList) {
@@ -352,7 +352,7 @@ public class MainPresenter implements Initializable {
      */
     @FXML
     private void play() {
-        if (!selectedData.isEmpty()) {
+        if (!selectedDataWrapper.getList().isEmpty()) {
             //Kontextmenü-Play: implementieren
         }
     }
@@ -363,8 +363,8 @@ public class MainPresenter implements Initializable {
      */
     @FXML
     private void addToPlaylist() {
-        LOGGER.debug("addToPlaylist: " + selectedData);
-        playlist.add(selectedData);
+        LOGGER.debug("addToPlaylist: " + selectedDataWrapper);
+        playlist.add(selectedDataWrapper.getList());
     }
 
     @FXML
@@ -372,7 +372,7 @@ public class MainPresenter implements Initializable {
         filterTextField.setText("");
     }
 
-    public void testObserve(@Observes Integer i){
+    public void testObserve(@Observes Integer i) {
         masterData.clear();
     }
 

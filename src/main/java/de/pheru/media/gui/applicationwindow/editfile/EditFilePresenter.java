@@ -1,5 +1,6 @@
 package de.pheru.media.gui.applicationwindow.editfile;
 
+import de.pheru.fx.mvp.ObservableListWrapper;
 import de.pheru.fx.util.focus.FocusTraversal;
 import de.pheru.media.cdi.qualifiers.TableData;
 import de.pheru.media.cdi.qualifiers.XMLSettings;
@@ -83,7 +84,7 @@ public class EditFilePresenter implements Initializable {
     private Settings settings;
     @Inject
     @TableData(TableData.Source.MAIN_SELECTED)
-    private ObservableList<Mp3FileData> selectedData;
+    private ObservableListWrapper<Mp3FileData> selectedDataWrapper;
     @Inject
     private TaskPool taskPool;
 
@@ -138,7 +139,7 @@ public class EditFilePresenter implements Initializable {
      * Erzeugt die verschiedenen Listener.
      */
     private void setUpListeners() {
-        selectedData.addListener((ListChangeListener<Mp3FileData>) (ListChangeListener.Change<? extends Mp3FileData> change) -> {
+        selectedDataWrapper.getList().addListener((ListChangeListener.Change<? extends Mp3FileData> change) -> {
             updateFields();
         });
         synchronizeTitleBox.selectedProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
@@ -172,11 +173,11 @@ public class EditFilePresenter implements Initializable {
      */
     private void updateFields() {
         clearFieldItems();
-        if (selectedData.size() == 1) {
+        if (selectedDataWrapper.getList().size() == 1) {
             setUpTitleSynchronization();
             synchronizeTitleBox.setDisable(false);
             fillFieldsWithSingleData();
-        } else if (selectedData.size() > 1) {
+        } else if (selectedDataWrapper.getList().size() > 1) {
             fileNameField.textProperty().unbind();
             fileNameField.setDisable(true);
             synchronizeTitleBox.setDisable(true);
@@ -197,7 +198,7 @@ public class EditFilePresenter implements Initializable {
      * Befüllt die Felder mit den Werten eines einzelnen Mp3FileData-Objektes.
      */
     private void fillFieldsWithSingleData() {
-        Mp3FileData singleData = selectedData.get(0);
+        Mp3FileData singleData = selectedDataWrapper.getList().get(0);
         if (!fileNameField.textProperty().isBound()) {
             fileNameField.setText(singleData.getFileName().replace(".mp3", ""));
         }
@@ -212,7 +213,6 @@ public class EditFilePresenter implements Initializable {
     }
 
     /**
-     *
      * Befüllt das Feld mit dem übergebenen Wert. <br>
      * Ist der Wert darüber hinaus kein leerer String, so wird er auch der Liste
      * der ComboBox hinzugefügt.
@@ -247,7 +247,7 @@ public class EditFilePresenter implements Initializable {
      * Befüllt die Listen der ComboBoxen.
      */
     private void fillFieldItems() {
-        for (Mp3FileData data : selectedData) {
+        for (Mp3FileData data : selectedDataWrapper.getList()) {
             addToFieldItemsOnce(titleField, data.getTitle());
             addToFieldItemsOnce(artistField, data.getArtist());
             addToFieldItemsOnce(albumField, data.getAlbum());
@@ -308,15 +308,15 @@ public class EditFilePresenter implements Initializable {
     }
 
     private void setCoverImageForMultipleData() {
-        for (int i = 0; i < selectedData.size() - 1; i++) {
-            if (!ArtworkData.equals(selectedData.get(i).getArtworkData(), selectedData.get(i + 1).getArtworkData())) {
+        for (int i = 0; i < selectedDataWrapper.getList().size() - 1; i++) {
+            if (!ArtworkData.equals(selectedDataWrapper.getList().get(i).getArtworkData(), selectedDataWrapper.getList().get(i + 1).getArtworkData())) {
                 removeCover("<Verschiedene Cover vorhanden>");
                 changeData.setArtworkData(null);
                 return;
             }
         }
-        setCover(selectedData.get(0).getArtworkData());
-        changeData.setArtworkData(selectedData.get(0).getArtworkData());
+        setCover(selectedDataWrapper.getList().get(0).getArtworkData());
+        changeData.setArtworkData(selectedDataWrapper.getList().get(0).getArtworkData());
     }
 
     /**
@@ -385,7 +385,7 @@ public class EditFilePresenter implements Initializable {
 
     @FXML
     public void save() {
-        taskPool.addTask(new SaveFilesTaskImpl(FXCollections.observableArrayList(selectedData), new Mp3FileData(changeData)));
+        taskPool.addTask(new SaveFilesTaskImpl(FXCollections.observableArrayList(selectedDataWrapper.getList()), new Mp3FileData(changeData)));
     }
 
     //@FXML
@@ -393,7 +393,7 @@ public class EditFilePresenter implements Initializable {
         updateFields();
     }
 
-//    @FXML
+    //@FXML
     public void delete() {
     }
 }

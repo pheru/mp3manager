@@ -81,9 +81,6 @@ public class PlaylistPresenter implements Initializable {
     @Inject
     private TaskPool taskPool;
     @Inject
-    @TableData(TableData.Source.PLAYLIST_SELECTED)
-    private ObservableList<Mp3FileData> selectedTitles;
-    @Inject
     @TableData(TableData.Source.MAIN)
     private ObservableList<Mp3FileData> mainTitles;
     @Inject
@@ -152,7 +149,6 @@ public class PlaylistPresenter implements Initializable {
         tableRowFactory = new CssRowFactory<>("played", dndRowFactory);
         table.setRowFactory(tableRowFactory);
         table.setItems(playlist.getTitles());
-        Bindings.bindContent(selectedTitles, table.getSelectionModel().getSelectedItems());
     }
 
     /**
@@ -299,16 +295,14 @@ public class PlaylistPresenter implements Initializable {
 
     @FXML
     private void play() {
-        if (!selectedTitles.isEmpty()) {
-            if (selectedTitles.size() > 1) {
-                ObservableList<Mp3FileData> selectedTitlesCopy = FXCollections.observableArrayList(selectedTitles);
-                table.getSelectionModel().clearSelection(); //TODO mit 8u45 testen ob selectedTitles.clear funktioniert
-                playlist.clear();
-                playlist.add(selectedTitlesCopy);
-                musicPlayer.play(0);
-            } else {
-                musicPlayer.play(table.getSelectionModel().getSelectedIndices().get(0));
-            }
+        ObservableList<Mp3FileData> selectedItems = table.getSelectionModel().getSelectedItems();
+        if (table.getSelectionModel().getSelectedItems().size() == 1) {
+            musicPlayer.play(table.getSelectionModel().getSelectedIndices().get(0));
+        } else if (selectedItems.size() > 1) {
+            ObservableList<Mp3FileData> selectedItemsCopy = FXCollections.observableArrayList(selectedItems);
+            playlist.clear();
+            playlist.add(selectedItemsCopy);
+            musicPlayer.play(0);
         }
     }
 

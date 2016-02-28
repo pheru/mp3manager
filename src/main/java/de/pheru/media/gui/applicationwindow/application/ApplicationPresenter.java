@@ -58,14 +58,14 @@ public class ApplicationPresenter implements Initializable {
     private MusicPlayer musicPlayer;
 
     @Inject
-    private PlaylistView playlistView;
-    private PlaylistPresenter playlistPresenter;
+    private MainView mainView;
+    private MainPresenter mainPresenter;
     @Inject
     private EditFileView editFileView;
     private EditFilePresenter editFilePresenter;
     @Inject
-    private MainView mainView;
-    private MainPresenter mainPresenter;
+    private PlaylistView playlistView;
+    private PlaylistPresenter playlistPresenter;
     @Inject
     private MusicPlayerView musicPlayerView;
     private MusicPlayerPresenter musicPlayerPresenter;
@@ -97,22 +97,17 @@ public class ApplicationPresenter implements Initializable {
      * Initialisiert alle Views und deren Presenter.
      */
     private void initViewsAndPresenters() {
-        //Tab zum editieren der MP3-Dateien
+        mainPresenter = (MainPresenter) mainView.getPresenter();
+        splitPane.getItems().add(mainView.getView());
+
         editFilePresenter = (EditFilePresenter) editFileView.getPresenter();
         editFileTab.setContent(editFileView.getView());
 
-        //Music-Player
-        musicPlayerPresenter = (MusicPlayerPresenter) musicPlayerView
-                .getPresenter();
-        musicPlayerBox.getChildren().add(musicPlayerView.getView());
-
-        //Tab für die aktuelle Wiedergabe
         playlistPresenter = (PlaylistPresenter) playlistView.getPresenter();
         playlistTab.setContent(playlistView.getView());
 
-        //MainView mit Tabelle
-        mainPresenter = (MainPresenter) mainView.getPresenter();
-        splitPane.getItems().add(mainView.getView());
+        musicPlayerPresenter = (MusicPlayerPresenter) musicPlayerView.getPresenter();
+        musicPlayerBox.getChildren().add(musicPlayerView.getView());
     }
 
     private void bindUI() {

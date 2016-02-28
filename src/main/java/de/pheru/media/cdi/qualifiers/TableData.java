@@ -20,6 +20,6 @@ public @interface TableData {
 
     public enum Source {
 
-        MAIN, MAIN_SELECTED, PLAYLIST, PLAYLIST_SELECTED
+        MAIN, MAIN_SELECTED
     }
 }

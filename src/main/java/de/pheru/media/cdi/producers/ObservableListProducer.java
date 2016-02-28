@@ -1,5 +1,6 @@
 package de.pheru.media.cdi.producers;
 
+import de.pheru.fx.mvp.ObservableListWrapper;
 import de.pheru.media.cdi.qualifiers.TableData;
 import de.pheru.media.data.Mp3FileData;
 import javafx.collections.FXCollections;
@@ -25,14 +26,8 @@ public class ObservableListProducer {
     @Produces
     @TableData(TableData.Source.MAIN_SELECTED)
     @ApplicationScoped
-    public ObservableList<Mp3FileData> mainSelected() {
-        return FXCollections.observableArrayList();
+    public ObservableListWrapper<Mp3FileData> mainSelected() {
+        return new ObservableListWrapper<>();
     }
 
-    @Produces
-    @TableData(TableData.Source.PLAYLIST_SELECTED)
-    @ApplicationScoped
-    public ObservableList<Mp3FileData> playlistSelected() {
-        return FXCollections.observableArrayList();
-    }
 }
