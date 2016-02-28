@@ -127,7 +127,12 @@ public class Mp3FileData extends FileBasedData {
             track.set(tag.getFirst(FieldKey.TRACK));
             if (tag.getFirstArtwork() != null) {
                 Artwork artwork = tag.getFirstArtwork();
-                artworkData.set(new ArtworkData(artwork.getBinaryData(), artwork.getMimeType()));
+                try {
+                    artworkData.set(new ArtworkData(artwork.getBinaryData(), artwork.getImage().getWidth(),
+                            artwork.getImage().getHeight(), artwork.getMimeType()));
+                } catch (IOException e) {
+                    artworkData.set(new ArtworkData(artwork.getBinaryData(), 0, 0, artwork.getMimeType()));
+                }
             }
         } else {
             throw new Mp3FileDataException("File \"" + file.getAbsolutePath() + "\" does not have an ID3v2Tag!");

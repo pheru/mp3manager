@@ -9,10 +9,6 @@ import javafx.beans.property.StringProperty;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import javax.imageio.ImageIO;
-import java.awt.image.BufferedImage;
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
 import java.util.Arrays;
 
 /**
@@ -34,11 +30,6 @@ public class ArtworkData {
         this.mimeType.set(mimeType);
     }
 
-    public ArtworkData(byte[] binaryData, String mimeType) {
-        this.binaryData.set(binaryData);
-        this.mimeType.set(mimeType);
-    }
-
     public byte[] getBinaryData() {
         return binaryData.get();
     }
@@ -52,9 +43,6 @@ public class ArtworkData {
     }
 
     public Integer getWidth() {
-        if (width.get() == 0) {
-            loadDimensions();
-        }
         return width.get();
     }
 
@@ -67,9 +55,6 @@ public class ArtworkData {
     }
 
     public Integer getHeight() {
-        if (height.get() == 0) {
-            loadDimensions();
-        }
         return height.get();
     }
 
@@ -91,18 +76,6 @@ public class ArtworkData {
 
     public StringProperty mimeTypeProperty() {
         return mimeType;
-    }
-
-    private void loadDimensions() {
-        try (ByteArrayInputStream bais = new ByteArrayInputStream(getBinaryData())) {
-            BufferedImage bi = ImageIO.read(bais);
-            width.set(bi.getWidth());
-            height.set(bi.getHeight());
-        } catch (IOException e) {
-            LOGGER.error("Exception loading dimensions of ArtworkData!", e);
-            width.set(-1);
-            height.set(-1);
-        }
     }
 
     public static boolean equals(ArtworkData a1, ArtworkData a2) {

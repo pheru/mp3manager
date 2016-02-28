@@ -366,7 +366,6 @@ public class EditFilePresenter implements Initializable {
                 imageAsByteArray = ByteUtil.fileToByteArray(imageAsFile);
             } catch (IOException e) {
                 LOGGER.error("Exception converting file to byte-Array!", e);
-                //TODO FX-Thread?
                 Alert alert = new Alert(Alert.AlertType.ERROR);
                 alert.setContentText("Ausgewählte Datei konnte nicht gelesen werden!\n" +
                         "Versuchen Sie es erneut oder wählen sie eine andere Datei.");
@@ -374,7 +373,6 @@ public class EditFilePresenter implements Initializable {
                 return;
             }
             Image image = ByteUtil.byteArrayToImage(imageAsByteArray);
-            //TODO choosecover: image null-prüfung
             ArtworkData artworkData = new ArtworkData(imageAsByteArray, Double.valueOf(image.getWidth()).intValue(),
                     Double.valueOf(image.getHeight()).intValue(), ImageFormats.getMimeTypeForBinarySignature(imageAsByteArray));
             changeData.setArtworkData(artworkData);
