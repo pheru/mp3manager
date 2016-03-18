@@ -1,9 +1,8 @@
 package de.pheru.media.settings;
 
-import de.pheru.fx.controls.notification.NotificationManager;
 import de.pheru.media.gui.PheruMedia;
 import de.pheru.media.gui.applicationwindow.main.MainTableColumn;
-import de.pheru.media.settings.objectproperties.NotificationsAlignmentProperty;
+import de.pheru.media.settings.objectproperties.PosProperty;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.IntegerProperty;
@@ -16,6 +15,7 @@ import javafx.beans.property.StringProperty;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.geometry.Pos;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.eclipse.persistence.oxm.annotations.XmlPath;
@@ -94,7 +94,7 @@ public class Settings {
     private final BooleanProperty editFileViewSynchronizeTitle = new SimpleBooleanProperty(false);
 
     @XmlPath(XMLPATH_NOTIFICATIONS + "alignment" + XMLPATH_ENDING)
-    private final NotificationsAlignmentProperty notificationsAlignment = new NotificationsAlignmentProperty(NotificationManager.Alignment.BOTTOM_RIGHT);
+    private final PosProperty notificationsPosition = new PosProperty(Pos.BOTTOM_RIGHT);
     @XmlPath(XMLPATH_NOTIFICATIONS + "duration" + XMLPATH_ENDING)
     private final IntegerProperty notificationsDuration = new SimpleIntegerProperty(5);
 
@@ -317,16 +317,16 @@ public class Settings {
         return musicPlayerMuted;
     }
 
-    public NotificationManager.Alignment getNotificationsAlignment() {
-        return notificationsAlignment.get();
+    public Pos getNotificationsPosition() {
+        return notificationsPosition.get();
     }
 
-    public void setNotificationsAlignment(final NotificationManager.Alignment notificationsAlignment) {
-        this.notificationsAlignment.set(notificationsAlignment);
+    public void setNotificationsPosition(final Pos notificationsPosition) {
+        this.notificationsPosition.set(notificationsPosition);
     }
 
-    public ObjectProperty<NotificationManager.Alignment> notificationsAlignmentProperty() {
-        return notificationsAlignment;
+    public ObjectProperty<Pos> notificationsPositionProperty() {
+        return notificationsPosition;
     }
 
     public int getNotificationsDuration() {

@@ -58,7 +58,7 @@ public class ApplicationStarter {
     }
 
     private void initNotifications() {
-        NotificationManager.alignmentProperty().bind(settings.notificationsAlignmentProperty());
+        NotificationManager.positionProperty().bind(settings.notificationsPositionProperty());
 //        Notifications.defaultDurationProperty().bind(settings.notificationsDurationProperty());
     }
 
