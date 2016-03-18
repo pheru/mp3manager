@@ -13,6 +13,7 @@ import java.util.List;
  * Created by Philipp on 20.02.2016.
  */
 public class ReadDirectoryTaskImpl extends ReadDirectoryTask {
+
     /**
      * @param directory      Das auszulesende Verzeichnis.
      * @param masterData     Die Liste für die Mp3FileData-Objekte.
@@ -20,6 +21,18 @@ public class ReadDirectoryTaskImpl extends ReadDirectoryTask {
      */
     public ReadDirectoryTaskImpl(String directory, ObservableList<Mp3FileData> masterData, ObservableList<Mp3FileData> playlistTitles) {
         super(directory, masterData, playlistTitles);
+    }
+
+    @Override
+    protected void init(List<Mp3FileData> masterData) {
+        Platform.runLater(masterData::clear);
+    }
+
+    @Override
+    protected void finished(List<Mp3FileData> masterData, List<Mp3FileData> loadedData) {
+        Platform.runLater(()->{
+            masterData.addAll(loadedData);
+        });
     }
 
     @Override

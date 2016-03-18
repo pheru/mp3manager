@@ -15,8 +15,11 @@ import java.util.List;
  */
 public class LoadPlaylistTaskImpl extends LoadPlaylistTask {
 
+    private final Playlist playlist;
+
     public LoadPlaylistTaskImpl(Playlist playlist, File playlistFileToLoad, List<Mp3FileData> masterData) {
-        super(playlist, playlistFileToLoad, masterData);
+        super(playlistFileToLoad, masterData);
+        this.playlist = playlist;
     }
 
     @Override
@@ -34,6 +37,17 @@ public class LoadPlaylistTaskImpl extends LoadPlaylistTask {
     @Override
     protected void handleLoadPlaylistFailed(String playlistPath, List<String> failedToLoadFilePaths) {
         showLoadAlert(playlistPath, failedToLoadFilePaths);
+    }
+
+    @Override
+    protected void updatePlaylist(List<Mp3FileData> loadedData, File loadedPlaylistFile) {
+        Platform.runLater(() -> {
+            playlist.setFilePath(loadedPlaylistFile.getParent());
+            playlist.setFileName(loadedPlaylistFile.getName());
+            playlist.clear();
+            playlist.add(loadedData);
+            playlist.setCurrentTitleIndex(0);
+        });
     }
 
     private void showLoadAlert(String playlistPath, List<String> failedToLoadFilePaths) {

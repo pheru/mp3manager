@@ -38,9 +38,11 @@ import org.jaudiotagger.tag.id3.valuepair.ImageFormats;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.nio.file.Files;
 import java.util.ResourceBundle;
 
 @ApplicationScoped
@@ -335,7 +337,7 @@ public class EditFilePresenter implements Initializable {
 
     private void setCover(ArtworkData artworkData) {
         if (artworkData != null) {
-            coverView.setImage(ByteUtil.byteArrayToImage(artworkData.getBinaryData()));
+            coverView.setImage(new Image(new ByteArrayInputStream(artworkData.getBinaryData())));
             coverInfo.setText(artworkData.getMimeType() + " | " + artworkData.getWidth() + " x " + artworkData.getHeight());
         } else {
             removeCover("<Kein Cover vorhanden>");
@@ -363,7 +365,7 @@ public class EditFilePresenter implements Initializable {
         if (imageAsFile != null) {
             byte[] imageAsByteArray;
             try {
-                imageAsByteArray = ByteUtil.fileToByteArray(imageAsFile);
+                imageAsByteArray = Files.readAllBytes(imageAsFile.toPath());
             } catch (IOException e) {
                 LOGGER.error("Exception converting file to byte-Array!", e);
                 Alert alert = new Alert(Alert.AlertType.ERROR);
@@ -372,7 +374,7 @@ public class EditFilePresenter implements Initializable {
                 alert.showAndWait();
                 return;
             }
-            Image image = ByteUtil.byteArrayToImage(imageAsByteArray);
+            Image image = new Image(new ByteArrayInputStream(imageAsByteArray));
             ArtworkData artworkData = new ArtworkData(imageAsByteArray, Double.valueOf(image.getWidth()).intValue(),
                     Double.valueOf(image.getHeight()).intValue(), ImageFormats.getMimeTypeForBinarySignature(imageAsByteArray));
             changeData.setArtworkData(artworkData);

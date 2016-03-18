@@ -29,7 +29,7 @@ public class SettingsLoader {
     public Settings load() {
         try {
             if (!new File(Settings.FILE_PATH).exists()) {
-                LOGGER.info("Keine Einstellungen gefunden; neue werden beim Schließen der Anwendung angelegt.");
+                LOGGER.info("Keine Einstellungen gefunden.");
                 settingsNotFoundEvent.fire(new SettingsNotFoundEvent());
                 return createDefaultSettings();
             }

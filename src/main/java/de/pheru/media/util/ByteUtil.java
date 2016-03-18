@@ -1,12 +1,7 @@
 package de.pheru.media.util;
 
 import de.pheru.media.data.Mp3FileData;
-import javafx.scene.image.Image;
 
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
 import java.text.DecimalFormat;
 
 /**
@@ -20,23 +15,6 @@ public final class ByteUtil {
 
     private ByteUtil() {
         //Utility-Klasse
-    }
-
-    /**
-     * Wandelt ein Byte-Array in ein Image.
-     *
-     * @param bytes Das Byte-Array des Images.
-     * @return Das aus dem Byte-Array erzeugte Image.
-     */
-    public static Image byteArrayToImage(byte[] bytes) {
-        if (bytes == null || bytes.length == 0) {
-            throw new IllegalArgumentException("byte-array must not be null or empty!");
-        }
-        return new Image(new ByteArrayInputStream(bytes));
-    }
-
-    public static byte[] fileToByteArray(File file) throws IOException {
-        return Files.readAllBytes(file.toPath());
     }
 
     /**

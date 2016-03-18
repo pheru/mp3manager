@@ -3,9 +3,8 @@ package de.pheru.media.gui.applicationwindow.musicplayer;
 import de.pheru.media.cdi.qualifiers.XMLSettings;
 import de.pheru.media.data.Mp3FileData;
 import de.pheru.media.data.Playlist;
-import de.pheru.media.player.MusicPlayer;
+import de.pheru.media.gui.player.MusicPlayer;
 import de.pheru.media.settings.Settings;
-import de.pheru.media.util.ByteUtil;
 import de.pheru.media.util.TimeUtil;
 import javafx.beans.binding.DoubleBinding;
 import javafx.beans.binding.ObjectBinding;
@@ -27,6 +26,7 @@ import javafx.scene.media.MediaPlayer;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+import java.io.ByteArrayInputStream;
 import java.net.URL;
 import java.util.ResourceBundle;
 
@@ -178,7 +178,7 @@ public class MusicPlayerPresenter implements Initializable {
                 if (newTitle.getArtworkData() == null) {
                     return null;
                 }
-                return ByteUtil.byteArrayToImage(newTitle.getArtworkData().getBinaryData());
+                return new Image(new ByteArrayInputStream(newTitle.getArtworkData().getBinaryData()));
             }
         });
     }

@@ -3,8 +3,6 @@ package de.pheru.media.task;
 import de.pheru.media.data.Mp3FileData;
 import de.pheru.media.exceptions.Mp3FileDataException;
 import de.pheru.media.util.FileUtil;
-import javafx.application.Platform;
-import javafx.collections.ObservableList;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -22,8 +20,8 @@ public abstract class ReadDirectoryTask extends PheruMediaTask {
     private static final Logger LOGGER = LogManager.getLogger(ReadDirectoryTask.class);
 
     private final String directory;
-    private final ObservableList<Mp3FileData> masterData;
-    private final ObservableList<Mp3FileData> playlistTitles;
+    private final List<Mp3FileData> masterData;
+    private final List<Mp3FileData> playlistTitles;
 
     private final List<Mp3FileData> loadedData = new ArrayList<>();
     private final List<String> failedToLoadFileNames = new ArrayList<>();
@@ -33,12 +31,16 @@ public abstract class ReadDirectoryTask extends PheruMediaTask {
      * @param masterData     Die Liste für die Mp3FileData-Objekte.
      * @param playlistTitles
      */
-    public ReadDirectoryTask(final String directory, final ObservableList<Mp3FileData> masterData,
-            final ObservableList<Mp3FileData> playlistTitles) {
+    public ReadDirectoryTask(final String directory, final List<Mp3FileData> masterData,
+            final List<Mp3FileData> playlistTitles) {
         this.directory = directory;
         this.masterData = masterData;
         this.playlistTitles = playlistTitles;
     }
+
+    protected abstract void init(List<Mp3FileData> masterData);
+
+    protected abstract void finished(List<Mp3FileData> masterData, List<Mp3FileData> loadedData);
 
     protected abstract void handleReadDirectoryInsufficient(String directory, List<String> failedToLoadFileNames);
 
@@ -46,7 +48,7 @@ public abstract class ReadDirectoryTask extends PheruMediaTask {
 
     @Override
     protected void callImpl() {
-        Platform.runLater(masterData::clear);
+        init(masterData);
 
         List<File> files = readDirectory();
         loadData(files);
@@ -64,10 +66,8 @@ public abstract class ReadDirectoryTask extends PheruMediaTask {
                 setStatus(PheruMediaTaskStatus.SUCCESSFUL);
             }
         }
-        Platform.runLater(() -> {
-            updateProgress(1, 1);
-            masterData.addAll(loadedData);
-        });
+        updateProgress(1, 1);
+        finished(masterData, loadedData);
     }
 
     private List<File> readDirectory() {

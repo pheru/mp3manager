@@ -20,12 +20,10 @@ public abstract class LoadPlaylistTask extends PheruMediaTask {
 
     private static final Logger LOGGER = LogManager.getLogger(LoadPlaylistTask.class);
 
-    private final Playlist playlist;
     private final File playlistFileToLoad;
     private final List<Mp3FileData> masterData;
 
-    public LoadPlaylistTask(Playlist playlist, File playlistFileToLoad, List<Mp3FileData> masterData) {
-        this.playlist = playlist;
+    public LoadPlaylistTask(File playlistFileToLoad, List<Mp3FileData> masterData) {
         this.playlistFileToLoad = playlistFileToLoad;
         this.masterData = masterData;
     }
@@ -35,6 +33,8 @@ public abstract class LoadPlaylistTask extends PheruMediaTask {
     protected abstract void handleLoadPlaylistInsufficient(String playlistPath, List<String> failedToLoadFilePaths);
 
     protected abstract void handleLoadPlaylistFailed(String playlistPath, List<String> failedToLoadFilePaths);
+
+    protected abstract void updatePlaylist(List<Mp3FileData> loadedData, File loadedPlaylistFile);
 
     @Override
     protected void callImpl() {
@@ -68,7 +68,7 @@ public abstract class LoadPlaylistTask extends PheruMediaTask {
             setStatus(PheruMediaTaskStatus.SUCCESSFUL);
         }
 
-        updatePlaylist(loadedData);
+        updatePlaylist(loadedData, playlistFileToLoad);
     }
 
     private List<Mp3FileData> loadDataFromFilepaths(List<String> filePaths, List<String> failedToLoadFilePaths) {
@@ -103,13 +103,4 @@ public abstract class LoadPlaylistTask extends PheruMediaTask {
         return loadedData;
     }
 
-    private void updatePlaylist(List<Mp3FileData> loadedData) {
-        Platform.runLater(() -> {
-            playlist.setFilePath(playlistFileToLoad.getParent());
-            playlist.setFileName(playlistFileToLoad.getName());
-            playlist.clear();
-            playlist.add(loadedData);
-            playlist.setCurrentTitleIndex(0);
-        });
-    }
 }

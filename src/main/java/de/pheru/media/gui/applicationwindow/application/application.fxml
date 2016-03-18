@@ -53,11 +53,6 @@
                         <MenuItem mnemonicParsing="false" onAction="#about" text="Info" />
                     </items>
                 </Menu>
-                <Menu mnemonicParsing="false" text="Test">
-                    <items>
-                        <MenuItem mnemonicParsing="false" onAction="#test" text="Testaktion" />
-                    </items>
-                </Menu>
             </menus>
         </MenuBar>
         <SplitPane fx:id="splitPane" GridPane.hgrow="ALWAYS" GridPane.rowIndex="2" GridPane.vgrow="ALWAYS">

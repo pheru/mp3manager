@@ -9,11 +9,10 @@ import de.pheru.media.data.Playlist;
 import de.pheru.media.gui.taskimpl.LoadPlaylistTaskImpl;
 import de.pheru.media.gui.util.CssRowFactory;
 import de.pheru.media.gui.util.DragAndDropRowFactory;
-import de.pheru.media.player.MusicPlayer;
+import de.pheru.media.gui.player.MusicPlayer;
 import de.pheru.media.settings.Settings;
 import de.pheru.media.task.PheruMediaTask;
 import de.pheru.media.task.TaskPool;
-import de.pheru.media.util.ByteUtil;
 import de.pheru.media.util.TimeUtil;
 import javafx.application.Application.Parameters;
 import javafx.beans.binding.Bindings;
@@ -33,6 +32,7 @@ import javafx.scene.control.MenuItem;
 import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
@@ -46,6 +46,7 @@ import org.apache.logging.log4j.Logger;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
@@ -334,7 +335,8 @@ public class PlaylistPresenter implements Initializable {
                 new Label(newCurrentTitle.getAlbum()), new Label(newCurrentTitle.getArtist()));
         vbox.setAlignment(Pos.CENTER_LEFT);
 
-        ImageView artworkImage = new ImageView(ByteUtil.byteArrayToImage(newCurrentTitle.getArtworkData().getBinaryData()));
+        Image image = new Image(new ByteArrayInputStream(newCurrentTitle.getArtworkData().getBinaryData()));
+        ImageView artworkImage = new ImageView(image);
         artworkImage.setFitHeight(75);
         artworkImage.setFitWidth(75);
 

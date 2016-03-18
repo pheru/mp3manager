@@ -1,7 +1,6 @@
 package de.pheru.media.task;
 
 import de.pheru.media.cdi.events.TaskExceptionEvent;
-import javafx.application.Platform;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.ObjectProperty;
@@ -74,7 +73,7 @@ public class TaskPool {
      * Stoppt den TaskPool.
      *
      * @param cancelCurrentTask Ob der aktuelle Task sofort gestoppt werden oder
-     * noch zu Ende laufen soll.
+     *                          noch zu Ende laufen soll.
      */
     public void stop(boolean cancelCurrentTask) {
         stopping.set(true);
@@ -94,7 +93,7 @@ public class TaskPool {
      * Leert den TaskPool.
      *
      * @param cancelCurrentTask Ob der aktuelle Task sofort gestoppt werden oder
-     * noch zu Ende laufen soll.
+     *                          noch zu Ende laufen soll.
      */
     public void clear(boolean cancelCurrentTask) {
         tasks.clear();
@@ -117,13 +116,11 @@ public class TaskPool {
             status.bind(currentTask.statusProperty());
             currentTask.exceptionProperty().addListener((ObservableValue<? extends Throwable> observable, Throwable oldValue, Throwable newValue) -> {
                 LOGGER.fatal("Unexpected Exception running Task!", newValue);
-                Platform.runLater(() -> {
-                    status.unbind();
-                    status.set(PheruMediaTask.PheruMediaTaskStatus.FAILED);
-                    taskExceptionEvent.fire(new TaskExceptionEvent());
-                });
+                status.unbind();
+                status.set(PheruMediaTask.PheruMediaTaskStatus.FAILED);
+                taskExceptionEvent.fire(new TaskExceptionEvent());
             });
-            Thread thread = new Thread(currentTask, currentTask.getClass().toString());
+            Thread thread = new Thread(currentTask, currentTask.getClass().getSimpleName());
             thread.setDaemon(true);
             thread.start();
         }

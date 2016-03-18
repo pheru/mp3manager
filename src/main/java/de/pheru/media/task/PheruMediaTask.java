@@ -9,7 +9,6 @@ import javafx.event.EventHandler;
 import javafx.event.EventType;
 
 /**
- *
  * @author Philipp Bruckner
  */
 public abstract class PheruMediaTask extends Task<Void> {
@@ -36,13 +35,7 @@ public abstract class PheruMediaTask extends Task<Void> {
     }
 
     public void setStatus(final PheruMediaTaskStatus status) {
-        if (Platform.isFxApplicationThread()) {
-            this.status.set(status);
-        } else {
-            Platform.runLater(() -> {
-                PheruMediaTask.this.status.set(status);
-            });
-        }
+        this.status.set(status);
     }
 
     public ObjectProperty<PheruMediaTaskStatus> statusProperty() {
