@@ -1,6 +1,6 @@
 package de.pheru.media.gui;
 
-import de.pheru.fx.controls.notification.NotificationManager;
+import de.pheru.fx.controls.notification.Notification;
 import de.pheru.fx.mvp.StartApplication;
 import de.pheru.media.cdi.qualifiers.XMLSettings;
 import de.pheru.media.gui.applicationwindow.application.ApplicationView;
@@ -58,7 +58,7 @@ public class ApplicationStarter {
     }
 
     private void initNotifications() {
-        NotificationManager.positionProperty().bind(settings.notificationsPositionProperty());
+        Notification.getDefaults().positionProperty().bind(settings.notificationsPositionProperty());
 //        Notifications.defaultDurationProperty().bind(settings.notificationsDurationProperty());
     }
 

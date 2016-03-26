@@ -344,11 +344,12 @@ public class PlaylistPresenter implements Initializable {
         content.setSpacing(5);
 
         currentTitleNotification = new Notification(content);
+        currentTitleNotification.setPosition(Pos.CENTER_RIGHT);
+        currentTitleNotification.setExitButtonVisible(false);
         currentTitleNotification.setOnMouseClicked((MouseEvent event) -> {
             primaryStage.setIconified(false);
             primaryStage.toFront();
-            currentTitleNotification.hide(false);
-        });
+        }, true);
         currentTitleNotification.show();
     }
 

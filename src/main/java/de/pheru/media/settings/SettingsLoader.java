@@ -1,7 +1,6 @@
 package de.pheru.media.settings;
 
 import de.pheru.media.cdi.events.SettingsLoadExceptionEvent;
-import de.pheru.media.cdi.events.SettingsNotFoundEvent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -23,14 +22,11 @@ public class SettingsLoader {
 
     @Inject
     private Event<SettingsLoadExceptionEvent> settingsLoadExceptionEvent;
-    @Inject
-    private Event<SettingsNotFoundEvent> settingsNotFoundEvent;
 
     public Settings load() {
         try {
             if (!new File(Settings.FILE_PATH).exists()) {
                 LOGGER.info("Keine Einstellungen gefunden.");
-                settingsNotFoundEvent.fire(new SettingsNotFoundEvent());
                 return createDefaultSettings();
             }
             JAXBContext context = JAXBContext.newInstance(Settings.class);

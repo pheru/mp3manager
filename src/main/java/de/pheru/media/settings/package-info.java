@@ -3,12 +3,15 @@
     @XmlJavaTypeAdapter(value = BooleanPropertyAdapter.class, type = BooleanProperty.class),
     @XmlJavaTypeAdapter(value = IntegerPropertyAdapter.class, type = IntegerProperty.class),
     @XmlJavaTypeAdapter(value = PosPropertyAdapter.class, type = PosProperty.class),
+    @XmlJavaTypeAdapter(value = DurationPropertyAdapter.class, type = DurationProperty.class),
     @XmlJavaTypeAdapter(value = DoublePropertyAdapter.class, type = DoubleProperty.class)})
 package de.pheru.media.settings;
 
+import de.pheru.media.settings.objectproperties.DurationProperty;
 import de.pheru.media.settings.objectproperties.PosProperty;
 import de.pheru.media.settings.xmladapters.BooleanPropertyAdapter;
 import de.pheru.media.settings.xmladapters.DoublePropertyAdapter;
+import de.pheru.media.settings.xmladapters.DurationPropertyAdapter;
 import de.pheru.media.settings.xmladapters.IntegerPropertyAdapter;
 import de.pheru.media.settings.xmladapters.PosPropertyAdapter;
 import de.pheru.media.settings.xmladapters.StringPropertyAdapter;

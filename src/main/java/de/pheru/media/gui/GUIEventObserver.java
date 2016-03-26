@@ -1,10 +1,7 @@
 package de.pheru.media.gui;
 
-import de.pheru.fx.controls.notification.Notification;
 import de.pheru.media.cdi.events.SettingsLoadExceptionEvent;
-import de.pheru.media.cdi.events.SettingsNotFoundEvent;
 import de.pheru.media.cdi.events.TaskExceptionEvent;
-import javafx.application.Platform;
 import javafx.scene.control.Alert;
 
 import javax.enterprise.event.Observes;
@@ -24,12 +21,6 @@ public class GUIEventObserver {
             alert.setContentText(text);
         }
         alert.showAndWait();
-    }
-
-    private void settingsNotFound(@Observes SettingsNotFoundEvent settingsNotFoundEvent) {
-        Notification notification = new Notification(Notification.Type.INFO, "Keine Einstellungen vorhanden." +
-                " Es wird eine neue Datei beim Schließen der Anwendung angelegt.");
-        notification.show();
     }
 
     private void taskException(@Observes TaskExceptionEvent taskExceptionEvent) {
