@@ -9,22 +9,27 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.TextAlignment;
 
 /**
- *
  * @author Philipp Bruckner
  */
 public class NoDirectoryPlaceholder extends VBox {
 
     private final Button button = new Button("Verzeichnis wählen");
 
-    public NoDirectoryPlaceholder(EventHandler<ActionEvent> eventHandler) {
+    public NoDirectoryPlaceholder() {
         setAlignment(Pos.CENTER);
 
         Label label = new Label("Es wurde kein Verzeichnis ausgewählt");
         label.setTextAlignment(TextAlignment.CENTER);
 
-        button.setOnAction(eventHandler);
-
         getChildren().addAll(label, button);
+    }
+
+    public void setOnAction(EventHandler<ActionEvent> eventHandler) {
+        button.setOnAction(eventHandler);
+    }
+
+    public EventHandler<ActionEvent> getOnAction() {
+        return button.getOnAction();
     }
 
     public Button getButton() {

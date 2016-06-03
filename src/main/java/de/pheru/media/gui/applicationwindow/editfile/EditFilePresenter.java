@@ -1,7 +1,6 @@
 package de.pheru.media.gui.applicationwindow.editfile;
 
 import de.pheru.fx.mvp.ObservableListWrapper;
-import de.pheru.fx.util.focus.FocusTraversal;
 import de.pheru.media.cdi.qualifiers.TableData;
 import de.pheru.media.cdi.qualifiers.XMLSettings;
 import de.pheru.media.data.ArtworkData;
@@ -10,7 +9,6 @@ import de.pheru.media.gui.nodes.NumberComboBox;
 import de.pheru.media.gui.taskimpl.SaveFilesTaskImpl;
 import de.pheru.media.settings.Settings;
 import de.pheru.media.task.TaskPool;
-import de.pheru.media.util.ByteUtil;
 import de.pheru.media.util.Comparators;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
@@ -103,8 +101,6 @@ public class EditFilePresenter implements Initializable {
         addAllFieldsToList();
         bindUI();
         setUpListeners();
-        FocusTraversal.createFocusTraversalGroup("editFileFields", fileNameField, titleField.getEditor(), albumField.getEditor(),
-                artistField.getEditor(), trackField.getEditor(), yearField.getEditor(), genreField.getEditor());
     }
 
     /**

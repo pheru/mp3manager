@@ -14,6 +14,8 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jaudiotagger.audio.AudioFileIO;
 import org.jaudiotagger.audio.AudioHeader;
 import org.jaudiotagger.audio.exceptions.CannotReadException;
@@ -36,6 +38,8 @@ import java.io.IOException;
  * @author Philipp Bruckner
  */
 public class Mp3FileData extends FileBasedData {
+
+    private static final Logger LOGGER = LogManager.getLogger(Mp3FileData.class);
 
     public static final Mp3FileData PLACEHOLDER_DATA = createPlaceholderData();
     public static final Mp3FileData EMPTY_DATA = createEmptyData();
@@ -131,6 +135,7 @@ public class Mp3FileData extends FileBasedData {
                     artworkData.set(new ArtworkData(artwork.getBinaryData(), artwork.getImage().getWidth(),
                             artwork.getImage().getHeight(), artwork.getMimeType()));
                 } catch (IOException e) {
+                    LOGGER.warn("TODO", e); //TODO
                     artworkData.set(new ArtworkData(artwork.getBinaryData(), 0, 0, artwork.getMimeType()));
                 }
             }

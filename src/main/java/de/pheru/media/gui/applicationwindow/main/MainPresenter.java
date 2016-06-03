@@ -1,7 +1,7 @@
 package de.pheru.media.gui.applicationwindow.main;
 
 import de.pheru.fx.mvp.ObservableListWrapper;
-import de.pheru.fx.util.focus.FocusTraversal;
+import de.pheru.fx.util.focus.FocusTraversalGroup;
 import de.pheru.media.cdi.qualifiers.TableData;
 import de.pheru.media.cdi.qualifiers.XMLSettings;
 import de.pheru.media.data.Mp3FileData;
@@ -86,14 +86,14 @@ public class MainPresenter implements Initializable {
     private TableView<Mp3FileData> table;
     private CssRowFactory<Mp3FileData> tableRowFactory;
 
-    private final ReadingDirectoryPlaceholder readingDirectoryPlaceholder = new ReadingDirectoryPlaceholder();
-    private final NoFilterResultPlaceholder noFilterResultPlaceholder = new NoFilterResultPlaceholder();
-    private final EmptyDirectoryPlaceholder emptyDirectoryPlaceholder = new EmptyDirectoryPlaceholder((ActionEvent event) -> {
-        changeDirectory();
-    });
-    private final NoDirectoryPlaceholder noDirectoryPlaceholder = new NoDirectoryPlaceholder((ActionEvent event) -> {
-        changeDirectory();
-    });
+    @FXML
+    private ReadingDirectoryPlaceholder readingDirectoryPlaceholder;
+    @FXML
+    private NoFilterResultPlaceholder noFilterResultPlaceholder;
+    @FXML
+    private EmptyDirectoryPlaceholder emptyDirectoryPlaceholder;
+    @FXML
+    private NoDirectoryPlaceholder noDirectoryPlaceholder;
 
     @Inject
     private TaskPool taskPool;
@@ -117,8 +117,6 @@ public class MainPresenter implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         initTable();
         bindUI();
-        FocusTraversal.createFocusTraversalGroup("mainGroup", table, emptyDirectoryPlaceholder.getButton(),
-                noDirectoryPlaceholder.getButton(), filterTextField);
     }
 
     /**

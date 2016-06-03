@@ -16,15 +16,21 @@ public class EmptyDirectoryPlaceholder extends VBox {
 
     private final Button button = new Button("Verzeichnis wechseln");
 
-    public EmptyDirectoryPlaceholder(EventHandler<ActionEvent> eventHandler) {
+    public EmptyDirectoryPlaceholder() {
         setAlignment(Pos.CENTER);
 
         Label label = new Label("Das gewählte Verzeichnis enthält keine MP3-Dateien");
         label.setTextAlignment(TextAlignment.CENTER);
 
-        button.setOnAction(eventHandler);
-
         getChildren().addAll(label, button);
+    }
+
+    public void setOnAction(EventHandler<ActionEvent> eventHandler){
+        button.setOnAction(eventHandler);
+    }
+
+    public EventHandler<ActionEvent> getOnAction(){
+        return button.getOnAction();
     }
 
     public Button getButton() {

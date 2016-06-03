@@ -350,7 +350,7 @@ public class PlaylistPresenter implements Initializable {
             primaryStage.setIconified(false);
             primaryStage.toFront();
         }, true);
-        currentTitleNotification.show();
+        currentTitleNotification.show(true);
     }
 
     private void updateStyledIndex(int playlistIndex) {

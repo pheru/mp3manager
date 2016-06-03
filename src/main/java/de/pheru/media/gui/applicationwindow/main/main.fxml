@@ -8,26 +8,30 @@
 <?import javafx.scene.control.cell.*?>
 <?import java.lang.*?>
 <?import javafx.scene.layout.*?>
+<?import de.pheru.media.gui.nodes.*?>
+<?import de.pheru.fx.util.focus.*?>
 
-<VBox fx:id="root" xmlns="http://javafx.com/javafx/8.0.40" xmlns:fx="http://javafx.com/fxml/1" 
+<VBox fx:id="root" xmlns="http://javafx.com/javafx/8.0.40" xmlns:fx="http://javafx.com/fxml/1"
       fx:controller="de.pheru.media.gui.applicationwindow.main.MainPresenter">
     <children>
         <HBox alignment="CENTER_LEFT" VBox.vgrow="NEVER">
             <children>
                 <Label fx:id="directoryLabel" onMouseClicked="#changeDirectory" text="&lt;Pfad&gt;">
                     <cursor>
-                        <Cursor fx:constant="HAND" />
+                        <Cursor fx:constant="HAND"/>
                     </cursor>
                 </Label>
-                <Pane HBox.hgrow="ALWAYS" />
+                <Pane HBox.hgrow="ALWAYS"/>
                 <StackPane HBox.hgrow="NEVER">
                     <children>
                         <TextField fx:id="filterTextField" minWidth="250.0" promptText="Filter">
                             <padding>
-                                <Insets bottom="5.0" left="5.0" right="45.0" top="5.0" />
+                                <Insets bottom="5.0" left="5.0" right="45.0" top="5.0"/>
                             </padding>
                         </TextField>
-                        <Button fx:id="clearFilterButton" mnemonicParsing="false" onAction="#clearFilter" scaleX="0.7" scaleY="0.7" style="-fx-background-radius: 30;" text="X" StackPane.alignment="CENTER_RIGHT" />
+                        <Button fx:id="clearFilterButton" mnemonicParsing="false" onAction="#clearFilter" scaleX="0.7"
+                                scaleY="0.7" style="-fx-background-radius: 30;" text="X"
+                                StackPane.alignment="CENTER_RIGHT"/>
                     </children>
                 </StackPane>
             </children>
@@ -36,48 +40,67 @@
             <contextMenu>
                 <ContextMenu>
                     <items>
-                        <MenuItem onAction="#play" text="Wiedergabe" />
-                        <MenuItem onAction="#addToPlaylist" text="Zur Wiedergabeliste hinzufügen" />
+                        <MenuItem onAction="#play" text="Wiedergabe"/>
+                        <MenuItem onAction="#addToPlaylist" text="Zur Wiedergabeliste hinzufügen"/>
                     </items>
                 </ContextMenu>
             </contextMenu>
         </TableView>
         <HBox VBox.vgrow="NEVER">
             <children>
-                <ProgressIndicator fx:id="taskProgress" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="54.0" prefWidth="46.0" progress="0.0" style="-fx-progress-color: dodgerblue;">
+                <ProgressIndicator fx:id="taskProgress" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity"
+                                   minWidth="-Infinity" prefHeight="54.0" prefWidth="46.0" progress="0.0"
+                                   style="-fx-progress-color: dodgerblue;">
                     <HBox.margin>
-                        <Insets />
+                        <Insets/>
                     </HBox.margin>
                 </ProgressIndicator>
-                <Button fx:id="taskCancelButton" alignment="TOP_LEFT" disable="true" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#cancelTask" prefHeight="20.0" prefWidth="20.0" text="X" textFill="RED">
+                <Button fx:id="taskCancelButton" alignment="TOP_LEFT" disable="true" maxHeight="-Infinity"
+                        maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false"
+                        onAction="#cancelTask" prefHeight="20.0" prefWidth="20.0" text="X" textFill="RED">
                     <font>
-                        <Font size="10.0" />
+                        <Font size="10.0"/>
                     </font>
                 </Button>
-                <Separator orientation="VERTICAL" />
+                <Separator orientation="VERTICAL"/>
                 <VBox alignment="CENTER_LEFT">
                     <children>
                         <Label fx:id="statusL1" text="&lt;Beschreibung&gt;">
                             <VBox.margin>
-                                <Insets />
+                                <Insets/>
                             </VBox.margin>
                         </Label>
                         <Label fx:id="statusL2" text="&lt;Details&gt;">
                             <VBox.margin>
-                                <Insets />
+                                <Insets/>
                             </VBox.margin>
                         </Label>
                     </children>
                 </VBox>
-                <Pane HBox.hgrow="ALWAYS" />
-                <Separator orientation="VERTICAL" />
+                <Pane HBox.hgrow="ALWAYS"/>
+                <Separator orientation="VERTICAL"/>
                 <VBox alignment="CENTER_RIGHT">
                     <children>
-                        <Label fx:id="statusR1" minWidth="-Infinity" text="&lt;Ausgewählt&gt;" HBox.hgrow="ALWAYS" />
-                        <Label fx:id="statusR2" minWidth="-Infinity" text="&lt;Gesamt&gt;" />
+                        <Label fx:id="statusR1" minWidth="-Infinity" text="&lt;Ausgewählt&gt;" HBox.hgrow="ALWAYS"/>
+                        <Label fx:id="statusR2" minWidth="-Infinity" text="&lt;Gesamt&gt;"/>
                     </children>
                 </VBox>
             </children>
         </HBox>
     </children>
+    <fx:define>
+        <NoFilterResultPlaceholder fx:id="noFilterResultPlaceholder" />
+        <ReadingDirectoryPlaceholder fx:id="readingDirectoryPlaceholder" />
+        <EmptyDirectoryPlaceholder fx:id="emptyDirectoryPlaceholder" onAction="#changeDirectory"/>
+        <NoDirectoryPlaceholder fx:id="noDirectoryPlaceholder" onAction="#changeDirectory"/>
+        <FocusTraversalGroup fx:id="mainGroup">
+            <nodes>
+                <fx:reference source="table"/>
+                <fx:reference source="emptyDirectoryPlaceholder.button"/>
+                <fx:reference source="noDirectoryPlaceholder.button"/>
+                <fx:reference source="filterTextField"/>
+            </nodes>
+        </FocusTraversalGroup>
+    </fx:define>
+
 </VBox>
