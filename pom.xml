@@ -15,7 +15,7 @@
         <dependency>
             <groupId>de.pheru.fx</groupId>
             <artifactId>pherufx-controls</artifactId>
-            <version>1.0.0-SNAPSHOT</version>
+            <version>1.0.0</version>
         </dependency>
         <dependency>
             <groupId>de.pheru.fx</groupId>
@@ -70,8 +70,9 @@
                 <configuration>
                     <mainClass>de.pheru.media.gui.PheruMedia</mainClass>
                     <jvmArgs>
-                        <jvmArg>-Xms128m</jvmArg>
+                        <!--<jvmArg>-Xms128m</jvmArg>-->
                         <jvmArg>-Xmx1024m</jvmArg>
+                        <!--<jvmArg> -XX:+UseCompressedOops</jvmArg>-->
                         <jvmArg>-Dsun.java2d.opengl=True</jvmArg>
                         <jvmArg>-Dfile.encoding=UTF-8</jvmArg>
                     </jvmArgs>

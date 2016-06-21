@@ -193,7 +193,7 @@ public class Playlist extends FileBasedData {
                 }
             }
         } catch (IOException e) {
-            LOGGER.error("Dirty-Check: Playlist-File konnte nicht gelesen werden!", e);
+            LOGGER.error("Playlist-File could not be read while dirty-check!", e);
             return true;
         }
         return false;

@@ -329,7 +329,7 @@ public class PlaylistPresenter implements Initializable {
 
     private void showCurrentTitleNotification(Mp3FileData newCurrentTitle) {
         if (currentTitleNotification != null) {
-            currentTitleNotification.hide(false);
+            currentTitleNotification.hide();
         }
         VBox vbox = new VBox(new Label(newCurrentTitle.getTitle()),
                 new Label(newCurrentTitle.getAlbum()), new Label(newCurrentTitle.getArtist()));
@@ -343,14 +343,14 @@ public class PlaylistPresenter implements Initializable {
         HBox content = new HBox(artworkImage, vbox);
         content.setSpacing(5);
 
-        currentTitleNotification = new Notification(content);
+        currentTitleNotification = new Notification(Notification.Type.NONE, content);
         currentTitleNotification.setPosition(Pos.CENTER_RIGHT);
-        currentTitleNotification.setExitButtonVisible(false);
+        currentTitleNotification.setCloseButtonVisible(false);
         currentTitleNotification.setOnMouseClicked((MouseEvent event) -> {
             primaryStage.setIconified(false);
             primaryStage.toFront();
-        }, true);
-        currentTitleNotification.show(true);
+        });
+        currentTitleNotification.show();
     }
 
     private void updateStyledIndex(int playlistIndex) {

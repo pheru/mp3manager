@@ -1,7 +1,6 @@
 package de.pheru.media.gui.applicationwindow.main;
 
 import de.pheru.fx.mvp.ObservableListWrapper;
-import de.pheru.fx.util.focus.FocusTraversalGroup;
 import de.pheru.media.cdi.qualifiers.TableData;
 import de.pheru.media.cdi.qualifiers.XMLSettings;
 import de.pheru.media.data.Mp3FileData;
@@ -27,7 +26,6 @@ import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import javafx.collections.transformation.SortedList;
 import javafx.concurrent.WorkerStateEvent;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Pos;

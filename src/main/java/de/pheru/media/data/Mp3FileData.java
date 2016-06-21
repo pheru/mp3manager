@@ -135,7 +135,7 @@ public class Mp3FileData extends FileBasedData {
                     artworkData.set(new ArtworkData(artwork.getBinaryData(), artwork.getImage().getWidth(),
                             artwork.getImage().getHeight(), artwork.getMimeType()));
                 } catch (IOException e) {
-                    LOGGER.warn("TODO", e); //TODO
+                    LOGGER.warn("Exception retrieving image from mp3file!", e);
                     artworkData.set(new ArtworkData(artwork.getBinaryData(), 0, 0, artwork.getMimeType()));
                 }
             }
