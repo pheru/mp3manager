@@ -7,8 +7,6 @@ import javax.enterprise.context.ApplicationScoped;
 /**
  * Die HauptView.
  * Beinhaltet die Menüleiste und alle anderen Views.
- *
- * @author Philipp Bruckner
  */
 @ApplicationScoped
 public class ApplicationView extends PheruFXView {

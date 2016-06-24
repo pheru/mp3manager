@@ -13,7 +13,8 @@ import javax.xml.bind.Unmarshaller;
 import java.io.File;
 
 /**
- * Created by Philipp on 12.01.2016.
+ * Der SettingsLoader dient dazu, innerhalb des CDI-Kontextes eine neue Settings-Instanz via JAXB zu erzeugen.
+ * Der CDI-Kontext wird benötigt, um im Fehlerfall ein Event für die Benutzeroberfläche zu feuern.
  */
 @ApplicationScoped
 public class SettingsLoader {

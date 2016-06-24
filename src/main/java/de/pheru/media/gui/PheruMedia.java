@@ -22,8 +22,6 @@ import java.util.logging.Level;
 
 /**
  * Application-Klasse als Startpunkt für die JavaFX-Anwendung.
- *
- * @author Philipp Bruckner
  */
 public class PheruMedia extends PheruFXApplication {
 

@@ -132,9 +132,6 @@ public class MainPresenter implements Initializable {
         });
 
         table.setRowFactory(tableRowFactory);
-//        playlist.currentTitleIndexProperty().addListener((ObservableValue<? extends Number> observable, Number oldValue, Number newValue) -> {
-//            updateStyledIndex(newValue.intValue());
-//        });
         if (settings.getMusicDirectory().isEmpty()) {
             table.setPlaceholder(noDirectoryPlaceholder);
         } else {
@@ -155,9 +152,7 @@ public class MainPresenter implements Initializable {
             }
         });
         updateColumnsOrderTable(); // Initiale Anpassung der Reihenfolge an die Settings
-        table.setOnSort((SortEvent<TableView<Mp3FileData>> event) -> {
-            updateStyledIndex(playlist.getCurrentTitleIndex());
-        });
+        table.setOnSort((SortEvent<TableView<Mp3FileData>> event) -> updateStyledIndex(playlist.getCurrentTitleIndex()));
     }
 
     /**
@@ -220,7 +215,7 @@ public class MainPresenter implements Initializable {
             tableColumn.prefWidthProperty().bind(mainTableColumnSettings.widthProperty());
             mainTableColumnSettings.widthProperty().bind(tableColumn.widthProperty());
             tableColumn.visibleProperty().bindBidirectional(mainTableColumnSettings.visibleProperty());
-            tableColumn.setCellValueFactory(new PropertyValueFactory(column.getPropertyName()));
+            tableColumn.setCellValueFactory(new PropertyValueFactory<>(column.getPropertyName()));
             if (column.getComparator() != null) {
                 tableColumn.setComparator(column.getComparator());
             }
@@ -230,7 +225,7 @@ public class MainPresenter implements Initializable {
 
     private void updateColumnsOrderTable() {
         updatingColumnsOrderTable = true;
-        List<TableColumn> columns = new ArrayList<>(table.getColumns());
+        List<TableColumn<Mp3FileData, ?>> columns = new ArrayList<>(table.getColumns());
         table.getColumns().clear();
         for (MainTableColumnSettings cs : settings.getAllMainTableColumnSettings()) {
             table.getColumns().add(getColumnByName(columns, cs.getColumn().getColumnName()));
@@ -238,8 +233,8 @@ public class MainPresenter implements Initializable {
         updatingColumnsOrderTable = false;
     }
 
-    private TableColumn getColumnByName(List<TableColumn> list, String name) {
-        for (TableColumn c : list) {
+    private TableColumn<Mp3FileData, ?> getColumnByName(List<TableColumn<Mp3FileData, ?>> list, String name) {
+        for (TableColumn<Mp3FileData, ?> c : list) {
             if (c.getText().equals(name)) {
                 return c;
             }
@@ -261,12 +256,11 @@ public class MainPresenter implements Initializable {
     }
 
     /**
-     * Bindet die UI-Elemente untereinander.
+     * Bindet die UI-Elemente.
      */
     private void bindUI() {
         noFilterResultPlaceholder.filterProperty().bind(filterTextField.textProperty());
         clearFilterButton.visibleProperty().bind(filterTextField.textProperty().isEmpty().not());
-//        taskCancelButton.disableProperty().bind(taskPool.cancellingProperty().or(taskPool.runningProperty().not()));
         taskCancelButton.disableProperty().bind(taskPool.statusProperty().isNotEqualTo(PheruMediaTask.PheruMediaTaskStatus.RUNNING));
         taskProgress.styleProperty().bind(new StringBinding() {
             {
@@ -359,7 +353,6 @@ public class MainPresenter implements Initializable {
      */
     @FXML
     private void addToPlaylist() {
-        LOGGER.debug("addToPlaylist: " + selectedDataWrapper);
         playlist.add(selectedDataWrapper.getList());
     }
 
@@ -367,9 +360,4 @@ public class MainPresenter implements Initializable {
     private void clearFilter() {
         filterTextField.setText("");
     }
-
-    public void testObserve(@Observes Integer i) {
-        masterData.clear();
-    }
-
 }

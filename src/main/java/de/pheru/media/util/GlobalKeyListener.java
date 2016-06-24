@@ -7,9 +7,6 @@ import javax.enterprise.context.ApplicationScoped;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * @author Philipp Bruckner
- */
 @ApplicationScoped
 public class GlobalKeyListener implements NativeKeyListener {
 
@@ -40,8 +37,8 @@ public class GlobalKeyListener implements NativeKeyListener {
         //Nicht benötigt
     }
 
-    public static interface GlobalKeyHandler {
+    public interface GlobalKeyHandler {
 
-        public void handle(NativeKeyEvent e);
+        void handle(NativeKeyEvent e);
     }
 }

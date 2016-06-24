@@ -6,8 +6,6 @@ import java.text.DecimalFormat;
 
 /**
  * Klasse zum formatieren von Bytes.
- *
- * @author Philipp Bruckner
  */
 public final class ByteUtil {
 

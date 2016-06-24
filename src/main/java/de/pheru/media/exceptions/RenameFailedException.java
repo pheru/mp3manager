@@ -1,9 +1,5 @@
 package de.pheru.media.exceptions;
 
-/**
- *
- * @author Philipp Bruckner
- */
 public class RenameFailedException extends Exception {
 
     public RenameFailedException() {

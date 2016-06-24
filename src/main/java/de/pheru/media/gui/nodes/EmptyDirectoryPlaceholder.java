@@ -8,10 +8,6 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.TextAlignment;
 
-/**
- *
- * @author Philipp Bruckner
- */
 public class EmptyDirectoryPlaceholder extends VBox {
 
     private final Button button = new Button("Verzeichnis wechseln");
@@ -25,11 +21,11 @@ public class EmptyDirectoryPlaceholder extends VBox {
         getChildren().addAll(label, button);
     }
 
-    public void setOnAction(EventHandler<ActionEvent> eventHandler){
+    public void setOnAction(EventHandler<ActionEvent> eventHandler) {
         button.setOnAction(eventHandler);
     }
 
-    public EventHandler<ActionEvent> getOnAction(){
+    public EventHandler<ActionEvent> getOnAction() {
         return button.getOnAction();
     }
 

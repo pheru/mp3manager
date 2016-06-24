@@ -5,9 +5,6 @@ import javafx.util.Duration;
 
 import javax.xml.bind.annotation.adapters.XmlAdapter;
 
-/**
- * @author Philipp Bruckner
- */
 public class DurationPropertyAdapter extends XmlAdapter<String, DurationProperty> {
 
     @Override

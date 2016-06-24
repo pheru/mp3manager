@@ -1,9 +1,5 @@
 package de.pheru.media.exceptions;
 
-/**
- *
- * @author Philipp Bruckner
- */
 public class SaveFailedException extends Exception {
 
     public SaveFailedException() {

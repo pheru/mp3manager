@@ -21,8 +21,6 @@ import java.io.File;
 
 /**
  * Player zum Abspielen von der MP3-Dateien.
- *
- * @author Philipp Bruckner
  */
 @ApplicationScoped
 public class MusicPlayer {

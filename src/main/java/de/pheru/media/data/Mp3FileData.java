@@ -25,8 +25,9 @@ import org.jaudiotagger.audio.mp3.MP3File;
 import org.jaudiotagger.tag.FieldDataInvalidException;
 import org.jaudiotagger.tag.FieldKey;
 import org.jaudiotagger.tag.TagException;
-import org.jaudiotagger.tag.datatype.Artwork;
 import org.jaudiotagger.tag.id3.AbstractID3v2Tag;
+import org.jaudiotagger.tag.images.Artwork;
+import org.jaudiotagger.tag.images.StandardArtwork;
 import org.jaudiotagger.tag.reference.PictureTypes;
 
 import java.io.File;
@@ -34,8 +35,6 @@ import java.io.IOException;
 
 /**
  * Datenmodell für die Mp3-Dateien.
- *
- * @author Philipp Bruckner
  */
 public class Mp3FileData extends FileBasedData {
 
@@ -131,13 +130,8 @@ public class Mp3FileData extends FileBasedData {
             track.set(tag.getFirst(FieldKey.TRACK));
             if (tag.getFirstArtwork() != null) {
                 Artwork artwork = tag.getFirstArtwork();
-                try {
-                    artworkData.set(new ArtworkData(artwork.getBinaryData(), artwork.getImage().getWidth(),
-                            artwork.getImage().getHeight(), artwork.getMimeType()));
-                } catch (IOException e) {
-                    LOGGER.warn("Exception retrieving image from mp3file!", e);
-                    artworkData.set(new ArtworkData(artwork.getBinaryData(), 0, 0, artwork.getMimeType()));
-                }
+                artworkData.set(new ArtworkData(artwork.getBinaryData(), artwork.getWidth(),
+                        artwork.getHeight(), artwork.getMimeType()));
             }
         } else {
             throw new Mp3FileDataException("File \"" + file.getAbsolutePath() + "\" does not have an ID3v2Tag!");
@@ -206,7 +200,7 @@ public class Mp3FileData extends FileBasedData {
     }
 
     private void setArtworkTagField(AbstractID3v2Tag tag, Mp3FileData changeData) throws FieldDataInvalidException {
-        Artwork newArtwork = new Artwork();
+        Artwork newArtwork = new StandardArtwork();
         newArtwork.setBinaryData(changeData.getArtworkData().getBinaryData());
         newArtwork.setMimeType(changeData.getArtworkData().getMimeType());
         newArtwork.setDescription("");

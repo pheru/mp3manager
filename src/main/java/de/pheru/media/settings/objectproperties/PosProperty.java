@@ -5,7 +5,6 @@ import javafx.geometry.Pos;
 
 /**
  * Wrapper für XML-Adapter.
- * @author Philipp Bruckner
  */
 public class PosProperty extends SimpleObjectProperty<Pos>{
 

@@ -13,9 +13,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * @author Philipp Bruckner
- */
 public abstract class LoadPlaylistTask extends PheruMediaTask {
 
     private static final Logger LOGGER = LogManager.getLogger(LoadPlaylistTask.class);

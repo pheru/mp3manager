@@ -8,10 +8,6 @@ import javafx.beans.property.SimpleDoubleProperty;
 
 import javax.xml.bind.annotation.XmlElement;
 
-/**
- *
- * @author Philipp Bruckner
- */
 public class MainTableColumnSettings {
 
     @XmlElement //nötig, da kein public setter vorhanden ist

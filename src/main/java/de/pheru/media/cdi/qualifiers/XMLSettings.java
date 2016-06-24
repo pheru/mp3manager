@@ -8,8 +8,7 @@ import static java.lang.annotation.ElementType.*;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 /**
- *
- * @author Philipp Bruckner
+ * Qualifier für {@link de.pheru.media.cdi.producers.SettingsProducer}.
  */
 @Qualifier
 @Retention(RUNTIME)

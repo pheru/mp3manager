@@ -4,9 +4,6 @@ import de.pheru.media.util.Comparators;
 
 import java.util.Comparator;
 
-/**
- * @author Philipp Bruckner
- */
 public enum MainTableColumn {
 
     FILENAME("Dateiname", "fileName", null, 100.0, true, false),

@@ -163,11 +163,6 @@ public class ApplicationPresenter implements Initializable {
     }
 
     @FXML
-    private void delete() {
-        editFilePresenter.delete();
-    }
-
-    @FXML
     private void playPause() {
         musicPlayer.playPause();
     }
@@ -187,7 +182,4 @@ public class ApplicationPresenter implements Initializable {
         musicPlayer.previous();
     }
 
-    @FXML
-    private void about() {
-    }
 }

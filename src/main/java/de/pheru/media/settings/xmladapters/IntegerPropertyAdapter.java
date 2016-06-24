@@ -5,10 +5,6 @@ import javafx.beans.property.SimpleIntegerProperty;
 
 import javax.xml.bind.annotation.adapters.XmlAdapter;
 
-/**
- *
- * @author Philipp Bruckner
- */
 public class IntegerPropertyAdapter extends XmlAdapter<String, IntegerProperty> {
 
     @Override

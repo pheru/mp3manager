@@ -9,9 +9,6 @@ import javafx.scene.control.Label;
 
 import java.util.List;
 
-/**
- * Created by Philipp on 20.02.2016.
- */
 public class ReadDirectoryTaskImpl extends ReadDirectoryTask {
 
     /**

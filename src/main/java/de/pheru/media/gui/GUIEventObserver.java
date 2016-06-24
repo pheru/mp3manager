@@ -6,9 +6,6 @@ import javafx.scene.control.Alert;
 
 import javax.enterprise.event.Observes;
 
-/**
- * Created by Philipp on 29.02.2016.
- */
 public class GUIEventObserver {
 
     private void settingsLoadException(@Observes SettingsLoadExceptionEvent settingsLoadExceptionEvent) {

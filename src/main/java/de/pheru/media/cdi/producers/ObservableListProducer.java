@@ -9,10 +9,6 @@ import javafx.collections.ObservableList;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Produces;
 
-/**
- *
- * @author Philipp
- */
 @ApplicationScoped
 public class ObservableListProducer {
 
@@ -27,6 +23,9 @@ public class ObservableListProducer {
     @TableData(TableData.Source.MAIN_SELECTED)
     @ApplicationScoped
     public ObservableListWrapper<Mp3FileData> mainSelected() {
+        // Die Liste der ausgewählten Elemente einer Tabelle kann nicht von außen ersetzt werden.
+        // Nachdem es Probleme mit dem Binding gab, wird hier keine neue Liste, sondern
+        // ein Wrapper für die tatsächliche Liste erzeugt.
         return new ObservableListWrapper<>();
     }
 

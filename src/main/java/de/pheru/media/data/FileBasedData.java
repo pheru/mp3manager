@@ -4,11 +4,8 @@ import javafx.beans.binding.StringBinding;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
-/**
- *
- * @author Philipp Bruckner
- */
 public abstract class FileBasedData {
+
     protected final StringProperty fileName = new SimpleStringProperty("");
     protected final StringProperty filePath = new SimpleStringProperty("");
     protected final StringProperty absolutePath = new SimpleStringProperty("");

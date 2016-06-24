@@ -116,7 +116,7 @@ public class EditFilePresenter implements Initializable {
     }
 
     /**
-     * Bindet die UI-Elemente untereinander.
+     * Bindet UI-Elemente und Datenmodell zusammen.
      */
     private void bindUI() {
         changeData.fileNameProperty().bind(fileNameField.textProperty().concat(".mp3"));
@@ -134,7 +134,7 @@ public class EditFilePresenter implements Initializable {
     }
 
     /**
-     * Erzeugt die verschiedenen Listener.
+     * Fügt die verschiedenen Listener hinzu.
      */
     private void setUpListeners() {
         selectedDataWrapper.getList().addListener((ListChangeListener.Change<? extends Mp3FileData> change) -> {
@@ -384,12 +384,7 @@ public class EditFilePresenter implements Initializable {
         taskPool.addTask(new SaveFilesTaskImpl(FXCollections.observableArrayList(selectedDataWrapper.getList()), new Mp3FileData(changeData)));
     }
 
-    //@FXML
     public void discard() {
         updateFields();
-    }
-
-    //@FXML
-    public void delete() {
     }
 }

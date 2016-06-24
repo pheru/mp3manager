@@ -8,10 +8,6 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
 
-/**
- *
- * @author Philipp Bruckner
- */
 @ApplicationScoped
 public class SettingsProducer {
 

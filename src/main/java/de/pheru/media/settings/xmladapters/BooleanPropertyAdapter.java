@@ -5,10 +5,6 @@ import javafx.beans.property.SimpleBooleanProperty;
 
 import javax.xml.bind.annotation.adapters.XmlAdapter;
 
-/**
- *
- * @author Philipp Bruckner
- */
 public class BooleanPropertyAdapter extends XmlAdapter<String, BooleanProperty> {
 
     @Override

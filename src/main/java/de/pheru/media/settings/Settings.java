@@ -32,11 +32,6 @@ import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
 import java.io.File;
 
-/**
- * Klasse zum Speichern und Auslesen von Einstellungen.
- *
- * @author Philipp Bruckner
- */
 @ApplicationScoped
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.NONE)

@@ -1,9 +1,5 @@
 package de.pheru.media.exceptions;
 
-/**
- *
- * @author Philipp Bruckner
- */
 public class Mp3FileDataException extends Exception {
 
     public Mp3FileDataException() {

@@ -5,10 +5,6 @@ import javafx.collections.ObservableList;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextFormatter;
 
-/**
- *
- * @author Philipp Bruckner
- */
 public class NumberComboBox<T> extends ComboBox<T> {
 
     public NumberComboBox() {

@@ -11,8 +11,6 @@ import java.util.List;
 
 /**
  * Task zum Speichern von MP3-Dateien.
- *
- * @author Philipp Bruckner
  */
 public abstract class SaveFilesTask extends PheruMediaTask {
 

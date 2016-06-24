@@ -5,8 +5,6 @@ import javafx.util.Duration;
 
 /**
  * Wrapper für XML-Adapter.
- *
- * @author Philipp Bruckner
  */
 public class DurationProperty extends SimpleObjectProperty<Duration> {
 

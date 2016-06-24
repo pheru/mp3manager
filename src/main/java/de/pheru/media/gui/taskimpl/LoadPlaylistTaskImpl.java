@@ -10,9 +10,6 @@ import javafx.scene.control.Label;
 import java.io.File;
 import java.util.List;
 
-/**
- * Created by Philipp on 20.02.2016.
- */
 public class LoadPlaylistTaskImpl extends LoadPlaylistTask {
 
     private final Playlist playlist;

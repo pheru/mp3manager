@@ -12,8 +12,6 @@ import java.util.List;
 
 /**
  * Task zum Auslesen von Dateien aus einem Verzeichnis.
- *
- * @author Philipp Bruckner
  */
 public abstract class ReadDirectoryTask extends PheruMediaTask {
 

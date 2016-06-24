@@ -34,7 +34,6 @@
                     <items>
                         <MenuItem mnemonicParsing="false" onAction="#saveChanges" text="Änderungen speichern" />
                         <MenuItem mnemonicParsing="false" onAction="#discardChanges" text="Änderungen verwerfen" />
-                        <MenuItem mnemonicParsing="false" onAction="#delete" text="Löschen..." />
                     </items>
                 </Menu>
                 <Menu mnemonicParsing="false" text="Wiedergabe">
@@ -46,11 +45,6 @@
                         <SeparatorMenuItem />
                         <CheckMenuItem fx:id="randomMenuItem" mnemonicParsing="false" text="Zufällige Wiedergabe" />
                         <CheckMenuItem fx:id="repeatMenuItem" mnemonicParsing="false" text="Wiederholung" />
-                    </items>
-                </Menu>
-                <Menu mnemonicParsing="false" text="Hilfe">
-                    <items>
-                        <MenuItem mnemonicParsing="false" onAction="#about" text="Info" />
                     </items>
                 </Menu>
             </menus>

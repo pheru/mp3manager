@@ -26,9 +26,6 @@ import org.jnativehook.NativeHookException;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
-/**
- * @author Philipp Bruckner
- */
 public class ApplicationStarter {
 
     private static final Logger LOGGER = LogManager.getLogger(ApplicationStarter.class);

@@ -1,9 +1,5 @@
 package de.pheru.media.exceptions;
 
-/**
- *
- * @author Philipp Bruckner
- */
 public class PheruMediaRuntimeException extends RuntimeException {
 
     public PheruMediaRuntimeException() {

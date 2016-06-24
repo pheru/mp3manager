@@ -8,10 +8,6 @@ import java.text.ParseException;
 import java.util.Comparator;
 import java.util.Date;
 
-/**
- *
- * @author Philipp Bruckner
- */
 public final class Comparators {
 
     public static final Comparator<String> NUMBER_COMPARATOR = createNumberComparator();

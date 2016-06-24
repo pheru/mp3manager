@@ -26,8 +26,6 @@ import javax.inject.Inject;
  * werden.<br/>
  * Wird ein neuer Task hinzugefügt, reiht sich dieser in die Liste von Tasks
  * ein. Ist die Liste leer, so wird der Task direkt gestartet.
- *
- * @author Philipp Bruckner
  */
 @ApplicationScoped
 public class TaskPool {

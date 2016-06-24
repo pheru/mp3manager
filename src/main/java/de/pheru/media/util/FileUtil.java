@@ -9,8 +9,6 @@ import java.util.stream.Stream;
 
 /**
  * Utility-Klasse für den Zugriff auf Dateien und Verzeichnisse.
- *
- * @author Philipp Bruckner
  */
 public final class FileUtil {
 

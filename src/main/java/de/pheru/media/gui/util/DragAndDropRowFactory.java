@@ -23,9 +23,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-/**
- * @author Philipp Bruckner
- */
 public class DragAndDropRowFactory<T> implements Callback<TableView<T>, TableRow<T>> {
 
     private static final Logger LOGGER = LogManager.getLogger(DragAndDropRowFactory.class);
@@ -59,7 +56,6 @@ public class DragAndDropRowFactory<T> implements Callback<TableView<T>, TableRow
         } else {
             row = baseFactory.call(tableView);
         }
-
         row.setOnDragDetected(createDragDetectedHandler(row, tableView));
         row.setOnDragOver(createDragOverHandler(row));
         row.setOnDragExited(createDragExitedHandler(row));

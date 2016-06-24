@@ -9,15 +9,13 @@ import java.util.Date;
 
 /**
  * Klasse zum formatieren von Datums- und Zeitangaben.
- *
- * @author Philipp Bruckner
  */
 public final class TimeUtil {
 
     public static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd.MM.yyyy");
     public static final SimpleDateFormat DATE_TIME_FORMAT = new SimpleDateFormat("dd.MM.yyyy - HH:mm:ss");
-    public static final SimpleDateFormat DURATION_WITH_HOURS_FORMAT = new SimpleDateFormat("HH:mm:ss");
     public static final SimpleDateFormat DURATION_FORMAT = new SimpleDateFormat("mm:ss");
+    public static final SimpleDateFormat DURATION_WITH_HOURS_FORMAT = new SimpleDateFormat("HH:mm:ss");
 
     private static final Logger LOGGER = LogManager.getLogger(TimeUtil.class);
 

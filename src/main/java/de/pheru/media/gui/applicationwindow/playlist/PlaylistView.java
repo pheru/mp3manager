@@ -6,8 +6,6 @@ import javax.enterprise.context.ApplicationScoped;
 
 /**
  * Die View zur Verwaltung der Wiedergabelisten.
- *
- * @author Philipp Bruckner
  */
 @ApplicationScoped
 public class PlaylistView extends PheruFXView {

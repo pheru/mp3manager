@@ -153,9 +153,6 @@ public class MusicPlayerPresenter implements Initializable {
                 return new Image("img/musicPlayer/player_" + button + ".png");
             }
         });
-//        playlist.currentTitleIndexProperty().addListener((ObservableValue<? extends Number> observable, Number oldValue, Number newValue) -> {
-//            updateCurrentTitleBinding(newValue.intValue());
-//        });
         playlist.currentTitleIndexProperty().addListener((ObservableValue<? extends Number> observable, Number oldValue, Number newValue) -> {
             Mp3FileData bindingData = playlist.getCurrentTitle() != null
                     ? playlist.getCurrentTitle() : Mp3FileData.PLACEHOLDER_DATA;

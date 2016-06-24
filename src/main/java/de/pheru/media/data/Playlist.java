@@ -25,15 +25,13 @@ import java.util.List;
 
 /**
  * Klasse zum verwalten einer Wiedergabeliste.
- *
- * @author Philipp Bruckner
  */
 @ApplicationScoped
 public class Playlist extends FileBasedData {
 
     private static final Logger LOGGER = LogManager.getLogger(Playlist.class);
 
-    public static final int UNDEFINED_CURRENT_INDEX = -42;
+    public static final int UNDEFINED_CURRENT_INDEX = -1;
     public static final String FILE_EXTENSION = "pmpl";
 
     @Inject
@@ -59,7 +57,6 @@ public class Playlist extends FileBasedData {
      * Indizes zu aktualisieren nötig)
      */
     public void add(List<Mp3FileData> dataToAdd) {
-        LOGGER.debug("add: " + dataToAdd);
         titles.addAll(dataToAdd);
         if (dataToAdd.size() == titles.size()) {
             setCurrentTitleIndex(0);
@@ -113,7 +110,7 @@ public class Playlist extends FileBasedData {
                 } else {
                     if (indicesToRemove.get(i) < currentTitleIndex.get()) {
                         setCurrentTitleIndex(currentTitleIndex.get() - 1);
-                    } else if (indicesToRemove.get(i) == currentTitleIndex.get()) {// && currentTitleIndex.get() >= titles.size()) {
+                    } else if (indicesToRemove.get(i) == currentTitleIndex.get()) {
                         if (currentTitleIndex.get() < titles.size()) {
                             setCurrentTitleIndex(getCurrentTitleIndex());
                         } else {
@@ -193,7 +190,7 @@ public class Playlist extends FileBasedData {
                 }
             }
         } catch (IOException e) {
-            LOGGER.error("Playlist-File could not be read while dirty-check!", e);
+            LOGGER.error("Playlist-file could not be read for dirty-check!", e);
             return true;
         }
         return false;
@@ -201,7 +198,6 @@ public class Playlist extends FileBasedData {
 
     private void initRandomIndicesToPlay() {
         if (!randomIndicesToPlay.isEmpty()) {
-            LOGGER.debug("initRandomIndices");
             Collections.shuffle(randomIndicesToPlay);
             Collections.swap(randomIndicesToPlay, 0, randomIndicesToPlay.indexOf(currentTitleIndex.get()));
         }
@@ -209,7 +205,6 @@ public class Playlist extends FileBasedData {
 
     private void resetRandomIndicesToPlay() {
         if (!randomIndicesToPlay.isEmpty()) {
-            LOGGER.debug("resetRandomIndices");
             Integer lastRandomIndex = randomIndicesToPlay.get(randomIndicesToPlay.size() - 1);
             Collections.shuffle(randomIndicesToPlay);
             if (randomIndicesToPlay.indexOf(lastRandomIndex) == 0) {

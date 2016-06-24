@@ -16,9 +16,6 @@ import javafx.scene.layout.VBox;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.FutureTask;
 
-/**
- * Created by Philipp on 08.01.2016.
- */
 public class SaveFilesTaskImpl extends SaveFilesTask {
 
     private boolean firstFail = true;

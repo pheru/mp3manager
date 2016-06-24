@@ -5,10 +5,6 @@ import javafx.beans.property.SimpleDoubleProperty;
 
 import javax.xml.bind.annotation.adapters.XmlAdapter;
 
-/**
- *
- * @author Philipp Bruckner
- */
 public class DoublePropertyAdapter extends XmlAdapter<String, DoubleProperty> {
 
     @Override

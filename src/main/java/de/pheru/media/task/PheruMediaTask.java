@@ -1,6 +1,5 @@
 package de.pheru.media.task;
 
-import javafx.application.Platform;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.concurrent.Task;
@@ -8,9 +7,6 @@ import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.event.EventType;
 
-/**
- * @author Philipp Bruckner
- */
 public abstract class PheruMediaTask extends Task<Void> {
 
     private final ObjectProperty<PheruMediaTaskStatus> status = new SimpleObjectProperty<>(PheruMediaTaskStatus.READY);

@@ -6,10 +6,6 @@ import javafx.scene.control.ProgressIndicator;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.TextAlignment;
 
-/**
- *
- * @author Philipp Bruckner
- */
 public class ReadingDirectoryPlaceholder extends VBox{
     
     public ReadingDirectoryPlaceholder() {

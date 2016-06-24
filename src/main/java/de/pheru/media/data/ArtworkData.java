@@ -6,17 +6,13 @@ import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import java.util.Arrays;
 
 /**
- * @author Philipp Bruckner
+ * Enthält Informationen über das Artwork einer {@link Mp3FileData}.
  */
 public class ArtworkData {
-
-    private static final Logger LOGGER = LogManager.getLogger(ArtworkData.class);
 
     private final ObjectProperty<byte[]> binaryData = new SimpleObjectProperty<>(new byte[0]);
     private final IntegerProperty width = new SimpleIntegerProperty(0);

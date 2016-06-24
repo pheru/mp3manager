@@ -8,10 +8,6 @@ import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.util.Callback;
 
-/**
- *
- * @author Philipp Bruckner
- */
 public class CssRowFactory<T> implements Callback<TableView<T>, TableRow<T>> {
 
     private final PseudoClass pseudoClass;
@@ -41,8 +37,8 @@ public class CssRowFactory<T> implements Callback<TableView<T>, TableRow<T>> {
             row.pseudoClassStateChanged(pseudoClass, styledIndices.contains(row.getIndex()));
         });
 
-        row.indexProperty().addListener((observable, oldValue, newValue)
-                -> row.pseudoClassStateChanged(pseudoClass, styledIndices.contains(row.getIndex()))
+        row.indexProperty().addListener((observable, oldValue, newValue) ->
+                row.pseudoClassStateChanged(pseudoClass, styledIndices.contains(row.getIndex()))
         );
         return row;
     }

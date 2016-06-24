@@ -8,10 +8,6 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.TextAlignment;
 
-/**
- *
- * @author Philipp Bruckner
- */
 public class NoFilterResultPlaceholder extends VBox {
 
     private final StringProperty filter = new SimpleStringProperty("");
@@ -38,6 +34,4 @@ public class NoFilterResultPlaceholder extends VBox {
     public StringProperty filterProperty() {
         return filter;
     }
-
-    
 }

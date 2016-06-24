@@ -8,8 +8,7 @@ import static java.lang.annotation.ElementType.*;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 /**
- *
- * @author Philipp Bruckner
+ * Qualifier für {@link de.pheru.media.cdi.producers.ObservableListProducer}.
  */
 @Qualifier
 @Retention(RUNTIME)
@@ -18,7 +17,7 @@ public @interface TableData {
 
     Source value();
 
-    public enum Source {
+    enum Source {
 
         MAIN, MAIN_SELECTED
     }
