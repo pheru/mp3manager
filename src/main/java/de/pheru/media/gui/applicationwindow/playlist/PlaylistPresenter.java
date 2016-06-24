@@ -331,19 +331,24 @@ public class PlaylistPresenter implements Initializable {
         if (currentTitleNotification != null) {
             currentTitleNotification.hide();
         }
+        HBox content = new HBox();
+
         VBox vbox = new VBox(new Label(newCurrentTitle.getTitle()),
                 new Label(newCurrentTitle.getAlbum()), new Label(newCurrentTitle.getArtist()));
         vbox.setAlignment(Pos.CENTER_LEFT);
 
-        Image image = new Image(new ByteArrayInputStream(newCurrentTitle.getArtworkData().getBinaryData()));
-        ImageView artworkImage = new ImageView(image);
-        artworkImage.setFitHeight(75);
-        artworkImage.setFitWidth(75);
-
-        HBox content = new HBox(artworkImage, vbox);
+        if (newCurrentTitle.getArtworkData() != null) {
+            Image image = new Image(new ByteArrayInputStream(newCurrentTitle.getArtworkData().getBinaryData()));
+            ImageView artworkImageView = new ImageView(image);
+            artworkImageView.setFitHeight(75);
+            artworkImageView.setFitWidth(75);
+            content.getChildren().add(artworkImageView);
+        }
+        content.getChildren().add(vbox);
         content.setSpacing(5);
 
         currentTitleNotification = new Notification(Notification.Type.NONE, content);
+        currentTitleNotification.setFadeOut(false);
         currentTitleNotification.setPosition(Pos.CENTER_RIGHT);
         currentTitleNotification.setCloseButtonVisible(false);
         currentTitleNotification.setOnMouseClicked((MouseEvent event) -> {
