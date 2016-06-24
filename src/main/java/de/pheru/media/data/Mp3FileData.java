@@ -30,6 +30,7 @@ import org.jaudiotagger.tag.images.Artwork;
 import org.jaudiotagger.tag.images.StandardArtwork;
 import org.jaudiotagger.tag.reference.PictureTypes;
 
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 
@@ -130,8 +131,14 @@ public class Mp3FileData extends FileBasedData {
             track.set(tag.getFirst(FieldKey.TRACK));
             if (tag.getFirstArtwork() != null) {
                 Artwork artwork = tag.getFirstArtwork();
-                artworkData.set(new ArtworkData(artwork.getBinaryData(), artwork.getWidth(),
-                        artwork.getHeight(), artwork.getMimeType()));
+                try {
+                    BufferedImage image = (BufferedImage) artwork.getImage();
+                    artworkData.set(new ArtworkData(artwork.getBinaryData(), image.getWidth(),
+                            image.getHeight(), artwork.getMimeType()));
+                } catch (IOException e) {
+                    LOGGER.warn("Exception retrieving image from mp3file!", e);
+                    artworkData.set(new ArtworkData(artwork.getBinaryData(), 0, 0, artwork.getMimeType()));
+                }
             }
         } else {
             throw new Mp3FileDataException("File \"" + file.getAbsolutePath() + "\" does not have an ID3v2Tag!");
