@@ -1,5 +1,6 @@
 package de.pheru.media.task;
 
+import javafx.application.Platform;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.concurrent.Task;
@@ -31,7 +32,11 @@ public abstract class PheruMediaTask extends Task<Void> {
     }
 
     public void setStatus(final PheruMediaTaskStatus status) {
-        this.status.set(status);
+        if (Platform.isFxApplicationThread()) {
+            this.status.set(status);
+        } else {
+            Platform.runLater(() -> this.status.set(status));
+        }
     }
 
     public ObjectProperty<PheruMediaTaskStatus> statusProperty() {
