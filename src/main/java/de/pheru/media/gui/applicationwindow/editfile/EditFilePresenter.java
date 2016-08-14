@@ -127,6 +127,7 @@ public class EditFilePresenter implements Initializable {
         changeData.yearProperty().bind(yearField.valueProperty());
         changeData.trackProperty().bind(trackField.valueProperty());
         coverView.fitHeightProperty().bind(coverPane.heightProperty());
+        coverView.fitWidthProperty().bind(coverPane.widthProperty());
         synchronizeTitleBox.selectedProperty().bindBidirectional(settings.editFileViewSynchronizeTitleProperty());
         sortTitleBox.selectedProperty().bindBidirectional(settings.editFileViewSortTitlesProperty());
         sortAlbumBox.selectedProperty().bindBidirectional(settings.editFileViewSortAlbumsProperty());
