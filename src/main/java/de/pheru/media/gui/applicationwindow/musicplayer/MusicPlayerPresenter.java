@@ -161,23 +161,24 @@ public class MusicPlayerPresenter implements Initializable {
     }
 
     private void updateCurrentTitleBinding(Mp3FileData newTitle) {
-        titleLabel.textProperty().bind(newTitle.titleProperty());
-        albumLabel.textProperty().bind(newTitle.albumProperty());
-        artistLabel.textProperty().bind(newTitle.artistProperty());
-        totalTimeLabel.textProperty().bind(createTimeBinding(newTitle.durationProperty()));
-        coverView.imageProperty().bind(new ObjectBinding<Image>() {
-            {
-                bind(newTitle.artworkDataProperty());
-            }
-
-            @Override
-            protected Image computeValue() {
-                if (newTitle.getArtworkData() == null) {
-                    return null;
-                }
-                return new Image(new ByteArrayInputStream(newTitle.getArtworkData().getBinaryData()));
-            }
-        });
+        titleLabel.setText(newTitle.getTitle());
+        albumLabel.setText(newTitle.getAlbum());
+        artistLabel.setText(newTitle.getArtist());
+        totalTimeLabel.setText(TimeUtil.secondsToDurationFormat(newTitle.getDuration(), false));
+//TODO
+//        coverView.imageProperty().bind(new ObjectBinding<Image>() {
+//            {
+//                bind(newTitle.artworkDataProperty());
+//            }
+//
+//            @Override
+//            protected Image computeValue() {
+//                if (newTitle.getArtworkData() == null) {
+//                    return null;
+//                }
+//                return new Image(new ByteArrayInputStream(newTitle.getArtworkData().getBinaryData()));
+//            }
+//        });
     }
 
     private StringBinding createTimeBinding(DoubleProperty property) {

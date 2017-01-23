@@ -72,7 +72,7 @@ public class MusicPlayer {
         });
         player.play();
         status.bind(player.statusProperty());
-        totalTime.bind(mp3.durationProperty());
+        totalTime.set(mp3.getDuration());
         currentTime.bind(new DoubleBinding() {
             {
                 bind(player.currentTimeProperty());

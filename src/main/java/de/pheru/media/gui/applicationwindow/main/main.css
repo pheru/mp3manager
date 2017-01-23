@@ -5,3 +5,7 @@
 .table-row-cell:played {
     -fx-font-weight: bold;
 }
+
+.column-align-right {
+    -fx-alignment: center-right;
+}

@@ -1,9 +1,6 @@
 package de.pheru.media.gui.applicationwindow.application;
 
-import de.pheru.fx.util.focus.FocusTraversal;
 import de.pheru.media.cdi.qualifiers.XMLSettings;
-import de.pheru.media.gui.applicationwindow.editfile.EditFilePresenter;
-import de.pheru.media.gui.applicationwindow.editfile.EditFileView;
 import de.pheru.media.gui.applicationwindow.main.MainPresenter;
 import de.pheru.media.gui.applicationwindow.main.MainView;
 import de.pheru.media.gui.applicationwindow.musicplayer.MusicPlayerPresenter;
@@ -14,14 +11,10 @@ import de.pheru.media.gui.player.MusicPlayer;
 import de.pheru.media.settings.Settings;
 import de.pheru.media.util.GlobalKeyListener;
 import javafx.application.Platform;
-import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.CheckMenuItem;
 import javafx.scene.control.SplitPane;
-import javafx.scene.control.Tab;
-import javafx.scene.control.TabPane;
-import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import org.jnativehook.keyboard.NativeKeyEvent;
 
@@ -35,12 +28,6 @@ public class ApplicationPresenter implements Initializable {
 
     @FXML
     private SplitPane splitPane;
-    @FXML
-    private TabPane tabPane;
-    @FXML
-    private Tab editFileTab;
-    @FXML
-    private Tab playlistTab;
     @FXML
     private VBox musicPlayerBox;
     @FXML
@@ -60,9 +47,6 @@ public class ApplicationPresenter implements Initializable {
     private MainView mainView;
     private MainPresenter mainPresenter;
     @Inject
-    private EditFileView editFileView;
-    private EditFilePresenter editFilePresenter;
-    @Inject
     private PlaylistView playlistView;
     private PlaylistPresenter playlistPresenter;
     @Inject
@@ -73,21 +57,6 @@ public class ApplicationPresenter implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         initViewsAndPresenters();
         bindUI();
-        FocusTraversal.setTabKeyEventHandlerForNode(tabPane, () -> {
-            int tabIndex = tabPane.getSelectionModel().getSelectedIndex();
-            tabIndex++;
-            if (tabIndex >= tabPane.getTabs().size()) {
-                tabIndex = 0;
-            }
-            tabPane.getSelectionModel().select(tabIndex);
-        }, () -> {
-            int tabIndex = tabPane.getSelectionModel().getSelectedIndex();
-            tabIndex--;
-            if (tabIndex < 0) {
-                tabIndex = tabPane.getTabs().size() - 1;
-            }
-            tabPane.getSelectionModel().select(tabIndex);
-        });
         setUpShortcuts();
         mainPresenter.readDirectory();
     }
@@ -99,11 +68,9 @@ public class ApplicationPresenter implements Initializable {
         mainPresenter = (MainPresenter) mainView.getPresenter();
         splitPane.getItems().add(mainView.getView());
 
-        editFilePresenter = (EditFilePresenter) editFileView.getPresenter();
-        editFileTab.setContent(editFileView.getView());
-
         playlistPresenter = (PlaylistPresenter) playlistView.getPresenter();
-        playlistTab.setContent(playlistView.getView());
+        splitPane.getItems().add(0, playlistView.getView());
+        SplitPane.setResizableWithParent(playlistView.getView(), false);
 
         musicPlayerPresenter = (MusicPlayerPresenter) musicPlayerView.getPresenter();
         musicPlayerBox.getChildren().add(musicPlayerView.getView());
@@ -112,12 +79,6 @@ public class ApplicationPresenter implements Initializable {
     private void bindUI() {
         randomMenuItem.selectedProperty().bindBidirectional(settings.musicPlayerRandomProperty());
         repeatMenuItem.selectedProperty().bindBidirectional(settings.musicPlayerRepeatProperty());
-        Region content = (Region) tabPane.getSelectionModel().getSelectedItem().getContent();
-        tabPane.setMinWidth(content.getMinWidth());
-        tabPane.getSelectionModel().selectedItemProperty().addListener((ObservableValue<? extends Tab> observable, Tab oldValue, Tab newValue) -> {
-            Region newContent = (Region) newValue.getContent();
-            tabPane.setMinWidth(newContent.getMinWidth());
-        });
         Platform.runLater(() -> { //Wird benötigt, weil die Divider intern angepasst werden und damit den Wert überschreiben würden
             splitPane.getDividers().get(0).positionProperty().bindBidirectional(settings.applicationWindowSplitPositionProperty());
         });
@@ -154,12 +115,14 @@ public class ApplicationPresenter implements Initializable {
 
     @FXML
     private void saveChanges() {
-        editFilePresenter.save();
+        //TODO
+//        editFilePresenter.save();
     }
 
     @FXML
     private void discardChanges() {
-        editFilePresenter.discard();
+        //TODO
+//        editFilePresenter.discard();
     }
 
     @FXML

@@ -10,7 +10,7 @@ import java.util.Date;
 /**
  * Klasse zum formatieren von Datums- und Zeitangaben.
  */
-public final class TimeUtil {
+public final class TimeUtil { //TODO Refactoring
 
     public static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd.MM.yyyy");
     public static final SimpleDateFormat DATE_TIME_FORMAT = new SimpleDateFormat("dd.MM.yyyy - HH:mm:ss");
@@ -23,10 +23,14 @@ public final class TimeUtil {
         //Utility-Klasse
     }
 
+    public static String secondsToDurationFormat(final int seconds) {
+        return secondsToDurationFormat(seconds, seconds >= 3600);
+    }
+
     /**
      * Wandelt einen double in einen String mit HH:mm:ss oder mm:ss Format.
      *
-     * @param seconds Die zu formatierenden Sekunden.
+     * @param seconds   Die zu formatierenden Sekunden.
      * @param withHours true, wenn HH:mm:ss Format. false für mm:ss.
      * @return String im HH:mm:ss oder mm:ss Format.
      */
@@ -41,7 +45,7 @@ public final class TimeUtil {
             Date date = new SimpleDateFormat("s").parse(String.valueOf(seconds));
             return smf.format(date);
         } catch (ParseException e) {
-            LOGGER.error("Exception parsing " + seconds + " to duration-format!" , e);
+            LOGGER.error("Exception parsing " + seconds + " to duration-format!", e);
             return "error";
         }
     }
@@ -49,7 +53,7 @@ public final class TimeUtil {
     /**
      * Wandelt einen Long in einen String mit HH:mm:ss oder mm:ss Format.
      *
-     * @param seconds Die zu formatierenden Sekunden.
+     * @param seconds   Die zu formatierenden Sekunden.
      * @param withHours true, wenn HH:mm:ss Format. false für mm:ss.
      * @return String im HH:mm:ss oder mm:ss Format.
      */
@@ -60,7 +64,7 @@ public final class TimeUtil {
     /**
      * Wandelt einen String in einen String mit HH:mm:ss oder mm:ss Format.
      *
-     * @param seconds Die zu formatierenden Sekunden.
+     * @param seconds   Die zu formatierenden Sekunden.
      * @param withHours true, wenn HH:mm:ss Format. false für mm:ss.
      * @return String im HH:mm:ss oder mm:ss Format.
      */
@@ -72,7 +76,7 @@ public final class TimeUtil {
      * Wandelt einen double in einen String mit HH:mm:ss oder mm:ss Format.
      *
      * @param milliseconds Die zu formatierenden Millisekunden.
-     * @param withHours true, wenn HH:mm:ss Format. false für mm:ss.
+     * @param withHours    true, wenn HH:mm:ss Format. false für mm:ss.
      * @return String im HH:mm:ss oder mm:ss Format.
      */
     public static String millisecondsToDurationFormat(double milliseconds, boolean withHours) {
@@ -86,7 +90,7 @@ public final class TimeUtil {
             Date date = new SimpleDateFormat("S").parse(String.valueOf(milliseconds));
             return smf.format(date);
         } catch (ParseException e) {
-            LOGGER.error("Exception parsing " + milliseconds + " to duration-format!" , e);
+            LOGGER.error("Exception parsing " + milliseconds + " to duration-format!", e);
             return "error";
         }
     }
@@ -95,7 +99,7 @@ public final class TimeUtil {
      * Wandelt einen Long in einen String mit HH:mm:ss oder mm:ss Format.
      *
      * @param milliseconds Die zu formatierenden Millisekunden.
-     * @param withHours true, wenn HH:mm:ss Format. false für mm:ss.
+     * @param withHours    true, wenn HH:mm:ss Format. false für mm:ss.
      * @return String im HH:mm:ss oder mm:ss Format.
      */
     public static String millisecondsToDurationFormat(Long milliseconds, boolean withHours) {
@@ -106,7 +110,7 @@ public final class TimeUtil {
      * Wandelt einen String in einen String mit HH:mm:ss oder mm:ss Format.
      *
      * @param milliseconds Die zu formatierenden Millisekunden.
-     * @param withHours true, wenn HH:mm:ss Format. false für mm:ss.
+     * @param withHours    true, wenn HH:mm:ss Format. false für mm:ss.
      * @return String im HH:mm:ss oder mm:ss Format.
      */
     public static String millisecondsToDurationFormat(String milliseconds, boolean withHours) {
@@ -119,8 +123,8 @@ public final class TimeUtil {
      * @param milliseconds Die zu formatierenden Millisekunden
      * @return Ein String im dd.MM.yyyy Format.
      */
-    public static String millisecondsToDateFormat(Long milliseconds) {
-        Date date = new Date(milliseconds);
+    public static String millisecondsToDateFormat(final Long milliseconds) {
+        final Date date = new Date(milliseconds);
         return DATE_TIME_FORMAT.format(date);
     }
 }

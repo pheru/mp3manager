@@ -165,7 +165,7 @@ public class Playlist extends FileBasedData {
      * @return true, wenn das Speichern erfolgreich war.
      */
     public boolean save() throws IOException {
-        return save(new File(absolutePath.get()));
+        return save(new File(getAbsolutePath()));
     }
 
     public void updateDirtyFlag() {
@@ -176,11 +176,11 @@ public class Playlist extends FileBasedData {
      * @return true, wenn Playlist "dirty"
      */
     private boolean checkIfDirty() {
-        if (fileName.get().isEmpty()) {
+        if (fileName.isEmpty()) {
             return false;
         }
         try {
-            List<String> filePaths = FileUtil.readLinesFromFile(new File(absolutePath.get()), true);
+            final List<String> filePaths = FileUtil.readLinesFromFile(new File(getAbsolutePath()), true);
             if (titles.size() != filePaths.size()) {
                 return true;
             }

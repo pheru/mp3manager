@@ -20,7 +20,7 @@
         <dependency>
             <groupId>de.pheru.fx</groupId>
             <artifactId>pherufx-util</artifactId>
-            <version>1.0.0</version>
+            <version>1.1.1</version>
         </dependency>
         <dependency>
             <groupId>net.jthink</groupId>

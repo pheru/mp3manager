@@ -10,6 +10,7 @@
 <?import javafx.scene.layout.*?>
 <?import de.pheru.media.gui.nodes.*?>
 <?import de.pheru.fx.util.focus.*?>
+<?import de.pheru.media.gui.applicationwindow.main.table.MainTable?>
 
 <VBox fx:id="root" xmlns="http://javafx.com/javafx/8.0.40" xmlns:fx="http://javafx.com/fxml/1"
       fx:controller="de.pheru.media.gui.applicationwindow.main.MainPresenter">
@@ -36,7 +37,7 @@
                 </StackPane>
             </children>
         </HBox>
-        <TableView fx:id="table" tableMenuButtonVisible="true" VBox.vgrow="ALWAYS">
+        <MainTable fx:id="table" tableMenuButtonVisible="true" VBox.vgrow="ALWAYS">
             <contextMenu>
                 <ContextMenu>
                     <items>
@@ -45,7 +46,7 @@
                     </items>
                 </ContextMenu>
             </contextMenu>
-        </TableView>
+        </MainTable>
         <HBox VBox.vgrow="NEVER">
             <children>
                 <ProgressIndicator fx:id="taskProgress" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity"

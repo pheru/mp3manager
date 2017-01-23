@@ -5,6 +5,7 @@ import de.pheru.media.cdi.qualifiers.TableData;
 import de.pheru.media.cdi.qualifiers.XMLSettings;
 import de.pheru.media.data.Mp3FileData;
 import de.pheru.media.data.Playlist;
+import de.pheru.media.gui.applicationwindow.main.table.MainTable;
 import de.pheru.media.gui.nodes.EmptyDirectoryPlaceholder;
 import de.pheru.media.gui.nodes.NoDirectoryPlaceholder;
 import de.pheru.media.gui.nodes.NoFilterResultPlaceholder;
@@ -28,18 +29,15 @@ import javafx.collections.transformation.SortedList;
 import javafx.concurrent.WorkerStateEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressIndicator;
 import javafx.scene.control.SelectionMode;
 import javafx.scene.control.SortEvent;
-import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
-import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
 import javafx.stage.DirectoryChooser;
@@ -47,7 +45,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 import java.io.File;
 import java.net.URL;
@@ -81,7 +78,7 @@ public class MainPresenter implements Initializable {
     @FXML
     private ProgressIndicator taskProgress;
     @FXML
-    private TableView<Mp3FileData> table;
+    private MainTable table;
     private CssRowFactory<Mp3FileData> tableRowFactory;
 
     @FXML
@@ -130,7 +127,6 @@ public class MainPresenter implements Initializable {
             });
             return row;
         });
-
         table.setRowFactory(tableRowFactory);
         if (settings.getMusicDirectory().isEmpty()) {
             table.setPlaceholder(noDirectoryPlaceholder);
@@ -140,7 +136,7 @@ public class MainPresenter implements Initializable {
         table.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
         table.setItems(setUpTableFilter());
         selectedDataWrapper.setList(table.getSelectionModel().getSelectedItems());
-        initColumns();
+        table.applySettings(null); //TODO
         settings.getAllMainTableColumnSettings().addListener((ListChangeListener.Change<? extends MainTableColumnSettings> change) -> {
             if (!updatingColumnsOrderList) {
                 updateColumnsOrderTable();
@@ -188,39 +184,6 @@ public class MainPresenter implements Initializable {
         SortedList<Mp3FileData> sortedData = new SortedList<>(filteredData);
         sortedData.comparatorProperty().bind(table.comparatorProperty());
         return sortedData;
-    }
-
-    private void initColumns() {
-        for (MainTableColumn column : MainTableColumn.values()) {
-            TableColumn<Mp3FileData, String> tableColumn = new TableColumn<>(column.getColumnName());
-            if (column.isAlignRight()) {
-                tableColumn.setCellFactory((TableColumn<Mp3FileData, String> param) -> {
-                    TableCell<Mp3FileData, String> cell = new TableCell<Mp3FileData, String>() {
-                        @Override
-                        protected void updateItem(String item, boolean empty) {
-                            super.updateItem(item, empty);
-                            if (empty || item == null) {
-                                setText(null);
-                                setGraphic(null);
-                            } else {
-                                setText(item);
-                            }
-                        }
-                    };
-                    cell.setAlignment(Pos.CENTER_RIGHT);
-                    return cell;
-                });
-            }
-            MainTableColumnSettings mainTableColumnSettings = settings.getMainTableColumnSettings(column);
-            tableColumn.prefWidthProperty().bind(mainTableColumnSettings.widthProperty());
-            mainTableColumnSettings.widthProperty().bind(tableColumn.widthProperty());
-            tableColumn.visibleProperty().bindBidirectional(mainTableColumnSettings.visibleProperty());
-            tableColumn.setCellValueFactory(new PropertyValueFactory<>(column.getPropertyName()));
-            if (column.getComparator() != null) {
-                tableColumn.setComparator(column.getComparator());
-            }
-            table.getColumns().add(tableColumn);
-        }
     }
 
     private void updateColumnsOrderTable() {

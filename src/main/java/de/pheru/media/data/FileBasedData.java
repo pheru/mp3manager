@@ -1,59 +1,36 @@
 package de.pheru.media.data;
 
-import javafx.beans.binding.StringBinding;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
-
 public abstract class FileBasedData {
 
-    protected final StringProperty fileName = new SimpleStringProperty("");
-    protected final StringProperty filePath = new SimpleStringProperty("");
-    protected final StringProperty absolutePath = new SimpleStringProperty("");
-    
-    public FileBasedData(){
-        absolutePath.bind(new StringBinding() {
-            {
-                bind(filePath, fileName);
-            }
-            @Override
-            protected String computeValue() {
-                if(!filePath.get().isEmpty() && !fileName.get().isEmpty()){
-                    return filePath.get() + "\\" + fileName.get();
-                }
-                return "";
-            }
-        });
-    }
-    
-    public String getFileName() {
-        return fileName.get();
+    protected String fileName;
+    protected String filePath;
+
+    public FileBasedData() {
+        //Default
     }
 
-    public void setFileName(String fileName) {
-        this.fileName.set(fileName);
-    }
-
-    public StringProperty fileNameProperty() {
-        return fileName;
-    }
-
-    public String getFilePath() {
-        return filePath.get();
-    }
-
-    public void setFilePath(String filePath) {
-        this.filePath.set(filePath);
-    }
-
-    public StringProperty filePathProperty() {
-        return filePath;
+    public FileBasedData(final String fileName, final String filePath) {
+        this.fileName = fileName;
+        this.filePath = filePath;
     }
 
     public String getAbsolutePath() {
-        return absolutePath.get();
+        return filePath + "\\" + fileName;
     }
 
-    public StringProperty absolutePathProperty() {
-        return absolutePath;
+    public String getFileName() {
+        return fileName;
+    }
+
+    public void setFileName(String fileName) {
+        this.fileName = fileName;
+    }
+
+    public String getFilePath() {
+        return filePath;
+    }
+
+    public void setFilePath(String filePath) {
+        this.filePath = filePath;
     }
 }

@@ -156,24 +156,25 @@ public class PlaylistPresenter implements Initializable {
      * Bindet die UI-Elemente untereinander.
      */
     private void bindUI() {
-        playlistNameLabel.textProperty().bind(new StringBinding() {
-            {
-                bind(playlist.fileNameProperty(), playlist.dirtyProperty());
-            }
-
-            @Override
-            protected String computeValue() {
-                if (playlist.getFileName().isEmpty()) {
-                    return "<Neue Wiedergabeliste>";
-                } else {
-                    String fileName = playlist.getFileName().replace("." + Playlist.FILE_EXTENSION, "");
-                    if (playlist.isDirty()) {
-                        fileName += "*";
-                    }
-                    return fileName;
-                }
-            }
-        });
+        //TODO
+//        playlistNameLabel.textProperty().bind(new StringBinding() {
+//            {
+//                bind(playlist.fileNameProperty(), playlist.dirtyProperty());
+//            }
+//
+//            @Override
+//            protected String computeValue() {
+//                if (playlist.getFileName().isEmpty()) {
+//                    return "<Neue Wiedergabeliste>";
+//                } else {
+//                    String fileName = playlist.getFileName().replace("." + Playlist.FILE_EXTENSION, "");
+//                    if (playlist.isDirty()) {
+//                        fileName += "*";
+//                    }
+//                    return fileName;
+//                }
+//            }
+//        });
         titlesSize.textProperty().bind(new StringBinding() {
             {
                 bind(playlist.getTitles());
@@ -201,7 +202,8 @@ public class PlaylistPresenter implements Initializable {
                 return TimeUtil.secondsToDurationFormat(duration, true);
             }
         });
-        deleteMenuItem.disableProperty().bind(playlist.fileNameProperty().isEmpty());
+        //TODO
+//        deleteMenuItem.disableProperty().bind(playlist.fileNameProperty().isEmpty());
         saveMenuItem.disableProperty().bind(playlist.dirtyProperty().not());
         saveMenu.disableProperty().bind(Bindings.size(playlist.getTitles()).isEqualTo(0));
     }
@@ -337,13 +339,14 @@ public class PlaylistPresenter implements Initializable {
                 new Label(newCurrentTitle.getAlbum()), new Label(newCurrentTitle.getArtist()));
         vbox.setAlignment(Pos.CENTER_LEFT);
 
-        if (newCurrentTitle.getArtworkData() != null) {
-            Image image = new Image(new ByteArrayInputStream(newCurrentTitle.getArtworkData().getBinaryData()));
-            ImageView artworkImageView = new ImageView(image);
-            artworkImageView.setFitHeight(75);
-            artworkImageView.setFitWidth(75);
-            content.getChildren().add(artworkImageView);
-        }
+        //TODO
+//        if (newCurrentTitle.getArtworkData() != null) {
+//            Image image = new Image(new ByteArrayInputStream(newCurrentTitle.getArtworkData().getBinaryData()));
+//            ImageView artworkImageView = new ImageView(image);
+//            artworkImageView.setFitHeight(75);
+//            artworkImageView.setFitWidth(75);
+//            content.getChildren().add(artworkImageView);
+//        }
         content.getChildren().add(vbox);
         content.setSpacing(5);
 

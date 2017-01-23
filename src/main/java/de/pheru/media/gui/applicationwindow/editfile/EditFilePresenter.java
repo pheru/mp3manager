@@ -119,13 +119,14 @@ public class EditFilePresenter implements Initializable {
      * Bindet UI-Elemente und Datenmodell zusammen.
      */
     private void bindUI() {
-        changeData.fileNameProperty().bind(fileNameField.textProperty().concat(".mp3"));
-        changeData.titleProperty().bind(titleField.valueProperty());
-        changeData.albumProperty().bind(albumField.valueProperty());
-        changeData.artistProperty().bind(artistField.valueProperty());
-        changeData.genreProperty().bind(genreField.valueProperty());
-        changeData.yearProperty().bind(yearField.valueProperty());
-        changeData.trackProperty().bind(trackField.valueProperty());
+        //TODO
+//        changeData.fileNameProperty().bind(fileNameField.textProperty().concat(".mp3"));
+//        changeData.titleProperty().bind(titleField.valueProperty());
+//        changeData.albumProperty().bind(albumField.valueProperty());
+//        changeData.artistProperty().bind(artistField.valueProperty());
+//        changeData.genreProperty().bind(genreField.valueProperty());
+//        changeData.yearProperty().bind(yearField.valueProperty());
+//        changeData.trackProperty().bind(trackField.valueProperty());
         coverView.fitHeightProperty().bind(coverPane.heightProperty());
         coverView.fitWidthProperty().bind(coverPane.widthProperty());
         synchronizeTitleBox.selectedProperty().bindBidirectional(settings.editFileViewSynchronizeTitleProperty());
@@ -158,7 +159,7 @@ public class EditFilePresenter implements Initializable {
 
     private ChangeListener<Boolean> createSelectAllFocusListener(TextField target) {
         return (ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
-            Platform.runLater(() -> {
+            Platform.runLater(() -> { //TODO if hochziehen?
                 if (newValue) {
                     target.selectAll();
                 }
@@ -205,10 +206,11 @@ public class EditFilePresenter implements Initializable {
         fillField(artistField, singleData.getArtist());
         fillField(albumField, singleData.getAlbum());
         fillField(genreField, singleData.getGenre());
-        fillField(trackField, singleData.getTrack());
-        fillField(yearField, singleData.getYear());
-        setCover(singleData.getArtworkData());
-        changeData.setArtworkData(singleData.getArtworkData());
+        //TODO
+//        fillField(trackField, singleData.getTrack());
+//        fillField(yearField, singleData.getYear());
+//        setCover(singleData.getArtworkData());
+//        changeData.setArtworkData(singleData.getArtworkData());
     }
 
     /**
@@ -251,8 +253,9 @@ public class EditFilePresenter implements Initializable {
             addToFieldItemsOnce(artistField, data.getArtist());
             addToFieldItemsOnce(albumField, data.getAlbum());
             addToFieldItemsOnce(genreField, data.getGenre());
-            addToFieldItemsOnce(trackField, data.getTrack());
-            addToFieldItemsOnce(yearField, data.getYear());
+            //TODO
+//            addToFieldItemsOnce(trackField, data.getTrack());
+//            addToFieldItemsOnce(yearField, data.getYear());
         }
     }
 
@@ -306,16 +309,17 @@ public class EditFilePresenter implements Initializable {
         genreField.getItems().sort(null);
     }
 
+    //TODO
     private void setCoverImageForMultipleData() {
         for (int i = 0; i < selectedDataWrapper.getList().size() - 1; i++) {
-            if (!ArtworkData.equals(selectedDataWrapper.getList().get(i).getArtworkData(), selectedDataWrapper.getList().get(i + 1).getArtworkData())) {
-                removeCover("<Verschiedene Cover vorhanden>");
-                changeData.setArtworkData(null);
-                return;
-            }
+//            if (!ArtworkData.equals(selectedDataWrapper.getList().get(i).getArtworkData(), selectedDataWrapper.getList().get(i + 1).getArtworkData())) {
+//                removeCover("<Verschiedene Cover vorhanden>");
+//                changeData.setArtworkData(null);
+//                return;
+//            }
         }
-        setCover(selectedDataWrapper.getList().get(0).getArtworkData());
-        changeData.setArtworkData(selectedDataWrapper.getList().get(0).getArtworkData());
+//        setCover(selectedDataWrapper.getList().get(0).getArtworkData());
+//        changeData.setArtworkData(selectedDataWrapper.getList().get(0).getArtworkData());
     }
 
     /**
@@ -374,7 +378,8 @@ public class EditFilePresenter implements Initializable {
             Image image = new Image(new ByteArrayInputStream(imageAsByteArray));
             ArtworkData artworkData = new ArtworkData(imageAsByteArray, Double.valueOf(image.getWidth()).intValue(),
                     Double.valueOf(image.getHeight()).intValue(), ImageFormats.getMimeTypeForBinarySignature(imageAsByteArray));
-            changeData.setArtworkData(artworkData);
+            //TODO
+//            changeData.setArtworkData(artworkData);
             setCover(artworkData);
 
         }
@@ -382,7 +387,8 @@ public class EditFilePresenter implements Initializable {
 
     @FXML
     public void save() {
-        taskPool.addTask(new SaveFilesTaskImpl(FXCollections.observableArrayList(selectedDataWrapper.getList()), new Mp3FileData(changeData)));
+        //TODO
+//        taskPool.addTask(new SaveFilesTaskImpl(FXCollections.observableArrayList(selectedDataWrapper.getList()), new Mp3FileData(changeData)));
     }
 
     public void discard() {
