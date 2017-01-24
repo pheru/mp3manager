@@ -1,13 +1,12 @@
 package de.pheru.media.gui;
 
-import de.pheru.fx.controls.notification.Notification;
 import de.pheru.fx.mvp.StartApplication;
-import de.pheru.media.cdi.qualifiers.XMLSettings;
+import de.pheru.fx.util.properties.ObservableProperties;
 import de.pheru.media.gui.applicationwindow.application.ApplicationView;
-import de.pheru.media.settings.Settings;
 import de.pheru.media.util.GlobalKeyListener;
 import javafx.application.Platform;
-import javafx.beans.value.ObservableValue;
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.DoubleProperty;
 import javafx.event.EventHandler;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
@@ -31,8 +30,7 @@ public class ApplicationStarter {
     private static final Logger LOGGER = LogManager.getLogger(ApplicationStarter.class);
 
     @Inject
-    @XMLSettings
-    private Settings settings;
+    private ObservableProperties settings;
     @Inject
     private GlobalKeyListener globalKeyListener;
     @Inject
@@ -41,7 +39,7 @@ public class ApplicationStarter {
     private void launchJavaFXApplication(@Observes @StartApplication Stage primaryStage) {
         try {
             initNotifications();
-            if (settings.isShortcutsEnabled()) {
+            if (settings.booleanProperty(Settings.SHORTCUTS_ENABLED).get()) {
                 initJNativeHook();
             }
             initPrimaryStage(primaryStage);
@@ -55,7 +53,8 @@ public class ApplicationStarter {
     }
 
     private void initNotifications() {
-        Notification.getDefaults().positionProperty().bind(settings.notificationsPositionProperty());
+        //TODO
+//        Notification.getDefaults().positionProperty().bind(settings.notificationsPositionProperty());
 //        Notifications.defaultDurationProperty().bind(settings.notificationsDurationProperty());
     }
 
@@ -70,7 +69,7 @@ public class ApplicationStarter {
             alert.setHeaderText("Shortcuts konnten nicht initialisiert werden!");
             alert.setContentText("Shortcuts werden deaktiviert.");
             alert.showAndWait();
-            settings.setShortcutsEnabled(false);
+            settings.booleanProperty(Settings.SHORTCUTS_ENABLED).set(false);
         }
     }
 
@@ -81,24 +80,20 @@ public class ApplicationStarter {
         primaryStage.getIcons().addAll(new Image(PheruMedia.APPLICATION_ICON_PATH_64),
                 new Image(PheruMedia.APPLICATION_ICON_PATH_48),
                 new Image(PheruMedia.APPLICATION_ICON_PATH_32));
-        primaryStage.setWidth(settings.getApplicationWindowWidth());
-        primaryStage.setHeight(settings.getApplicationWindowHeight());
-        primaryStage.setMaximized(settings.isApplicationWindowMaximized());
 
-        settings.applicationWindowMaximizedProperty().bind(primaryStage.maximizedProperty());
-        if (!settings.isApplicationWindowMaximized()) {
-            settings.applicationWindowWidthProperty().bind(primaryStage.widthProperty());
-            settings.applicationWindowHeightProperty().bind(primaryStage.heightProperty());
+        final BooleanProperty maximized = settings.booleanProperty(Settings.APPLICATIONWINDOW_MAXIMIZED);
+        final DoubleProperty width = settings.doubleProperty(Settings.APPLICATIONWINDOW_WIDTH);
+        final DoubleProperty height = settings.doubleProperty(Settings.APPLICATIONWINDOW_HEIGHT);
+
+        primaryStage.setWidth(width.get());
+        primaryStage.setHeight(height.get());
+        primaryStage.setMaximized(maximized.get());
+
+        maximized.bind(primaryStage.maximizedProperty());
+        if (!maximized.get()) {
+            width.bind(primaryStage.widthProperty());
+            height.bind(primaryStage.heightProperty());
         }
-        settings.applicationWindowMaximizedProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
-            if (newValue) {
-                settings.applicationWindowWidthProperty().unbind();
-                settings.applicationWindowHeightProperty().unbind();
-            } else {
-                settings.applicationWindowWidthProperty().bind(primaryStage.widthProperty());
-                settings.applicationWindowHeightProperty().bind(primaryStage.heightProperty());
-            }
-        });
         primaryStage.setOnCloseRequest(new OnCloseRequestHandler());
         primaryStage.setScene(scene);
     }
@@ -107,13 +102,14 @@ public class ApplicationStarter {
 
         @Override
         public void handle(WindowEvent event) {
-            if (!settings.isDontShowAgainApplicationCloseDialog()) {
-                Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+            final BooleanProperty dontShowAgain = settings.booleanProperty(Settings.DONT_SHOW_AGAIN_CLOSE_APPLICATION_DIALOG);
+            if (!dontShowAgain.get()) {
+                final Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
                 alert.setHeaderText(null);
-                Label text = new Label(PheruMedia.APPLICATION_NAME + " wirklich schließen?");
-                CheckBox rememberDecisionBox = new CheckBox("Diese Meldung nicht mehr anzeigen");
-                rememberDecisionBox.selectedProperty().bindBidirectional(settings.dontShowAgainCloseApplicationDialogProperty());
-                VBox content = new VBox(text, rememberDecisionBox);
+                final Label text = new Label(PheruMedia.APPLICATION_NAME + " wirklich schließen?");
+                final CheckBox dontShowAgainBox = new CheckBox("Diese Meldung nicht mehr anzeigen");
+                dontShowAgainBox.selectedProperty().bindBidirectional(dontShowAgain);
+                final VBox content = new VBox(text, dontShowAgainBox);
                 content.setSpacing(15);
                 alert.getDialogPane().setContent(content);
                 if (alert.showAndWait().get() != ButtonType.OK) {

@@ -1,6 +1,7 @@
 package de.pheru.media.gui.applicationwindow.application;
 
-import de.pheru.media.cdi.qualifiers.XMLSettings;
+import de.pheru.fx.util.properties.ObservableProperties;
+import de.pheru.media.gui.Settings;
 import de.pheru.media.gui.applicationwindow.main.MainPresenter;
 import de.pheru.media.gui.applicationwindow.main.MainView;
 import de.pheru.media.gui.applicationwindow.musicplayer.MusicPlayerPresenter;
@@ -8,7 +9,6 @@ import de.pheru.media.gui.applicationwindow.musicplayer.MusicPlayerView;
 import de.pheru.media.gui.applicationwindow.playlist.PlaylistPresenter;
 import de.pheru.media.gui.applicationwindow.playlist.PlaylistView;
 import de.pheru.media.gui.player.MusicPlayer;
-import de.pheru.media.settings.Settings;
 import de.pheru.media.util.GlobalKeyListener;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
@@ -36,8 +36,7 @@ public class ApplicationPresenter implements Initializable {
     private CheckMenuItem randomMenuItem;
 
     @Inject
-    @XMLSettings
-    private Settings settings;
+    private ObservableProperties settings;
     @Inject
     private GlobalKeyListener globalKeyListener;
     @Inject
@@ -77,10 +76,10 @@ public class ApplicationPresenter implements Initializable {
     }
 
     private void bindUI() {
-        randomMenuItem.selectedProperty().bindBidirectional(settings.musicPlayerRandomProperty());
-        repeatMenuItem.selectedProperty().bindBidirectional(settings.musicPlayerRepeatProperty());
+        randomMenuItem.selectedProperty().bindBidirectional(settings.booleanProperty(Settings.MUSICPLAYER_RANDOM));
+        repeatMenuItem.selectedProperty().bindBidirectional(settings.booleanProperty(Settings.MUSICPLAYER_REPEAT));
         Platform.runLater(() -> { //Wird benötigt, weil die Divider intern angepasst werden und damit den Wert überschreiben würden
-            splitPane.getDividers().get(0).positionProperty().bindBidirectional(settings.applicationWindowSplitPositionProperty());
+            splitPane.getDividers().get(0).positionProperty().bindBidirectional(settings.doubleProperty(Settings.APPLICATIONWINDOW_SPLITPOSIITON));
         });
     }
 

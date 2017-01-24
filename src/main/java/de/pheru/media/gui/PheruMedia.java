@@ -1,8 +1,7 @@
 package de.pheru.media.gui;
 
 import de.pheru.fx.mvp.PheruFXApplication;
-import de.pheru.media.cdi.qualifiers.XMLSettings;
-import de.pheru.media.settings.Settings;
+import de.pheru.fx.util.properties.ObservableProperties;
 import javafx.application.Platform;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
@@ -17,7 +16,7 @@ import org.apache.logging.log4j.Logger;
 import org.jnativehook.GlobalScreen;
 import org.jnativehook.NativeHookException;
 
-import javax.enterprise.util.AnnotationLiteral;
+import java.io.IOException;
 import java.util.logging.Level;
 
 /**
@@ -85,11 +84,16 @@ public class PheruMedia extends PheruFXApplication {
     }
 
     public static void cleanUp() {
-        Settings settings = getWeldContainer().instance().select(Settings.class, new AnnotationLiteral<XMLSettings>() {
-        }).get();
-        if (!settings.save()) {
-            if (!settings.save()) { //Nochmal versuchen
-                Alert alert = new Alert(Alert.AlertType.ERROR);
+        final ObservableProperties settings = getWeldContainer().instance().select(ObservableProperties.class).get();
+        try {
+            settings.save(null);
+        } catch (IOException e1) {
+            LOGGER.warn("Exception saving settings. Trying again.", e1);
+            try { //nochmal versuchen
+                settings.save(null);
+            } catch (IOException e2) {
+                LOGGER.error("Exception saving settings.", e2);
+                final Alert alert = new Alert(Alert.AlertType.ERROR);
                 alert.setContentText("Einstellungen konnten nicht gespeichert werden!");
                 alert.showAndWait();
             }

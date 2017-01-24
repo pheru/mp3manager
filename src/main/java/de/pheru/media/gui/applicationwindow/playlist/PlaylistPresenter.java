@@ -2,21 +2,22 @@ package de.pheru.media.gui.applicationwindow.playlist;
 
 import de.pheru.fx.controls.notification.Notification;
 import de.pheru.fx.mvp.PrimaryStage;
+import de.pheru.fx.util.properties.ObservableProperties;
 import de.pheru.media.cdi.qualifiers.TableData;
-import de.pheru.media.cdi.qualifiers.XMLSettings;
 import de.pheru.media.data.Mp3FileData;
 import de.pheru.media.data.Playlist;
+import de.pheru.media.gui.Settings;
 import de.pheru.media.gui.taskimpl.LoadPlaylistTaskImpl;
 import de.pheru.media.gui.util.CssRowFactory;
 import de.pheru.media.gui.util.DragAndDropRowFactory;
 import de.pheru.media.gui.player.MusicPlayer;
-import de.pheru.media.settings.Settings;
 import de.pheru.media.task.PheruMediaTask;
 import de.pheru.media.task.TaskPool;
 import de.pheru.media.util.TimeUtil;
 import javafx.application.Application.Parameters;
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.StringBinding;
+import javafx.beans.property.StringProperty;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -32,8 +33,6 @@ import javafx.scene.control.MenuItem;
 import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
@@ -46,7 +45,6 @@ import org.apache.logging.log4j.Logger;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
-import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
@@ -75,8 +73,7 @@ public class PlaylistPresenter implements Initializable {
     private CssRowFactory<Mp3FileData> tableRowFactory;
 
     @Inject
-    @XMLSettings
-    private Settings settings;
+    private ObservableProperties settings;
     @Inject
     private Playlist playlist;
     @Inject
@@ -225,13 +222,14 @@ public class PlaylistPresenter implements Initializable {
     private void savePlaylistAs() {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Wiedergabeliste speichern");
-        if (!settings.getPlaylistsDirectory().isEmpty()) {
-            fileChooser.setInitialDirectory(new File(settings.getPlaylistsDirectory()));
+        final StringProperty playlistDirectory = settings.stringProperty(Settings.PLAYLIST_DIRECTORY);
+        if (!playlistDirectory.get().isEmpty()) {
+            fileChooser.setInitialDirectory(new File(playlistDirectory.get()));
         }
 
         String fileName = "Wiedergabeliste";
         int i = 2;
-        while (new File(settings.getPlaylistsDirectory() + "\\" + fileName + "." + Playlist.FILE_EXTENSION).exists()) {
+        while (new File(playlistDirectory.get() + "\\" + fileName + "." + Playlist.FILE_EXTENSION).exists()) {
             fileName = "Wiedergabeliste (" + i + ")";
             i++;
         }
@@ -245,7 +243,7 @@ public class PlaylistPresenter implements Initializable {
                     playlist.setFilePath(playlistFile.getParent());
                     playlist.setFileName(playlistFile.getName());
                     playlist.setDirty(false);
-                    settings.setPlaylistsDirectory(playlistFile.getParent());
+                    playlistDirectory.set(playlistFile.getParent());
                 }
             } catch (IOException e) {
                 LOGGER.error("Exception saving playlist!", e);
@@ -259,8 +257,9 @@ public class PlaylistPresenter implements Initializable {
     private void loadPlaylist() {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Wiedergabeliste laden");
-        if (!settings.getPlaylistsDirectory().isEmpty()) {
-            fileChooser.setInitialDirectory(new File(settings.getPlaylistsDirectory()));
+        final StringProperty playlistDirectory = settings.stringProperty(Settings.PLAYLIST_DIRECTORY);
+        if (!playlistDirectory.get().isEmpty()) {
+            fileChooser.setInitialDirectory(new File(playlistDirectory.get()));
         }
         fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Wiedergabelisten", "*." + Playlist.FILE_EXTENSION));
         File playlistFile = fileChooser.showOpenDialog(table.getScene().getWindow());
@@ -269,7 +268,7 @@ public class PlaylistPresenter implements Initializable {
             loadPlaylistTask.runningProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
                 if (oldValue && !newValue) {
                     musicPlayer.stop();
-                    settings.setPlaylistsDirectory(playlistFile.getParent());
+                    playlistDirectory.set(playlistFile.getParent());
                 }
             });
             taskPool.addTask(loadPlaylistTask);

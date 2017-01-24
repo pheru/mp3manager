@@ -14,7 +14,7 @@
     <orderEntry type="library" name="Maven: de.pheru.fx:pherufx-mvp:1.0.0" level="project" />
     <orderEntry type="library" name="Maven: org.jboss.weld.se:weld-se:2.3.2.Final" level="project" />
     <orderEntry type="library" name="Maven: de.pheru.fx:pherufx-controls:1.0.0" level="project" />
-    <orderEntry type="library" name="Maven: de.pheru.fx:pherufx-util:1.1.1" level="project" />
+    <orderEntry type="library" name="Maven: de.pheru.fx:pherufx-util:1.1.2" level="project" />
     <orderEntry type="library" name="Maven: net.jthink:jaudiotagger:2.2.3" level="project" />
     <orderEntry type="library" name="Maven: com.1stleg:jnativehook:2.0.2" level="project" />
     <orderEntry type="library" name="Maven: org.eclipse.persistence:eclipselink:2.5.2" level="project" />

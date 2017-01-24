@@ -1,9 +1,9 @@
 package de.pheru.media.gui.player;
 
-import de.pheru.media.cdi.qualifiers.XMLSettings;
+import de.pheru.fx.util.properties.ObservableProperties;
 import de.pheru.media.data.Mp3FileData;
 import de.pheru.media.data.Playlist;
-import de.pheru.media.settings.Settings;
+import de.pheru.media.gui.Settings;
 import javafx.beans.binding.DoubleBinding;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.ObjectProperty;
@@ -32,8 +32,7 @@ public class MusicPlayer {
     private final ObjectProperty<MediaPlayer.Status> status = new SimpleObjectProperty<>(MediaPlayer.Status.UNKNOWN);
 
     @Inject
-    @XMLSettings
-    private Settings settings;
+    private ObservableProperties settings;
     @Inject
     private Playlist playlist;
 
@@ -64,7 +63,7 @@ public class MusicPlayer {
         Media media = new Media(file.toURI().toString());
         player = new MediaPlayer(media);
         player.setOnEndOfMedia(() -> {
-            if (!playlist.next() || settings.isMusicPlayerRepeat()) {
+            if (!playlist.next() || settings.booleanProperty(Settings.MUSICPLAYER_REPEAT).get()) {
                 play(playlist.getCurrentTitle());
             } else {
                 player.stop();
@@ -85,15 +84,15 @@ public class MusicPlayer {
         });
         player.volumeProperty().bind(new DoubleBinding() {
             {
-                bind(settings.musicPlayerVolumeProperty(), settings.musicPlayerMutedProperty());
+                bind(settings.doubleProperty(Settings.MUSICPLAYER_VOLUME), settings.booleanProperty(Settings.MUSICPLAYER_MUTED));
             }
 
             @Override
             protected double computeValue() {
-                if (settings.isMusicPlayerMuted()) {
+                if (settings.booleanProperty(Settings.MUSICPLAYER_MUTED).get()) {
                     return 0.0;
                 }
-                return settings.getMusicPlayerVolume() / 100.0;
+                return settings.doubleProperty(Settings.MUSICPLAYER_VOLUME).get() / 100.0;
             }
         });
         //}).start();

@@ -1,13 +1,12 @@
 package de.pheru.media.gui.applicationwindow.editfile;
 
 import de.pheru.fx.mvp.ObservableListWrapper;
+import de.pheru.fx.util.properties.ObservableProperties;
 import de.pheru.media.cdi.qualifiers.TableData;
-import de.pheru.media.cdi.qualifiers.XMLSettings;
 import de.pheru.media.data.ArtworkData;
 import de.pheru.media.data.Mp3FileData;
+import de.pheru.media.gui.Settings;
 import de.pheru.media.gui.nodes.NumberComboBox;
-import de.pheru.media.gui.taskimpl.SaveFilesTaskImpl;
-import de.pheru.media.settings.Settings;
 import de.pheru.media.task.TaskPool;
 import de.pheru.media.util.Comparators;
 import javafx.application.Platform;
@@ -80,8 +79,7 @@ public class EditFilePresenter implements Initializable {
     private Label coverInfo;
 
     @Inject
-    @XMLSettings
-    private Settings settings;
+    private ObservableProperties settings;
     @Inject
     @TableData(TableData.Source.MAIN_SELECTED)
     private ObservableListWrapper<Mp3FileData> selectedDataWrapper;
@@ -129,10 +127,10 @@ public class EditFilePresenter implements Initializable {
 //        changeData.trackProperty().bind(trackField.valueProperty());
         coverView.fitHeightProperty().bind(coverPane.heightProperty());
         coverView.fitWidthProperty().bind(coverPane.widthProperty());
-        synchronizeTitleBox.selectedProperty().bindBidirectional(settings.editFileViewSynchronizeTitleProperty());
-        sortTitleBox.selectedProperty().bindBidirectional(settings.editFileViewSortTitlesProperty());
-        sortAlbumBox.selectedProperty().bindBidirectional(settings.editFileViewSortAlbumsProperty());
-        sortArtistBox.selectedProperty().bindBidirectional(settings.editFileViewSortArtistsProperty());
+        synchronizeTitleBox.selectedProperty().bindBidirectional(settings.booleanProperty(Settings.EDITFILEVIEW_SYNCHRONIZE_TITLES));
+        sortTitleBox.selectedProperty().bindBidirectional(settings.booleanProperty(Settings.EDITFILEVIEW_SORT_TITLES));
+        sortAlbumBox.selectedProperty().bindBidirectional(settings.booleanProperty(Settings.EDITFILEVIEW_SORT_ALBUMS));
+        sortArtistBox.selectedProperty().bindBidirectional(settings.booleanProperty(Settings.EDITFILEVIEW_SORT_ARTISTS));
     }
 
     /**

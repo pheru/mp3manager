@@ -1,14 +1,15 @@
 package de.pheru.media.gui.applicationwindow.musicplayer;
 
-import de.pheru.media.cdi.qualifiers.XMLSettings;
+import de.pheru.fx.util.properties.ObservableProperties;
 import de.pheru.media.data.Mp3FileData;
 import de.pheru.media.data.Playlist;
+import de.pheru.media.gui.Settings;
 import de.pheru.media.gui.player.MusicPlayer;
-import de.pheru.media.settings.Settings;
 import de.pheru.media.util.TimeUtil;
 import javafx.beans.binding.DoubleBinding;
 import javafx.beans.binding.ObjectBinding;
 import javafx.beans.binding.StringBinding;
+import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
@@ -26,7 +27,6 @@ import javafx.scene.media.MediaPlayer;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
-import java.io.ByteArrayInputStream;
 import java.net.URL;
 import java.util.ResourceBundle;
 
@@ -67,8 +67,7 @@ public class MusicPlayerPresenter implements Initializable {
     private ToggleButton repeatButton;
 
     @Inject
-    @XMLSettings
-    private Settings settings;
+    private ObservableProperties settings;
     @Inject
     private Playlist playlist;
     @Inject
@@ -100,10 +99,10 @@ public class MusicPlayerPresenter implements Initializable {
         durationProgressBar.progressProperty().bind(durationSlider.valueProperty().add(0.005)); //add() damit der Slider die Progressbar komplett überdeckt
         currentTimeLabel.textProperty().bind(createTimeBinding(player.currentTimeProperty()));
 
-        randomButton.selectedProperty().bindBidirectional(settings.musicPlayerRandomProperty());
-        repeatButton.selectedProperty().bindBidirectional(settings.musicPlayerRepeatProperty());
+        randomButton.selectedProperty().bindBidirectional(settings.booleanProperty(Settings.MUSICPLAYER_RANDOM));
+        repeatButton.selectedProperty().bindBidirectional(settings.booleanProperty(Settings.MUSICPLAYER_REPEAT));
 
-        volumeSlider.valueProperty().bindBidirectional(settings.musicPlayerVolumeProperty());
+        volumeSlider.valueProperty().bindBidirectional(settings.doubleProperty(Settings.MUSICPLAYER_VOLUME));
         volumeProgressBar.progressProperty().bind(volumeSlider.valueProperty().divide(100.0));
         volumeLabel.textProperty().bind(new StringBinding() {
             {
@@ -117,13 +116,13 @@ public class MusicPlayerPresenter implements Initializable {
         });
         volumeImageView.imageProperty().bind(new ObjectBinding<Image>() {
             {
-                bind(volumeProgressBar.progressProperty(), settings.musicPlayerMutedProperty());
+                bind(volumeProgressBar.progressProperty(), settings.booleanProperty(Settings.MUSICPLAYER_MUTED));
             }
 
             @Override
             protected Image computeValue() {
                 String s = "0";
-                if (settings.isMusicPlayerMuted()) {
+                if (settings.booleanProperty(Settings.MUSICPLAYER_MUTED).get()) {
                     s = "x";
                     volumeProgressBar.setStyle("-fx-accent: grey;");
                 } else {
@@ -227,19 +226,19 @@ public class MusicPlayerPresenter implements Initializable {
 
     @FXML
     private void volumeSliderKeyPressed(KeyEvent event) {
-        double volume = settings.getMusicPlayerVolume();
+        final DoubleProperty volume = settings.doubleProperty(Settings.MUSICPLAYER_VOLUME);
         if (event.getCode() == KeyCode.RIGHT || event.getCode() == KeyCode.UP) {
-            if (volume <= 99.0) {
-                settings.setMusicPlayerVolume(volume + 1.0);
+            if (volume.get() < 99.0) {
+                volume.set(volume.get() + 1.0);
             } else {
-                settings.setMusicPlayerVolume(100.0);
+                volume.set(100.0);
             }
             event.consume();
         } else if (event.getCode() == KeyCode.LEFT || event.getCode() == KeyCode.DOWN) {
-            if (volume >= 1.0) {
-                settings.setMusicPlayerVolume(volume - 1.0);
+            if (volume.get() > 1.0) {
+                volume.set(volume.get() - 1.0);
             } else {
-                settings.setMusicPlayerVolume(0.0);
+                volume.set(0.0);
             }
             event.consume();
         }
@@ -247,6 +246,7 @@ public class MusicPlayerPresenter implements Initializable {
 
     @FXML
     private void volumeImageClicked() {
-        settings.setMusicPlayerMuted(!settings.isMusicPlayerMuted());
+        final BooleanProperty muted = settings.booleanProperty(Settings.MUSICPLAYER_MUTED);
+        muted.set(!muted.get());
     }
 }

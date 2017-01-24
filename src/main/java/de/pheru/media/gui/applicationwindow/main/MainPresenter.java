@@ -1,10 +1,11 @@
 package de.pheru.media.gui.applicationwindow.main;
 
 import de.pheru.fx.mvp.ObservableListWrapper;
+import de.pheru.fx.util.properties.ObservableProperties;
 import de.pheru.media.cdi.qualifiers.TableData;
-import de.pheru.media.cdi.qualifiers.XMLSettings;
 import de.pheru.media.data.Mp3FileData;
 import de.pheru.media.data.Playlist;
+import de.pheru.media.gui.Settings;
 import de.pheru.media.gui.applicationwindow.main.table.MainTable;
 import de.pheru.media.gui.nodes.EmptyDirectoryPlaceholder;
 import de.pheru.media.gui.nodes.NoDirectoryPlaceholder;
@@ -12,8 +13,6 @@ import de.pheru.media.gui.nodes.NoFilterResultPlaceholder;
 import de.pheru.media.gui.nodes.ReadingDirectoryPlaceholder;
 import de.pheru.media.gui.taskimpl.ReadDirectoryTaskImpl;
 import de.pheru.media.gui.util.CssRowFactory;
-import de.pheru.media.settings.MainTableColumnSettings;
-import de.pheru.media.settings.Settings;
 import de.pheru.media.task.PheruMediaTask;
 import de.pheru.media.task.TaskPool;
 import javafx.application.Platform;
@@ -22,7 +21,6 @@ import javafx.beans.binding.StringBinding;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.beans.value.ObservableValue;
-import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import javafx.collections.transformation.SortedList;
@@ -48,7 +46,6 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import java.io.File;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 
@@ -95,8 +92,7 @@ public class MainPresenter implements Initializable {
     @Inject
     private Playlist playlist;
     @Inject
-    @XMLSettings
-    private Settings settings;
+    private ObservableProperties settings;
 
     @Inject
     @TableData(TableData.Source.MAIN)
@@ -128,7 +124,7 @@ public class MainPresenter implements Initializable {
             return row;
         });
         table.setRowFactory(tableRowFactory);
-        if (settings.getMusicDirectory().isEmpty()) {
+        if (settings.stringProperty(Settings.MUSIC_DIRECTORY).get().isEmpty()) {
             table.setPlaceholder(noDirectoryPlaceholder);
         } else {
             table.setPlaceholder(noFilterResultPlaceholder);
@@ -137,17 +133,6 @@ public class MainPresenter implements Initializable {
         table.setItems(setUpTableFilter());
         selectedDataWrapper.setList(table.getSelectionModel().getSelectedItems());
         table.applySettings(null); //TODO
-        settings.getAllMainTableColumnSettings().addListener((ListChangeListener.Change<? extends MainTableColumnSettings> change) -> {
-            if (!updatingColumnsOrderList) {
-                updateColumnsOrderTable();
-            }
-        });
-        table.getColumns().addListener((ListChangeListener.Change<? extends TableColumn<Mp3FileData, ?>> change) -> {
-            if (!updatingColumnsOrderTable) {
-                updateColumnsOrderList();
-            }
-        });
-        updateColumnsOrderTable(); // Initiale Anpassung der Reihenfolge an die Settings
         table.setOnSort((SortEvent<TableView<Mp3FileData>> event) -> updateStyledIndex(playlist.getCurrentTitleIndex()));
     }
 
@@ -186,15 +171,6 @@ public class MainPresenter implements Initializable {
         return sortedData;
     }
 
-    private void updateColumnsOrderTable() {
-        updatingColumnsOrderTable = true;
-        List<TableColumn<Mp3FileData, ?>> columns = new ArrayList<>(table.getColumns());
-        table.getColumns().clear();
-        for (MainTableColumnSettings cs : settings.getAllMainTableColumnSettings()) {
-            table.getColumns().add(getColumnByName(columns, cs.getColumn().getColumnName()));
-        }
-        updatingColumnsOrderTable = false;
-    }
 
     private TableColumn<Mp3FileData, ?> getColumnByName(List<TableColumn<Mp3FileData, ?>> list, String name) {
         for (TableColumn<Mp3FileData, ?> c : list) {
@@ -203,19 +179,6 @@ public class MainPresenter implements Initializable {
             }
         }
         return null;
-    }
-
-    private void updateColumnsOrderList() {
-        updatingColumnsOrderList = true;
-        List<MainTableColumnSettings> newOrder = new ArrayList<>();
-        for (TableColumn<Mp3FileData, ?> column : table.getColumns()) {
-            newOrder.add(settings.getMainTableColumnSettings(MainTableColumn.getMainColumnByColumnName(column.getText())));
-        }
-        settings.getAllMainTableColumnSettings().clear();
-        for (MainTableColumnSettings cs : newOrder) {
-            settings.getAllMainTableColumnSettings().add(cs);
-        }
-        updatingColumnsOrderList = false;
     }
 
     /**
@@ -244,7 +207,7 @@ public class MainPresenter implements Initializable {
         statusL1.textProperty().bind(taskPool.titleProperty());
         statusL2.textProperty().bind(taskPool.messageProperty());
         taskProgress.progressProperty().bind(taskPool.progressProperty());
-        directoryLabel.textProperty().bind(settings.musicDirectoryProperty());
+        directoryLabel.textProperty().bind(settings.stringProperty(Settings.MUSIC_DIRECTORY));
 
         playlist.currentTitleIndexProperty().addListener((ObservableValue<? extends Number> observable, Number oldValue, Number newValue) -> {
             updateStyledIndex(newValue.intValue());
@@ -264,7 +227,7 @@ public class MainPresenter implements Initializable {
         dirChooser.setTitle("Musik-Verzeichnis auswählen");
         File directory = dirChooser.showDialog(root.getScene().getWindow());
         if (directory != null) {
-            settings.setMusicDirectory(directory.getAbsolutePath());
+            settings.stringProperty(Settings.MUSIC_DIRECTORY).set(directory.getAbsolutePath());
             readDirectory();
         }
     }
@@ -274,7 +237,7 @@ public class MainPresenter implements Initializable {
      * in Mp3FileData-Objekte und fügt sie der Liste von Daten hinzu.
      */
     public void readDirectory() {
-        String directory = settings.getMusicDirectory();
+        String directory = settings.stringProperty(Settings.MUSIC_DIRECTORY).get();
         if (directory != null && !directory.isEmpty()) {
             PheruMediaTask readDirectoryTask = new ReadDirectoryTaskImpl(directory, masterData, playlist.getTitles());
             readDirectoryTask.setOnRunning((WorkerStateEvent event) -> {

@@ -1,7 +1,7 @@
 package de.pheru.media.data;
 
-import de.pheru.media.cdi.qualifiers.XMLSettings;
-import de.pheru.media.settings.Settings;
+import de.pheru.fx.util.properties.ObservableProperties;
+import de.pheru.media.gui.Settings;
 import de.pheru.media.util.FileUtil;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.IntegerProperty;
@@ -35,8 +35,7 @@ public class Playlist extends FileBasedData {
     public static final String FILE_EXTENSION = "pmpl";
 
     @Inject
-    @XMLSettings
-    private Settings settings;
+    private ObservableProperties settings;
 
     private final BooleanProperty dirty = new SimpleBooleanProperty(false);
     private final ObservableList<Mp3FileData> titles = FXCollections.observableArrayList();
@@ -45,7 +44,7 @@ public class Playlist extends FileBasedData {
 
     @PostConstruct
     private void init() {
-        settings.musicPlayerRandomProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
+        settings.booleanProperty(Settings.MUSICPLAYER_RANDOM).addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
             if (newValue) {
                 initRandomIndicesToPlay();
             }
@@ -100,7 +99,7 @@ public class Playlist extends FileBasedData {
                 }
 
                 //Aktuellen Index anpassen
-                if (settings.isMusicPlayerRandom()) {
+                if (settings.booleanProperty(Settings.MUSICPLAYER_RANDOM).get()) {
                     if (currentRandomIndex >= randomIndicesToPlay.size()) {
                         resetRandomIndicesToPlay();
                         setCurrentTitleIndex(randomIndicesToPlay.get(0));
@@ -220,7 +219,7 @@ public class Playlist extends FileBasedData {
         boolean reachedEndOfList = false;
         if (currentTitleIndex.get() == UNDEFINED_CURRENT_INDEX) {
             return false;
-        } else if (settings.isMusicPlayerRandom()) {
+        } else if (settings.booleanProperty(Settings.MUSICPLAYER_RANDOM).get()) {
             int nextRandomIndex = randomIndicesToPlay.indexOf(currentTitleIndex.get()) + 1;
             if (nextRandomIndex == randomIndicesToPlay.size()) {
                 resetRandomIndicesToPlay();
@@ -242,7 +241,7 @@ public class Playlist extends FileBasedData {
         if (currentTitleIndex.get() == UNDEFINED_CURRENT_INDEX) {
             return;
         }
-        if (settings.isMusicPlayerRandom()) {
+        if (settings.booleanProperty(Settings.MUSICPLAYER_RANDOM).get()) {
             int previousRandomIndex = randomIndicesToPlay.indexOf(currentTitleIndex.get()) - 1;
             if (previousRandomIndex < 0) {
                 previousRandomIndex = randomIndicesToPlay.size() - 1;
