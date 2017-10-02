@@ -31,10 +31,9 @@ public class ObservablePropertiesProducer {
             properties.load();
         } catch (final IOException e) {
             if (e instanceof FileNotFoundException) {
-                LOGGER.info("Settings not found.", e);
+                LOGGER.info("Settings not found.");
             } else {
                 settingsLoadExceptionEvent.fire(new SettingsLoadExceptionEvent(false));
-
             }
         }
         return properties;

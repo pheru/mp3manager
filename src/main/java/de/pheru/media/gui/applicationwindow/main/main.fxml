@@ -10,7 +10,7 @@
 <?import javafx.scene.layout.*?>
 <?import de.pheru.media.gui.nodes.*?>
 <?import de.pheru.fx.util.focus.*?>
-<?import de.pheru.media.gui.applicationwindow.main.table.MainTable?>
+<?import de.pheru.media.gui.applicationwindow.main.MainTable?>
 
 <VBox fx:id="root" xmlns="http://javafx.com/javafx/8.0.40" xmlns:fx="http://javafx.com/fxml/1"
       fx:controller="de.pheru.media.gui.applicationwindow.main.MainPresenter">

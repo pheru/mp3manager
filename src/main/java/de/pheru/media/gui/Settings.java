@@ -23,8 +23,8 @@ public final class Settings {
     public static final ObservablePropertyKey<Boolean> MUSICPLAYER_REPEAT = new ObservablePropertyKey<>("musicplayerRepeat", false);
     public static final ObservablePropertyKey<Boolean> MUSICPLAYER_RANDOM = new ObservablePropertyKey<>("musicplayerRandom", false);
 
-    public static final ObservablePropertyKey<Boolean> EDITFILEVIEW_SORT_TITLES = new ObservablePropertyKey<>("editFileViewSortTitles", false);
-    public static final ObservablePropertyKey<Boolean> EDITFILEVIEW_SORT_ALBUMS = new ObservablePropertyKey<>("editFileViewSortAlbums", false);
-    public static final ObservablePropertyKey<Boolean> EDITFILEVIEW_SORT_ARTISTS = new ObservablePropertyKey<>("editFileViewSortArtists", false);
-    public static final ObservablePropertyKey<Boolean> EDITFILEVIEW_SYNCHRONIZE_TITLES = new ObservablePropertyKey<>("editFileViewSynchronizeTitle", false);
+    public static final ObservablePropertyKey<Boolean> EDITFILE_SORT_TITLES = new ObservablePropertyKey<>("editfileSortTitles", false);
+    public static final ObservablePropertyKey<Boolean> EDITFILE_SORT_ALBUMS = new ObservablePropertyKey<>("editfileSortAlbums", false);
+    public static final ObservablePropertyKey<Boolean> EDITFILE_SORT_ARTISTS = new ObservablePropertyKey<>("editfileSortArtists", false);
+    public static final ObservablePropertyKey<Boolean> EDITFILE_SYNCHRONIZE_TITLES = new ObservablePropertyKey<>("editfileSynchronizeTitle", false);
 }

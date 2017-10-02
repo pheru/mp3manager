@@ -6,7 +6,6 @@ import de.pheru.media.cdi.qualifiers.TableData;
 import de.pheru.media.data.Mp3FileData;
 import de.pheru.media.data.Playlist;
 import de.pheru.media.gui.Settings;
-import de.pheru.media.gui.applicationwindow.main.table.MainTable;
 import de.pheru.media.gui.nodes.EmptyDirectoryPlaceholder;
 import de.pheru.media.gui.nodes.NoDirectoryPlaceholder;
 import de.pheru.media.gui.nodes.NoFilterResultPlaceholder;
@@ -132,7 +131,7 @@ public class MainPresenter implements Initializable {
         table.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
         table.setItems(setUpTableFilter());
         selectedDataWrapper.setList(table.getSelectionModel().getSelectedItems());
-        table.applySettings(null); //TODO
+        table.applySettings(settings);
         table.setOnSort((SortEvent<TableView<Mp3FileData>> event) -> updateStyledIndex(playlist.getCurrentTitleIndex()));
     }
 

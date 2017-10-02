@@ -127,10 +127,10 @@ public class EditFilePresenter implements Initializable {
 //        changeData.trackProperty().bind(trackField.valueProperty());
         coverView.fitHeightProperty().bind(coverPane.heightProperty());
         coverView.fitWidthProperty().bind(coverPane.widthProperty());
-        synchronizeTitleBox.selectedProperty().bindBidirectional(settings.booleanProperty(Settings.EDITFILEVIEW_SYNCHRONIZE_TITLES));
-        sortTitleBox.selectedProperty().bindBidirectional(settings.booleanProperty(Settings.EDITFILEVIEW_SORT_TITLES));
-        sortAlbumBox.selectedProperty().bindBidirectional(settings.booleanProperty(Settings.EDITFILEVIEW_SORT_ALBUMS));
-        sortArtistBox.selectedProperty().bindBidirectional(settings.booleanProperty(Settings.EDITFILEVIEW_SORT_ARTISTS));
+        synchronizeTitleBox.selectedProperty().bindBidirectional(settings.booleanProperty(Settings.EDITFILE_SYNCHRONIZE_TITLES));
+        sortTitleBox.selectedProperty().bindBidirectional(settings.booleanProperty(Settings.EDITFILE_SORT_TITLES));
+        sortAlbumBox.selectedProperty().bindBidirectional(settings.booleanProperty(Settings.EDITFILE_SORT_ALBUMS));
+        sortArtistBox.selectedProperty().bindBidirectional(settings.booleanProperty(Settings.EDITFILE_SORT_ARTISTS));
     }
 
     /**

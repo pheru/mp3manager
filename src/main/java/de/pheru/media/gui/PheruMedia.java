@@ -36,7 +36,7 @@ public class PheruMedia extends PheruFXApplication {
 
     private static final Logger LOGGER = createLogger(); //Muss nach APPLICATION_PATH initialisiert werden
 
-    private static Stage splashStage;
+    private Stage splashStage;
 
     private static Logger createLogger() {
         System.getProperties().put("logfiles.location", APPLICATION_PATH);
@@ -83,7 +83,7 @@ public class PheruMedia extends PheruFXApplication {
         cleanUp();
     }
 
-    public static void cleanUp() {
+    public void cleanUp() {
         final ObservableProperties settings = getWeldContainer().instance().select(ObservableProperties.class).get();
         try {
             settings.save(null);

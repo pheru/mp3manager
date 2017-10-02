@@ -1,14 +1,19 @@
-package de.pheru.media.gui.applicationwindow.main.table;
+package de.pheru.media.gui.applicationwindow.main;
 
 import de.pheru.fx.util.properties.ObservableProperties;
 import de.pheru.media.data.Mp3FileData;
 import de.pheru.media.util.ByteUtil;
 import de.pheru.media.util.TimeUtil;
+import javafx.beans.property.DoubleProperty;
+import javafx.beans.property.IntegerProperty;
+import javafx.collections.ObservableList;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.util.Callback;
+
+import java.util.ArrayList;
 
 public class MainTable extends TableView<Mp3FileData> {
 
@@ -17,7 +22,25 @@ public class MainTable extends TableView<Mp3FileData> {
     }
 
     public void applySettings(final ObservableProperties properties) {
-        //TODO
+        final ObservableList<TableColumn<Mp3FileData, ?>> columns = getColumns();
+        for (final TableColumn<Mp3FileData, ?> column : new ArrayList<>(columns)) {
+            final PropertyValueFactory<Mp3FileData, ?> factory = (PropertyValueFactory) column.getCellValueFactory();
+            final String columnName = factory.getProperty();
+            final MainColumnSettings columnSettings = MainColumnSettings.getByName(columnName);
+
+            column.visibleProperty().bindBidirectional(properties.booleanProperty(columnSettings.getVisible()));
+
+            final DoubleProperty widthProperty = properties.doubleProperty(columnSettings.getWidth());
+            column.setPrefWidth(widthProperty.get());
+            widthProperty.bind(column.widthProperty());
+
+            final IntegerProperty positionProperty = properties.integerProperty(columnSettings.getIndex());
+            //Collections.swap funktioniert nicht, da dabei kurzzeitig Einträge doppelt vorhanden sind
+            //TODO geht das so?
+            columns.remove(column);
+            columns.add(positionProperty.get(), column);
+            //TODO neue indizes speichern
+        }
     }
 
     private void initColumns() {
