@@ -6,6 +6,7 @@ import de.pheru.media.util.ByteUtil;
 import de.pheru.media.util.TimeUtil;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.IntegerProperty;
+import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
@@ -26,21 +27,33 @@ public class MainTable extends TableView<Mp3FileData> {
         for (final TableColumn<Mp3FileData, ?> column : new ArrayList<>(columns)) {
             final PropertyValueFactory<Mp3FileData, ?> factory = (PropertyValueFactory) column.getCellValueFactory();
             final String columnName = factory.getProperty();
-            final MainColumnSettings columnSettings = MainColumnSettings.getByName(columnName);
+            final MainColumnSettings columnSettings = MainColumnSettings.getByColumnName(columnName);
 
-            column.visibleProperty().bindBidirectional(properties.booleanProperty(columnSettings.getVisible()));
+            column.visibleProperty().bindBidirectional(properties.booleanProperty(columnSettings.getVisiblePropertyKey()));
 
-            final DoubleProperty widthProperty = properties.doubleProperty(columnSettings.getWidth());
-            column.setPrefWidth(widthProperty.get());
+            final DoubleProperty widthProperty = properties.doubleProperty(columnSettings.getWidthPropertyKey());
+            column.setPrefWidth(widthProperty.get()); //TODO passt so noch nicht
             widthProperty.bind(column.widthProperty());
 
-            final IntegerProperty positionProperty = properties.integerProperty(columnSettings.getIndex());
+            final IntegerProperty positionProperty = properties.integerProperty(columnSettings.getIndexPropertyKey());
             //Collections.swap funktioniert nicht, da dabei kurzzeitig Einträge doppelt vorhanden sind
-            //TODO geht das so?
             columns.remove(column);
             columns.add(positionProperty.get(), column);
-            //TODO neue indizes speichern
+            //TODO testen ob funktioniert
+            positionProperty.addListener((observable, oldValue, newValue) -> {
+                columns.remove(column);
+                columns.add(newValue.intValue(), column);
+            });
         }
+        columns.addListener((ListChangeListener<TableColumn<Mp3FileData, ?>>) c -> {
+            for (int i = 0; i < columns.size(); i++) {
+                final TableColumn<Mp3FileData, ?> column = columns.get(i);
+                final PropertyValueFactory<Mp3FileData, ?> factory = (PropertyValueFactory) column.getCellValueFactory();
+                final String columnName = factory.getProperty();
+                final MainColumnSettings columnSettings = MainColumnSettings.getByColumnName(columnName);
+                properties.integerProperty(columnSettings.getIndexPropertyKey()).set(i);
+            }
+        });
     }
 
     private void initColumns() {
@@ -58,7 +71,7 @@ public class MainTable extends TableView<Mp3FileData> {
     }
 
     private <T> void addColumn(final String columnName, final String propertyName, final Class<T> clazz,
-            final Callback<TableColumn<Mp3FileData, T>, TableCell<Mp3FileData, T>> cellFactory) {
+                               final Callback<TableColumn<Mp3FileData, T>, TableCell<Mp3FileData, T>> cellFactory) {
         final TableColumn<Mp3FileData, T> tableColumn = new TableColumn<>(columnName);
         if (clazz.equals(Short.class) || clazz.equals(Integer.class) || clazz.equals(Long.class) ||
                 clazz.equals(Float.class) || clazz.equals(Double.class)) {

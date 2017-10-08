@@ -2,55 +2,51 @@ package de.pheru.media.gui.applicationwindow.main;
 
 import de.pheru.fx.util.properties.ObservablePropertyKey;
 
-import java.lang.reflect.Field;
+public enum MainColumnSettings {
 
-public final class MainColumnSettings { // TODO enum?
+    FILENAME("Filename", true, 100),
+    TITLE("Title", true, 100),
+    ALBUM("Album", true, 100),
+    ARTIST("Artist", true, 100),
+    TRACK("Track", true, 100),
+    DURATION("Duration", true, 100),
+    GENRE("Genre", true, 100),
+    YEAR("Year", true, 100),
+    SIZE("Size", true, 100),
+    BITRATE("Bitrate", true, 100),
+    LASTMODIFIED("Lastmodified", true, 100);
 
-    public static final MainColumnSettings FILENAME = new MainColumnSettings("Filename", true, 0, 100);
-    public static final MainColumnSettings TITLE = new MainColumnSettings("Title", true, 1, 100);
-    public static final MainColumnSettings ALBUM = new MainColumnSettings("Album", true, 2, 100);
-    public static final MainColumnSettings ARTIST = new MainColumnSettings("Artist", true, 3, 100);
-    public static final MainColumnSettings TRACK = new MainColumnSettings("Track", true, 4, 100);
-    public static final MainColumnSettings DURATION = new MainColumnSettings("Duration", true, 5, 100);
-    public static final MainColumnSettings GENRE = new MainColumnSettings("Genre", true, 6, 100);
-    public static final MainColumnSettings YEAR = new MainColumnSettings("Year", true, 7, 100);
-    public static final MainColumnSettings SIZE = new MainColumnSettings("Size", true, 8, 100);
-    public static final MainColumnSettings BITRATE = new MainColumnSettings("Bitrate", true, 9, 100);
-    public static final MainColumnSettings LASTMODIFIED = new MainColumnSettings("Lastmodified", true, 10, 100);
+    private final String columnName;
+    private final ObservablePropertyKey<Boolean> visiblePropertyKey;
+    private final ObservablePropertyKey<Integer> indexPropertyKey;
+    private final ObservablePropertyKey<Double> widthPropertyKey;
 
-    private final ObservablePropertyKey<Boolean> visible;
-    private final ObservablePropertyKey<Integer> index; // todo bei enum die ordinalnumber verweden
-    private final ObservablePropertyKey<Double> width;
-
-    private MainColumnSettings(final String columnName, final boolean visible, final int index, final double width) {
-        this.visible = new ObservablePropertyKey<>("maincolumn" + columnName + "Visible", visible);
-        this.index = new ObservablePropertyKey<>("maincolumn" + columnName + "Index", index);
-        this.width = new ObservablePropertyKey<>("maincolumn" + columnName + "Width", width);
+    MainColumnSettings(final String columnName, final boolean defaultVisible, final double defaultWidth) {
+        this.columnName = columnName;
+        this.visiblePropertyKey = new ObservablePropertyKey<>("maincolumn" + columnName + "Visible", defaultVisible);
+        this.indexPropertyKey = new ObservablePropertyKey<>("maincolumn" + columnName + "Index", ordinal());
+        this.widthPropertyKey = new ObservablePropertyKey<>("maincolumn" + columnName + "Width", defaultWidth);
     }
 
-    public static MainColumnSettings getByName(final String columnName) {
-        for (Field field : MainColumnSettings.class.getFields()) {
-            if (field.getName().equals(columnName.toUpperCase())) {
-                try {
-                    return (MainColumnSettings) field.get(null);
-                } catch (final IllegalAccessException e) {
-                    throw new IllegalArgumentException("Could not access settings for columName " + columnName, e);
-                }
+    public static MainColumnSettings getByColumnName(final String columnName) {
+        for (final MainColumnSettings mainColumnSettings : MainColumnSettings.values()) {
+            if (mainColumnSettings.columnName.toLowerCase().equals(columnName.toLowerCase())) {
+                return mainColumnSettings;
             }
         }
         throw new IllegalArgumentException("No settings found for columnName " + columnName);
     }
 
-    public ObservablePropertyKey<Boolean> getVisible() {
-        return visible;
+    public ObservablePropertyKey<Boolean> getVisiblePropertyKey() {
+        return visiblePropertyKey;
     }
 
-    public ObservablePropertyKey<Integer> getIndex() {
-        return index;
+    public ObservablePropertyKey<Integer> getIndexPropertyKey() {
+        return indexPropertyKey;
     }
 
-    public ObservablePropertyKey<Double> getWidth() {
-        return width;
+    public ObservablePropertyKey<Double> getWidthPropertyKey() {
+        return widthPropertyKey;
     }
 
 }

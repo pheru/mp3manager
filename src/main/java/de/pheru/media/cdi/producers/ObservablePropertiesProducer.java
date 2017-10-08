@@ -24,7 +24,7 @@ public class ObservablePropertiesProducer {
     private Event<SettingsLoadExceptionEvent> settingsLoadExceptionEvent;
 
     @Produces
-    @ApplicationScoped
+    @ApplicationScoped //TODO Qualifier
     public ObservableProperties createObservableProperties() {
         final ObservableProperties properties = new ObservableProperties(PheruMedia.APPLICATION_PATH + "/" + FILENAME);
         try {
