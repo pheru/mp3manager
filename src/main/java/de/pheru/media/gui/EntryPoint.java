@@ -1,9 +1,8 @@
 package de.pheru.media.gui;
 
-import de.pheru.fx.mvp.StartApplication;
+import de.pheru.fx.mvp.PheruFXEntryPoint;
 import de.pheru.fx.util.properties.ObservableProperties;
 import de.pheru.media.gui.applicationwindow.application.ApplicationView;
-import de.pheru.media.util.GlobalKeyListener;
 import javafx.application.Platform;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.DoubleProperty;
@@ -22,54 +21,28 @@ import org.apache.logging.log4j.Logger;
 import org.jnativehook.GlobalScreen;
 import org.jnativehook.NativeHookException;
 
-import javax.enterprise.event.Observes;
 import javax.inject.Inject;
+import java.io.IOException;
 
-public class ApplicationStarter {
+public class EntryPoint implements PheruFXEntryPoint {
 
-    private static final Logger LOGGER = LogManager.getLogger(ApplicationStarter.class);
+    private static final Logger LOGGER = LogManager.getLogger(EntryPoint.class);
 
     @Inject
     private ObservableProperties settings;
     @Inject
-    private GlobalKeyListener globalKeyListener;
-    @Inject
     private ApplicationView applicationView;
 
-    private void launchJavaFXApplication(@Observes @StartApplication Stage primaryStage) {
+    @Override
+    public void start(Stage stage) throws Exception {
         try {
-            initNotifications();
-            if (settings.booleanProperty(Settings.SHORTCUTS_ENABLED).get()) {
-                initJNativeHook();
-            }
-            initPrimaryStage(primaryStage);
-            primaryStage.show();
+            initPrimaryStage(stage);
+            stage.show();
         } catch (Exception e) {
             LOGGER.fatal("Exception initializing Application!", e);
             Alert alert = new Alert(Alert.AlertType.ERROR, "Fehler beim Starten der Anwendung!");
             alert.showAndWait();
             Platform.exit();
-        }
-    }
-
-    private void initNotifications() {
-        //TODO
-//        Notification.getDefaults().positionProperty().bind(settings.notificationsPositionProperty());
-//        Notifications.defaultDurationProperty().bind(settings.notificationsDurationProperty());
-    }
-
-    private void initJNativeHook() {
-        try {
-            GlobalScreen.addNativeKeyListener(globalKeyListener);
-            GlobalScreen.registerNativeHook();
-        } catch (NativeHookException | UnsatisfiedLinkError e) {
-            LOGGER.error("Exception/Error initializing JNativeHook!", e);
-            Alert alert = new Alert(Alert.AlertType.WARNING);
-            alert.getDialogPane().setPrefWidth(650.0);
-            alert.setHeaderText("Shortcuts konnten nicht initialisiert werden!");
-            alert.setContentText("Shortcuts werden deaktiviert.");
-            alert.showAndWait();
-            settings.booleanProperty(Settings.SHORTCUTS_ENABLED).set(false);
         }
     }
 
@@ -96,6 +69,34 @@ public class ApplicationStarter {
         }
         primaryStage.setOnCloseRequest(new OnCloseRequestHandler());
         primaryStage.setScene(scene);
+    }
+
+    @Override
+    public void stop() throws Exception {
+        //CleanUp muss hier ausgeführt werden, da ansonsten bei normalem Beenden der Anwendung
+        //der jnativehook nicht entfernt wird und damit die Anwendung nicht stoppt.
+        cleanUp();
+    }
+
+    public void cleanUp() {
+        try {
+            settings.save(null);
+        } catch (IOException e1) {
+            LOGGER.warn("Exception saving settings. Trying again.", e1);
+            try { //nochmal versuchen
+                settings.save(null);
+            } catch (IOException e2) {
+                LOGGER.error("Exception saving settings.", e2);
+                final Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setContentText("Einstellungen konnten nicht gespeichert werden!");
+                alert.showAndWait();
+            }
+        }
+        try {
+            GlobalScreen.unregisterNativeHook();
+        } catch (NativeHookException e) {
+            LOGGER.error("Exception cleaning up JNativeHook!", e);
+        }
     }
 
     private class OnCloseRequestHandler implements EventHandler<WindowEvent> {

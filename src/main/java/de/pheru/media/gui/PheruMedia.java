@@ -1,6 +1,8 @@
 package de.pheru.media.gui;
 
 import de.pheru.fx.mvp.PheruFXApplication;
+import de.pheru.fx.mvp.PheruFXEntryPoint;
+import de.pheru.fx.mvp.PheruFXLoader;
 import de.pheru.fx.util.properties.ObservableProperties;
 import javafx.application.Platform;
 import javafx.scene.Scene;
@@ -36,8 +38,6 @@ public class PheruMedia extends PheruFXApplication {
 
     private static final Logger LOGGER = createLogger(); //Muss nach APPLICATION_PATH initialisiert werden
 
-    private Stage splashStage;
-
     private static Logger createLogger() {
         System.getProperties().put("logfiles.location", APPLICATION_PATH);
         return LogManager.getLogger(PheruMedia.class);
@@ -58,51 +58,18 @@ public class PheruMedia extends PheruFXApplication {
     }
 
     @Override
-    public void beforeStart() {
-        splashStage = new Stage(StageStyle.TRANSPARENT);
-        splashStage.setTitle(APPLICATION_NAME);
-        splashStage.getIcons().addAll(new Image(APPLICATION_ICON_PATH_64),
-                new Image(APPLICATION_ICON_PATH_48),
-                new Image(APPLICATION_ICON_PATH_32));
-        AnchorPane pane = new AnchorPane(new ImageView(new Image(APPLICATION_ICON_PATH_64)));
-        Scene scene = new Scene(pane);
-        scene.setFill(Color.TRANSPARENT);
-        splashStage.setScene(scene);
-        splashStage.show();
+    protected Class<? extends PheruFXEntryPoint> getEntryPointClass() {
+        return EntryPoint.class;
     }
 
     @Override
-    public void afterStart() {
-        splashStage.hide();
+    protected Class<? extends PheruFXLoader> getLoaderClass() {
+        return Loader.class;
     }
 
     @Override
-    public void stop() throws Exception {
-        //CleanUp muss hier ausgeführt werden, da ansonsten bei normalem Beenden der Anwendung 
-        //der jnativehook nicht entfernt wird und damit die Anwendung nicht stoppt.
-        cleanUp();
-    }
-
-    public void cleanUp() {
-        final ObservableProperties settings = getWeldContainer().instance().select(ObservableProperties.class).get();
-        try {
-            settings.save(null);
-        } catch (IOException e1) {
-            LOGGER.warn("Exception saving settings. Trying again.", e1);
-            try { //nochmal versuchen
-                settings.save(null);
-            } catch (IOException e2) {
-                LOGGER.error("Exception saving settings.", e2);
-                final Alert alert = new Alert(Alert.AlertType.ERROR);
-                alert.setContentText("Einstellungen konnten nicht gespeichert werden!");
-                alert.showAndWait();
-            }
-        }
-        try {
-            GlobalScreen.unregisterNativeHook();
-        } catch (NativeHookException e) {
-            LOGGER.error("Exception cleaning up JNativeHook!", e);
-        }
+    protected Stage createSplashStage() {
+        return new SplashStage();
     }
 
     private static class UncaughtExceptionHandler implements Thread.UncaughtExceptionHandler {

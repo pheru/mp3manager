@@ -1,7 +1,8 @@
 package de.pheru.media.gui.applicationwindow.playlist;
 
 import de.pheru.fx.controls.notification.Notification;
-import de.pheru.fx.mvp.PrimaryStage;
+import de.pheru.fx.mvp.qualifiers.ApplicationParameters;
+import de.pheru.fx.mvp.qualifiers.PrimaryStage;
 import de.pheru.fx.util.properties.ObservableProperties;
 import de.pheru.media.cdi.qualifiers.TableData;
 import de.pheru.media.data.Mp3FileData;
@@ -85,6 +86,7 @@ public class PlaylistPresenter implements Initializable {
     private MusicPlayer musicPlayer;
 
     @Inject
+    @ApplicationParameters
     private Parameters params;
     @Inject
     @PrimaryStage

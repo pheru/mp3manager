@@ -1,6 +1,6 @@
 package de.pheru.media.gui.applicationwindow.main;
 
-import de.pheru.fx.mvp.ObservableListWrapper;
+import de.pheru.fx.mvp.wrappers.ObservableListWrapper;
 import de.pheru.fx.util.properties.ObservableProperties;
 import de.pheru.media.cdi.qualifiers.TableData;
 import de.pheru.media.data.Mp3FileData;
