@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="warn">
+    <Properties>
+        <Property name="pattern">[%d{dd.MM.yyyy HH:mm:ss,SSS} | %-5.5p | %-t | %c#%M:%L]%n  %m%n</Property>
+    </Properties>
+    
+    <Appenders>
+        <Console name="Console" target="SYSTEM_OUT">
+            <PatternLayout pattern="${pattern}"/>
+        </Console>
+        <RollingFile name="File" fileName="${sys:user.home}/.pherumedia/logs/pherumedia.log"
+                                 filePattern="${sys:user.home}/.pherumedia/logs/pherumedia-%i.log.zip">
+            <PatternLayout pattern="${pattern}"/>
+            <Policies>
+                <SizeBasedTriggeringPolicy size="1 MB"/>
+            </Policies>
+            <DefaultRolloverStrategy max="5"/>
+        </RollingFile>
+    </Appenders>
+    
+    <Loggers>
+        <Logger name="org.jboss" level="warn" />
+        <Root level="debug" additivity="false">
+            <AppenderRef ref="Console" level="debug"/>
+            <AppenderRef ref="File" level="debug"/>
+        </Root>
+    </Loggers>
+</Configuration>

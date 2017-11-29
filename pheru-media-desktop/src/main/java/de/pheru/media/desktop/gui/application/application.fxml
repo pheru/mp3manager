@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.RowConstraints?>
+
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.control.TableView?>
+<?import de.pheru.fx.controls.marquee.Marquee?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.control.ToggleGroup?>
+<?import javafx.scene.control.ToggleButton?>
+<VBox fx:id="rootBox" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="de.pheru.media.desktop.gui.application.ApplicationPresenter">
+    <fx:define>
+        <ToggleGroup fx:id="viewToggleGroup" />
+    </fx:define>
+    <HBox alignment="CENTER_LEFT">
+        <Button text="Einstellungen"/>
+        <Button text="Änderungen"/>
+        <Pane HBox.hgrow="ALWAYS" />
+        <Button text="Audiobibl."/>
+        <Label text="Meine Musik"/>
+        <Pane HBox.hgrow="ALWAYS" />
+        <ToggleButton text="Interpreten" toggleGroup="$viewToggleGroup" />
+        <ToggleButton text="Alben" toggleGroup="$viewToggleGroup" />
+        <ToggleButton text="Titel" toggleGroup="$viewToggleGroup" />
+        <ToggleButton text="Genre" toggleGroup="$viewToggleGroup" />
+
+        <Pane HBox.hgrow="ALWAYS" />
+        <TextField promptText="Filter" />
+    </HBox>
+    <SplitPane fx:id="splitPane">
+        <!-- PlaylistView -->
+        <TableView>
+
+        </TableView>
+    </SplitPane>
+    <!-- MediaplayerView -->
+</VBox>
