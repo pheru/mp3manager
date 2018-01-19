@@ -1,9 +1,13 @@
 package de.pheru.media.desktop.data;
 
+import de.pheru.media.desktop.DesktopApplication;
+
 import java.util.ArrayList;
 import java.util.List;
 
 public class AudioLibrary {
+
+    public static final String DIRECTORY = DesktopApplication.APPLICATION_DATA_HOME + "/audiolibraries";
 
     private String name = "Neue Bibliothek";
     private List<String> directories = new ArrayList<>();

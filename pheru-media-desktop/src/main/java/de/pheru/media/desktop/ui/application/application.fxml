@@ -24,7 +24,7 @@
         <Button text="Einstellungen"/>
         <Button text="Änderungen"/>
         <Pane HBox.hgrow="ALWAYS" />
-        <Button text="Audiobibl."/>
+        <Button text="Audiobibl." onAction="#openAudioLibraryDialog"/>
         <Label text="Meine Musik"/>
         <Pane HBox.hgrow="ALWAYS" />
         <ToggleButton text="Titel" toggleGroup="$viewToggleGroup" />
