@@ -1,6 +1,5 @@
-package de.pheru.media.core.data.loader;
+package de.pheru.media.core.io.directory;
 
-import de.pheru.media.core.data.loader.DefaultDirectoryLoader;
 import org.junit.Test;
 
 import java.io.File;
@@ -11,15 +10,15 @@ import java.util.List;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-public class DefaultDirectoryLoaderTest {
+public class DefaultDirectorySearcherTest {
 
     @Test
-    public void collectAudioFilesMp3() throws Exception {
+    public void searchMp3() throws Exception {
         final File file = new File(getClass().getResource("/audiofiles/fake").toURI());
         final String directory = file.getAbsolutePath();
         final List<String> supportedExtensions = Collections.singletonList(".mp3");
 
-        final List<File> files = new DefaultDirectoryLoader().collectAudioFiles(supportedExtensions, directory);
+        final List<File> files = new DefaultDirectorySearcher().searchFiles(supportedExtensions, directory);
         assertEquals(5, files.size());
         assertTrue(containsFile(files, "1.mp3"));
         assertTrue(containsFile(files, "2.mp3"));
@@ -29,12 +28,12 @@ public class DefaultDirectoryLoaderTest {
     }
 
     @Test
-    public void collectAudioFilesMp3Wav() throws Exception {
+    public void searchMp3Wav() throws Exception {
         final File file = new File(getClass().getResource("/audiofiles/fake").toURI());
         final String directory = file.getAbsolutePath();
         final List<String> supportedExtensions = Arrays.asList(".mp3", ".wav");
 
-        final List<File> files = new DefaultDirectoryLoader().collectAudioFiles(supportedExtensions, directory);
+        final List<File> files = new DefaultDirectorySearcher().searchFiles(supportedExtensions, directory);
         assertEquals(6, files.size());
         assertTrue(containsFile(files, "1.mp3"));
         assertTrue(containsFile(files, "5.mp3"));

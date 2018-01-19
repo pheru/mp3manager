@@ -1,13 +1,13 @@
-package de.pheru.media.core.data.loader;
+package de.pheru.media.core.io.directory;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DefaultDirectoryLoader implements DirectoryLoader {
+public class DefaultDirectorySearcher implements DirectorySearcher {
 
     @Override
-    public List<File> collectAudioFiles(final List<String> supportedFileExtensions, final String directory) {
+    public List<File> searchFiles(final List<String> supportedFileExtensions, final String directory) {
         final List<File> fileList = new ArrayList<>();
         collectSupportedFiles(supportedFileExtensions, directory, fileList);
         return fileList;

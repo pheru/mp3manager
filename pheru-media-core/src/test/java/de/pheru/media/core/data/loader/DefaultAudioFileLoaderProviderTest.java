@@ -1,9 +1,5 @@
 package de.pheru.media.core.data.loader;
 
-import de.pheru.media.core.data.loader.AudioFileLoader;
-import de.pheru.media.core.data.loader.DefaultAudioFileLoaderProvider;
-import de.pheru.media.core.data.loader.Mp3FileLoader;
-import de.pheru.media.core.data.loader.UnsupportedAudioFileFormatException;
 import org.junit.Test;
 
 import java.io.File;

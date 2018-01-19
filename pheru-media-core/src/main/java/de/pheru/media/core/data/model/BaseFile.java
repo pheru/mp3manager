@@ -5,10 +5,6 @@ public abstract class BaseFile {
     protected String fileName;
     protected String filePath;
 
-    public BaseFile() {
-        //Default
-    }
-
     public String getAbsolutePath() {
         return filePath + "\\" + fileName;
     }
