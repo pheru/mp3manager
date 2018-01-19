@@ -1,4 +1,4 @@
-package de.pheru.media.desktop.gui.application;
+package de.pheru.media.desktop.ui.application;
 
 import de.pheru.fx.mvp.PheruFXView;
 

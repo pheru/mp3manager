@@ -16,7 +16,7 @@
 <?import javafx.scene.control.ToggleGroup?>
 <?import javafx.scene.control.ToggleButton?>
 <VBox fx:id="rootBox" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1"
-      fx:controller="de.pheru.media.desktop.gui.application.ApplicationPresenter">
+      fx:controller="de.pheru.media.desktop.ui.application.ApplicationPresenter">
     <fx:define>
         <ToggleGroup fx:id="viewToggleGroup" />
     </fx:define>
@@ -27,9 +27,9 @@
         <Button text="Audiobibl."/>
         <Label text="Meine Musik"/>
         <Pane HBox.hgrow="ALWAYS" />
-        <ToggleButton text="Interpreten" toggleGroup="$viewToggleGroup" />
-        <ToggleButton text="Alben" toggleGroup="$viewToggleGroup" />
         <ToggleButton text="Titel" toggleGroup="$viewToggleGroup" />
+        <ToggleButton text="Alben" toggleGroup="$viewToggleGroup" />
+        <ToggleButton text="Interpreten" toggleGroup="$viewToggleGroup" />
         <ToggleButton text="Genre" toggleGroup="$viewToggleGroup" />
 
         <Pane HBox.hgrow="ALWAYS" />
@@ -37,7 +37,7 @@
     </HBox>
     <SplitPane fx:id="splitPane">
         <!-- PlaylistView -->
-        <TableView>
+        <TableView >
 
         </TableView>
     </SplitPane>

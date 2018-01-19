@@ -1,4 +1,4 @@
-package de.pheru.media.desktop.gui.application;
+package de.pheru.media.desktop.ui.application;
 
 import de.pheru.fx.controls.notification.Notification;
 import de.pheru.media.core.data.model.AudioFile;

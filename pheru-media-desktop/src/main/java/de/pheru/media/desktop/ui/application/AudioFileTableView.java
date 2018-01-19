@@ -1,4 +1,4 @@
-package de.pheru.media.desktop.gui.application;
+package de.pheru.media.desktop.ui.application;
 
 import de.pheru.fx.util.properties.ObservableProperties;
 import de.pheru.media.core.data.model.AudioFile;
@@ -14,7 +14,7 @@ import javafx.util.Callback;
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 
-public class AudioFileTableView extends TableView<AudioFile> {
+public class  AudioFileTableView extends TableView<AudioFile> {
 
     @Inject
     @Settings

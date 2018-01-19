@@ -1,11 +1,11 @@
-package de.pheru.media.desktop.data.cache;
+package de.pheru.media.desktop.data;
 
 import de.pheru.media.core.data.model.Artwork;
 import de.pheru.media.core.data.model.AudioFile;
 
 import java.util.List;
 
-public class AlbumCache {
+public class Album {
 
     private List<AudioFile> audioFiles;
     private List<Artwork> artworks;

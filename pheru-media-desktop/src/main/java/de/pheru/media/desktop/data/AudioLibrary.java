@@ -1,29 +1,35 @@
 package de.pheru.media.desktop.data;
 
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
+import java.util.ArrayList;
+import java.util.List;
 
 public class AudioLibrary {
 
-    private final StringProperty name = new SimpleStringProperty();
-    private final ObservableList<String> directories = FXCollections.observableArrayList();
+    private String name = "Neue Bibliothek";
+    private List<String> directories = new ArrayList<>();
+    private long lastUpdated = 0;
 
     public String getName() {
-        return name.get();
-    }
-
-    public StringProperty nameProperty() {
         return name;
     }
 
     public void setName(final String name) {
-        this.name.set(name);
+        this.name = name;
     }
 
-    public ObservableList<String> getDirectories() {
+    public List<String> getDirectories() {
         return directories;
     }
 
+    public void setDirectories(final List<String> directories) {
+        this.directories = directories;
+    }
+
+    public long getLastUpdated() {
+        return lastUpdated;
+    }
+
+    public void setLastUpdated(final long lastUpdated) {
+        this.lastUpdated = lastUpdated;
+    }
 }
