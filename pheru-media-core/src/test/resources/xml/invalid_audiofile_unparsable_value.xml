@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<AUDIOFILE>
+<AudioFile>
     <fileName>filenametitle1</fileName>
     <filePath>filepathtitle1</filePath>
     <album>album1</album>
@@ -11,4 +11,4 @@
     <title>title1</title>
     <track>1</track>
     <year>2017</year>
-</AUDIOFILE>
+</AudioFile>

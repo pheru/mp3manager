@@ -1,6 +1,7 @@
 package de.pheru.media.desktop;
 
 import de.pheru.fx.util.properties.ObservablePropertyKey;
+import de.pheru.media.desktop.data.AudioLibrary;
 
 public final class Setting {
 
@@ -9,7 +10,7 @@ public final class Setting {
     public static final ObservablePropertyKey<Double> APPLICATIONWINDOW_HEIGHT = new ObservablePropertyKey<>("applicationwindowHeight", 600.0);
     public static final ObservablePropertyKey<Double> APPLICATIONWINDOW_SPLITPOSIITON = new ObservablePropertyKey<>("applicationwindowSplitposition", 0.0);
 
-    public static final ObservablePropertyKey<String> CURRENT_AUDIO_LIBRARY = new ObservablePropertyKey<>("currentAudioLibrary", "Meine Musik");
+    public static final ObservablePropertyKey<String> CURRENT_AUDIO_LIBRARY_FILENAME = new ObservablePropertyKey<>("currentAudioLibrary", AudioLibrary.DEFAULT_FILENAME);
     public static final ObservablePropertyKey<String> PLAYLIST_DIRECTORY = new ObservablePropertyKey<>("playlistsDirectory", "");
 
     public static final ObservablePropertyKey<Double> MUSICPLAYER_VOLUME = new ObservablePropertyKey<>("musicplayerVolume", 100.0);

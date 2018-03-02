@@ -7,5 +7,5 @@ public interface FileIO {
 
     <T> T read(final File file, final Class<T> type) throws IOException;
 
-    <T> void write(final File file, final Class<T> type, final T t, final String localPart) throws IOException;
+    <T> void write(final File file, final Class<T> type, final T t) throws IOException;
 }

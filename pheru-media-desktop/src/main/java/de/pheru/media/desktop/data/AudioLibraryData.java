@@ -1,8 +1,14 @@
 package de.pheru.media.desktop.data;
 
+import de.pheru.media.desktop.DesktopApplication;
+
 import java.util.Map;
 
+//TODO Umbenennung "Data" -> "Content"?
 public class AudioLibraryData {
+
+    public static final String DIRECTORY = DesktopApplication.APPLICATION_DATA_HOME + "/audiolibrarydata";
+    public static final String FILE_ENDING = "ald";
 
     private Map<String, Artist> artists;
 

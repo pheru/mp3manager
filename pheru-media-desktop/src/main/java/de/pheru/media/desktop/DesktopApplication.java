@@ -2,8 +2,10 @@ package de.pheru.media.desktop;
 
 import de.pheru.fx.mvp.PheruFXApplication;
 import de.pheru.fx.mvp.PheruFXEntryPoint;
+import de.pheru.fx.mvp.PheruFXLoader;
 import javafx.application.Platform;
 import javafx.scene.control.Alert;
+import javafx.stage.Stage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -33,6 +35,16 @@ public class DesktopApplication extends PheruFXApplication {
     @Override
     protected Class<? extends PheruFXEntryPoint> getEntryPointClass() {
         return EntryPoint.class;
+    }
+
+    @Override
+    protected Class<? extends PheruFXLoader> getLoaderClass() {
+        return DesktopApplicationLoader.class;
+    }
+
+    @Override
+    protected Stage createSplashStage() {
+        return new SplashStage();
     }
 
     private static class UncaughtExceptionHandler implements Thread.UncaughtExceptionHandler {

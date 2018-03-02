@@ -13,26 +13,29 @@ import java.util.Date;
  */
 public final class TimeUtil {
 
+    private static final Logger LOGGER = LogManager.getLogger(TimeUtil.class);
+
     public static final SimpleDateFormat DURATION_FORMAT = new SimpleDateFormat("mm:ss");
     public static final SimpleDateFormat DURATION_WITH_HOURS_FORMAT = new SimpleDateFormat("HH:mm:ss");
-
-    private static final Logger LOGGER = LogManager.getLogger(TimeUtil.class);
+    public static final int SECONDS_PER_DAY = 86400;
+    public static final int SECONDS_PER_HOUR = 3600;
 
     private TimeUtil() {
         //Utility-Klasse
     }
 
-    //TODO Test
     public static String secondsToDurationFormat(final int seconds) {
-        final DateFormat smf;
-        if (seconds >= 3600) {
-            smf = DURATION_WITH_HOURS_FORMAT;
+        final DateFormat durationFormat;
+        if (seconds >= SECONDS_PER_DAY) {
+            return "> 23:59:59";
+        } else if (seconds >= SECONDS_PER_HOUR) {
+            durationFormat = DURATION_WITH_HOURS_FORMAT;
         } else {
-            smf = DURATION_FORMAT;
+            durationFormat = DURATION_FORMAT;
         }
         try {
             final Date date = new SimpleDateFormat("s").parse(String.valueOf(seconds));
-            return smf.format(date);
+            return durationFormat.format(date);
         } catch (final ParseException e) {
             LOGGER.error("Exception parsing " + seconds + " to duration-format!", e);
             return "error";

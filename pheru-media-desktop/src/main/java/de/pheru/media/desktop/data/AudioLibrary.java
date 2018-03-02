@@ -8,10 +8,25 @@ import java.util.List;
 public class AudioLibrary {
 
     public static final String DIRECTORY = DesktopApplication.APPLICATION_DATA_HOME + "/audiolibraries";
+    public static final String FILE_ENDING = "al";
+    public static final String DEFAULT_NAME = "Meine Musik";
+    public static final String DEFAULT_FILENAME = toFileName(DEFAULT_NAME, FILE_ENDING);
 
-    private String name = "Neue Bibliothek";
+    private String name = DEFAULT_NAME;
     private List<String> directories = new ArrayList<>();
     private long lastUpdated = 0;
+
+    public String getFileName() {
+        return toFileName(name, FILE_ENDING);
+    }
+
+    public String getDataCacheFileName() {
+        return toFileName(name, AudioLibraryData.FILE_ENDING);
+    }
+
+    private static String toFileName(final String name, final String fileEnding) {
+        return name.toLowerCase().replaceAll(" ", "_") + "." + fileEnding;
+    }
 
     public String getName() {
         return name;

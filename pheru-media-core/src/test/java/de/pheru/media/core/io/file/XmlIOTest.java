@@ -4,13 +4,17 @@ import de.pheru.media.core.data.model.AudioFile;
 import org.junit.Test;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.nio.file.Files;
 
+import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 
 public class XmlIOTest {
 
     private static final String WRITE_FILE_NAME = "audiofile_write.xml";
+    private static final String WRITE_CONTENT = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?><AudioFile><fileName>filenametitle1</fileName><filePath>filepathtitle1</filePath><album>album1</album><artist>artist1</artist><bitrate>100</bitrate><duration>123</duration><genre>TestGenre</genre><size>1000</size><title>title1</title><track>1</track><year>2017</year></AudioFile>";
     private static final String READ_FILE_NAME = "audiofile_read.xml";
     private static final String INVALID_FILE_NAME_UNKNOWN_TAG = "invalid_audiofile_unknown_tag.xml";
     private static final String INVALID_FILE_NAME_UNPARSABLE_VALUE = "invalid_audiofile_unparsable_value.xml";
@@ -21,7 +25,9 @@ public class XmlIOTest {
         final File file = new File(cacheDir.getAbsolutePath() + "/" + WRITE_FILE_NAME);
 
         final AudioFile audioFile = createAudioFile("title1", "album1", "artist1");
-        new XmlIO().write(file, AudioFile.class, audioFile, "AUDIOFILE");
+        new XmlIO().write(file, AudioFile.class, audioFile);
+
+        assertArrayEquals(WRITE_CONTENT.getBytes(), Files.readAllBytes(file.toPath()));
     }
 
     @Test
@@ -46,6 +52,12 @@ public class XmlIOTest {
     @Test(expected = IOException.class)
     public void readInvalidCacheFileUnparsableValue() throws Exception {
         final File file = new File(getClass().getResource("/xml/" + INVALID_FILE_NAME_UNPARSABLE_VALUE).toURI());
+        new XmlIO().read(file, AudioFile.class);
+    }
+
+    @Test(expected = FileNotFoundException.class)
+    public void readFileNotFound() throws Exception {
+        final File file = new File("C:/test_gibtshaltnicht.xml");
         new XmlIO().read(file, AudioFile.class);
     }
 

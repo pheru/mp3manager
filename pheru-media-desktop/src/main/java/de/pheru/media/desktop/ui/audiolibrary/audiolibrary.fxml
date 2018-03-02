@@ -17,8 +17,8 @@
         <HBox VBox.vgrow="ALWAYS">
             <ListView fx:id="audioLibrariesListView" prefHeight="100"/>
             <VBox>
-                <Button text="+"/>
-                <Button text="-"/>
+                <Button text="+" onAction="#createAudioLibrary"/>
+                <Button text="-" onAction="#deleteAudioLibrary"/>
             </VBox>
         </HBox>
     </VBox>
@@ -27,13 +27,13 @@
         <HBox VBox.vgrow="ALWAYS">
             <ListView fx:id="directoriesListView" prefHeight="100"/>
             <VBox>
-                <Button text="+"/>
-                <Button text="-"/>
+                <Button text="+" onAction="#addDirectory"/>
+                <Button text="-" onAction="#removeDirectory"/>
             </VBox>
         </HBox>
     </VBox>
     <HBox alignment="BOTTOM_RIGHT" spacing="5" VBox.vgrow="NEVER">
-        <Button text="Bestätigen"/>
-        <Button text="Abbrechen"/>
+        <Button fx:id="confirmButton" text="Bestätigen" onAction="#confirm"/>
+        <Button text="Abbrechen" onAction="#cancel"/>
     </HBox>
 </VBox>

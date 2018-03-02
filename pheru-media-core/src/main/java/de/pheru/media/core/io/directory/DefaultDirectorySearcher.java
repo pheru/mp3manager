@@ -29,7 +29,10 @@ public class DefaultDirectorySearcher implements DirectorySearcher {
     }
 
     private boolean isSupported(final List<String> supportedFileExtensions, final File file) {
-        for (final String supportedExtension : supportedFileExtensions) {
+        for (String supportedExtension : supportedFileExtensions) {
+            if (!supportedExtension.startsWith(".")) {
+                supportedExtension = "." + supportedExtension;
+            }
             if (file.getName().endsWith(supportedExtension)) {
                 return true;
             }

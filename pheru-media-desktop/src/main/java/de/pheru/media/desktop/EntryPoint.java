@@ -3,7 +3,9 @@ package de.pheru.media.desktop;
 import de.pheru.fx.mvp.PheruFXEntryPoint;
 import de.pheru.fx.util.properties.ObservableProperties;
 import de.pheru.media.desktop.cdi.qualifiers.Settings;
+import de.pheru.media.desktop.cdi.qualifiers.StartFinishedActions;
 import de.pheru.media.desktop.ui.application.ApplicationView;
+import de.pheru.media.desktop.util.PrioritizedRunnable;
 import javafx.application.Platform;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.DoubleProperty;
@@ -15,6 +17,7 @@ import org.apache.logging.log4j.Logger;
 
 import javax.inject.Inject;
 import java.io.IOException;
+import java.util.SortedSet;
 
 public class EntryPoint implements PheruFXEntryPoint {
 
@@ -23,6 +26,9 @@ public class EntryPoint implements PheruFXEntryPoint {
     @Inject
     @Settings
     private ObservableProperties settings;
+    @Inject
+    @StartFinishedActions
+    private SortedSet<PrioritizedRunnable> startFinishedActions;
 
     @Inject
     private ApplicationView applicationView;
@@ -32,6 +38,9 @@ public class EntryPoint implements PheruFXEntryPoint {
         try {
             initPrimaryStage(stage);
             stage.show();
+            for (final PrioritizedRunnable startFinishedAction : startFinishedActions) {
+                startFinishedAction.getRunnable().run();
+            }
         } catch (Exception e) {
             LOGGER.fatal("Exception initializing Application!", e);
             Alert alert = new Alert(Alert.AlertType.ERROR, "Fehler beim Starten der Anwendung!");

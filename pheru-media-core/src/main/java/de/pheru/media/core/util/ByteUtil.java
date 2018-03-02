@@ -14,7 +14,6 @@ public final class ByteUtil {
         //Utility-Klasse
     }
 
-    //TODO Test
     public static String bytesToMB(final long bytes) {
         final double mb = bytes / 1048576.0;
         return TWO_DECIMAL_PLACES_FORMAT.format(mb) + UNIT_SIZE;
