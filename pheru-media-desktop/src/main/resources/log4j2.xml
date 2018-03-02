@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Configuration status="warn">
     <Properties>
-        <Property name="pattern">[%d{dd.MM.yyyy HH:mm:ss,SSS} | %-5.5p | %-t | %c#%M:%L]%n  %m%n</Property>
+        <Property name="version">${project.version}</Property>
+        <Property name="pattern">[%d{dd.MM.yyyy HH:mm:ss,SSS} | ${version} | %-5.5p | %-t | %c#%M:%L]%n  %m%n</Property>
     </Properties>
     
     <Appenders>
