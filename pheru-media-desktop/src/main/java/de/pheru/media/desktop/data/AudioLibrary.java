@@ -9,6 +9,7 @@ public class AudioLibrary {
 
     public static final String DIRECTORY = DesktopApplication.APPLICATION_DATA_HOME + "/audiolibraries";
     public static final String FILE_ENDING = "al";
+    public static final String NEW_NAME = "Neue Musikbibliothek";
     public static final String DEFAULT_NAME = "Meine Musik";
     public static final String DEFAULT_FILENAME = toFileName(DEFAULT_NAME, FILE_ENDING);
 
@@ -24,6 +25,7 @@ public class AudioLibrary {
         return toFileName(name, AudioLibraryData.FILE_ENDING);
     }
 
+    //TODO auf Ungültige Zeichen für Dateinamen prüfen
     private static String toFileName(final String name, final String fileEnding) {
         return name.toLowerCase().replaceAll(" ", "_") + "." + fileEnding;
     }

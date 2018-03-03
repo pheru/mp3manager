@@ -10,8 +10,10 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
+import javafx.scene.control.TextInputDialog;
 import javafx.scene.control.cell.TextFieldListCell;
 import javafx.util.StringConverter;
 import org.apache.logging.log4j.LogManager;
@@ -20,10 +22,7 @@ import org.apache.logging.log4j.Logger;
 import javax.inject.Inject;
 import java.io.File;
 import java.net.URL;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-import java.util.ResourceBundle;
+import java.util.*;
 
 public class AudioLibraryPresenter implements Initializable {
 
@@ -80,18 +79,26 @@ public class AudioLibraryPresenter implements Initializable {
 
     private void initUI() {
         initAudioLibrariesListView();
-        initDirectoriesListView();
         initBindingsAndListeners();
     }
 
     private void initAudioLibrariesListView() {
         audioLibrariesListView.setEditable(true);
         audioLibrariesListView.setOnEditCommit(event -> {
-            final AudioLibrary editedLibrary = audioLibrariesListView.getItems().get(event.getIndex());
-            editedLibrary.setName(event.getNewValue().getName());
-            audioLibrariesListView.setItems(audioLibraries.sorted(audioLibraryComparator));
-            edited = true;
-            audioLibrariesListView.scrollTo(audioLibrariesListView.getSelectionModel().getSelectedIndex());
+            final String newName = event.getNewValue().getName().trim();
+            if (newName.isEmpty()) {
+                audioLibrariesListView.refresh();
+                event.consume();
+            } else if (audioLibraryNameAlreadyExists(newName)) {
+                showLibraryNameErrorAlert("Name bereits vorhanden!");
+                event.consume();
+            } else {
+                final AudioLibrary editedLibrary = audioLibrariesListView.getItems().get(event.getIndex());
+                editedLibrary.setName(newName);
+                audioLibrariesListView.setItems(audioLibraries.sorted(audioLibraryComparator));
+                edited = true;
+                audioLibrariesListView.scrollTo(audioLibrariesListView.getSelectionModel().getSelectedIndex());
+            }
         });
         audioLibrariesListView.setCellFactory(TextFieldListCell.forListView(new StringConverter<AudioLibrary>() {
             @Override
@@ -108,7 +115,13 @@ public class AudioLibraryPresenter implements Initializable {
         }));
     }
 
-    private void initDirectoriesListView() {
+    private boolean audioLibraryNameAlreadyExists(final String name) {
+        for (final AudioLibrary audioLibrary : audioLibraries) {
+            if (audioLibrary.getName().toLowerCase().equals(name.toLowerCase())) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private void initBindingsAndListeners() {
@@ -124,7 +137,41 @@ public class AudioLibraryPresenter implements Initializable {
 
     @FXML
     private void createAudioLibrary() {
-        edited = true;
+        final Optional<String> result = showLibraryNameInputDialog();
+        result.ifPresent(input -> {
+            final AudioLibrary newLibrary = new AudioLibrary();
+            newLibrary.setName(input.trim());
+            audioLibraries.add(newLibrary);
+            audioLibrariesListView.scrollTo(newLibrary);
+            audioLibrariesListView.getSelectionModel().select(newLibrary);
+            edited = true;
+        });
+    }
+
+    private Optional<String> showLibraryNameInputDialog() {
+        final TextInputDialog dialog = new TextInputDialog(AudioLibrary.NEW_NAME);
+        dialog.setTitle("Neue Musikbibliothek erstellen");
+        dialog.setHeaderText(null);
+        dialog.setContentText("Namen eingeben:");
+        dialog.setOnCloseRequest(event -> {
+            if (dialog.getResult() != null) {
+                if (dialog.getResult().trim().isEmpty()) {
+                    showLibraryNameErrorAlert("Name darf nicht leer sein!");
+                    event.consume();
+                } else if (audioLibraryNameAlreadyExists(dialog.getResult())) {
+                    showLibraryNameErrorAlert("Name bereits vorhanden!");
+                    event.consume();
+                }
+            }
+        });
+        return dialog.showAndWait();
+    }
+
+    private void showLibraryNameErrorAlert(final String headerText) {
+        final Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setHeaderText(headerText);
+        alert.setContentText("Bitte einen anderen Namen eingeben.");
+        alert.show();
     }
 
     @FXML
