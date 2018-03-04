@@ -7,6 +7,7 @@ import de.pheru.media.desktop.cdi.qualifiers.StartFinishedActions;
 import de.pheru.media.desktop.data.AudioLibrary;
 import de.pheru.media.desktop.ui.audiolibrary.AudioLibraryView;
 import de.pheru.media.desktop.util.PrioritizedRunnable;
+import javafx.application.Platform;
 import javafx.beans.property.ObjectProperty;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -17,6 +18,8 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.enterprise.inject.Instance;
 import javax.enterprise.inject.New;
@@ -26,6 +29,8 @@ import java.util.ResourceBundle;
 import java.util.SortedSet;
 
 public class ApplicationPresenter implements Initializable {
+
+    private static final Logger LOGGER = LogManager.getLogger(ApplicationPresenter.class);
 
     @FXML
     private VBox rootBox;
@@ -70,6 +75,12 @@ public class ApplicationPresenter implements Initializable {
             audioLibraryStage.initModality(Modality.APPLICATION_MODAL);
         }
         audioLibraryStage.setScene(new Scene(audioLibraryViewInstance.get().getView()));
-        audioLibraryStage.show();
+        audioLibraryStage.showAndWait();
+        if (currentAudioLibrary.get() == null) {
+            LOGGER.info("No current audiolibrary selected. Exiting Application.");
+            Platform.exit();
+        } else {
+            //TODO audiolibrarydata laden
+        }
     }
 }

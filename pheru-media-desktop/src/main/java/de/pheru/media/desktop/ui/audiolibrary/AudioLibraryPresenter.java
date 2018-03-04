@@ -4,17 +4,16 @@ import de.pheru.media.core.io.directory.DefaultDirectorySearcher;
 import de.pheru.media.core.io.directory.DirectorySearcher;
 import de.pheru.media.desktop.cdi.qualifiers.CurrentAudioLibrary;
 import de.pheru.media.desktop.data.AudioLibrary;
-import javafx.application.Platform;
+import javafx.beans.binding.StringBinding;
 import javafx.beans.property.ObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.scene.control.ListView;
-import javafx.scene.control.TextInputDialog;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.TextFieldListCell;
+import javafx.scene.layout.VBox;
+import javafx.stage.DirectoryChooser;
 import javafx.util.StringConverter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -29,9 +28,17 @@ public class AudioLibraryPresenter implements Initializable {
     private static final Logger LOGGER = LogManager.getLogger(AudioLibraryPresenter.class);
 
     @FXML
+    private VBox root;
+    @FXML
+    private Label currentAudioLibraryLabel;
+    @FXML
     private ListView<AudioLibrary> audioLibrariesListView;
     @FXML
+    private Button removeDirectoryButton;
+    @FXML
     private ListView<String> directoriesListView;
+    @FXML
+    private Button deleteAudioLibraryButton;
     @FXML
     private Button confirmButton;
 
@@ -48,14 +55,7 @@ public class AudioLibraryPresenter implements Initializable {
         initUI();
         loadAudioLibraries();
         testdata(); //TODO testdaten entfernen
-        if (currentAudioLibrary.get() != null) {
-            for (AudioLibrary item : audioLibrariesListView.getItems()) {
-                if (item.getName().equals(currentAudioLibrary.get().getName())) {
-                    audioLibrariesListView.getSelectionModel().select(item);
-                    audioLibrariesListView.scrollTo(item);
-                }
-            }
-        }
+        selectCurrentAudioLibrary();
     }
 
     private void testdata() {
@@ -68,13 +68,6 @@ public class AudioLibraryPresenter implements Initializable {
             }
         }
         audioLibrariesListView.setItems(audioLibraries.sorted(audioLibraryComparator));
-    }
-
-    private void loadAudioLibraries() {
-        final DirectorySearcher directorySearcher = new DefaultDirectorySearcher();
-        final List<File> audioLibraries = directorySearcher.searchFiles(Collections.singletonList(AudioLibrary.FILE_ENDING),
-                AudioLibrary.DIRECTORY);
-        //TODO fileio audiolibraries laden
     }
 
     private void initUI() {
@@ -124,7 +117,32 @@ public class AudioLibraryPresenter implements Initializable {
         return false;
     }
 
+    private void showLibraryNameErrorAlert(final String headerText) {
+        final Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setHeaderText(headerText);
+        alert.setContentText("Bitte einen anderen Namen eingeben.");
+        alert.show();
+    }
+
     private void initBindingsAndListeners() {
+        currentAudioLibraryLabel.textProperty().bind(new StringBinding() {
+            {
+                bind(audioLibrariesListView.getSelectionModel().selectedItemProperty());
+            }
+
+            @Override
+            protected String computeValue() {
+                final AudioLibrary selected = audioLibrariesListView.getSelectionModel().getSelectedItem();
+                if (selected == null) {
+                    return "---";
+                }
+                return selected.getName();
+            }
+        });
+        deleteAudioLibraryButton.disableProperty().bind(
+                audioLibrariesListView.getSelectionModel().selectedItemProperty().isNull());
+        removeDirectoryButton.disableProperty().bind(
+                directoriesListView.getSelectionModel().selectedItemProperty().isNull());
         confirmButton.disableProperty().bind(
                 audioLibrariesListView.getSelectionModel().selectedItemProperty().isNull());
         audioLibrariesListView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
@@ -133,6 +151,24 @@ public class AudioLibraryPresenter implements Initializable {
                 directoriesListView.scrollTo(0);
             }
         });
+    }
+
+    private void loadAudioLibraries() {
+        final DirectorySearcher directorySearcher = new DefaultDirectorySearcher();
+        final List<File> audioLibraries = directorySearcher.searchFiles(Collections.singletonList(AudioLibrary.FILE_ENDING),
+                AudioLibrary.DIRECTORY);
+        //TODO fileio audiolibraries laden
+    }
+
+    private void selectCurrentAudioLibrary() {
+        if (currentAudioLibrary.get() != null) {
+            for (final AudioLibrary item : audioLibrariesListView.getItems()) {
+                if (item.getName().equals(currentAudioLibrary.get().getName())) {
+                    audioLibrariesListView.getSelectionModel().select(item);
+                    audioLibrariesListView.scrollTo(item);
+                }
+            }
+        }
     }
 
     @FXML
@@ -167,13 +203,6 @@ public class AudioLibraryPresenter implements Initializable {
         return dialog.showAndWait();
     }
 
-    private void showLibraryNameErrorAlert(final String headerText) {
-        final Alert alert = new Alert(Alert.AlertType.ERROR);
-        alert.setHeaderText(headerText);
-        alert.setContentText("Bitte einen anderen Namen eingeben.");
-        alert.show();
-    }
-
     @FXML
     private void deleteAudioLibrary() {
         final AudioLibrary selected = audioLibrariesListView.getSelectionModel().getSelectedItem();
@@ -184,11 +213,21 @@ public class AudioLibraryPresenter implements Initializable {
 
     @FXML
     private void addDirectory() {
+        final DirectoryChooser directoryChooser = new DirectoryChooser();
+        directoryChooser.setTitle("Verzeichnis zu Musikbibliothek hinzufügen");
+        final File directory = directoryChooser.showDialog(root.getScene().getWindow());
+        final AudioLibrary selectedLibrary = audioLibrariesListView.getSelectionModel().getSelectedItem();
+        selectedLibrary.getDirectories().add(directory.getAbsolutePath());
+        directoriesListView.getItems().setAll(selectedLibrary.getDirectories());
         edited = true;
     }
 
     @FXML
     private void removeDirectory() {
+        final AudioLibrary selectedLibrary = audioLibrariesListView.getSelectionModel().getSelectedItem();
+        final String selectedDirectory = directoriesListView.getSelectionModel().getSelectedItem();
+        selectedLibrary.getDirectories().remove(selectedDirectory);
+        directoriesListView.getItems().setAll(selectedLibrary.getDirectories());
         edited = true;
     }
 
@@ -205,15 +244,10 @@ public class AudioLibraryPresenter implements Initializable {
 
     @FXML
     private void cancel() {
-        if (currentAudioLibrary.get() == null) {
-            LOGGER.info("No current audiolibrary selected. Exiting Application.");
-            Platform.exit();
-        } else {
-            hide();
-        }
+        hide();
     }
 
     private void hide() {
-        audioLibrariesListView.getScene().getWindow().hide();
+        root.getScene().getWindow().hide();
     }
 }

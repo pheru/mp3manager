@@ -7,28 +7,41 @@
 <?import javafx.scene.layout.VBox?>
 
 <?import javafx.scene.control.Label?>
-<VBox spacing="10" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1"
+<VBox fx:id="root" spacing="10" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1"
       fx:controller="de.pheru.media.desktop.ui.audiolibrary.AudioLibraryPresenter">
     <padding>
         <Insets bottom="10.0" left="10.0" right="10.0" top="10.0"/>
     </padding>
     <VBox VBox.vgrow="ALWAYS">
         <Label text="Aktuelle Audiobibliothek:"/>
+        <Label fx:id="currentAudioLibraryLabel">
+            <padding>
+                <Insets left="30.0"/>
+            </padding>
+        </Label>
         <HBox VBox.vgrow="ALWAYS">
-            <ListView fx:id="audioLibrariesListView" prefHeight="100"/>
+            <ListView fx:id="audioLibrariesListView" prefHeight="100" HBox.hgrow="ALWAYS">
+                <placeholder>
+                    <Label text="Keine Musikbibliothek angelegt"/>
+                </placeholder>
+            </ListView>
             <VBox>
                 <Button text="+" onAction="#createAudioLibrary"/>
-                <Button text="-" onAction="#deleteAudioLibrary"/>
+                <Button fx:id="deleteAudioLibraryButton" text="-" onAction="#deleteAudioLibrary"/>
             </VBox>
         </HBox>
     </VBox>
     <VBox VBox.vgrow="ALWAYS">
         <Label text="Verzeichnisse:"/>
         <HBox VBox.vgrow="ALWAYS">
-            <ListView fx:id="directoriesListView" prefHeight="100"/>
+            <ListView fx:id="directoriesListView" prefHeight="100" HBox.hgrow="ALWAYS">
+                <placeholder>
+                    <Label text="Keine Verzeichnisse festgelegt"/>
+                </placeholder>
+            </ListView>
             <VBox>
                 <Button text="+" onAction="#addDirectory"/>
-                <Button text="-" onAction="#removeDirectory"/>
+                <Button fx:id="removeDirectoryButton" text="-" onAction="#removeDirectory"/>
             </VBox>
         </HBox>
     </VBox>
