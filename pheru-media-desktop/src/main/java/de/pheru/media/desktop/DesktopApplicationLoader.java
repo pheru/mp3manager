@@ -37,10 +37,10 @@ public class DesktopApplicationLoader extends PheruFXLoader {
 
     @Override
     public void load() throws Exception {
-        updateMessage("Lade aktuelle Musik-Bibliothek...");
-        updateProgress(0, 100);
+        updateMessage("Lade aktuelle Musik-Bibliothek ...");
+        updateProgress(33, 100);
         loadCurrentAudioLibrary();
-        updateProgress(50, 100);
+        updateProgress(66, 100);
         loadCurrentAudioLibraryData();
         updateProgress(100, 100);
     }

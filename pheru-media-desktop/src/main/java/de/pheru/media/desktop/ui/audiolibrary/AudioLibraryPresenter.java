@@ -1,5 +1,6 @@
 package de.pheru.media.desktop.ui.audiolibrary;
 
+import de.pheru.fx.mvp.factories.DialogFactory;
 import de.pheru.media.core.io.directory.DefaultDirectorySearcher;
 import de.pheru.media.core.io.directory.DirectorySearcher;
 import de.pheru.media.desktop.cdi.qualifiers.CurrentAudioLibrary;
@@ -42,6 +43,8 @@ public class AudioLibraryPresenter implements Initializable {
     @FXML
     private Button confirmButton;
 
+    @Inject
+    private DialogFactory dialogFactory;
     @Inject
     @CurrentAudioLibrary
     private ObjectProperty<AudioLibrary> currentAudioLibrary;
@@ -126,15 +129,13 @@ public class AudioLibraryPresenter implements Initializable {
 
     private void initBindingsAndListeners() {
         currentAudioLibraryLabel.textProperty().bind(new StringBinding() {
-            {
-                bind(audioLibrariesListView.getSelectionModel().selectedItemProperty());
-            }
+            { bind(audioLibrariesListView.getSelectionModel().selectedItemProperty()); }
 
             @Override
             protected String computeValue() {
                 final AudioLibrary selected = audioLibrariesListView.getSelectionModel().getSelectedItem();
                 if (selected == null) {
-                    return "---";
+                    return "<nicht festgelegt>";
                 }
                 return selected.getName();
             }
@@ -185,7 +186,7 @@ public class AudioLibraryPresenter implements Initializable {
     }
 
     private Optional<String> showLibraryNameInputDialog() {
-        final TextInputDialog dialog = new TextInputDialog(AudioLibrary.NEW_NAME);
+        final TextInputDialog dialog = dialogFactory.createTextInputDialog(AudioLibrary.NEW_NAME);
         dialog.setTitle("Neue Musikbibliothek erstellen");
         dialog.setHeaderText(null);
         dialog.setContentText("Namen eingeben:");
@@ -209,6 +210,8 @@ public class AudioLibraryPresenter implements Initializable {
         LOGGER.info("Deleting audiolibrary " + selected.getName() + " - " + selected.getFileName() + " ...");
         //TODO audiolibrary direkt loeschen
         LOGGER.info("Deleting audiolibrary done.");
+        audioLibraries.remove(selected);
+        audioLibrariesListView.getSelectionModel().clearSelection();
     }
 
     @FXML

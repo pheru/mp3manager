@@ -11,10 +11,12 @@ import javafx.application.Platform;
 import javafx.beans.property.ObjectProperty;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.SplitPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
@@ -37,8 +39,8 @@ public class ApplicationPresenter implements Initializable {
     @FXML
     private SplitPane splitPane;
 
-    private Label playlistPlatzhalter = new Label("Playlist");
-    private Label musicPlayerPlatzhalter = new Label("Musicplayer");
+    private final Label playlistPlatzhalter = new Label("Playlist");
+    private final Label musicPlayerPlatzhalter = new Label("Musicplayer");
 
     @Inject
     private StageFactory stageFactory;
@@ -71,16 +73,20 @@ public class ApplicationPresenter implements Initializable {
     @FXML
     private void openAudioLibraryDialog() {
         if (audioLibraryStage == null) {
-            audioLibraryStage = stageFactory.createStage(StageStyle.UNDECORATED);
+            audioLibraryStage = stageFactory.createStage(StageStyle.TRANSPARENT);
             audioLibraryStage.initModality(Modality.APPLICATION_MODAL);
         }
-        audioLibraryStage.setScene(new Scene(audioLibraryViewInstance.get().getView()));
-        audioLibraryStage.showAndWait();
-        if (currentAudioLibrary.get() == null) {
-            LOGGER.info("No current audiolibrary selected. Exiting Application.");
-            Platform.exit();
-        } else {
-            //TODO audiolibrarydata laden
-        }
+        final Parent audioLibraryView = audioLibraryViewInstance.get().getView();
+        audioLibraryView.getStyleClass().add("dialog-shadow");
+        audioLibraryStage.setScene(new Scene(audioLibraryView, Color.TRANSPARENT));
+        audioLibraryStage.setOnHidden(event -> {
+            if (currentAudioLibrary.get() == null) {
+                LOGGER.info("No current audiolibrary selected. Exiting Application.");
+                Platform.exit();
+            } else {
+                //TODO audiolibrarydata laden
+            }
+        });
+        audioLibraryStage.show();
     }
 }
