@@ -7,7 +7,6 @@ import de.pheru.media.desktop.cdi.qualifiers.StartFinishedActions;
 import de.pheru.media.desktop.data.AudioLibrary;
 import de.pheru.media.desktop.ui.audiolibrary.AudioLibraryView;
 import de.pheru.media.desktop.util.PrioritizedRunnable;
-import javafx.application.Platform;
 import javafx.beans.property.ObjectProperty;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -79,14 +78,6 @@ public class ApplicationPresenter implements Initializable {
         final Parent audioLibraryView = audioLibraryViewInstance.get().getView();
         audioLibraryView.getStyleClass().add("dialog-shadow");
         audioLibraryStage.setScene(new Scene(audioLibraryView, Color.TRANSPARENT));
-        audioLibraryStage.setOnHidden(event -> {
-            if (currentAudioLibrary.get() == null) {
-                LOGGER.info("No current audiolibrary selected. Exiting Application.");
-                Platform.exit();
-            } else {
-                //TODO audiolibrarydata laden
-            }
-        });
         audioLibraryStage.show();
     }
 }

@@ -23,8 +23,9 @@
                 </placeholder>
             </ListView>
             <VBox>
-                <Button text="+" onAction="#createAudioLibrary"/>
-                <Button fx:id="deleteAudioLibraryButton" text="-" onAction="#deleteAudioLibrary"/>
+                <Button text="+" maxWidth="Infinity" onAction="#createAudioLibrary"/>
+                <Button fx:id="deleteAudioLibraryButton" text="-"
+                        maxWidth="Infinity" onAction="#deleteAudioLibrary"/>
             </VBox>
         </HBox>
     </VBox>
@@ -37,8 +38,9 @@
                 </placeholder>
             </ListView>
             <VBox>
-                <Button text="+" onAction="#addDirectory"/>
-                <Button fx:id="removeDirectoryButton" text="-" onAction="#removeDirectory"/>
+                <Button text="+" maxWidth="Infinity" onAction="#addDirectory"/>
+                <Button fx:id="removeDirectoryButton" text="-"
+                        maxWidth="Infinity" onAction="#removeDirectory"/>
             </VBox>
         </HBox>
     </VBox>

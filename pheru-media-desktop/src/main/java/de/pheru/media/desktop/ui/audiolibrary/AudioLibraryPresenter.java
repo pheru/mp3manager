@@ -147,7 +147,9 @@ public class AudioLibraryPresenter implements Initializable {
         confirmButton.disableProperty().bind(
                 audioLibrariesListView.getSelectionModel().selectedItemProperty().isNull());
         audioLibrariesListView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
-            if (newValue != null) {
+            if (newValue == null) {
+                directoriesListView.getItems().clear();
+            } else {
                 directoriesListView.getItems().setAll(newValue.getDirectories());
                 directoriesListView.scrollTo(0);
             }
