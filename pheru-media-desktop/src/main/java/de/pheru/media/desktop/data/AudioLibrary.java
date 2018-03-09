@@ -25,7 +25,6 @@ public class AudioLibrary {
         return toFileName(name, AudioLibraryData.FILE_ENDING);
     }
 
-    //TODO auf Ungültige Zeichen für Dateinamen prüfen
     private static String toFileName(final String name, final String fileEnding) {
         return name.toLowerCase().replaceAll(" ", "_") + "." + fileEnding;
     }

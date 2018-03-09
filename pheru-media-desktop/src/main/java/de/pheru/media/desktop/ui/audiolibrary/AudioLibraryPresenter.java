@@ -206,6 +206,9 @@ public class AudioLibraryPresenter implements Initializable {
                 if (dialog.getResult().trim().isEmpty()) {
                     showLibraryNameInfoAlert("Name darf nicht leer sein!");
                     event.consume();
+                } else if (!dialog.getResult().matches("[a-zA-Z0-9\\s]*")) {
+                    showLibraryNameInfoAlert("Name darf nur aus Buchstaben, Zahlen und Leerzeichen bestehen!");
+                    event.consume();
                 } else if (audioLibraryNameAlreadyExists(dialog.getResult())) {
                     showLibraryNameInfoAlert("Name bereits vorhanden!");
                     event.consume();
@@ -252,10 +255,26 @@ public class AudioLibraryPresenter implements Initializable {
         final DirectoryChooser directoryChooser = new DirectoryChooser();
         directoryChooser.setTitle("Verzeichnis zu Musikbibliothek hinzufügen");
         final File directory = directoryChooser.showDialog(root.getScene().getWindow());
-        final AudioLibrary selectedLibrary = audioLibrariesListView.getSelectionModel().getSelectedItem();
-        selectedLibrary.getDirectories().add(directory.getAbsolutePath());
-        directoriesListView.getItems().setAll(selectedLibrary.getDirectories());
-        edited = true;
+        if (directoryAlreadyAdded(directory.getAbsolutePath())) {
+            final Alert alert = dialogFactory.createAlert(Alert.AlertType.INFORMATION);
+            alert.setHeaderText(null);
+            alert.setContentText("Verzeichnis wurde bereits hinzugefügt.");
+            alert.show();
+        } else {
+            final AudioLibrary selectedLibrary = audioLibrariesListView.getSelectionModel().getSelectedItem();
+            selectedLibrary.getDirectories().add(directory.getAbsolutePath());
+            directoriesListView.getItems().setAll(selectedLibrary.getDirectories());
+            edited = true;
+        }
+    }
+
+    private boolean directoryAlreadyAdded(final String newDirectory) {
+        for (final String directory : directoriesListView.getItems()) {
+            if (directory.equals(newDirectory)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     @FXML
