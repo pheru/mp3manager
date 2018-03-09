@@ -3,6 +3,7 @@ package de.pheru.media.desktop;
 import de.pheru.fx.mvp.UpdateableSplashStage;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.layout.VBox;
@@ -42,6 +43,8 @@ public class SplashStage extends Stage implements UpdateableSplashStage {
 
     @Override
     public void loadingFailed(final String s, final Throwable throwable) {
-        // TODO SplashStage loadingFailed implementieren
+        final Alert alert = new Alert(Alert.AlertType.ERROR, s);
+        alert.setHeaderText(null);
+        alert.showAndWait();
     }
 }

@@ -21,7 +21,7 @@
         <dependency>
             <groupId>de.pheru.fx</groupId>
             <artifactId>pherufx-mvp</artifactId>
-            <version>3.0.0</version>
+            <version>3.1.0</version>
         </dependency>
         <dependency>
             <groupId>de.pheru.fx</groupId>
@@ -59,30 +59,30 @@
     <build>
         <finalName>${project.artifactId}</finalName>
         <plugins>
-            <!--<plugin>-->
-                <!--<groupId>com.zenjava</groupId>-->
-                <!--<artifactId>javafx-maven-plugin</artifactId>-->
-                <!--<version>8.1.3</version>-->
-                <!--<configuration>-->
-                    <!--<mainClass>de.pheru.media.gui.PheruMedia</mainClass>-->
-                    <!--<jvmArgs>-->
-                        <!--&lt;!&ndash;<jvmArg>-Xms128m</jvmArg>&ndash;&gt;-->
-                        <!--<jvmArg>-Xmx1024m</jvmArg>-->
-                        <!--&lt;!&ndash;<jvmArg> -XX:+UseCompressedOops</jvmArg>&ndash;&gt;-->
-                        <!--<jvmArg>-Dsun.java2d.opengl=True</jvmArg>-->
-                        <!--<jvmArg>-Dfile.encoding=UTF-8</jvmArg>-->
-                    <!--</jvmArgs>-->
-                    <!--<vendor>pheru</vendor>-->
-                <!--</configuration>-->
-                <!--<executions>-->
-                    <!--<execution>-->
-                        <!--<phase>package</phase>-->
-                        <!--<goals>-->
-                            <!--<goal>native</goal>-->
-                        <!--</goals>-->
-                    <!--</execution>-->
-                <!--</executions>-->
-            <!--</plugin>-->
+            <plugin>
+                <groupId>com.zenjava</groupId>
+                <artifactId>javafx-maven-plugin</artifactId>
+                <version>8.1.3</version>
+                <configuration>
+                    <mainClass>de.pheru.media.desktop.DesktopApplication</mainClass>
+                    <jvmArgs>
+                        <!--<jvmArg>-Xms128m</jvmArg>-->
+                        <jvmArg>-Xmx1024m</jvmArg>
+                        <!--<jvmArg> -XX:+UseCompressedOops</jvmArg>-->
+                        <jvmArg>-Dsun.java2d.opengl=True</jvmArg>
+                        <jvmArg>-Dfile.encoding=UTF-8</jvmArg>
+                    </jvmArgs>
+                    <vendor>pheru</vendor>
+                </configuration>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>native</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-enforcer-plugin</artifactId>

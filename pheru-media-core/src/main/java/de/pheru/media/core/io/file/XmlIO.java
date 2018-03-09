@@ -36,6 +36,9 @@ public class XmlIO implements FileIO {
     @Override
     public <T> void write(final File file, final Class<T> type, final T t) throws IOException {
         try {
+            if(!file.getParentFile().isDirectory() && !file.getParentFile().mkdirs()){
+                throw new IOException("Could not create parent directories for file " + file.getAbsolutePath());
+            }
             final JAXBContext jaxbContext = JAXBContext.newInstance(type);
             final Marshaller marshaller = jaxbContext.createMarshaller();
             final JAXBElement<T> jaxbElement = new JAXBElement<>(new QName(type.getSimpleName()), type, t);

@@ -18,26 +18,28 @@
 <VBox fx:id="rootBox" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1"
       fx:controller="de.pheru.media.desktop.ui.application.ApplicationPresenter">
     <fx:define>
-        <ToggleGroup fx:id="viewToggleGroup" />
+        <ToggleGroup fx:id="viewToggleGroup"/>
     </fx:define>
     <HBox alignment="CENTER_LEFT">
-        <Button text="Einstellungen"/>
-        <Button text="Änderungen"/>
-        <Pane HBox.hgrow="ALWAYS" />
-        <Button text="Audiobibl." onAction="#openAudioLibraryDialog"/>
-        <Label text="Meine Musik"/>
-        <Pane HBox.hgrow="ALWAYS" />
-        <ToggleButton text="Titel" toggleGroup="$viewToggleGroup" />
-        <ToggleButton text="Alben" toggleGroup="$viewToggleGroup" />
-        <ToggleButton text="Interpreten" toggleGroup="$viewToggleGroup" />
-        <ToggleButton text="Genre" toggleGroup="$viewToggleGroup" />
+        <Button text="Einstellungen" minWidth="100"/>
+        <Button text="Änderungen" minWidth="100"/>
 
-        <Pane HBox.hgrow="ALWAYS" />
-        <TextField promptText="Filter" />
+        <Pane HBox.hgrow="ALWAYS"/>
+        <Label fx:id="currentAudioLibraryLabel" minWidth="75" maxWidth="200"
+               onMouseClicked="#openAudioLibraryDialog" styleClass="clickable-label"/>
+
+        <Pane HBox.hgrow="ALWAYS"/>
+        <ToggleButton text="Titel" minWidth="66" toggleGroup="$viewToggleGroup"/>
+        <ToggleButton text="Alben" minWidth="66" toggleGroup="$viewToggleGroup"/>
+        <ToggleButton text="Interpreten" minWidth="100" toggleGroup="$viewToggleGroup"/>
+        <ToggleButton text="Genre" minWidth="66" toggleGroup="$viewToggleGroup"/>
+
+        <Pane HBox.hgrow="ALWAYS"/>
+        <TextField promptText="Filter" prefWidth="200" minWidth="200"/>
     </HBox>
     <SplitPane fx:id="splitPane">
         <!-- PlaylistView -->
-        <TableView >
+        <TableView>
 
         </TableView>
     </SplitPane>

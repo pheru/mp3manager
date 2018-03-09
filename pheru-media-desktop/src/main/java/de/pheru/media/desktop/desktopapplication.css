@@ -4,3 +4,11 @@
     -fx-padding: 25;
     -fx-background-radius: 5;
 }
+
+.clickable-label {
+    -fx-cursor: hand;
+}
+
+.clickable-label:hover {
+    -fx-text-fill: white;
+}

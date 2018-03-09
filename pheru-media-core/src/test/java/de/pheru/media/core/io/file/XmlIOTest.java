@@ -6,23 +6,27 @@ import org.junit.Test;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.SimpleFileVisitor;
+import java.nio.file.attribute.BasicFileAttributes;
 
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
 public class XmlIOTest {
 
     private static final String WRITE_FILE_NAME = "audiofile_write.xml";
     private static final String WRITE_CONTENT = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?><AudioFile><fileName>filenametitle1</fileName><filePath>filepathtitle1</filePath><album>album1</album><artist>artist1</artist><bitrate>100</bitrate><duration>123</duration><genre>TestGenre</genre><size>1000</size><title>title1</title><track>1</track><year>2017</year></AudioFile>";
+    private static final String WRITE_DIR_NAME = "writedirname";
     private static final String READ_FILE_NAME = "audiofile_read.xml";
     private static final String INVALID_FILE_NAME_UNKNOWN_TAG = "invalid_audiofile_unknown_tag.xml";
     private static final String INVALID_FILE_NAME_UNPARSABLE_VALUE = "invalid_audiofile_unparsable_value.xml";
 
     @Test
-    public void writeCacheFile() throws Exception {
-        final File cacheDir = new File(getClass().getResource("/xml").toURI());
-        final File file = new File(cacheDir.getAbsolutePath() + "/" + WRITE_FILE_NAME);
+    public void write() throws Exception {
+        final File dir = new File(getClass().getResource("/xml").toURI());
+        final File file = new File(dir.getAbsolutePath() + "/" + WRITE_FILE_NAME);
 
         final AudioFile audioFile = createAudioFile("title1", "album1", "artist1");
         new XmlIO().write(file, AudioFile.class, audioFile);
@@ -31,7 +35,27 @@ public class XmlIOTest {
     }
 
     @Test
-    public void readCacheFile() throws Exception {
+    public void writeNoParentDirectory() throws Exception {
+        final File dir = new File(getClass().getResource("/xml").toURI());
+
+        final File newWriteDir = new File(dir.getAbsolutePath() + "/" + WRITE_DIR_NAME);
+        if (newWriteDir.exists()) {
+            deleteDirectory(newWriteDir.toPath());
+        }
+        assertFalse(newWriteDir.exists());
+        assertFalse(newWriteDir.isDirectory());
+
+        final File file = new File(dir.getAbsolutePath()
+                + "/" + WRITE_DIR_NAME + "/" + WRITE_FILE_NAME);
+
+        final AudioFile audioFile = createAudioFile("title1", "album1", "artist1");
+        new XmlIO().write(file, AudioFile.class, audioFile);
+
+        assertArrayEquals(WRITE_CONTENT.getBytes(), Files.readAllBytes(file.toPath()));
+    }
+
+    @Test
+    public void read() throws Exception {
         final File file = new File(getClass().getResource("/xml/" + READ_FILE_NAME).toURI());
         final AudioFile audioFile = new XmlIO().read(file, AudioFile.class);
 
@@ -44,13 +68,13 @@ public class XmlIOTest {
     }
 
     @Test(expected = IOException.class)
-    public void readInvalidCacheFileUnknownTag() throws Exception {
+    public void readInvalidFileUnknownTag() throws Exception {
         final File file = new File(getClass().getResource("/xml/" + INVALID_FILE_NAME_UNKNOWN_TAG).toURI());
         new XmlIO().read(file, AudioFile.class);
     }
 
     @Test(expected = IOException.class)
-    public void readInvalidCacheFileUnparsableValue() throws Exception {
+    public void readInvalidFileUnparsableValue() throws Exception {
         final File file = new File(getClass().getResource("/xml/" + INVALID_FILE_NAME_UNPARSABLE_VALUE).toURI());
         new XmlIO().read(file, AudioFile.class);
     }
@@ -75,5 +99,21 @@ public class XmlIOTest {
         audioFile.setBitrate((short) 100);
         audioFile.setSize(1000);
         return audioFile;
+    }
+
+    private void deleteDirectory(final Path path) throws IOException {
+        Files.walkFileTree(path, new SimpleFileVisitor<Path>() {
+            @Override
+            public FileVisitResult visitFile(final Path file, final BasicFileAttributes attrs) throws IOException {
+                Files.delete(file);
+                return FileVisitResult.CONTINUE;
+            }
+
+            @Override
+            public FileVisitResult postVisitDirectory(final Path dir, final IOException exc) throws IOException {
+                Files.delete(dir);
+                return FileVisitResult.CONTINUE;
+            }
+        });
     }
 }

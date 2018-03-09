@@ -3,6 +3,8 @@ package de.pheru.media.desktop.ui.audiolibrary;
 import de.pheru.fx.mvp.factories.DialogFactory;
 import de.pheru.media.core.io.directory.DefaultDirectorySearcher;
 import de.pheru.media.core.io.directory.DirectorySearcher;
+import de.pheru.media.core.io.file.FileIO;
+import de.pheru.media.desktop.cdi.qualifiers.AudioLibraryIO;
 import de.pheru.media.desktop.cdi.qualifiers.CurrentAudioLibrary;
 import de.pheru.media.desktop.data.AudioLibrary;
 import javafx.beans.binding.StringBinding;
@@ -21,8 +23,10 @@ import org.apache.logging.log4j.Logger;
 
 import javax.inject.Inject;
 import java.io.File;
+import java.io.IOException;
 import java.net.URL;
 import java.util.*;
+import java.util.function.Consumer;
 
 public class AudioLibraryPresenter implements Initializable {
 
@@ -48,6 +52,9 @@ public class AudioLibraryPresenter implements Initializable {
     @Inject
     @CurrentAudioLibrary
     private ObjectProperty<AudioLibrary> currentAudioLibrary;
+    @Inject
+    @AudioLibraryIO
+    private FileIO audioLibraryIO;
 
     private final ObservableList<AudioLibrary> audioLibraries = FXCollections.observableArrayList();
     private final Comparator<AudioLibrary> audioLibraryComparator = Comparator.comparing(AudioLibrary::getName);
@@ -57,20 +64,7 @@ public class AudioLibraryPresenter implements Initializable {
     public void initialize(final URL location, final ResourceBundle resources) {
         initUI();
         loadAudioLibraries();
-        testdata(); //TODO testdaten entfernen
         selectCurrentAudioLibrary();
-    }
-
-    private void testdata() {
-        for (int i = 0; i < 13; i++) {
-            final AudioLibrary a = new AudioLibrary();
-            a.setName("Test" + i);
-            audioLibraries.add(a);
-            for (int j = 0; j < 13; j++) {
-                a.getDirectories().add(a.getName() + "-" + j);
-            }
-        }
-        audioLibrariesListView.setItems(audioLibraries.sorted(audioLibraryComparator));
     }
 
     private void initUI() {
@@ -86,7 +80,7 @@ public class AudioLibraryPresenter implements Initializable {
                 audioLibrariesListView.refresh();
                 event.consume();
             } else if (audioLibraryNameAlreadyExists(newName)) {
-                showLibraryNameErrorAlert("Name bereits vorhanden!");
+                showLibraryNameInfoAlert("Name bereits vorhanden!");
                 event.consume();
             } else {
                 final AudioLibrary editedLibrary = audioLibrariesListView.getItems().get(event.getIndex());
@@ -109,6 +103,7 @@ public class AudioLibraryPresenter implements Initializable {
                 return edited;
             }
         }));
+        audioLibrariesListView.setItems(audioLibraries);
     }
 
     private boolean audioLibraryNameAlreadyExists(final String name) {
@@ -120,8 +115,8 @@ public class AudioLibraryPresenter implements Initializable {
         return false;
     }
 
-    private void showLibraryNameErrorAlert(final String headerText) {
-        final Alert alert = new Alert(Alert.AlertType.ERROR);
+    private void showLibraryNameInfoAlert(final String headerText) {
+        final Alert alert = dialogFactory.createAlert(Alert.AlertType.INFORMATION);
         alert.setHeaderText(headerText);
         alert.setContentText("Bitte einen anderen Namen eingeben.");
         alert.show();
@@ -157,10 +152,24 @@ public class AudioLibraryPresenter implements Initializable {
     }
 
     private void loadAudioLibraries() {
+        LOGGER.info("Loading audio libraries ...");
         final DirectorySearcher directorySearcher = new DefaultDirectorySearcher();
-        final List<File> audioLibraries = directorySearcher.searchFiles(Collections.singletonList(AudioLibrary.FILE_ENDING),
+        final List<File> audioLibraryFiles = directorySearcher.searchFiles(
+                Collections.singletonList(AudioLibrary.FILE_ENDING),
                 AudioLibrary.DIRECTORY);
-        //TODO fileio audiolibraries laden
+        audioLibraries.clear();
+        for (final File audioLibraryFile : audioLibraryFiles) {
+            try {
+                audioLibraries.add(audioLibraryIO.read(audioLibraryFile, AudioLibrary.class));
+            } catch (final IOException e) {
+                LOGGER.error("Exception loading audiolibrary-file " + audioLibraryFile.getAbsolutePath(), e);
+                final Alert alert = dialogFactory.createAlert(Alert.AlertType.ERROR);
+                alert.setHeaderText(null);
+                alert.setContentText("Fehler beim Laden der Datei: " + audioLibraryFile.getAbsolutePath());
+                alert.showAndWait();
+            }
+        }
+        LOGGER.info(audioLibraries.size() + " audio libraries successfully loaded.");
     }
 
     private void selectCurrentAudioLibrary() {
@@ -195,10 +204,10 @@ public class AudioLibraryPresenter implements Initializable {
         dialog.setOnCloseRequest(event -> {
             if (dialog.getResult() != null) {
                 if (dialog.getResult().trim().isEmpty()) {
-                    showLibraryNameErrorAlert("Name darf nicht leer sein!");
+                    showLibraryNameInfoAlert("Name darf nicht leer sein!");
                     event.consume();
                 } else if (audioLibraryNameAlreadyExists(dialog.getResult())) {
-                    showLibraryNameErrorAlert("Name bereits vorhanden!");
+                    showLibraryNameInfoAlert("Name bereits vorhanden!");
                     event.consume();
                 }
             }
@@ -209,11 +218,33 @@ public class AudioLibraryPresenter implements Initializable {
     @FXML
     private void deleteAudioLibrary() {
         final AudioLibrary selected = audioLibrariesListView.getSelectionModel().getSelectedItem();
-        LOGGER.info("Deleting audiolibrary " + selected.getName() + " - " + selected.getFileName() + " ...");
-        //TODO audiolibrary direkt loeschen
-        LOGGER.info("Deleting audiolibrary done.");
-        audioLibraries.remove(selected);
-        audioLibrariesListView.getSelectionModel().clearSelection();
+        showAudioLibraryDeleteConfirmAlert(selected, buttonType -> {
+            if (buttonType == ButtonType.OK) {
+                LOGGER.info("Deleting audiolibrary " + selected.getName() + " - " + selected.getFileName() + " ...");
+                final File selectedFile = new File(AudioLibrary.DIRECTORY + "/" + selected.getFileName());
+                if (selectedFile.delete()) {
+                    LOGGER.info("Deleting audiolibrary done.");
+                    audioLibraries.remove(selected);
+                    audioLibrariesListView.getSelectionModel().clearSelection();
+                } else {
+                    LOGGER.error("Could not delete file " + selectedFile.getAbsolutePath());
+                    final Alert alert = dialogFactory.createAlert(Alert.AlertType.ERROR);
+                    alert.setHeaderText(null);
+                    alert.setContentText("Fehler beim Löschen der Musikbibliothek \"" + selected.getName() + "\"!");
+                    alert.show();
+                }
+            }
+        });
+    }
+
+    private void showAudioLibraryDeleteConfirmAlert(final AudioLibrary audioLibrary, final Consumer<ButtonType> consumer) {
+        final Alert confirmAlert = dialogFactory.createAlert(Alert.AlertType.CONFIRMATION);
+        confirmAlert.setHeaderText("Musikbibliothek löschen");
+        confirmAlert.setContentText("Sind Sie sicher, dass Sie \"" + audioLibrary.getName() + "\" löschen möchten?" +
+                "\nDieser Vorgang kann nicht rückgängig gemacht werden!");
+        confirmAlert.getDialogPane().setMinWidth(400);
+        final Optional<ButtonType> result = confirmAlert.showAndWait();
+        result.ifPresent(consumer);
     }
 
     @FXML
@@ -239,8 +270,20 @@ public class AudioLibraryPresenter implements Initializable {
     @FXML
     private void confirm() {
         if (edited) {
-            LOGGER.info("Audiolibraries have been edited. Saving changes...");
-            //TODO audiolibraries speichern nach edit
+            LOGGER.info("Audiolibraries have been edited. Saving changes ...");
+            for (final AudioLibrary audioLibrary : audioLibraries) {
+                LOGGER.info("Saving " + audioLibrary.getFileName() + " ...");
+                try {
+                    audioLibraryIO.write(new File(AudioLibrary.DIRECTORY + "/" + audioLibrary.getFileName()), AudioLibrary.class, audioLibrary);
+                } catch (final IOException e) {
+                    LOGGER.error("Exception saving audiolibrary " + audioLibrary.getFileName(), e);
+                    final Alert alert = dialogFactory.createAlert(Alert.AlertType.ERROR);
+                    alert.setHeaderText(null);
+                    alert.setContentText("Fehler beim Speichern der Musikbibliothek: " + audioLibrary.getName());
+                    alert.showAndWait();
+                }
+
+            }
             LOGGER.info("Saving audiolibraries done.");
         }
         hide();

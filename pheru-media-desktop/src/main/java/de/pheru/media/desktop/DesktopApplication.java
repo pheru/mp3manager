@@ -20,7 +20,7 @@ public class DesktopApplication extends PheruFXApplication {
     public static final String APPLICATION_DATA_HOME = System.getProperty("user.home") + "/.pherumedia";
 
     public static void main(final String[] args) {
-        LOGGER.info("Starting Application.");
+        LOGGER.info("Application started.");
         setUpLogging();
         Thread.setDefaultUncaughtExceptionHandler(new UncaughtExceptionHandler());
         launch(args);

@@ -7,6 +7,7 @@ import de.pheru.media.desktop.cdi.qualifiers.*;
 import de.pheru.media.desktop.data.AudioLibrary;
 import de.pheru.media.desktop.data.AudioLibraryData;
 import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.StringProperty;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -46,19 +47,22 @@ public class DesktopApplicationLoader extends PheruFXLoader {
     }
 
     private void loadCurrentAudioLibrary() {
-        final String currentLibraryFileName = settings.stringProperty(Setting.CURRENT_AUDIO_LIBRARY_FILENAME).get();
+        final StringProperty currentLibraryFileName = settings.stringProperty(Setting.CURRENT_AUDIO_LIBRARY_FILENAME);
         try {
+            LOGGER.info("Reading current audio library \"" + currentLibraryFileName.get() + "\" ...");
             currentAudioLibrary.set(audioLibraryIO.read(
-                    new File(AudioLibrary.DIRECTORY + "/" + currentLibraryFileName),
+                    new File(AudioLibrary.DIRECTORY + "/" + currentLibraryFileName.get()),
                     AudioLibrary.class));
+            LOGGER.info("Reading current audio library done.");
         } catch (final IOException e) {
             if (e instanceof FileNotFoundException) {
                 LOGGER.info("No current audiolibrary found.");
             } else {
                 LOGGER.error("Exception loading current audiolibrary!", e);
-                //TODO allg. fehler beim audiolibrary laden
+                fail("Fehler beim Laden der aktuellen Musikbibliothek-Datei \"" + currentLibraryFileName + "\"!", e);
             }
         }
+        currentAudioLibrary.addListener((observable, oldValue, newValue) -> currentLibraryFileName.set(newValue.getFileName()));
     }
 
     private void loadCurrentAudioLibraryData() {
@@ -75,7 +79,7 @@ public class DesktopApplicationLoader extends PheruFXLoader {
                 LOGGER.info("No data for current audiolibrary found.");
             } else {
                 LOGGER.error("Exception loading data for current audiolibrary!", e);
-                //TODO allg. fehler beim audiolibrarydata laden
+                fail("Fehler beim Laden der Daten zur aktuellen Musikbibliothek \"" + currentAudioLibrary.get().getName() + "\"!", e);
             }
         }
     }

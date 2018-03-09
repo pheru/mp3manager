@@ -2,11 +2,14 @@ package de.pheru.media.desktop.ui.application;
 
 import de.pheru.fx.mvp.factories.StageFactory;
 import de.pheru.fx.mvp.qualifiers.PrimaryStage;
+import de.pheru.fx.util.properties.ObservableProperties;
 import de.pheru.media.desktop.cdi.qualifiers.CurrentAudioLibrary;
+import de.pheru.media.desktop.cdi.qualifiers.Settings;
 import de.pheru.media.desktop.cdi.qualifiers.StartFinishedActions;
 import de.pheru.media.desktop.data.AudioLibrary;
 import de.pheru.media.desktop.ui.audiolibrary.AudioLibraryView;
 import de.pheru.media.desktop.util.PrioritizedRunnable;
+import javafx.beans.binding.StringBinding;
 import javafx.beans.property.ObjectProperty;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -36,18 +39,23 @@ public class ApplicationPresenter implements Initializable {
     @FXML
     private VBox rootBox;
     @FXML
+    private Label currentAudioLibraryLabel;
+    @FXML
     private SplitPane splitPane;
 
     private final Label playlistPlatzhalter = new Label("Playlist");
     private final Label musicPlayerPlatzhalter = new Label("Musicplayer");
 
+    private Stage audioLibraryStage;
+
+    @Inject
+    @Settings
+    private ObservableProperties settings;
     @Inject
     private StageFactory stageFactory;
-
     @Inject
     @New
     private Instance<AudioLibraryView> audioLibraryViewInstance;
-    private Stage audioLibraryStage;
     @Inject
     @CurrentAudioLibrary
     private ObjectProperty<AudioLibrary> currentAudioLibrary;
@@ -62,6 +70,17 @@ public class ApplicationPresenter implements Initializable {
     public void initialize(final URL location, final ResourceBundle resources) {
         splitPane.getItems().add(0, playlistPlatzhalter);
         rootBox.getChildren().add(musicPlayerPlatzhalter);
+        currentAudioLibraryLabel.textProperty().bind(new StringBinding() {
+            {bind(currentAudioLibrary);}
+
+            @Override
+            protected String computeValue() {
+                if (currentAudioLibrary.get() == null) {
+                    return "<kein Musikbibliothek festgelegt>";
+                }
+                return currentAudioLibrary.get().getName();
+            }
+        });
 
         if (currentAudioLibrary.get() == null) {
             startFinishedActions.add(new PrioritizedRunnable(

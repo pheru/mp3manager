@@ -34,22 +34,22 @@ public class EntryPoint implements PheruFXEntryPoint {
     private ApplicationView applicationView;
 
     @Override
-    public void start(Stage stage) throws Exception {
+    public void start(final Stage stage) throws Exception {
         try {
             initPrimaryStage(stage);
             stage.show();
             for (final PrioritizedRunnable startFinishedAction : startFinishedActions) {
                 startFinishedAction.getRunnable().run();
             }
-        } catch (Exception e) {
+        } catch (final Exception e) {
             LOGGER.fatal("Exception initializing Application!", e);
-            Alert alert = new Alert(Alert.AlertType.ERROR, "Fehler beim Starten der Anwendung!");
+            final Alert alert = new Alert(Alert.AlertType.ERROR, "Fehler beim Starten der Anwendung!");
             alert.showAndWait();
             Platform.exit();
         }
     }
 
-    private void initPrimaryStage(Stage primaryStage) {
+    private void initPrimaryStage(final Stage primaryStage) {
         final Scene scene = new Scene(applicationView.getView());
 
         primaryStage.setTitle(DesktopApplication.APPLICATION_NAME);

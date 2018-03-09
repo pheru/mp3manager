@@ -14,7 +14,7 @@
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module" module-name="pheru-media-core" />
     <orderEntry type="library" name="Maven: net.jthink:jaudiotagger:2.2.3" level="project" />
-    <orderEntry type="library" name="Maven: de.pheru.fx:pherufx-mvp:3.0.0" level="project" />
+    <orderEntry type="library" name="Maven: de.pheru.fx:pherufx-mvp:3.1.0" level="project" />
     <orderEntry type="library" name="Maven: org.jboss.weld.se:weld-se:2.4.2.Final" level="project" />
     <orderEntry type="library" name="Maven: de.pheru.fx:pherufx-controls:1.1.0" level="project" />
     <orderEntry type="library" name="Maven: de.pheru.fx:pherufx-util:1.1.2" level="project" />

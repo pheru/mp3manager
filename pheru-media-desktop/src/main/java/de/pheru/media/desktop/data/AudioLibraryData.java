@@ -4,7 +4,6 @@ import de.pheru.media.desktop.DesktopApplication;
 
 import java.util.Map;
 
-//TODO Umbenennung "Data" -> "Content"?
 public class AudioLibraryData {
 
     public static final String DIRECTORY = DesktopApplication.APPLICATION_DATA_HOME + "/audiolibrarydata";
