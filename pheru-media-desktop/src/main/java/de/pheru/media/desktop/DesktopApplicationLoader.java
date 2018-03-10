@@ -5,7 +5,7 @@ import de.pheru.fx.util.properties.ObservableProperties;
 import de.pheru.media.core.io.file.FileIO;
 import de.pheru.media.desktop.cdi.qualifiers.*;
 import de.pheru.media.desktop.data.AudioLibrary;
-import de.pheru.media.desktop.data.AudioLibraryData;
+import de.pheru.media.desktop.data.AudioLibraryCache;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.StringProperty;
 import org.apache.logging.log4j.LogManager;
@@ -27,14 +27,14 @@ public class DesktopApplicationLoader extends PheruFXLoader {
     @AudioLibraryIO
     private FileIO audioLibraryIO;
     @Inject
-    @AudioLibraryDataIO
-    private FileIO audioLibraryDataIO;
+    @AudioLibraryCacheIO
+    private FileIO audioLibraryCacheIO;
     @Inject
     @CurrentAudioLibrary
     private ObjectProperty<AudioLibrary> currentAudioLibrary;
     @Inject
-    @CurrentAudioLibraryData
-    private ObjectProperty<AudioLibraryData> currentAudioLibraryData;
+    @CurrentAudioLibraryCache
+    private ObjectProperty<AudioLibraryCache> currentAudioLibraryCache;
 
     @Override
     public void load() throws Exception {
@@ -42,7 +42,7 @@ public class DesktopApplicationLoader extends PheruFXLoader {
         updateProgress(33, 100);
         loadCurrentAudioLibrary();
         updateProgress(66, 100);
-        loadCurrentAudioLibraryData();
+        loadCurrentAudioLibraryCache();
         updateProgress(100, 100);
     }
 
@@ -65,15 +65,15 @@ public class DesktopApplicationLoader extends PheruFXLoader {
         currentAudioLibrary.addListener((observable, oldValue, newValue) -> currentLibraryFileName.set(newValue.getFileName()));
     }
 
-    private void loadCurrentAudioLibraryData() {
+    private void loadCurrentAudioLibraryCache() {
         if (currentAudioLibrary.get() == null) {
             LOGGER.info("Loading data for current audiolibrary skipped.");
             return;
         }
         try {
-            currentAudioLibraryData.set(audioLibraryDataIO.read(
-                    new File(AudioLibraryData.DIRECTORY + "/" + currentAudioLibrary.get().getFileName()),
-                    AudioLibraryData.class));
+            currentAudioLibraryCache.set(audioLibraryCacheIO.read(
+                    new File(AudioLibraryCache.DIRECTORY + "/" + currentAudioLibrary.get().getCacheFileName()),
+                    AudioLibraryCache.class));
         } catch (final IOException e) {
             if (e instanceof FileNotFoundException) {
                 LOGGER.info("No data for current audiolibrary found.");

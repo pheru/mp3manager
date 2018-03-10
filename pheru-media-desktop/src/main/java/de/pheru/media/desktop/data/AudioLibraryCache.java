@@ -4,10 +4,10 @@ import de.pheru.media.desktop.DesktopApplication;
 
 import java.util.Map;
 
-public class AudioLibraryData {
+public class AudioLibraryCache {
 
-    public static final String DIRECTORY = DesktopApplication.APPLICATION_DATA_HOME + "/audiolibrarydata";
-    public static final String FILE_ENDING = "ald";
+    public static final String DIRECTORY = DesktopApplication.APPLICATION_DATA_HOME + "/audiolibrarycache";
+    public static final String FILE_ENDING = "alc";
 
     private Map<String, Artist> artists;
 

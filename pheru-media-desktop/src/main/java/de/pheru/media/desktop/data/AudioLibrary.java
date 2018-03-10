@@ -21,8 +21,8 @@ public class AudioLibrary {
         return toFileName(name, FILE_ENDING);
     }
 
-    public String getDataCacheFileName() {
-        return toFileName(name, AudioLibraryData.FILE_ENDING);
+    public String getCacheFileName() {
+        return toFileName(name, AudioLibraryCache.FILE_ENDING);
     }
 
     private static String toFileName(final String name, final String fileEnding) {
