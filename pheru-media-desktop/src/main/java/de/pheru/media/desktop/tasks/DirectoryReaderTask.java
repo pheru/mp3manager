@@ -1,6 +1,7 @@
 package de.pheru.media.desktop.tasks;
 
 import de.pheru.media.core.data.loader.AudioFileLoaderProvider;
+import de.pheru.media.core.data.model.AudioFile;
 import de.pheru.media.core.io.directory.DefaultDirectorySearcher;
 import de.pheru.media.core.io.directory.DirectorySearcher;
 import de.pheru.media.desktop.cdi.qualifiers.CurrentAudioLibrary;
@@ -15,7 +16,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-public class UpdateAudioLibraryDataTask extends Task<UpdateAudioLibraryDataTask.Result> {
+public class DirectoryReaderTask extends Task<DirectoryReaderTask.Result> {
 
     @Inject
     @CurrentAudioLibrary
@@ -26,8 +27,9 @@ public class UpdateAudioLibraryDataTask extends Task<UpdateAudioLibraryDataTask.
     @Inject
     private AudioFileLoaderProvider audioFileLoaderProvider;
 
-    public void update() {
-
+    @Override
+    protected Result call() throws Exception {
+        return compareFilesWithAudioLibrary(getAllFiles());
     }
 
     private List<File> getAllFiles() {
@@ -39,38 +41,46 @@ public class UpdateAudioLibraryDataTask extends Task<UpdateAudioLibraryDataTask.
         return files;
     }
 
-    @Override
-    protected Result call() throws Exception {
+    private Result compareFilesWithAudioLibrary(final List<File> directoryFiles) {
+        final Result result = new Result();
+        final List<AudioFile> audioFilesCopy = new ArrayList<>(currentAudioLibraryData.get().getAllAudioFiles());
+        for (final File directoryFile : directoryFiles) {
+            final AudioFile audioFile = getAudioFileByAbsolutePath(audioFilesCopy, directoryFile.getAbsolutePath());
+            if (audioFile != null) {
+                result.getUpdateableAudioFiles().add(audioFile);
+                audioFilesCopy.remove(audioFile);
+            } else {
+                result.getNewFiles().add(directoryFile);
+            }
+        }
+        result.getRemovableAudioFiles().addAll(audioFilesCopy);
+        return result;
+    }
+
+    private AudioFile getAudioFileByAbsolutePath(final List<AudioFile> list, final String absolutePath) {
+        for (final AudioFile audioFile : list) {
+            if (audioFile.getAbsolutePath().equals(absolutePath)) {
+                return audioFile;
+            }
+        }
         return null;
     }
 
-    public class Result{
-        private List<File> newFiles;
-        private List<File> removableFiles;
-        private List<File> updateableFiles;
+    public class Result {
+        private final List<File> newFiles = new ArrayList<>();
+        private final List<AudioFile> removableAudioFiles = new ArrayList<>();
+        private final List<AudioFile> updateableAudioFiles = new ArrayList<>();
 
         public List<File> getNewFiles() {
             return newFiles;
         }
 
-        public void setNewFiles(final List<File> newFiles) {
-            this.newFiles = newFiles;
+        public List<AudioFile> getRemovableAudioFiles() {
+            return removableAudioFiles;
         }
 
-        public List<File> getRemovableFiles() {
-            return removableFiles;
-        }
-
-        public void setRemovableFiles(final List<File> removableFiles) {
-            this.removableFiles = removableFiles;
-        }
-
-        public List<File> getUpdateableFiles() {
-            return updateableFiles;
-        }
-
-        public void setUpdateableFiles(final List<File> updateableFiles) {
-            this.updateableFiles = updateableFiles;
+        public List<AudioFile> getUpdateableAudioFiles() {
+            return updateableAudioFiles;
         }
     }
 }

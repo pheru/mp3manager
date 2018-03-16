@@ -1,5 +1,7 @@
 package de.pheru.media.core.data.model;
 
+import java.util.Arrays;
+
 public class Artwork {
 
     private byte[] binaryData;
@@ -13,6 +15,24 @@ public class Artwork {
         this.binaryData = binaryData;
         this.width = width;
         this.height = height;
+    }
+
+    @Override
+    public boolean equals(final Object obj) {
+        if (obj == null || !(obj instanceof Artwork)) {
+            return false;
+        }
+        if ( obj == this){
+            return true;
+        }
+        final Artwork other = (Artwork) obj;
+        return Arrays.equals(binaryData, other.getBinaryData());
+    }
+
+    @Override
+    public int hashCode() {
+        //TODO hashcode impl
+        return super.hashCode();
     }
 
     public byte[] getBinaryData() {

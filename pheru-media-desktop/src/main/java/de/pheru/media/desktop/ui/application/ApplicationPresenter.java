@@ -3,14 +3,20 @@ package de.pheru.media.desktop.ui.application;
 import de.pheru.fx.mvp.factories.StageFactory;
 import de.pheru.fx.mvp.qualifiers.PrimaryStage;
 import de.pheru.fx.util.properties.ObservableProperties;
+import de.pheru.media.core.data.loader.Mp3FileLoader;
 import de.pheru.media.desktop.cdi.qualifiers.CurrentAudioLibrary;
 import de.pheru.media.desktop.cdi.qualifiers.Settings;
 import de.pheru.media.desktop.cdi.qualifiers.StartFinishedActions;
 import de.pheru.media.desktop.data.AudioLibrary;
+import de.pheru.media.desktop.tasks.DirectoryReaderTask;
 import de.pheru.media.desktop.ui.audiolibrary.AudioLibraryView;
 import de.pheru.media.desktop.util.PrioritizedRunnable;
 import javafx.beans.binding.StringBinding;
 import javafx.beans.property.ObjectProperty;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
+import javafx.concurrent.WorkerStateEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
@@ -66,6 +72,10 @@ public class ApplicationPresenter implements Initializable {
     @StartFinishedActions
     private SortedSet<PrioritizedRunnable> startFinishedActions;
 
+    @Inject
+    @New
+    private Instance<DirectoryReaderTask> directoryReaderTaskInstance;
+
     @Override
     public void initialize(final URL location, final ResourceBundle resources) {
         splitPane.getItems().add(0, playlistPlatzhalter);
@@ -81,11 +91,30 @@ public class ApplicationPresenter implements Initializable {
                 return currentAudioLibrary.get().getName();
             }
         });
+        //TODO Testlauf //TODO WIP
+        currentAudioLibrary.addListener(new ChangeListener<AudioLibrary>() {
+            @Override
+            public void changed(final ObservableValue<? extends AudioLibrary> observable, final AudioLibrary oldValue, final AudioLibrary newValue) {
+                updateAudioLibraryData();
+            }
+        });
 
         if (currentAudioLibrary.get() == null) {
             startFinishedActions.add(new PrioritizedRunnable(
                     this::openAudioLibraryDialog, PrioritizedRunnable.Priority.LOW));
         }
+    }
+
+    //TODO WIP
+    private void updateAudioLibraryData(){
+        final DirectoryReaderTask directoryReaderTask = directoryReaderTaskInstance.get();
+        final Thread thread = new Thread(directoryReaderTask);
+        thread.setDaemon(true);
+        thread.start();
+        directoryReaderTask.setOnSucceeded(event -> {
+            final DirectoryReaderTask.Result result = directoryReaderTask.getValue();
+            System.out.println();
+        });
     }
 
     @FXML

@@ -68,6 +68,7 @@ public class DesktopApplicationLoader extends PheruFXLoader {
     private void loadCurrentAudioLibraryData() {
         if (currentAudioLibrary.get() == null) {
             LOGGER.info("Loading data for current audiolibrary skipped.");
+            currentAudioLibraryData.set(new AudioLibraryData());
             return;
         }
         try {
@@ -75,6 +76,7 @@ public class DesktopApplicationLoader extends PheruFXLoader {
                     new File(AudioLibraryData.DIRECTORY + "/" + currentAudioLibrary.get().getFileName()),
                     AudioLibraryData.class));
         } catch (final IOException e) {
+            currentAudioLibraryData.set(new AudioLibraryData());
             if (e instanceof FileNotFoundException) {
                 LOGGER.info("No data for current audiolibrary found.");
             } else {

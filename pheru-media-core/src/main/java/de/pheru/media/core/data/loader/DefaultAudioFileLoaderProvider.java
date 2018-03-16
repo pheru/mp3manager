@@ -2,17 +2,17 @@ package de.pheru.media.core.data.loader;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class DefaultAudioFileLoaderProvider implements AudioFileLoaderProvider {
 
-    private final AudioFileLoader[] audioFileLoaders = {
-            new Mp3FileLoader()
-    };
+    private final List<AudioFileLoader> audioFileLoaders;
+    private final List<String> supportedFileExtensions;
 
-    private final List<String> supportedFileExtensions = new ArrayList<>();
-
-    public DefaultAudioFileLoaderProvider() {
+    public DefaultAudioFileLoaderProvider(final AudioFileLoader... audioFileLoaders) {
+        this.audioFileLoaders = Arrays.asList(audioFileLoaders);
+        this.supportedFileExtensions = new ArrayList<>();
         for (final AudioFileLoader audioFileLoader : audioFileLoaders) {
             supportedFileExtensions.addAll(audioFileLoader.getSupportedExtensions());
         }
