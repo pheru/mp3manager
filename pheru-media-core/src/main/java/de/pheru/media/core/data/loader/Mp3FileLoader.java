@@ -12,7 +12,6 @@ import org.jaudiotagger.tag.FieldKey;
 import org.jaudiotagger.tag.TagException;
 import org.jaudiotagger.tag.id3.AbstractID3v2Tag;
 
-import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.Collections;
@@ -26,19 +25,19 @@ public class Mp3FileLoader implements AudioFileLoader {
     }
 
     @Override
-    public AudioFile load(final File file) throws AudioFileLoaderException {
+    public AudioFile load(final File file, final ArtworkCreator artworkCreator) throws AudioFileLoaderException {
         final AudioFile audioFile = new AudioFile();
 
         audioFile.setFileName(file.getName());
         audioFile.setFilePath(file.getParent());
         audioFile.setSize(file.length());
 
-        loadMp3Data(audioFile, file);
+        loadMp3Data(audioFile, file, artworkCreator);
 
         return audioFile;
     }
 
-    private void loadMp3Data(final AudioFile audioFile, final File file) throws AudioFileLoaderException {
+    private void loadMp3Data(final AudioFile audioFile, final File file, final ArtworkCreator artworkCreator) throws AudioFileLoaderException {
         final MP3File mp3File = readMp3File(file);
 
         final AudioHeader audioHeader = mp3File.getAudioHeader();
@@ -52,6 +51,15 @@ public class Mp3FileLoader implements AudioFileLoader {
         audioFile.setGenre(tag.getFirst(FieldKey.GENRE));
         audioFile.setTrack((short) intFromStringValue(tag.getFirst(FieldKey.TRACK)));
         audioFile.setYear((short) intFromStringValue(tag.getFirst(FieldKey.YEAR)));
+        if (tag.getFirstArtwork() != null) {
+            final org.jaudiotagger.tag.images.Artwork jaudiotaggerArtwork = tag.getFirstArtwork();
+            try {
+                final Artwork artwork = artworkCreator.createArtwork(jaudiotaggerArtwork.getBinaryData());
+                audioFile.setArtwork(artwork);
+            } catch (final IOException e) {
+                throw new AudioFileLoaderException("Could not load artwork from file \"" + file.getAbsolutePath() + "\"!");
+            }
+        }
     }
 
     private MP3File readMp3File(final File file) throws AudioFileLoaderException {
@@ -83,20 +91,4 @@ public class Mp3FileLoader implements AudioFileLoader {
         }
     }
 
-    @Override
-    public Artwork loadArtwork(final File file) throws AudioFileLoaderException {
-        final MP3File mp3File = readMp3File(file);
-
-        final AbstractID3v2Tag tag = readID3v2Tag(mp3File);
-        if (tag.getFirstArtwork() != null) {
-            org.jaudiotagger.tag.images.Artwork artwork = tag.getFirstArtwork();
-            try {
-                BufferedImage image = (BufferedImage) artwork.getImage();
-                return new Artwork(artwork.getBinaryData(), image.getWidth(), image.getHeight());
-            } catch (IOException e) {
-                throw new AudioFileLoaderException("Could not load artwork from file \"" + file.getAbsolutePath() + "\"!");
-            }
-        }
-        return null;
-    }
 }

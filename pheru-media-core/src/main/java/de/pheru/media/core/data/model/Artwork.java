@@ -29,12 +29,6 @@ public class Artwork {
         return Arrays.equals(binaryData, other.getBinaryData());
     }
 
-    @Override
-    public int hashCode() {
-        //TODO hashcode impl
-        return super.hashCode();
-    }
-
     public byte[] getBinaryData() {
         return binaryData;
     }

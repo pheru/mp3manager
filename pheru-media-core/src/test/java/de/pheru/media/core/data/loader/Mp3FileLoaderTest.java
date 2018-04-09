@@ -2,11 +2,13 @@ package de.pheru.media.core.data.loader;
 
 import de.pheru.media.core.data.model.Artwork;
 import de.pheru.media.core.data.model.AudioFile;
+import de.pheru.media.core.mocks.ArtworkCreatorMock;
 import org.junit.Test;
 
 import java.io.File;
 import java.util.List;
 
+import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -23,7 +25,8 @@ public class Mp3FileLoaderTest {
     @Test
     public void load() throws Exception {
         final File file = new File(getClass().getResource("/audiofiles/real/" + FILE_NAME).toURI());
-        final AudioFile audioFile = new Mp3FileLoader().load(file);
+        final Artwork mockArtwork = new Artwork(new byte[0], 50, 100);
+        final AudioFile audioFile = new Mp3FileLoader().load(file, new ArtworkCreatorMock(mockArtwork));
 
         assertEquals(FILE_NAME, audioFile.getFileName());
         assertTrue(audioFile.getFilePath().endsWith("test-classes\\audiofiles\\real"));
@@ -39,17 +42,10 @@ public class Mp3FileLoaderTest {
         assertEquals(251, audioFile.getBitrate());
 
         assertEquals(1603261, audioFile.getSize());
+
+        assertArrayEquals(mockArtwork.getBinaryData(), audioFile.getArtwork().getBinaryData());
+        assertEquals(mockArtwork.getWidth(), audioFile.getArtwork().getWidth());
+        assertEquals(mockArtwork.getHeight(), audioFile.getArtwork().getHeight());
     }
 
-    @Test
-    public void loadArtwork() throws Exception {
-        final File file = new File(getClass().getResource("/audiofiles/real/" + FILE_NAME).toURI());
-        final Artwork artwork = new Mp3FileLoader().loadArtwork(file);
-
-        //TODO Ergebnisse ueberpruefen
-        assertEquals(61423, artwork.getBinaryData().length);
-        assertEquals(600, artwork.getWidth());
-        assertEquals(600, artwork.getHeight());
-
-    }
 }

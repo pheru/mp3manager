@@ -1,6 +1,10 @@
 package de.pheru.media.core.util;
 
+import de.pheru.media.core.data.model.Artwork;
+import de.pheru.media.core.data.model.AudioFile;
 import org.junit.Test;
+
+import javax.xml.bind.JAXBContext;
 
 import static org.junit.Assert.*;
 

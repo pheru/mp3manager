@@ -3,6 +3,7 @@ package de.pheru.media.core.io.file;
 import de.pheru.media.core.data.loader.CachingArtworkCreator;
 import de.pheru.media.core.data.model.Artwork;
 import de.pheru.media.core.data.model.AudioFile;
+import de.pheru.media.core.util.Cache;
 import org.junit.Test;
 
 import javax.xml.bind.annotation.adapters.XmlAdapter;
@@ -17,15 +18,15 @@ import java.nio.file.attribute.BasicFileAttributes;
 
 import static org.junit.Assert.*;
 
-public class XmlIOTest {
+public class JsonIOTest {
 
-    private static final String BASE_DIR = "/xml";
-    private static final String WRITE_FILE_NAME = "audiofile_write.xml";
+    private static final String BASE_DIR = "/json";
+    private static final String WRITE_FILE_NAME = "audiofile_write.json";
     private static final String WRITE_CONTENT = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?><AudioFile><fileName>filenametitle1</fileName><filePath>filepathtitle1</filePath><album>album1</album><artist>artist1</artist><bitrate>100</bitrate><duration>123</duration><genre>TestGenre</genre><size>1000</size><title>title1</title><track>1</track><year>2017</year></AudioFile>";
     private static final String WRITE_DIR_NAME = "writedirname";
-    private static final String READ_FILE_NAME = "audiofile_read.xml";
-    private static final String INVALID_FILE_NAME_UNKNOWN_TAG = "invalid_audiofile_unknown_tag.xml";
-    private static final String INVALID_FILE_NAME_UNPARSABLE_VALUE = "invalid_audiofile_unparsable_value.xml";
+    private static final String READ_FILE_NAME = "audiofile_read.json";
+    private static final String INVALID_FILE_NAME_UNKNOWN_TAG = "invalid_audiofile_unknown_tag.json";
+    private static final String INVALID_FILE_NAME_UNPARSABLE_VALUE = "invalid_audiofile_unparsable_value.json";
 
     @Test
     public void write() throws Exception {
@@ -33,11 +34,28 @@ public class XmlIOTest {
         final File file = new File(dir.getAbsolutePath() + "/" + WRITE_FILE_NAME);
 
         final AudioFile audioFile = createAudioFile("title1", "album1", "artist1");
-        final XmlIO xmlIO = new XmlIO();
-        xmlIO.getXmlAdapters().add(new ArtworkAdapter());
-        xmlIO.write(file, AudioFile.class, audioFile);
+        final JsonIO jsonIO = new JsonIO();
+//        jsonIO.getXmlAdapters().add(new ArtworkAdapter());
+        jsonIO.write(file, AudioFile.class, audioFile);
 
         assertArrayEquals(WRITE_CONTENT.getBytes(), Files.readAllBytes(file.toPath()));
+    }
+
+    @Test
+    public void blubb() throws Exception {
+        final File dir = new File(getClass().getResource(BASE_DIR).toURI());
+        final File file = new File(dir.getAbsolutePath() + "/" + WRITE_FILE_NAME);
+
+        final AudioFile audioFile = createAudioFile("title1", "album1", "artist1");
+        final JsonIO jsonIO = new JsonIO();
+//        jsonIO.getXmlAdapters().add(new ArtworkAdapter());
+        Cache<String> cache = new Cache<>();
+        cache.add("Eins");
+        cache.add("Zwei");
+        jsonIO.write(file, Cache.class, cache);
+//        jsonIO.write(file, AudioFile.class, audioFile);
+
+//        assertArrayEquals(WRITE_CONTENT.getBytes(), Files.readAllBytes(file.toPath()));
     }
 
     @Test
@@ -62,15 +80,17 @@ public class XmlIOTest {
 
     @Test
     public void read() throws Exception {
-        final File file = new File(getClass().getResource(BASE_DIR + "/" + READ_FILE_NAME).toURI());
-        final AudioFile audioFile = new XmlIO().read(file, AudioFile.class);
+        final File file = new File(getClass().getResource(BASE_DIR + "/" + WRITE_FILE_NAME).toURI());
+//        final File file = new File(getClass().getResource(BASE_DIR + "/" + READ_FILE_NAME).toURI());
+//        final AudioFile audioFile = new JsonIO().read(file, AudioFile.class);
+        final Cache<String> cache = new JsonIO().read(file, Cache.class);
 
-        assertEquals("title1", audioFile.getTitle());
-        assertEquals("album1", audioFile.getAlbum());
-        assertEquals("artist1", audioFile.getArtist());
-        assertEquals("TestGenre", audioFile.getGenre());
-        assertEquals(1, audioFile.getTrack());
-        assertEquals("filenametitle1", audioFile.getFileName());
+//        assertEquals("title1", audioFile.getTitle());
+//        assertEquals("album1", audioFile.getAlbum());
+//        assertEquals("artist1", audioFile.getArtist());
+//        assertEquals("TestGenre", audioFile.getGenre());
+//        assertEquals(1, audioFile.getTrack());
+//        assertEquals("filenametitle1", audioFile.getFileName());
     }
 
     public class ArtworkAdapter extends XmlAdapter<byte[], Artwork> {
@@ -78,7 +98,7 @@ public class XmlIOTest {
         @Override
         public Artwork unmarshal(final byte[] binaryData) throws Exception {
             System.out.println("UNMARSHAL");
-            return null;//new CachingArtworkCreator(cache).createArtwork(binaryData);
+            return null;//TODO//new CachingArtworkCreator(cache).createArtwork(binaryData);
         }
 
         @Override
@@ -119,7 +139,7 @@ public class XmlIOTest {
         audioFile.setYear((short) 2017);
         audioFile.setBitrate((short) 100);
         audioFile.setSize(1000);
-        audioFile.setArtwork(new Artwork(new byte[]{0, 1, 2, 3, 4, 5, 6, 7, 8}, 50, 50));
+        audioFile.setArtwork(new Artwork(new byte[]{0,1,2,3,4,5,6,7,8}, 50, 50));
         return audioFile;
     }
 

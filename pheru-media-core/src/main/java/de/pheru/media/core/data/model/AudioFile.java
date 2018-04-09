@@ -14,6 +14,8 @@ public class AudioFile extends BaseFile {
 
     private long size;
 
+    private Artwork artwork;
+
     public String getTitle() {
         return title;
     }
@@ -84,5 +86,13 @@ public class AudioFile extends BaseFile {
 
     public void setSize(final long size) {
         this.size = size;
+    }
+
+    public Artwork getArtwork() {
+        return artwork;
+    }
+
+    public void setArtwork(final Artwork artwork) {
+        this.artwork = artwork;
     }
 }

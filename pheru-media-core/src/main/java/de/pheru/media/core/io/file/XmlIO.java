@@ -4,15 +4,20 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import javax.xml.bind.*;
+import javax.xml.bind.annotation.adapters.XmlAdapter;
 import javax.xml.namespace.QName;
 import javax.xml.transform.stream.StreamSource;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class XmlIO implements FileIO {
 
     private static final Logger LOGGER = LogManager.getLogger(XmlIO.class);
+
+    private final List<XmlAdapter> xmlAdapters = new ArrayList<>();
 
     @Override
     public <T> T read(final File file, final Class<T> type) throws IOException {
@@ -36,7 +41,7 @@ public class XmlIO implements FileIO {
     @Override
     public <T> void write(final File file, final Class<T> type, final T t) throws IOException {
         try {
-            if(!file.getParentFile().isDirectory() && !file.getParentFile().mkdirs()){
+            if (!file.getParentFile().isDirectory() && !file.getParentFile().mkdirs()) {
                 throw new IOException("Could not create parent directories for file " + file.getAbsolutePath());
             }
             final JAXBContext jaxbContext = JAXBContext.newInstance(type);
@@ -46,5 +51,9 @@ public class XmlIO implements FileIO {
         } catch (final JAXBException e) {
             throw new IOException(e);
         }
+    }
+
+    public List<XmlAdapter> getXmlAdapters() {
+        return xmlAdapters;
     }
 }
