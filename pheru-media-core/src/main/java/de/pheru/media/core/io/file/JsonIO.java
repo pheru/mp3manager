@@ -46,6 +46,11 @@ public class JsonIO implements FileIO {
         mapper.setVisibility(PropertyAccessor.ALL, JsonAutoDetect.Visibility.NONE);
         mapper.setVisibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY);
 
+        if (!file.getParentFile().exists()) {
+            if (!file.getParentFile().mkdirs()) {
+                throw new IOException("Failed to create parent directories for file " + file);
+            }
+        }
         mapper.writeValue(file, t);
     }
 

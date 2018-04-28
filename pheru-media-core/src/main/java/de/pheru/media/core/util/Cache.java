@@ -1,6 +1,8 @@
 package de.pheru.media.core.util;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class Cache<T> {
@@ -18,13 +20,14 @@ public class Cache<T> {
         return cache.get(key);
     }
 
-    public T get(final CacheCheck<T> cacheCheck) {
+    public List<T> get(final CacheMatcher<T> cacheMatcher) {
+        final List<T> matches = new ArrayList<>();
         for (final T t : cache.values()) {
-            if (cacheCheck.execute(t)) {
-                return t;
+            if (cacheMatcher.match(t)) {
+                matches.add(t);
             }
         }
-        return null;
+        return matches;
     }
 
     public Integer getKey(final T item) {
@@ -36,7 +39,7 @@ public class Cache<T> {
         return null;
     }
 
-    public interface CacheCheck<T> {
-        boolean execute(final T cacheItem);
+    public interface CacheMatcher<T> {
+        boolean match(final T cacheItem);
     }
 }

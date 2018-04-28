@@ -9,6 +9,7 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.List;
 
 public class CachingArtworkCreator implements ArtworkCreator {
 
@@ -24,9 +25,9 @@ public class CachingArtworkCreator implements ArtworkCreator {
         final BufferedImage image = ImageIO.read(inputStream);
 
 
-        final Artwork cachedArtwork = cache.get(cacheItem -> Arrays.equals(cacheItem.getBinaryData(), binaryData));
-        if (cachedArtwork != null) {
-            return cachedArtwork;
+        final List<Artwork> cachedArtwork = cache.get(cacheItem -> Arrays.equals(cacheItem.getBinaryData(), binaryData));
+        if (!cachedArtwork.isEmpty()) {
+            return cachedArtwork.get(0);
         }
         final Artwork artwork = new Artwork(binaryData, image.getWidth(), image.getHeight());
         cache.add(artwork);
