@@ -62,7 +62,13 @@ public class DesktopApplicationLoader extends PheruFXLoader {
                 fail("Fehler beim Laden der aktuellen Musikbibliothek-Datei \"" + currentLibraryFileName + "\"!", e);
             }
         }
-        currentAudioLibrary.addListener((observable, oldValue, newValue) -> currentLibraryFileName.set(newValue.getFileName()));
+        currentAudioLibrary.addListener((observable, oldValue, newValue) -> {
+            if (newValue != null) {
+                currentLibraryFileName.set(newValue.getFileName());
+            } else {
+                currentLibraryFileName.setValue(Setting.CURRENT_AUDIO_LIBRARY_FILENAME.getDefaultValue());
+            }
+        });
     }
 
     private void loadCurrentAudioLibraryData() {

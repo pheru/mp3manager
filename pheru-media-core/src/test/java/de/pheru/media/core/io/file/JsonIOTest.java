@@ -10,6 +10,7 @@ import com.fasterxml.jackson.databind.node.IntNode;
 import de.pheru.media.core.data.model.Artwork;
 import de.pheru.media.core.data.model.AudioFile;
 import de.pheru.media.core.util.Cache;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.File;
@@ -31,7 +32,9 @@ public class JsonIOTest {
     private static final String READ_FILE_NAME = "audiofile_read.json";
 
     private static final String WRITE_FILE_NAME_AUDIOFILE = "audiofile_write.json";
+    private static final String WRITE_FILE_NAME_EXISTS_AUDIOFILE = "audiofile_write_already_exists.json";
     private static final String WRITE_CONTENT_AUDIOFILE = "{\"fileName\":\"filenametitle1\",\"filePath\":\"filepathtitle1\",\"title\":\"title1\",\"album\":\"album1\",\"artist\":\"artist1\",\"genre\":\"TestGenre\",\"duration\":123,\"track\":1,\"year\":2017,\"bitrate\":100,\"size\":1000,\"artwork\":{\"binaryData\":\"AAECAwQFBgcI\",\"width\":50,\"height\":50}}";
+    private static final String WRITE_CONTENT_EXISTS_AUDIOFILE = "{\"fileName\":\"isthaltschonda\",\"filePath\":\"istauchschonda\",\"title\":\"title1\",\"album\":\"album1\",\"artist\":\"artist1\",\"genre\":\"TestGenre\",\"duration\":123,\"track\":1,\"year\":2017,\"bitrate\":100,\"size\":1000,\"artwork\":{\"binaryData\":\"AAECAwQFBgcI\",\"width\":50,\"height\":50}}";
     private static final String WRITE_CONTENT_AUDIOFILE_SERIALIZER = "{\"fileName\":\"filenametitle1\",\"filePath\":\"filepathtitle1\",\"title\":\"title1\",\"album\":\"album1\",\"artist\":\"artist1\",\"genre\":\"TestGenre\",\"duration\":123,\"track\":1,\"year\":2017,\"bitrate\":100,\"size\":1000,\"artwork\":246810}";
 
     private static final String WRITE_FILE_NAME_CACHE = "cache_write.json";
@@ -100,6 +103,20 @@ public class JsonIOTest {
         new JsonIO().write(file, AudioFile.class, audioFile);
 
         assertArrayEquals(WRITE_CONTENT_AUDIOFILE.getBytes(), Files.readAllBytes(file.toPath()));
+    }
+
+    @Test
+    public void writeFileAlreadyExists() throws Exception {
+        final File dir = new File(getClass().getResource(BASE_DIR).toURI());
+
+        final File alreadyExists = new File(dir.getAbsolutePath() + "/" + WRITE_FILE_NAME_EXISTS_AUDIOFILE);
+        assertTrue(alreadyExists.exists());
+        assertArrayEquals(WRITE_CONTENT_EXISTS_AUDIOFILE.getBytes(), Files.readAllBytes(alreadyExists.toPath()));
+
+        final AudioFile audioFile = createAudioFile("title1", "album1", "artist1");
+        new JsonIO().write(alreadyExists, AudioFile.class, audioFile);
+
+        assertArrayEquals(WRITE_CONTENT_AUDIOFILE.getBytes(), Files.readAllBytes(alreadyExists.toPath()));
     }
 
     @Test
